@@ -51,6 +51,32 @@ The red line in these experiments isn't "syntax is valid." It's "the test output
 
 For open-ended semantic tasks (write an analysis report), no equivalent objective verification exists. This isn't a "better red line design" problem — it's a task-type limitation.
 
+### Three types of red lines
+
+The experiments exposed a missing conceptual distinction. What we call a "red line" spans three categories with fundamentally different verification power and engineering cost.
+
+**Format red line** — lowest cost, lowest verification power.
+Checks file existence, exit 0, syntax parse, JSON Schema compliance.
+It verifies "the output is well-formed," not "the output is correct." Phase gates and SPC belong here.
+
+**Demand red line** — moderate cost, moderate verification power.
+Checks compilation pass, test output matches expected, business assertion pass.
+It verifies "the output satisfies the requirement." The V2 experiment uses this tier. It requires writing tests and assertions — cost is determined by the task's verifiability, not by system design.
+
+**Semantic-layer red line** — does not exist.
+No code, assertion, or schema can verify "this analysis report is logically coherent" or "this copy's emotional tone is appropriate."
+**This is an open problem.** Under the current stack, no automatic mechanism can reliably judge task completion for open-ended semantic tasks.
+
+| Red line type | Example | What it verifies | Cost | Usable as convergence signal? |
+|-------------|---------|-----------------|------|------------------------------|
+| Format red line | exit 0 / file exists / syntax pass | Well-formed output | Trivial | No (Phase Gate: 50% false positives) |
+| Demand red line | compile + test pass / assertion pass | Output matches requirement | Medium | Yes (V2: 100% convergence) |
+| Semantic-layer red line | — | Logical coherence / quality | — | **Does not exist** (open problem) |
+
+The V2 experiment used a demand red line, not a format red line. The +78% convergence contribution was measured at this tier. A format red line (syntax check only) would not produce the same convergence rate — code can compile and still be wrong.
+
+The rules below are based on this distinction. Only demand red lines can serve as convergence signals. Format red lines are insufficient. Semantic-layer red lines do not exist.
+
 ## The Red Line Principle
 
 **Rule 1: tasks with an objective convergence signal → auto-converge, enter the production pipeline.**
