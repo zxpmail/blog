@@ -6,89 +6,86 @@
 -->
 
 ---
-title: "The Red Line Principle: what 11 experiments taught me about production-grade agent convergence"
+title: "The Red Line Principle: evidence from a controlled experiment on agent loop convergence"
 published: false
-description: "11 experiments, one conclusion: production agents don't need smarter loops. They need a red line — an objective condition that says 'stop here.' With data."
+description: "Same code task, two signal types: compile+test pass vs. LLM self-judgment. Red line adds +78% convergence rate. Key finding: self-judge fails from false negatives, not false positives."
 tags: ai, llm, agents, testing
 canonical_url: ""
 ---
 
-Through 2026 I ran 11 experiments on agent loop convergence. They covered lexical overlap, temperature-0 stability, phase gates, embedding separation, multi-model quality tradeoffs, human-in-the-loop Harness designs, cost sensitivity, SPC anomaly detection, cold-start drift, classification accuracy, and loop convergence behavior.
+How do you make an agent loop converge reliably in production?
 
-All scripts are public and one-click reproducible.
+I ran 11 experiments through the first half of 2026 covering lexical overlap thresholds, temperature-0 stability, phase gates, embedding separation, multi-model quality tradeoffs, human-in-the-loop Harness designs, cost sensitivity, SPC anomaly detection, cold-start drift, classification accuracy, and loop convergence behavior.
 
-This article isn't a catalog of those experiments. It's the single conclusion they all point to:
+This article presents only the 3 experiments that directly compare convergence with and without a red line. The remaining 8 are in the appendix scripts for verification.
 
-> **A production-grade agent doesn't need a smarter loop design. It needs a red line — an objective condition that says "stop here" — and the discipline to stop when it hits it.**
+## Core experiment: same code task, with red line vs. without
 
-## The experiment: with a red line vs. without
+Previous versions of this comparison had a confound: "with red line" used a code task while "without red line" used a copywriting task. Different task types prevent causal attribution to the red line. This version corrects that.
 
-### Experiment A: with a red line (compilation + test pass)
+**Unified task:** generate a Python function. Verification runs the test and matches the expected output.
 
-Task: generate a Python function. Stop signal: does the code compile and pass its test?
+**Condition A (with red line):** compilation + test pass = stop. Objective signal: the code ran and the output is correct.
+**Condition B (without red line):** LLM self-judgment says "done" = stop. Same code, same test — the background verification still runs to record actual correctness.
 
-Result: simple and medium tasks converged in 1 step. The complex task didn't pass in 1 step — but the system *knew* it hadn't passed, because the red line (compile error) gives an unambiguous signal.
+Three tasks, 3 trials each, 8-step limit:
 
-### Experiment B: without a red line (LLM self-judgment)
+| Task | Condition | Convergence rate | Avg steps | Margin |
+|------|-----------|----------------|-----------|--------|
+| simple | With red line | **3/3 (100%)** | 1.0 | |
+| simple | Self-judge only | 1/3 (33%) | 8.0 | **+67%** |
+| medium | With red line | **3/3 (100%)** | 3.3 | |
+| medium | Self-judge only | 1/3 (33%) | 8.0 | **+67%** |
+| complex | With red line | **3/3 (100%)** | 1.0 | |
+| complex | Self-judge only | 0/3 (0%) | 8.0 | **+100%** |
+| **Total** | **With red line** | **9/9 (100%)** | **1.8** | |
+| | **Self-judge only** | **2/9 (22%)** | **8.0** | **+78%** |
 
-Task: write a product description. Let the LLM score its own output and decide when it's "good enough."
+**Key finding:** the self-judge failure mode is not false positives (says YES when code is wrong). It's **false negatives** (writes correct code but says NO). The model doesn't trust itself, keeps iterating, and either degrades its own working code or hits the step limit. The red line (compile + test pass) eliminates this: code is correct + signal fires = immediate convergence.
 
-Result: 8 iterations, self-score stuck at 1/10 across every single round. The model kept revising, kept finding fault, never said "done." Without a hard cutoff, this loop doesn't stop naturally — and the model *knows* it isn't good enough, but can't stop anyway.
+**Marginal contribution of the red line: +78% convergence rate.** Same task, signal type is the only variable — this difference is the causal effect of an objective stop signal.
 
-### Experiment C: without a red line but with a hard cutoff
+### On what "compile pass" actually verifies
 
-Task: same product description, forced stop at step 3.
+The red line in these experiments isn't "syntax is valid." It's "the test output matches the expected result" — demand-level verification. Function `is_even(4)` must return `True` and `is_even(3)` must return `False`. This is fundamentally different from a phase gate checking "file exists." The former verifies correctness; the latter verifies occurrence.
 
-Result: version 1 was 81 characters. Version 2 exploded to 565 characters. Version 3 contained leaked thinking-trace text. The cutoff fired not because the task was complete, but because it ran out of budget.
+For open-ended semantic tasks (write an analysis report), no equivalent objective verification exists. This isn't a "better red line design" problem — it's a task-type limitation.
 
-### Summary
+## The Red Line Principle
 
-| Dimension | With red line (compiler) | No red line (self-judge) | No red line + cutoff |
-|-----------|------------------------|------------------------|--------------------|
-| Converges? | Auto-stops at pass | Never stops | Stops, not because done |
-| Output verifiable? | Yes | No | No |
-| Production-ready? | Yes | No | No (needs human label) |
+**Rule 1: tasks with an objective convergence signal → auto-converge, enter the production pipeline.**
+Code compilation, schema validation, test output matching expectations — these have verifiable outputs. The loop runs, the signal fires, the system stops.
 
-## What the full chain of 11 experiments converges to
+**Rule 2: tasks without an objective convergence signal → must have a hard cutoff.**
+Open-ended semantic tasks — writing copy, drafting analysis, writing reports — have no objective "complete" signal. Do not rely on LLM self-judgment to stop the loop. The output at cutoff cannot auto-enter the production flow.
 
-**1. Code verifies the symbolic layer, not the semantic layer.**
-Lexical overlap, embeddings, phase gates, SPC — every one of them checks that *an action happened*, not that *the result is correct*.
+**Rule 3: what to do at the cutoff → label "unverified," route to a human queue.**
+The cutoff fired because budget ran out, not because the task was judged complete. This isn't a complete engineering solution — it's operational fallback. A production-grade human handoff protocol needs at least three mechanisms: backpressure (degrade when queue depth exceeds threshold), review context preprocessing (strip thinking-trace leakage), and threshold feedback tuning (human verdicts inform cutoff parameters). This design is outside the scope of the current experiments.
 
-**2. Stronger models converge faster, but the semantic red line doesn't disappear.**
-DeepSeek converged at 100% on code tasks vs. qwen3's 58%. But on open-ended semantic tasks — writing copy, drafting analysis — no model has an objective "done" signal. A stronger model runs faster through a divergent loop; it doesn't make the loop convergent.
+## The boundary of loops
 
-**3. The value of a loop is narrow: it provides a fix channel when the model's capability barely meets the task boundary but misses on the first try.**
-The decisive factor isn't loop design. It's whether the task has an objectively verifiable stop condition. If it does, the loop helps. If it doesn't, no amount of loop iterations makes it converge.
+The data also points to a narrower finding: **the value of a loop doesn't come from a general "make the agent keep fixing until it works." It comes from a narrow boundary condition — when the model's capability just barely meets the task and misses on the first attempt.**
 
-## The Red Line Principle for production agents
+With the red line, the medium task averaged 3.3 steps while the complex task averaged 1.0 steps. Not because complex is easier, but because the medium task's boundary cases (FizzBuzz edge logic at 3, 5, 15) fall in the model's near-miss zone — fixable through iteration. Conceptual errors (completely misunderstanding the requirement) are not fixable through iteration.
 
-Three rules, derived from measurement:
-
-**Tasks with a red line → auto-converge, enter production pipeline.**
-Code compilation, schema validation, test green — these have verifiable outputs. The loop runs, the red line fires when conditions are met, and the system stops. Done.
-
-**Tasks without a red line → must have a hard cutoff.**
-Open-ended semantic tasks — writing, analysis, drafting — have no objective "complete" signal. You cannot rely on LLM self-judgment to stop the loop. You must set a hard step limit, and the output at cutoff cannot auto-enter the production flow.
-
-**What to do at the cutoff → mark "unverified," route to human queue.**
-The cutoff fired because budget ran out, not because the task was judged complete. The output at cutoff must be tagged as "not automatically verified" and sent to a human review channel. It must not auto-execute any external action.
+This distinction (syntax errors vs. logic errors, near-miss vs. conceptual miss) is not fully covered by the current experiments and is a worthwhile direction for independent investigation.
 
 ## The deeper claim
 
-If you look closely, the Red Line Principle isn't about "how to make agents do more." It's about **defining when not to let the agent continue.**
+The Red Line Principle isn't about "how to make agents do more." It's about defining when not to let the agent continue.
 
-This is the single conclusion that doesn't depend on any one experiment — but that every experiment in the chain points toward.
-
-> **The prerequisite for a production-grade agent isn't that it can do more. It's that what it cannot do is clearly marked in advance, and it stops reliably at the boundary.**
+The prerequisite for a production-grade agent isn't that it can do more. It's that what it cannot do is clearly marked in advance, and it stops reliably at the boundary.
 
 | Task type | Convergence signal | Red line |
 |-----------|-------------------|----------|
-| Code / verifiable output | Compilation + test pass | Generous step limit (1-3 steps normally) |
+| Code / verifiable output | Compile + test pass (demand-level) | Generous step limit (1-3 normally) |
 | Structured editing | Diff to zero | Step limit + human confirm |
-| Open-ended semantic | None exists | Cutoff → route to human, no auto-fix |
+| Open-ended semantic | **None exists** | Cutoff + human (no auto-fix) |
 
 ---
 
-All 11 experiment scripts: `github.com/zxpmail/blog` → `agent-determinism-illusions/scripts`
+All experiment scripts: `github.com/zxpmail/blog` → `agent-determinism-illusions/scripts`
 
-Run them with your own data. If your findings differ, tell me — it means the mechanism holds in your domain, and I'll update the conclusion.
+Includes the V2 red line comparison (`redline-v2-experiment.py`). Run with your own data.
+
+*The conclusion is "a red line improves convergence rate by +78%," not "the red line solves everything." The former has experimental support. The latter doesn't.*
