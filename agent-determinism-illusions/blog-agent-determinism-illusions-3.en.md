@@ -142,9 +142,29 @@ What does it save? (7.5 reviewers − 1 reviewer) = 6.5 reviewer salaries. At ~$
 
 Break-even: $75K ÷ $21K ≈ **3.5 months.**
 
-That works — if DAU is 1000, daily false rejects are 750, **and that volume sustains for 12 months.** If DAU is 100, monthly savings drop to $2K — break-even is **30 months.** At that point, hiring a reviewer is cheaper than the engineering investment.
+I built a sensitivity matrix across DAU, false-rejection rate (FRR), and review speed ($40K/yr per reviewer, $75K investment):
 
-More stringent: if GLM-5.2's false-rejection rate drops from 75% to 40% in a model update (not implausible), a simple confidence threshold slider solves the same problem. **The engineering investment assumes the problem will persist. That assumption was never validated.**
+| DAU | FRR | Daily false rejects | Headcount (w/o system) | Headcount (with system) | **Break-even** |
+|-----|-----|-------------------|----------------------|-----------------------|--------------|
+| 100 | 25% | 125 | 0.8 | 0.3 | **38 months** |
+| 100 | 75% | 375 | 2.3 | 0.8 | **12 months** |
+| 300 | 50% | 750 | 4.7 | 1.6 | **6 months** |
+| 1000 | 25% | 1,250 | 7.8 | 2.6 | **4 months** |
+| 1000 | 50% | 2,500 | 15.6 | 5.2 | **2 months** |
+| **1000** | **75%** | **3,750** | **23.4** | **7.8** | **≈1 month** |
+
+The "3.5 months" claim only holds at the extreme: DAU=1000, FRR=75%, 30-seconds/review. Drop DAU to 100, break‑even jumps to 34–38 months — cheaper to just hire.
+
+More stringent: false-rejection rate itself is a decay function. If GLM-5.2's next update drops FRR from 75% to 40% (not unlikely):
+
+- Daily false rejects: 3,750 → 2,000
+- Headcount (with system): 7.8 → 4.2
+- Monthly savings: $21K → $12K
+- **Break-even: 1 month → 2 months → 4 months**
+
+FRR halves; break-even quadruples. Model updates are the norm, not an exception.
+
+**"The problem will persist" is the most convenient and least-validated assumption in the entire design.**
 
 ---
 
