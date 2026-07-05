@@ -80,6 +80,18 @@ For every task, record metadata — execution steps, tool-call count, output len
 
 All code. Zero LLM cost. And it catches "quack quack" (length anomaly) and "." (special-char anomaly) without understanding a word.
 
+**Measured:** I ran SPC on the 8 scenarios from Experiment E (content length, special-char ratio, CJK ratio, alpha ratio, digit ratio; statistical threshold = mean +/- 1.5sd):
+
+| Scenario | SPC result | Actual | Correct? |
+|----------|-----------|--------|----------|
+| G1 (duck, garbage) | **ANOMALY** (high CJK ratio) | Garbage | ✅ |
+| G2 (period, garbage) | **ANOMALY** (100% special char) | Garbage | ✅ |
+| G3 (TODO, garbage) | **ANOMALY** (100% alphabetic) | Garbage | ✅ |
+| **G4 (zero-case, garbage)** | **NORMAL** (same features as L4) | **Garbage** | **FOFN** |
+| L1-L4 (valid) | Normal (one mild false-positive) | Valid | ✅ |
+
+SPC catches format anomalies (period, TODO, duck). **G4 (zero-case test log) has the exact same behavioral profile as L4 (valid test log) — SPC misses it 100%.** This directly validates the stated blind spot: SPC catches format anomalies but not semantic traps. G4‑class failures can only be caught by sampling, never prevented.
+
 ### Layer 4: fixed-rate sampling — replace confidence scores
 
 Several approaches I initially proposed relied on a "confidence score" (> 95% auto-release, < 80% human review). The hidden cost: confidence requires a feedback loop to calibrate — database, ground-truth labeling, delayed updates. The same complexity I criticized in the closed-loop calibration critique.
