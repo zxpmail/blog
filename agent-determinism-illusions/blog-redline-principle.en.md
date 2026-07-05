@@ -15,6 +15,8 @@ canonical_url: ""
 
 *The scope of this article is limited to tasks with objectively verifiable acceptance criteria (code, structured output, assertable results). For open-ended semantic tasks (writing copy, drafting analysis), the Red Line Principle does not apply.*
 
+> **Scope restated:** The conclusions in this article hold only under the following conditions — the task has an objective verification standard, and that standard can be predefined by a human (code output matching expectations, schema validation passing, all tests green). For open-ended semantic tasks (writing copy, drafting analysis, generating creative content), no known automatic convergence signal exists within the scope of these experiments; refer to Rules 2 and 3. All data below is within this scope.
+
 How do you make an agent loop converge reliably in production?
 
 I ran 3 core experiments that directly compare convergence with and without a red line, plus 8 auxiliary experiments (lexical overlap, temperature-0, phase gates, embedding separation, multi-model tradeoffs, SPC anomaly detection, cold-start drift, classification accuracy) covering adjacent dimensions. All scripts are open in the appendix.
@@ -26,6 +28,8 @@ I ran 3 core experiments that directly compare convergence with and without a re
 Previous versions of this comparison had a confound: "with red line" used a code task while "without red line" used a copywriting task. Different task types prevent causal attribution to the red line. This version corrects that.
 
 **Unified task:** generate a Python function. Verification runs the test and matches the expected output.
+
+**Test cases:** human-written, covering normal input, boundary values, and edge cases. Injected into the agent context alongside the task definition. Test suite published at `scripts/test_cases/`.
 
 **Condition A (with red line):** compilation + test pass = stop. Objective signal: the code ran and the output is correct.
 **Condition B (without red line):** LLM self-judgment says "done" = stop. Same code, same test — the background verification still runs to record actual correctness.
@@ -124,7 +128,16 @@ Human verdicts shouldn't be consumed once and discarded. A feedback loop adapts 
 - **Rate < 40%:** cutoff too loose (too many incorrect outputs slip through). Decrease the step limit or tighten trigger conditions.
 - **40%–80%:** maintain — cutoff is in the right zone; human review catches edge cases rather than bulk.
 
-Simulation (`scripts/handoff-protocol-sim.py`, production rate 2/min vs review rate 3/min, queue capacity 50, 2 hours) showed overflow rate of 0% at baseline. **This is a parameter estimation example, not production data.** Sensitivity: when the production/review ratio ≥ 2, the system is unsustainable regardless of queue design. Actual deployment requires calibration against your own throughput data.
+Simulation (`scripts/handoff-protocol-sim.py`, 2 hours) across four configurations:
+
+| Config | Production (/min) | Review (/min) | Queue cap | 2h overflow |
+|--------|-----------------|--------------|-----------|-------------|
+| A (baseline) | 2 | 3 | 50 | **0%** |
+| B (overload) | 5 | 3 | 50 | **34%** |
+| C (burst) | 2 (burst ×3) | 3 | 50 | **0%** |
+| D (slow review) | 2 | 1 | 50 | **30%** |
+
+**This is a parameter estimation example, not production data.** Core observation: when production/review ratio ≤ 1, the system is stable; when ratio ≥ 2, it is unsustainable — queue design doesn't dominate, throughput ratio does. Actual deployment requires calibration against your own data.
 
 **Honest risk note:** the feedback tuning structure is isomorphic to the closed-loop calibration criticized in my earlier work (human verdicts → data pool → scheduled tuning). The same failure modes apply: distribution shift nullifies historical patterns, and whack-a-mole effects are possible. The difference is that here we tune a scalar (step limit, bounded [3,15]) rather than LLM few-shot examples (high-dimensional, uncontrolled). The failure domain is narrower, but not zero.
 
@@ -157,4 +170,4 @@ All experiment scripts: `github.com/zxpmail/blog` → `agent-determinism-illusio
 
 Includes the V2 red line comparison (`redline-v2-experiment.py`). Run with your own data.
 
-*The conclusion is "a red line improves convergence rate by +78%," not "the red line solves everything." The former has experimental support. The latter doesn't.*
+*The conclusion is "a red line leads to higher and more stable convergence rates," not "the red line solves everything." The former has experimental support. The latter doesn't.*
