@@ -4,7 +4,7 @@
   and use one of these as the title (HN rewards dry/honest; punishes hype):
 
   Recommended:
-    Three mechanisms for agent determinism, tested empirically — all failed at the semantic layer
+    Lexical overlap, temperature 0, phase gates: tested and failed
 
   Alternatives:
     I tested the 'deterministic agent loop' claims (lexical overlap, temp-0, phase gates). All failed.
