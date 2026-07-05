@@ -6,18 +6,22 @@
 -->
 
 ---
-title: "The Red Line Principle: evidence from a controlled experiment on agent loop convergence"
+title: "The Red Line Principle: objective stop signals outperform LLM self-judgment in verifiable tasks"
 published: false
-description: "Same code task, two signal types: compile+test pass vs. LLM self-judgment. Red line adds +78% convergence rate. Key finding: self-judge fails from false negatives, not false positives."
+description: "Same code task, two signal types: compile+test pass vs. LLM self-judgment. Directional evidence that objective signals improve convergence. Scope: verifiable tasks only (code, structured output). Not applicable to open-ended semantic tasks."
 tags: ai, llm, agents, testing
 canonical_url: ""
 ---
+
+*The scope of this article is limited to tasks with objectively verifiable acceptance criteria (code, structured output, assertable results). For open-ended semantic tasks (writing copy, drafting analysis), the Red Line Principle does not apply.*
 
 How do you make an agent loop converge reliably in production?
 
 I ran 3 core experiments that directly compare convergence with and without a red line, plus 8 auxiliary experiments (lexical overlap, temperature-0, phase gates, embedding separation, multi-model tradeoffs, SPC anomaly detection, cold-start drift, classification accuracy) covering adjacent dimensions. All scripts are open in the appendix.
 
 ## Core experiment: same code task, with red line vs. without
+
+**Warning: N=3, directional results, not statistically significant.**
 
 Previous versions of this comparison had a confound: "with red line" used a code task while "without red line" used a copywriting task. Different task types prevent causal attribution to the red line. This version corrects that.
 
@@ -26,22 +30,22 @@ Previous versions of this comparison had a confound: "with red line" used a code
 **Condition A (with red line):** compilation + test pass = stop. Objective signal: the code ran and the output is correct.
 **Condition B (without red line):** LLM self-judgment says "done" = stop. Same code, same test — the background verification still runs to record actual correctness.
 
-Three tasks, 3 trials each, 8-step limit:
+Three tasks, 3 trials each, 8-step limit. N=3, showing distribution not effect size:
 
-| Task | Condition | Convergence rate | Avg steps | Margin |
-|------|-----------|----------------|-----------|--------|
-| simple | With red line | **3/3 (100%)** | 1.0 | |
-| simple | Self-judge only | 1/3 (33%) | 8.0 | **+67%** |
-| medium | With red line | **3/3 (100%)** | 3.3 | |
-| medium | Self-judge only | 1/3 (33%) | 8.0 | **+67%** |
-| complex | With red line | **3/3 (100%)** | 1.0 | |
-| complex | Self-judge only | 0/3 (0%) | 8.0 | **+100%** |
-| **Total** | **With red line** | **9/9 (100%)** | **1.8** | |
-| | **Self-judge only** | **2/9 (22%)** | **8.0** | **+78%** |
+| Task | Condition | Convergence (individual) | Avg steps |
+|------|-----------|------------------------|-----------|
+| simple | With red line | [1,1,1] | 1.0 |
+| simple | Self-judge only | [X,OK,X] | 8.0 |
+| medium | With red line | [1,4,5] | 3.3 |
+| medium | Self-judge only | [X,X,OK] | 8.0 |
+| complex | With red line | [1,1,1] | 1.0 |
+| complex | Self-judge only | [X,X,X] | 8.0 |
 
-**Key finding:** the self-judge failure mode is not false positives (says YES when code is wrong). It's **false negatives** (writes correct code but says NO). The model doesn't trust itself, keeps iterating, and either degrades its own working code or hits the step limit. The red line (compile + test pass) eliminates this: code is correct + signal fires = immediate convergence.
+**Direction:** 9/9 converged with the red line; 2/9 actually converged with self-judge (both ran to the 8-step hard limit before self-triggering). The directional difference is stable, but N=3 cannot exclude random variation.
 
-**Marginal contribution of the red line: +78% convergence rate.** Same task, signal type is the only variable — this difference is the causal effect of an objective stop signal.
+**Self-judge failure mode:** 0 false positives (says YES when code is wrong) and at least 4 false negatives (code correct but self-judge says NO or never triggers). The model wrote correct code but didn't trust itself, kept iterating, and either degraded its own working code or hit the step limit.
+
+**Prompt bias note:** the self-judge prompt ("are you done?") is biased toward "not yet." A different prompt format (e.g., "output FINISH if code passes all tests") would likely change the self-judge convergence rate. This comparison describes "a specific self-judge prompt vs. a compilation signal," not a general "red line vs. no red line."
 
 ### On what "compile pass" actually verifies
 
@@ -53,6 +57,10 @@ For open-ended semantic tasks (write an analysis report), no equivalent objectiv
 
 The experiments exposed a missing conceptual distinction. What we call a "red line" spans three categories with fundamentally different verification power and engineering cost.
 
+**Honest note on the demand red line:** the demand red line used in these experiments (compile + test output matches expectation) depends on human-written test assertions. The system does not automatically know whether a task is complete — a human pre-defines the verifiable boundary, and the agent operates within it.
+
+"Demand red line works" is equivalent to saying: "if a human writes a complete acceptance test upfront, the agent can satisfy it in 1-3 steps." This is labor shifting — moving verification cost from runtime to design time. For tasks where a complete, pre-writable verification set does not exist (most open-ended semantic tasks), the demand red line is inapplicable. It is a task classification, not a universal mechanism.
+
 **Format red line** — lowest cost, lowest verification power.
 Checks file existence, exit 0, syntax parse, JSON Schema compliance.
 It verifies "the output is well-formed," not "the output is correct." Phase gates and SPC belong here.
@@ -61,17 +69,17 @@ It verifies "the output is well-formed," not "the output is correct." Phase gate
 Checks compilation pass, test output matches expected, business assertion pass.
 It verifies "the output satisfies the requirement." The V2 experiment uses this tier. It requires writing tests and assertions — cost is determined by the task's verifiability, not by system design.
 
-**Semantic-layer red line** — does not exist.
-No code, assertion, or schema can verify "this analysis report is logically coherent" or "this copy's emotional tone is appropriate."
-**This is an open problem.** Under the current stack, no automatic mechanism can reliably judge task completion for open-ended semantic tasks.
+**Semantic-layer red line** — no known reliable method found within the scope of these experiments.
+Existing approaches (LLM-as-judge, multi-round debate, consistency checks) show high false-positive rates or irreproducibility in limited testing.
+**This is an open problem.** Not in-principle unsolvable — but no known engineering mechanism can reliably judge completion for open-ended semantic tasks under the current stack.
 
 | Red line type | Example | What it verifies | Cost | Usable as convergence signal? |
 |-------------|---------|-----------------|------|------------------------------|
 | Format red line | exit 0 / file exists / syntax pass | Well-formed output | Trivial | No (Phase Gate: 50% false positives) |
-| Demand red line | compile + test pass / assertion pass | Output matches requirement | Medium | Yes (V2: 100% convergence) |
-| Semantic-layer red line | — | Logical coherence / quality | — | **Does not exist** (open problem) |
+| Demand red line | compile + test pass / assertion pass | Output matches requirement | Medium | Yes (V2: directional evidence) |
+| Semantic-layer red line | — | Logical coherence / quality | — | **No known reliable method** (open problem) |
 
-The V2 experiment used a demand red line, not a format red line. The +78% convergence contribution was measured at this tier. A format red line (syntax check only) would not produce the same convergence rate — code can compile and still be wrong.
+The V2 experiment used a demand red line, not a format red line. A format red line (syntax check only) would not produce the same convergence rate — code can compile and still be wrong.
 
 The rules below are based on this distinction. Only demand red lines can serve as convergence signals. Format red lines are insufficient. Semantic-layer red lines do not exist.
 
@@ -116,7 +124,7 @@ Human verdicts shouldn't be consumed once and discarded. A feedback loop adapts 
 - **Rate < 40%:** cutoff too loose (too many incorrect outputs slip through). Decrease the step limit or tighten trigger conditions.
 - **40%–80%:** maintain — cutoff is in the right zone; human review catches edge cases rather than bulk.
 
-Simulation (2 hours, 4 configurations) showed: under baseline conditions (production rate ≤ review rate), the feedback loop converges the cutoff threshold to a stable value within 30–60 minutes. "Route to human" now has measurable behavior metrics — wait time, overflow rate, approval rate — each dimension can be SLO'd.
+Simulation (`scripts/handoff-protocol-sim.py`, production rate 2/min vs review rate 3/min, queue capacity 50, 2 hours) showed overflow rate of 0% at baseline. **This is a parameter estimation example, not production data.** Sensitivity: when the production/review ratio ≥ 2, the system is unsustainable regardless of queue design. Actual deployment requires calibration against your own throughput data.
 
 **Honest risk note:** the feedback tuning structure is isomorphic to the closed-loop calibration criticized in my earlier work (human verdicts → data pool → scheduled tuning). The same failure modes apply: distribution shift nullifies historical patterns, and whack-a-mole effects are possible. The difference is that here we tune a scalar (step limit, bounded [3,15]) rather than LLM few-shot examples (high-dimensional, uncontrolled). The failure domain is narrower, but not zero.
 
