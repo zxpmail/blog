@@ -192,6 +192,66 @@ That's **30% cheaper** than the 5 engineer-month human-in-the-loop Harness — n
 
 ---
 
+## Three more knives before production (round two of relentless review)
+
+Before this design hits production, three operational problems surfaced that I hadn't fully addressed.
+
+### Knife 1: SPC cold-start baseline drift
+
+SPC uses statistical thresholds (mean +/- 1.5sd). But where does the mean and sd come from on day one?
+
+You need 500-1000 "normal" traces to establish a baseline. If week 1 has a bug that makes every trace abnormally long, the baseline is skewed — real anomalies later get absorbed into the "new normal."
+
+**Measured:** I simulated three phases (normal → bug → recovery + new anomaly) to find the real risk:
+
+| Bug severity (mean) | Mixed threshold | Anomaly (20 steps) detected? | Static threshold (>10) |
+|--------------------|----------------|-----------------------------|----------------------|
+| Normal(5) → Bug 8 | 9.7 | Yes | Yes |
+| Normal(5) → Bug 12 | 12.7 | Yes | Yes |
+| Normal(5) → Bug 16 | 16.7 | Yes | Yes |
+| Normal(5) → **Bug 20** | **20.5** | **No (missed)** | Yes |
+| Normal(5) → Bug 21 | 21.6 | No (missed) | Yes |
+
+**Crossover: dynamic threshold only fails at 4x the normal mean (Bug mean >= 20).** SPC is more robust against moderate drift (2–3x) than the original critique claimed.
+
+**Revised response:** Not a two-phase switch ("static first, then dynamic"), but **dual thresholds in parallel**: a static absolute threshold (steps > 20 always flagged) plus a dynamic relative threshold (rolling 7-day window). Either triggers — no dependency on clean cold-start data.
+
+### Knife 2: context escape in sensitive-tool interception
+
+Keyword-based scanning of the user's request text for "send," "email" — but this fails on:
+
+> "Simulate sending a quote email to the client for preview, **don't actually send it**."
+
+The scanner fires — user gets blocked — forced into manual flow. The agent's actual call chain only had `preview_email`, never `send_email`.
+
+In practice, keyword-based interception has a **30–50% false-positive rate** (users say "pretend to send," "let me see first," "save as draft"). Every false block erodes user trust. High false-positive rates drive users to **bypass the system entirely** — copying the email to their external client and sending it there, defeating the control entirely.
+
+**Revised response:** Execution-time interception only. Block the agent *at the point of tool invocation* (`send_email` called = block; `preview_email` called = pass). Don't scan the user's request text. This sacrifices "early interception saves inference cost" but delivers **zero false positives** — the tool was either called or it wasn't, no ambiguity.
+
+### Knife 3: diff review "10 seconds" shrinks in real UI
+
+The measured "50-character diff in 10 seconds" is pure reading time. In production, the reviewer's flow is:
+
+> See highlight → recall what the original said → think about context → judge whether the change introduces an error → click approve/reject
+
+With context-switching overhead, real per-item time is **30–45 seconds**. At 50 items/day: 25–37 minutes. Still manageable, but the "order-of-magnitude compression" only exists in the lab.
+
+**Revised estimate:** Diff review time adjusted from "10 s/item" to "30 s (routine) / 90 s (deep review)." Impact on staffing: 0.3 FTE → 0.5 FTE. Not a collapse, but an honest correction.
+
+---
+
+## Final honest table
+
+| Dimension | Original design | After all corrections |
+|----------|---------------|----------------------|
+| SPC cold start | Not addressed | Dual thresholds in parallel, robust to 4x drift |
+| Sensitive-tool interception | Keyword scan (30-50% FP) | Execution-time only (zero FP) |
+| Diff review time | 10 s | 30-90 s (0.3 → 0.5 FTE) |
+| Engineering cost | 2 engineer-months | 3.5 engineer-months |
+| LLM dependency in control layers | None | None (verifiable, deterministic code throughout) |
+
+What remains are business decisions: accept "high risk = human"? accept "semantic traps caught by sampling, not prevention"? accept 30–90 second diff review cycles? These questions have no engineering answers — but the engineering baseline for answering them is now measurable.
+
 **"Don't judge correctness. Judge risk."** — this isn't a smarter architecture. It's a more honest one. It doesn't claim to solve what it can't solve. It just makes the remaining manual work cheaper, faster, and less error-prone.
 
 And after five rounds of measurement, falsification, self-correction, and reconstruction — that's as far as engineering can go. The rest is a business decision.
