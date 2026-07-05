@@ -15,9 +15,7 @@ canonical_url: ""
 
 How do you make an agent loop converge reliably in production?
 
-I ran 11 experiments through the first half of 2026 covering lexical overlap thresholds, temperature-0 stability, phase gates, embedding separation, multi-model quality tradeoffs, human-in-the-loop Harness designs, cost sensitivity, SPC anomaly detection, cold-start drift, classification accuracy, and loop convergence behavior.
-
-This article presents only the 3 experiments that directly compare convergence with and without a red line. The remaining 8 are in the appendix scripts for verification.
+I ran 3 core experiments that directly compare convergence with and without a red line, plus 8 auxiliary experiments (lexical overlap, temperature-0, phase gates, embedding separation, multi-model tradeoffs, SPC anomaly detection, cold-start drift, classification accuracy) covering adjacent dimensions. All scripts are open in the appendix.
 
 ## Core experiment: same code task, with red line vs. without
 
@@ -120,13 +118,17 @@ Human verdicts shouldn't be consumed once and discarded. A feedback loop adapts 
 
 Simulation (2 hours, 4 configurations) showed: under baseline conditions (production rate ≤ review rate), the feedback loop converges the cutoff threshold to a stable value within 30–60 minutes. "Route to human" now has measurable behavior metrics — wait time, overflow rate, approval rate — each dimension can be SLO'd.
 
-## The boundary of loops
+**Honest risk note:** the feedback tuning structure is isomorphic to the closed-loop calibration criticized in my earlier work (human verdicts → data pool → scheduled tuning). The same failure modes apply: distribution shift nullifies historical patterns, and whack-a-mole effects are possible. The difference is that here we tune a scalar (step limit, bounded [3,15]) rather than LLM few-shot examples (high-dimensional, uncontrolled). The failure domain is narrower, but not zero.
 
-The data also points to a narrower finding: **the value of a loop doesn't come from a general "make the agent keep fixing until it works." It comes from a narrow boundary condition — when the model's capability just barely meets the task and misses on the first attempt.**
+## The boundary of loops — an untested hypothesis
 
-With the red line, the medium task averaged 3.3 steps while the complex task averaged 1.0 steps. Not because complex is easier, but because the medium task's boundary cases (FizzBuzz edge logic at 3, 5, 15) fall in the model's near-miss zone — fixable through iteration. Conceptual errors (completely misunderstanding the requirement) are not fixable through iteration.
+The data raises a question it cannot answer: **does the loop's repair capability have a boundary?**
 
-This distinction (syntax errors vs. logic errors, near-miss vs. conceptual miss) is not fully covered by the current experiments and is a worthwhile direction for independent investigation.
+With the red line, the medium task averaged 3.3 steps while the complex task averaged 1.0 steps. This difference might mean that FizzBuzz's boundary conditions (3→Fizz, 5→Buzz, 15→FizzBuzz) fall in the model's "near-miss zone" — it understood the requirement but made a syntax or edge-case error, which is fixable through iteration. The complex task (data structure manipulation) was written correctly on the first try.
+
+**But this is a post-hoc interpretation.** N=3 cannot exclude random variation. A more fundamental question: if the error is conceptual (the agent completely misunderstood the requirement), can the fix loop still recover? Current experiments don't answer this, because all tasks were within the model's capability range — tasks beyond capability were not included in the design.
+
+A worthwhile independent direction: construct two task classes (syntax errors vs. logic errors) and compare fix-loop success rates — the former expected to be high, the latter low and non-improving with iteration.
 
 ## The deeper claim
 
@@ -137,8 +139,9 @@ The prerequisite for a production-grade agent isn't that it can do more. It's th
 | Task type | Convergence signal | Red line |
 |-----------|-------------------|----------|
 | Code / verifiable output | Compile + test pass (demand-level) | Generous step limit (1-3 normally) |
-| Structured editing | Diff to zero | Step limit + human confirm |
 | Open-ended semantic | **None exists** | Cutoff + human (no auto-fix) |
+
+*Note: structured editing (diff to zero) was not tested in the experiments presented here and is omitted from this table.*
 
 ---
 
