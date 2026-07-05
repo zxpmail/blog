@@ -15,7 +15,7 @@ canonical_url: ""
 
 *The scope of this article is limited to tasks with objectively verifiable acceptance criteria (code, structured output, assertable results). For open-ended semantic tasks (writing copy, drafting analysis), the Red Line Principle does not apply.*
 
-> **Scope restated:** The conclusions in this article hold only under the following conditions — the task has an objective verification standard, and that standard can be predefined by a human (code output matching expectations, schema validation passing, all tests green). For open-ended semantic tasks (writing copy, drafting analysis, generating creative content), no known automatic convergence signal exists within the scope of these experiments; refer to Rules 2 and 3. All data below is within this scope.
+> **Scope restated:** The conclusions in this article hold only under the following conditions — the task has an objective verification standard, and that standard can be predefined by a human (code output matching expectations, schema validation passing, all tests green). For open-ended semantic tasks (writing copy, drafting analysis, generating creative content), no known automatic convergence signal exists within the scope of these experiments; refer to Rules 3 and 4. All data below is within this scope.
 
 How do you make an agent loop converge reliably in production?
 
@@ -92,10 +92,13 @@ The rules below are based on this distinction. Only demand red lines can serve a
 **Rule 1: tasks with an objective convergence signal → auto-converge, enter the production pipeline.**
 Code compilation, schema validation, test output matching expectations — these have verifiable outputs. The loop runs, the signal fires, the system stops.
 
-**Rule 2: tasks without an objective convergence signal → must have a hard cutoff.**
+**Rule 2: tasks with incomplete signals → auto-converge + human sampling.**
+Many real tasks fall in the grey zone — 80% test coverage, schema-valid but business-unverified, diff-zeroed but semantically unchecked. Rules 1 and 4 are composable, not mutually exclusive: a task can auto-converge via its demand red line, then layer Rule 4's human sampling to cover the blind spots.
+
+**Rule 3: tasks with no convergence signal → must have a hard cutoff; label "unverified," route to human queue.**
 Open-ended semantic tasks — writing copy, drafting analysis, writing reports — have no objective "complete" signal. Do not rely on LLM self-judgment to stop the loop. The output at cutoff cannot auto-enter the production flow.
 
-**Rule 3: output at cutoff → mark "unverified," route to human queue.**
+**Rule 4: output at cutoff → mark "unverified," route to human queue.**
 
 The cutoff fired because budget ran out, not because the task was judged complete. "Route to human" isn't a complete engineering solution — it's operational fallback. Below is a design draft for a production-grade human handoff protocol.
 
@@ -128,7 +131,7 @@ Human verdicts shouldn't be consumed once and discarded. A feedback loop adapts 
 - **Rate < 40%:** cutoff too loose (too many incorrect outputs slip through). Decrease the step limit or tighten trigger conditions.
 - **40%–80%:** maintain — cutoff is in the right zone; human review catches edge cases rather than bulk.
 
-Simulation (`scripts/handoff-protocol-sim.py`, 2 hours) across four configurations:
+Simulation (same 4 configurations as the backpressure table) showed: under A (production ≤ review), feedback tuning converged the step limit to max (5→15) in approximately 30 minutes, driven by the 40-80% approve rate zone keeping tuning in maintain. Under B/D (production > review), backpressure fires before tuning — the binding constraint is throughput, not convergence parameters.
 
 | Config | Production (/min) | Review (/min) | Queue cap | 2h overflow |
 |--------|-----------------|--------------|-----------|-------------|
@@ -168,6 +171,6 @@ The prerequisite for a production-grade agent isn't that it can do more. It's th
 
 All experiment scripts: `github.com/zxpmail/blog` → `agent-determinism-illusions/scripts`
 
-Includes the V2 red line comparison (`redline-v2-experiment.py`). Run with your own data.
+The core experiment (`redline-v2-experiment.py`) supports `--task-file` for custom task definitions (JSON format, see `test_cases/README.md`). Run the red line comparison on your own tasks.
 
 *The conclusion is "a red line leads to higher and more stable convergence rates," not "the red line solves everything." The former has experimental support. The latter doesn't.*

@@ -13,8 +13,13 @@
   3. 条件B的假阳性率(自判YES但代码失败)
   4. 条件B的假阴性率(代码通过但自判NO)
 """
-import io, sys, json, urllib.request, subprocess, tempfile, os, re, time, random
+import io, sys, json, urllib.request, subprocess, tempfile, os, re, time, random, argparse
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--task-file", type=str, default="",
+                    help="custom task file (JSON), see test_cases/README.md for format")
+ARGS = parser.parse_args()
 
 MODEL = "deepseek-v4-flash"
 BASE_URL = "https://api.deepseek.com/anthropic"
@@ -69,6 +74,16 @@ TASKS = [
      "print(group_by_first_letter(['apple','banana','avocado','cherry','blueberry']))",
      "{'a': ['apple', 'avocado'], 'b': ['banana', 'blueberry'], 'c': ['cherry']}"),
 ]
+
+# 支持 --task-file 加载自定义任务
+if ARGS.task_file:
+    with open(ARGS.task_file, 'r', encoding='utf-8') as f:
+        custom = json.load(f)
+    extra = []
+    for item in custom["tasks"]:
+        extra.append((item["id"], item["desc"], item["test_stmt"], item["expected"]))
+    TASKS = extra
+    print(f"  [Loaded {len(TASKS)} custom tasks from {ARGS.task_file}]")
 
 MAX_STEPS = 10
 TRIALS = 5
