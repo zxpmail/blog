@@ -85,8 +85,40 @@ Code compilation, schema validation, test output matching expectations — these
 **Rule 2: tasks without an objective convergence signal → must have a hard cutoff.**
 Open-ended semantic tasks — writing copy, drafting analysis, writing reports — have no objective "complete" signal. Do not rely on LLM self-judgment to stop the loop. The output at cutoff cannot auto-enter the production flow.
 
-**Rule 3: what to do at the cutoff → label "unverified," route to a human queue.**
-The cutoff fired because budget ran out, not because the task was judged complete. This isn't a complete engineering solution — it's operational fallback. A production-grade human handoff protocol needs at least three mechanisms: backpressure (degrade when queue depth exceeds threshold), review context preprocessing (strip thinking-trace leakage), and threshold feedback tuning (human verdicts inform cutoff parameters). This design is outside the scope of the current experiments.
+**Rule 3: output at cutoff → mark "unverified," route to human queue.**
+
+The cutoff fired because budget ran out, not because the task was judged complete. "Route to human" isn't a complete engineering solution — it's operational fallback. Below is a design draft for a production-grade human handoff protocol.
+
+#### Backpressure
+
+Human review queue throughput is a hard constraint. When agent production rate persistently exceeds review rate, the system is unsustainable — the simulation confirmed this (5 items/min vs 3 items/min: 34% queue overflow). Backpressure mechanism:
+
+- **Watermark:** queue depth > 80% of capacity triggers degradation. New tasks skip the fix loop entirely — output raw result, tag as "draft mode."
+- **Limit:** queue depth hits capacity → drop lowest-priority items (log to circuit-breaker log), prioritize high-value tasks.
+- **Recovery:** queue depth < 30% of capacity → resume normal flow.
+
+Core observation: queue design doesn't dominate system stability — **the ratio of agent production rate to human review rate is the decisive factor.** If production exceeds review, any queue fills. Either slow down (cap agent concurrency), speed up (better review tools), or accept overflow (absorb the business cost).
+
+#### Context preprocessing
+
+Raw cutoff output may contain multi-step execution traces and thinking-token leakage (as observed in Experiment C). Showing this directly to a reviewer slows decisions.
+
+Preprocessing rules:
+
+- Extract three fields from the execution trace: final output, last error message, attempt count. Do not send the full trace.
+- Reviewer UI displays only: task description → final output (highlighted) → cutoff reason (step limit / self-judge false negative / format anomaly).
+- After verdict, collect: approve/reject + reason label (code error / logic error / format issue / hallucination / unclear). Sort labels by frequency — types appearing >3 times should trigger automatic filter rules.
+
+#### Feedback tuning
+
+Human verdicts shouldn't be consumed once and discarded. A feedback loop adapts cutoff parameters based on review results:
+
+- **Sliding window:** approve rate over the last 10 human verdicts.
+- **Rate > 80%:** cutoff too tight (too many correct tasks sent to review). Increase the step limit or loosen trigger conditions.
+- **Rate < 40%:** cutoff too loose (too many incorrect outputs slip through). Decrease the step limit or tighten trigger conditions.
+- **40%–80%:** maintain — cutoff is in the right zone; human review catches edge cases rather than bulk.
+
+Simulation (2 hours, 4 configurations) showed: under baseline conditions (production rate ≤ review rate), the feedback loop converges the cutoff threshold to a stable value within 30–60 minutes. "Route to human" now has measurable behavior metrics — wait time, overflow rate, approval rate — each dimension can be SLO'd.
 
 ## The boundary of loops
 
