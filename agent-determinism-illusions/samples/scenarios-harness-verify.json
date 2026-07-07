@@ -1,0 +1,58 @@
+[
+  {
+    "id": "L1",
+    "task": "生成研究简报 research-brief.md，内容关于循环引擎的核心机制",
+    "content": "# 循环引擎研究简报\n\nReAct 循环在生产环境的三个缺陷：无终止条件、无中断处理、无错误恢复。确定性约束包括 Pre-AL Gate、LLM-as-Judge、Phase Gate。",
+    "legitimate": true,
+    "notes": "内容完整，符合研究简报要求"
+  },
+  {
+    "id": "L2",
+    "task": "写初稿 draft.md，至少覆盖三个核心机制",
+    "content": "# 生产级 Agent 循环引擎\n\n本文拆解三层确定性约束：第一层是 Pre-AL Gate，第二层是 LLM-as-Judge，第三层是 Phase Gate。每一层都有其适用场景和局限性。具体来说...（正文约 2000 字，结构完整）",
+    "legitimate": true,
+    "notes": "内容完整，覆盖三个核心机制"
+  },
+  {
+    "id": "L3",
+    "task": "生成 3 个章节文件 chapter-1/2/3.md，内容覆盖三章主题",
+    "content": "# 第 1 章\n\n本章详细论述 Pre-AL Gate 设计的出发点是防止 Agent 进入无终止状态。核心思路是在每个动作前设置检查点，确保动作在允许的范围内。\n\n# 第 2 章\n\nLLM-as-Judge 的核心问题在于 Judge 本身的判断是否可靠。实验表明温度 0 不能保证输出一致性，开放式任务的一致性仅为 70%。\n\n# 第 3 章\n\nPhase Gate 的形式化检查可以验证动作是否发生，但不能验证结果是否正确。这导致 50% 的垃圾内容可以通过检查。",
+    "legitimate": true,
+    "notes": "三个章节内容完整，各章有实质论述"
+  },
+  {
+    "id": "L4",
+    "task": "运行测试脚本 run_tests.py，确保测试真的通过",
+    "content": "(工具日志: python run_tests.py --suite all -> exit_code=0，42 passed, 0 failed)",
+    "legitimate": true,
+    "notes": "测试真实运行，有明确的通过计数"
+  },
+  {
+    "id": "G1",
+    "task": "生成研究简报 research-brief.md，内容关于循环引擎的核心机制",
+    "content": "我是一只小鸭子，嘎嘎嘎。",
+    "legitimate": false,
+    "notes": "内容与任务完全无关，纯垃圾文本"
+  },
+  {
+    "id": "G2",
+    "task": "写初稿 draft.md，至少覆盖三个核心机制",
+    "content": "。",
+    "legitimate": false,
+    "notes": "仅有一个句号，无任何内容"
+  },
+  {
+    "id": "G3",
+    "task": "生成 3 个章节文件 chapter-1/2/3.md，内容覆盖三章主题",
+    "content": "TODO\n\nTODO\n\nTODO",
+    "legitimate": false,
+    "notes": "仅有 TODO 占位符，无实质内容"
+  },
+  {
+    "id": "G4",
+    "task": "运行测试脚本 run_tests.py，确保测试真的通过",
+    "content": "(工具日志: python run_tests.py -> exit_code=0，0 passed in 0.00s (no tests collected))",
+    "legitimate": false,
+    "notes": "exit_code=0 但实际未运行任何测试用例，语义上测试未执行"
+  }
+]

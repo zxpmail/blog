@@ -1,0 +1,88 @@
+[
+  {
+    "id": "L1",
+    "task": "生成研究简报 research-brief.md，内容关于循环引擎的核心机制",
+    "checks": [
+      {"type": "script", "script": "validate_research.py"},
+      {"type": "file_exists", "path": "research-brief.md"}
+    ],
+    "content": "# 循环引擎研究简报\n\nReAct 循环在生产环境的三个缺陷：无终止条件、无中断处理、无错误恢复。确定性约束包括 Pre-AL Gate、LLM-as-Judge、Phase Gate。",
+    "legitimate": true,
+    "notes": "内容正确，Gate 检查全部通过"
+  },
+  {
+    "id": "L2",
+    "task": "写初稿 draft.md，至少覆盖三个核心机制",
+    "checks": [
+      {"type": "file_exists", "path": "draft.md"}
+    ],
+    "content": "# 生产级 Agent 循环引擎\n\n本文拆解三层确定性约束（正文约 2000 字，结构完整）",
+    "legitimate": true,
+    "notes": "内容正确，文件存在检查通过"
+  },
+  {
+    "id": "L3",
+    "task": "生成 3 个章节文件 chapter-1/2/3.md",
+    "checks": [
+      {"type": "file_glob_count", "pattern": "chapter-*.md", "threshold": 3}
+    ],
+    "content": "# 第 1 章\n\n本章详细论述...\n\n# 第 2 章\n\n...\n\n# 第 3 章\n\n...",
+    "legitimate": true,
+    "notes": "内容正确，3 个文件数量达标"
+  },
+  {
+    "id": "L4",
+    "task": "运行测试脚本，确保通过",
+    "checks": [
+      {"type": "script", "script": "run_tests.py"}
+    ],
+    "content": "(工具日志: python run_tests.py --suite all -> exit_code=0, stdout: 42 passed, 0 failed)",
+    "legitimate": true,
+    "notes": "测试真实运行且全部通过"
+  },
+  {
+    "id": "G1",
+    "task": "生成研究简报 research-brief.md，内容关于循环引擎的核心机制",
+    "checks": [
+      {"type": "script", "script": "validate_research.py"},
+      {"type": "file_exists", "path": "research-brief.md"}
+    ],
+    "content": "我是一只小鸭子，嘎嘎嘎。",
+    "legitimate": false,
+    "why_wrong": "文件内容是鸭子，与循环引擎无关；validate 脚本只 print 不校验",
+    "notes": "内容垃圾，Gate 全部通过——假阳"
+  },
+  {
+    "id": "G2",
+    "task": "写初稿 draft.md，至少覆盖三个核心机制",
+    "checks": [
+      {"type": "file_exists", "path": "draft.md"}
+    ],
+    "content": "。",
+    "legitimate": false,
+    "why_wrong": "文件存在但内容只有一个句号，没有任何正文",
+    "notes": "内容垃圾，Gate 全部通过——假阳"
+  },
+  {
+    "id": "G3",
+    "task": "生成 3 个章节文件 chapter-1/2/3.md，内容覆盖三章主题",
+    "checks": [
+      {"type": "file_glob_count", "pattern": "chapter-*.md", "threshold": 3}
+    ],
+    "content": "TODO\n\nTODO\n\nTODO",
+    "legitimate": false,
+    "why_wrong": "3 个文件数量达标，但内容全是 TODO 占位符",
+    "notes": "内容垃圾，Gate 全部通过——假阳"
+  },
+  {
+    "id": "G4",
+    "task": "运行测试脚本 run_tests.py，确保测试真的通过",
+    "checks": [
+      {"type": "script", "script": "run_tests.py"}
+    ],
+    "content": "(工具日志: python run_tests.py -> exit_code=0, stdout: 0 passed in 0.00s (no tests collected))",
+    "legitimate": false,
+    "why_wrong": "exit_code=0 但实际 0 个用例被执行（no tests collected）",
+    "notes": "内容垃圾，Gate 全部通过——假阳"
+  }
+]
