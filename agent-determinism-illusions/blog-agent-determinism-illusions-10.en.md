@@ -409,6 +409,18 @@ Instead, I reversed it: commented with a pre-committed claim → then ran the ex
 
 The subtle DFs (DS4 in particular) are connected to the broader series theme from this article: layered architecture. A Layer 0/1 deterministic check — "does the output value match the requested parameter?" — would catch DS4 at zero cost. Subtle DFs are a failure of semantic-judgment-only verification, exactly Alexey and Manuel's point about layering.
 
+### Conclusion
+
+Three findings from this appendix, ordered by importance:
+
+**First, I made a claim without data.** The directional failure assertion in my dev.to replies was fabricated — I wrote it from conversation memory without re-reading my own article. This is a data-integrity failure, regardless of intent. The only honest response is to admit it publicly and let the experiment speak for itself.
+
+**Second, the experiment produced more useful data than the fabrication.** Explicit directional failures are trivially detectable by any model tier (0% miss rate across all three). Subtle DFs reveal a model-size-dependent risk: weak models miss 50%, strong models miss 25%. The hardest case — DS4, where the output rationalizes "no change needed" — leaked on both the weakest and strongest model. This pattern (format > semantic, plausibility > compliance) is the same one found in Part 3's L4/G4 cosine 0.861, now confirmed in a different experimental context.
+
+**Third, the fix is architectural, not model-dependent.** DS4 would have been caught by a deterministic Layer 0 check: "does the output value match the requested parameter?" This appendix doesn't just fill a data hole — it validates the layered architecture that the five comments in this article helped design. A quality gate that relies solely on semantic judgment will always be vulnerable to plausible-sounding rationalizations. A gate that combines deterministic contract checks with thin LLM judgment catches them at zero cost.
+
+The series conclusion stands: under the current stack, semantic correctness has no engineering solution. But the pragmatic question — "how do I build something that works well enough today?" — now has a better answer than when I started writing.
+
 ---
 
 *All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
