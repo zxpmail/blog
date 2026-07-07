@@ -313,4 +313,81 @@ P1 场景 L3（模型驳回）：
 
 ---
 
-*实验脚本（全部可复跑）：[GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
+---
+
+## 附录：Directional Failure 实验——早该跑的数据，不该提前说的话
+
+P3 发布后，我在 dev.to 评论区说了句不该说的话：
+
+> "Part 3 发现 judge 对 directional failure 失效——语义完全相反的产出（delete→keep、stop→continue），judge 放行了。"
+
+这句话是假的。Part 3 没有 directional failure 实验，没有 confidence score 测量，没有任何数据支撑"judge 漏放反转"这个结论。这是我凭印象回复、没重读文章就写的。不是恶意编造，但属于数据诚信失误——两类 fabrication 中较轻的一种，但性质一样。
+
+自审发现后，我补跑了这个实验。
+
+### 实验设计
+
+10 个场景（`samples/scenarios-harness-verify.json`），两个难度级别：
+
+- **6 个显式反转（DF1-DF6）：** 输出文本直接包含与任务矛盾的关键词（任务说"删除"，输出说"保留完整"）
+- **2 个合法控制（V1-V2）：** 输出正确执行任务
+- **2 个垃圾控制（G1-G2）：** 明显垃圾
+
+第一轮跑完后，我发现显式反转过于简单，又加了 **4 个微妙反转（DS1-DS4）：** 输出用听起来合理但方向错误的描述（"已归档"≠已删除、"当前配置已满足需求"≠按要求修改）。
+
+每场景 N=5（显式轮）/ N=3（微妙轮），temperature=0。审核 prompt 与 P3 相同："输出是否满足任务要求？"
+
+三档模型：qwen3:0.5b（本地）、gemma3:4.3B（本地）、deepseek-v4-flash（API）。
+
+### 结果
+
+**第一轮：显式反转（6 场景）**
+
+| 模型 | 检出 | 漏放 | 漏放率 | 完全一致 |
+|------|------|------|--------|---------|
+| qwen3:0.5b | 6 | 0 | **0%** | 5/6 |
+| gemma3:4.3B | 6 | 0 | **0%** | 6/6 |
+| deepseek-v4-flash | 6 | 0 | **0%** | 6/6 |
+
+三档模型 100% 检出所有显式反转。我评论区说的"judge 发现不了 delete→keep"是错的。
+
+**第二轮：微妙反转（4 场景）**
+
+| 模型 | 检出 | 漏放 | 漏放率 |
+|------|------|------|--------|
+| qwen3:0.5b | 2 | 2 | **50%** |
+| gemma3:4.3B | 4 | 0 | **0%** |
+| deepseek-v4-flash | 3 | 1 | **25%** |
+
+微妙级别出现模型大小相关差异：
+
+- **DS1**（归档≠删除）：qwen3 漏放（2/3 PASS），gemma3 和 deepseek 检出
+- **DS4**（无需修改≠按要求修改）：qwen3 **和** deepseek 都漏放（2/3 PASS）——强模型也接受了"当前配置已满足需求"
+- **DS2**（重启≠停止）：全部检出
+- **DS3**（全量开放≠禁用）：全部检出
+
+### 诚实解读
+
+两个发现，一个打消顾虑，一个需要留意。
+
+**1. 显式反转不是盲区。** 原 claim 错误。任何模型（包括 0.5B）都能检测任务和输出之间的关键词级矛盾。我当初把 P3 的 L4/G4 cosine 0.861（format vs semantic 聚类问题）错误地投射到了 directional detection 上——这是两个不同的问题。
+
+**2. 微妙反转是真实存在的模型大小依赖风险。** 当输出使用"合理的理由"而不是"矛盾的关键词"来掩盖方向错误时，弱模型漏 50%，强模型漏 25%。风险模式不是"judge 看不见 delete→keep"——而是"judge 接受了一个看起来合理的解释，认为输出已经正确了"。
+
+DS4 最有说明力：任务要求"设置限制为 10"（意味着之前的数值不是 10），但输出说"max_connections = 10（不变），当前配置已满足需求"。qwen3 和 deepseek 都放行了。模型在评估"输出内部是否合理"，而不是"任务到输出的方向性匹配"——这是 P3 中 L4/G4 cosine 0.861（format > semantic）的微妙版本。
+
+### 与系列的关系
+
+这个附录填补的是我自己在评论区挖的坑。正确的顺序应该是：
+
+1. 跑实验 → 发现真实结果 → 写文章 → 回复评论
+
+我做了相反的事情：先评论（用了一个不存在数据支撑的 claim）→ 再跑实验。真实数据比 fabrication 更复杂、更有价值。显式反转轻易可检测；微妙反转依模型大小和 judge 倾向而不同。
+
+微妙反转（特别是 DS4）与本篇的分层架构主题直接相关。一个 L0/L1 的确定性检查——"输出值与请求参数是否一致？"——就能零成本捕获 DS4。微妙反转正是"只靠语义判断"的验证的边界，和 Alexey 和 Manuel 指出的分层必要性是一致的。
+
+---
+
+*所有实验脚本：[GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
+*Directional failure 脚本：`directional-failure-test.py` —— 支持 Ollama / API，--scenarios 参数*
+*系列第一篇：[四组数据拆穿「确定性 Agent 循环」的三个断言](blog-agent-determinism-illusions.zh.md)*

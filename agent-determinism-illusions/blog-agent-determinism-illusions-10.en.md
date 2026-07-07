@@ -338,7 +338,81 @@ Layer 0/1 checks are zero-cost code. Layer 2 only runs on the residual. Layer 3 
 
 ---
 
+## Appendix: Directional Failure — An Experiment I Should've Run Before Opening My Mouth
+
+After publishing Part 3, I made a claim in dev.to replies that I should not have:
+
+> "Part 3 found that judges fail on directional failures — outputs that were semantically reversed (delete → keep, stop → continue) but structurally pristine."
+
+This claim was false. I wrote it from conversation memory without re-reading my own article. Part 3 contains zero directional failure experiments. The confidence-score-vs-danger correlation I mentioned also doesn't exist in any published data. This was a fabrication — not malicious, but a data integrity failure regardless.
+
+When I caught this in a self-audit, I ran the missing experiment.
+
+### Design
+
+10 scenarios across two difficulty levels, labeled `scenarios-harness-verify.json` in `samples/`:
+
+- **6 explicit directional failures (DF1–DF6):** The output contains a keyword that directly contradicts the task (output says "kept" while task says "delete")
+- **2 valid controls (V1–V2):** Output correctly fulfills the task
+- **2 garbage controls (G1–G2):** Output is obvious garbage
+
+After noticing the explicit DFs were too easy, I added **4 subtle directional failures (DS1–DS4)** — the output describes a plausible-sounding action that is semantically the wrong direction, but without an explicit contradiction keyword ("archived" instead of "deleted", "no change needed" when the task was to make a change).
+
+Each scenario runs N=5 (explicit round) / N=3 (subtle round), temperature=0, judge prompt: "Does this output satisfy the task requirement?"
+
+Three model tiers: qwen3:0.5b (local, 0.5B), gemma3:latest (local, 4.3B), deepseek-v4-flash (API, strong).
+
+### Results
+
+**Round 1: Explicit directional failures (6 scenarios)**
+
+| Model | Caught | Missed | Miss rate | Stable |
+|-------|--------|--------|-----------|--------|
+| qwen3:0.5b | 6 | 0 | **0%** | 5/6 |
+| gemma3:4.3B | 6 | 0 | **0%** | 6/6 |
+| deepseek-v4-flash | 6 | 0 | **0%** | 6/6 |
+
+All three tiers detected every explicit directional reversal with perfect accuracy. The claim I made in the comments was wrong — judges trivially catch "kept" when the task says "delete."
+
+**Round 2: Subtle directional failures (4 scenarios)**
+
+| Model | Caught | Missed | Miss rate |
+|-------|--------|--------|-----------|
+| qwen3:0.5b | 2 | 2 | **50%** |
+| gemma3:4.3B | 4 | 0 | **0%** |
+| deepseek-v4-flash | 3 | 1 | **25%** |
+
+The pattern changes at the subtle level. When the output uses a plausible-sounding rationalization instead of an explicit contradiction:
+
+- **DS1** (archive ≠ delete): leaked by qwen3 (2/3 PASS), caught by gemma3 and deepseek
+- **DS4** (no change needed ≠ change setting): leaked by qwen3 AND deepseek (2/3 PASS) — even the strong model accepted "current config already meets requirements, no change needed"
+- **DS2** (restart ≠ stop): caught by all three
+- **DS3** (open to all ≠ disabled): caught by all three
+
+### Honest interpretation
+
+Two findings, one reassuring and one concerning:
+
+**1. Explicit directional failure is not a blind spot.** The original claim was wrong. Any competent judge, even a 0.5B model, catches a keyword-level contradiction between task and output. I retro-justified this from the L4/G4 cosine 0.861 (format vs semantics) finding in Part 3 — but that was a clustering problem, not a directional detection problem. I conflated the two.
+
+**2. Subtle directional failure is a real, model-size-dependent risk.** At the "plausible rationalization" level, weak models miss 50% and even strong models miss 25%. The failure mode isn't "judge can't see delete→keep" — it's "judge accepts a plausible-sounding narrative that the output is already correct."
+
+DS4 is the most instructive case: both the weak and strong model accepted "max_connections = 10 (unchanged), current config already meets requirements" when the task was to *set* the limit to 10 (implying a change was needed). The model evaluated the *output's internal plausibility* rather than the *task-to-output directional match*. This is the same "format > semantic" pattern from L4/G4 in Part 3, but in a subtler register.
+
+### Connection to the series
+
+This appendix fills a specific hole I created in the comment section. The honest sequence should have been:
+
+1. Run the experiment → discover the actual result → write the article → then reply to comments
+
+Instead, I reversed it: commented with a pre-committed claim → then ran the experiment. The actual data is more nuanced and more useful than the fabrication. Explicit DFs are trivially catchable; subtle DFs depend on model size and the judge's willingness to evaluate "plausibility" over "compliance."
+
+The subtle DFs (DS4 in particular) are connected to the broader series theme from this article: layered architecture. A Layer 0/1 deterministic check — "does the output value match the requested parameter?" — would catch DS4 at zero cost. Subtle DFs are a failure of semantic-judgment-only verification, exactly Alexey and Manuel's point about layering.
+
+---
+
 *All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
+*Directional failure script: `directional-failure-test.py` — runnable against Ollama or API, --scenarios support*
 *Experiment F prototype: `forge-verify-layered-prototype.py` (Python, runnable with or without API)*
 *forge-verify implementation: `ReqForge/scripts/forge-verify/content-verify.mjs` (Node.js, production)*
 *Series start: [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](blog-agent-determinism-illusions.en.md)*
