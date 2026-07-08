@@ -1,0 +1,623 @@
+{
+  "total": 7,
+  "non_compliant": 5,
+  "compliant": 2,
+  "c0": {
+    "accuracy": 0.42857142857142855,
+    "detection_rate": 0.2,
+    "false_acceptance": 4,
+    "false_rejection": 0,
+    "correct": 3
+  },
+  "c1": {
+    "accuracy": 0.8571428571428571,
+    "detection_rate": 0.8,
+    "false_acceptance": 1,
+    "false_rejection": 0,
+    "correct": 6
+  },
+  "c2": {
+    "accuracy": 0.8571428571428571,
+    "detection_rate": 1.0,
+    "false_acceptance": 0,
+    "false_rejection": 1,
+    "correct": 6
+  },
+  "per_scenario": [
+    {
+      "name": "SC10a-contract-gap-write-inv",
+      "compliant": false,
+      "has_contract": true,
+      "c0": {
+        "pass": true,
+        "pass_count": 3,
+        "rounds": 3,
+        "judgments": [
+          true,
+          true,
+          true
+        ],
+        "correct": false
+      },
+      "c1": {
+        "pass": true,
+        "passed_count": 5,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": true,
+            "reason": "pattern matched in test-output.txt"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": true,
+            "reason": "pattern matched in test-output.txt"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": true,
+            "reason": "pattern matched in diff-review.md"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": true,
+            "reason": "pattern matched in coverage-summary.txt"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": true,
+            "reason": "pattern matched in lint-report.txt"
+          }
+        ],
+        "correct": false,
+        "item_accuracy": 0.8
+      },
+      "c2": {
+        "pass": false,
+        "passed_count": 4,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": true,
+            "reason": "测试输出显示有一条名为 'RateLimiter/isRateLimited (IP)' 的测试用例通过，且所有24个测试均通过，这直接验证了 isRateLimited 函数对 IP 参数返回正确状态，满足 IP 级别限流需求。"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": true,
+            "reason": "测试输出中显示 'RateLimiter/isRateLimited (User)' 测试通过，表明用户级别的限流逻辑已实现并返回正确状态。"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": false,
+            "reason": "证据明确说明使用TTL过期而非写入时主动失效缓存键，未实现write-invalidation。"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": true,
+            "reason": "证据中显示总体代码覆盖率为92.0%，分支覆盖率为85.0%，均达到或超过85%的要求。"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": true,
+            "reason": "ESLint报告明确显示0 errors和0 warnings，直接满足需求。"
+          }
+        ],
+        "correct": true,
+        "item_accuracy": 1.0
+      }
+    },
+    {
+      "name": "SC10b-contract-gap-coverage",
+      "compliant": false,
+      "has_contract": true,
+      "c0": {
+        "pass": true,
+        "pass_count": 3,
+        "rounds": 3,
+        "judgments": [
+          true,
+          true,
+          true
+        ],
+        "correct": false
+      },
+      "c1": {
+        "pass": false,
+        "passed_count": 4,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": true,
+            "reason": "pattern matched in test-output.txt"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": true,
+            "reason": "pattern matched in test-output.txt"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": true,
+            "reason": "pattern matched in diff-review.md"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": false,
+            "reason": "pattern not found in coverage-summary.txt"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": true,
+            "reason": "pattern matched in lint-report.txt"
+          }
+        ],
+        "correct": true,
+        "item_accuracy": 1.0
+      },
+      "c2": {
+        "pass": false,
+        "passed_count": 3,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": true,
+            "reason": "测试输出显示 '✓ RateLimiter/isRateLimited (IP)' 通过，表明针对IP参数'192.168.1.1'的限流判断返回了正确状态，满足需求。"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": true,
+            "reason": "测试输出显示 'RateLimiter/isRateLimited (User)' 测试用例通过，验证了用户级别限流功能正确。"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": true,
+            "reason": "证据明确描述了写操作时调用 invalidateOnWrite() 清除受影响缓存键，满足 write-invalidation 需求。"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": false,
+            "reason": "证据显示代码覆盖率为72.3%，低于要求的85%+"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": false,
+            "reason": "Lint报告显示有2个warnings，不满足需求中的0 warnings要求。"
+          }
+        ],
+        "correct": true,
+        "item_accuracy": 0.8
+      }
+    },
+    {
+      "name": "SC10c-contract-all-met",
+      "compliant": true,
+      "has_contract": true,
+      "c0": {
+        "pass": true,
+        "pass_count": 3,
+        "rounds": 3,
+        "judgments": [
+          true,
+          true,
+          true
+        ],
+        "correct": true
+      },
+      "c1": {
+        "pass": true,
+        "passed_count": 5,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": true,
+            "reason": "pattern matched in test-output.txt"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": true,
+            "reason": "pattern matched in test-output.txt"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": true,
+            "reason": "pattern matched in diff-review.md"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": true,
+            "reason": "pattern matched in coverage-summary.txt"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": true,
+            "reason": "pattern matched in lint-report.txt"
+          }
+        ],
+        "correct": true,
+        "item_accuracy": 1.0
+      },
+      "c2": {
+        "pass": false,
+        "passed_count": 4,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": true,
+            "reason": "测试输出显示存在并通过了 'RateLimiter/isRateLimited (IP)' 测试用例，表明 isRateLimited 函数对 IP 地址限流功能正常工作，满足需求。"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": true,
+            "reason": "测试结果中明确包含 '✓ RateLimiter/isRateLimited (User)'，表明用户级别的isRateLimited功能测试通过，满足需求中针对用户限流的正确状态要求。"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": false,
+            "reason": "证据仅为自评摘要，声称实现了write-invalidation，但未提供具体实现细节、代码或测试结果来证明在写入数据时主动失效对应的缓存key，因此无法确认需求被满足。"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": true,
+            "reason": "证据显示总覆盖率为91.5%，高于85%，且各子项均达到要求。"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": true,
+            "reason": "证据文件显示ESLint报告中有0 errors和0 warnings，直接满足需求。"
+          }
+        ],
+        "correct": false,
+        "item_accuracy": 0.8
+      }
+    },
+    {
+      "name": "SC13-naming-mismatch",
+      "compliant": true,
+      "has_contract": true,
+      "c0": {
+        "pass": true,
+        "pass_count": 2,
+        "rounds": 3,
+        "judgments": [
+          false,
+          true,
+          true
+        ],
+        "correct": true
+      },
+      "c1": {
+        "pass": true,
+        "passed_count": 5,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": true,
+            "reason": "pattern matched in test-output.txt"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": true,
+            "reason": "pattern matched in test-output.txt"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": true,
+            "reason": "pattern matched in diff-review.md"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": true,
+            "reason": "pattern matched in coverage-summary.txt"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": true,
+            "reason": "pattern matched in lint-report.txt"
+          }
+        ],
+        "correct": true,
+        "item_accuracy": 1.0
+      },
+      "c2": {
+        "pass": true,
+        "passed_count": 5,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": true,
+            "reason": "测试输出显示 'RateLimiter/isRateLimited (IP)' 测试通过，表明对IP级别的限流功能（包括示例中的'/api/login'和IP '192.168.1.1'）返回了正确状态，满足需求。"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": true,
+            "reason": "测试结果中显示 'RateLimiter/isRateLimited (User)' 测试通过，表明用户级别的 isRateLimited 功能正常工作，满足需求。"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": true,
+            "reason": "证据中明确提到了purgeCacheOnWrite功能，该功能在写入数据时自动清理对应的缓存key，与需求write-invalidation一致。"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": true,
+            "reason": "证据显示总覆盖率为93.0%，分支覆盖率为87.0%，均高于85%的门槛，满足需求。"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": true,
+            "reason": "证据显示ESLint报告有0 errors和0 warnings，满足需求。"
+          }
+        ],
+        "correct": true,
+        "item_accuracy": 1.0
+      }
+    },
+    {
+      "name": "SC14-fabricated-contract-evidence",
+      "compliant": false,
+      "has_contract": true,
+      "c0": {
+        "pass": true,
+        "pass_count": 3,
+        "rounds": 3,
+        "judgments": [
+          true,
+          true,
+          true
+        ],
+        "correct": false
+      },
+      "c1": {
+        "pass": false,
+        "passed_count": 1,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": false,
+            "reason": "pattern not found in test-output.txt"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": false,
+            "reason": "pattern not found in test-output.txt"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": true,
+            "reason": "pattern matched in diff-review.md"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": false,
+            "reason": "pattern not found in coverage-summary.txt"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": false,
+            "reason": "pattern not found in lint-report.txt"
+          }
+        ],
+        "correct": true,
+        "item_accuracy": 0.8
+      },
+      "c2": {
+        "pass": false,
+        "passed_count": 2,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": false,
+            "reason": "证据文件仅包含笼统的成功声明，没有具体测试结果或输出证明 isRateLimited 函数对给定参数返回了正确的限流状态，无法验证需求被满足。"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": false,
+            "reason": "证据文件仅声称测试通过和功能实现，未提供任何具体测试结果或验证细节来证明 isRateLimited('/api/data', 'user_42') 返回了正确状态。"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": false,
+            "reason": "证据中仅提到了'write-invalidation'作为功能列表的一部分，但未提供任何具体实现细节、代码示例、测试用例或验证结果来证明写入数据时确实会主动失效对应的缓存key，因此无法确认需求被满足。"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": true,
+            "reason": "证据文件明确显示代码覆盖率为92%，高于85%的要求。"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": true,
+            "reason": "证据文件明确声明Lint check passed and no issues found，符合0 errors和0 warnings的要求。"
+          }
+        ],
+        "correct": true,
+        "item_accuracy": 0.6
+      }
+    },
+    {
+      "name": "SC05-baseline-missing-lint",
+      "compliant": false,
+      "has_contract": true,
+      "c0": {
+        "pass": false,
+        "pass_count": 0,
+        "rounds": 3,
+        "judgments": [
+          false,
+          false,
+          false
+        ],
+        "correct": true
+      },
+      "c1": {
+        "pass": false,
+        "passed_count": 4,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": true,
+            "reason": "pattern matched in ci-config-verified.txt"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": true,
+            "reason": "pattern matched in ci-config-verified.txt"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": false,
+            "reason": "pattern not found in ci-config-verified.txt"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": true,
+            "reason": "pattern matched in test-output.txt"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": true,
+            "reason": "pattern matched in ci-config-verified.txt"
+          }
+        ],
+        "correct": true,
+        "item_accuracy": 0.6
+      },
+      "c2": {
+        "pass": false,
+        "passed_count": 2,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": false,
+            "reason": "证据只列出了jobs名称（build, test），但未说明build job使用Node 20和pnpm，无法确认需求中的具体配置要求。"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": false,
+            "reason": "证据仅列出了jobs包含build和test，但未明确显示test job依赖于build成功（例如needs字段），无法确认依赖关系。"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": false,
+            "reason": "证据中列出了jobs为build和test，未包含deploy job，且trigger仅提到push (main)和PR，无法证明deploy job已配置且仅在main分支触发。"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": true,
+            "reason": "测试输出显示42个测试全部通过，0失败，表明本地验证全部通过。"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": true,
+            "reason": "证据文件明确显示'GitHub Actions syntax check: valid'，表明语法验证通过。"
+          }
+        ],
+        "correct": true,
+        "item_accuracy": 0.6
+      }
+    },
+    {
+      "name": "SC11-baseline-review-only",
+      "compliant": false,
+      "has_contract": true,
+      "c0": {
+        "pass": true,
+        "pass_count": 3,
+        "rounds": 3,
+        "judgments": [
+          true,
+          true,
+          true
+        ],
+        "correct": false
+      },
+      "c1": {
+        "pass": false,
+        "passed_count": 0,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": false,
+            "reason": "evidence file missing: ci-config-verified.txt"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": false,
+            "reason": "evidence file missing: ci-config-verified.txt"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": false,
+            "reason": "evidence file missing: ci-config-verified.txt"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": false,
+            "reason": "evidence file missing: test-output.txt"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": false,
+            "reason": "evidence file missing: ci-config-verified.txt"
+          }
+        ],
+        "correct": true,
+        "item_accuracy": 1.0
+      },
+      "c2": {
+        "pass": false,
+        "passed_count": 0,
+        "total": 5,
+        "details": [
+          {
+            "req_id": "REQ-1",
+            "pass": false,
+            "reason": "evidence file missing or empty"
+          },
+          {
+            "req_id": "REQ-2",
+            "pass": false,
+            "reason": "evidence file missing or empty"
+          },
+          {
+            "req_id": "REQ-3",
+            "pass": false,
+            "reason": "evidence file missing or empty"
+          },
+          {
+            "req_id": "REQ-4",
+            "pass": false,
+            "reason": "evidence file missing or empty"
+          },
+          {
+            "req_id": "REQ-5",
+            "pass": false,
+            "reason": "evidence file missing or empty"
+          }
+        ],
+        "correct": true,
+        "item_accuracy": 1.0
+      }
+    }
+  ],
+  "c1_avg_item_accuracy": 0.8857142857142858,
+  "c2_avg_item_accuracy": 0.8285714285714285,
+  "meta": {
+    "date": "2026-07-09 07:10:04",
+    "model": "deepseek-v4-flash",
+    "rounds": 3
+  }
+}
