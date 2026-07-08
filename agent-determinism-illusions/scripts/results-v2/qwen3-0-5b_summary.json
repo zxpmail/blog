@@ -1,0 +1,158 @@
+{
+  "model": "qwen3:0.5b",
+  "backend": "ollama",
+  "timestamp": "2026-07-08T07:30:10.066742",
+  "n_scenarios": 20,
+  "total_calls": 200,
+  "global_accuracy": 0.615,
+  "groups": {
+    "explicit_df": {
+      "n_scenarios": 6,
+      "accuracy": 0.6333333333333333,
+      "miss_rate": 0.36666666666666664,
+      "scenarios": {
+        "DF1": {
+          "accuracy": 0.4,
+          "miss_rate": 0.6,
+          "consistent": false,
+          "avg_confidence": 0.6
+        },
+        "DF2": {
+          "accuracy": 1.0,
+          "miss_rate": 0.0,
+          "consistent": true,
+          "avg_confidence": 0.0
+        },
+        "DF3": {
+          "accuracy": 1.0,
+          "miss_rate": 0.0,
+          "consistent": true,
+          "avg_confidence": 0.0
+        },
+        "DF4": {
+          "accuracy": 0.8,
+          "miss_rate": 0.2,
+          "consistent": false,
+          "avg_confidence": 0.2
+        },
+        "DF5": {
+          "accuracy": 0.6,
+          "miss_rate": 0.4,
+          "consistent": false,
+          "avg_confidence": 0.4
+        },
+        "DF6": {
+          "accuracy": 0.0,
+          "miss_rate": 1.0,
+          "consistent": true,
+          "avg_confidence": 1.0
+        }
+      }
+    },
+    "subtle_df": {
+      "n_scenarios": 10,
+      "accuracy": 0.56,
+      "miss_rate": 0.44,
+      "scenarios": {
+        "DS1": {
+          "accuracy": 0.8,
+          "miss_rate": 0.2,
+          "consistent": false,
+          "avg_confidence": 0.2
+        },
+        "DS2": {
+          "accuracy": 1.0,
+          "miss_rate": 0.0,
+          "consistent": true,
+          "avg_confidence": 0.0
+        },
+        "DS3": {
+          "accuracy": 0.9333333333333333,
+          "miss_rate": 0.06666666666666667,
+          "consistent": false,
+          "avg_confidence": 0.0
+        },
+        "DS4": {
+          "accuracy": 0.0,
+          "miss_rate": 1.0,
+          "consistent": true,
+          "avg_confidence": 1.0
+        },
+        "DS5": {
+          "accuracy": 0.13333333333333333,
+          "miss_rate": 0.8666666666666667,
+          "consistent": false,
+          "avg_confidence": 0.9
+        },
+        "DS6": {
+          "accuracy": 0.4666666666666667,
+          "miss_rate": 0.5333333333333333,
+          "consistent": false,
+          "avg_confidence": 0.5333333333333333
+        },
+        "DS7": {
+          "accuracy": 0.4666666666666667,
+          "miss_rate": 0.5333333333333333,
+          "consistent": false,
+          "avg_confidence": 0.5326666666666667
+        },
+        "DS8": {
+          "accuracy": 0.9333333333333333,
+          "miss_rate": 0.06666666666666667,
+          "consistent": false,
+          "avg_confidence": 0.06666666666666667
+        },
+        "DS9": {
+          "accuracy": 0.0,
+          "miss_rate": 1.0,
+          "consistent": true,
+          "avg_confidence": 0.9966
+        },
+        "DS10": {
+          "accuracy": 0.8666666666666667,
+          "miss_rate": 0.13333333333333333,
+          "consistent": false,
+          "avg_confidence": 0.06666666666666667
+        }
+      }
+    },
+    "valid_ctrl": {
+      "n_scenarios": 2,
+      "accuracy": 1.0,
+      "miss_rate": 0.0,
+      "scenarios": {
+        "V1": {
+          "accuracy": 1.0,
+          "miss_rate": null,
+          "consistent": true,
+          "avg_confidence": 1.0
+        },
+        "V2": {
+          "accuracy": 1.0,
+          "miss_rate": null,
+          "consistent": true,
+          "avg_confidence": 1.0
+        }
+      }
+    },
+    "garbage_ctrl": {
+      "n_scenarios": 2,
+      "accuracy": 1.0,
+      "miss_rate": 0.0,
+      "scenarios": {
+        "G1": {
+          "accuracy": 1.0,
+          "miss_rate": 0.0,
+          "consistent": true,
+          "avg_confidence": 0.0
+        },
+        "G2": {
+          "accuracy": 1.0,
+          "miss_rate": 0.0,
+          "consistent": true,
+          "avg_confidence": 0.0
+        }
+      }
+    }
+  }
+}

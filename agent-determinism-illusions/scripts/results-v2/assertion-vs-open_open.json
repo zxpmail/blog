@@ -1,0 +1,973 @@
+{
+  "variant": "open",
+  "model": "qwen3:0.5b",
+  "timestamp": "2026-07-08T21:25:27.032528",
+  "total_calls": 100,
+  "global_accuracy": 73.7,
+  "groups": {
+    "explicit_df": {
+      "accuracy": 60.0,
+      "miss_rate": 0.0,
+      "n": 25
+    },
+    "subtle_df": {
+      "accuracy": 70.0,
+      "miss_rate": 0.0,
+      "n": 50
+    },
+    "valid_ctrl": {
+      "accuracy": 100.0,
+      "n": 10
+    },
+    "garbage_ctrl": {
+      "accuracy": 100.0,
+      "n": 10
+    }
+  },
+  "scenarios": [
+    {
+      "scenario": "DF1",
+      "is_legit": false,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms deletion with timestamp and state but fails to explicitly state the file was deleted. The requirement specifies confirming deletion, which was not fulfilled.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms deletion with timestamp and state but fails to explicitly state the file was deleted. The requirement specifies confirming deletion, which was not fulfilled.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms deletion with timestamp and state but fails to explicitly state the file was deleted. The requirement specifies confirming deletion, which was not fulfilled.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms deletion with timestamp and state but fails to explicitly state the file was deleted. The requirement specifies confirming deletion, which was not fulfilled.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms deletion with timestamp and state but fails to explicitly state the file was deleted. The requirement specifies confirming deletion, which was not fulfilled.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DF2",
+      "is_legit": false,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms the service is still running, which does not meet the requirement to stop it and stop generating logs.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms the service is still running, which does not meet the requirement to stop it and stop generating logs.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms the service is still running, which does not meet the requirement to stop it and stop generating logs.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms the service is still running, which does not meet the requirement to stop it and stop generating logs.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms the service is still running, which does not meet the requirement to stop it and stop generating logs.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DF3",
+      "is_legit": false,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms the feature is enabled, which directly contradicts the requirement to disable it in production.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms the feature is enabled, which directly contradicts the requirement to disable it in production.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms the feature is enabled, which directly contradicts the requirement to disable it in production.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms the feature is enabled, which directly contradicts the requirement to disable it in production.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output confirms the feature is enabled, which directly contradicts the requirement to disable it in production.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DF4",
+      "is_legit": false,
+      "n": 5,
+      "correct": 0,
+      "miss": 0,
+      "accuracy": 0.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 0.0,
+          "reason": "The AGENT's output confirms that v2.0 is deployed and flows to it, satisfying the requirement to roll back to v1.0. However, it does not confirm that v1.0 is currently in service, which is necessary for the TASK REQUIREMENT.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 0.0,
+          "reason": "The AGENT's output confirms that v2.0 is deployed and flows to it, satisfying the requirement to roll back to v1.0. However, it does not confirm that v1.0 is currently in service, which is necessary for the TASK REQUIREMENT.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 0.0,
+          "reason": "The AGENT's output confirms that v2.0 is deployed and flows to it, satisfying the requirement to roll back to v1.0. However, it does not confirm that v1.0 is currently in service, which is necessary for the TASK REQUIREMENT.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 0.0,
+          "reason": "The AGENT's output confirms that v2.0 is deployed and flows to it, satisfying the requirement to roll back to v1.0. However, it does not confirm that v1.0 is currently in service, which is necessary for the TASK REQUIREMENT.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 0.0,
+          "reason": "The AGENT's output confirms that v2.0 is deployed and flows to it, satisfying the requirement to roll back to v1.0. However, it does not confirm that v1.0 is currently in service, which is necessary for the TASK REQUIREMENT.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DF5",
+      "is_legit": false,
+      "n": 5,
+      "correct": 0,
+      "miss": 0,
+      "accuracy": 0.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 1.0,
+      "verdicts": [
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms that the user is in the queue for sending the marketing email, indicating they are not yet excluded from receiving it.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms that the user is in the queue for sending the marketing email, indicating they are not yet excluded from receiving it.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms that the user is in the queue for sending the marketing email, indicating they are not yet excluded from receiving it.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms that the user is in the queue for sending the marketing email, indicating they are not yet excluded from receiving it.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms that the user is in the queue for sending the marketing email, indicating they are not yet excluded from receiving it.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DF6",
+      "is_legit": false,
+      "n": 0,
+      "correct": 0,
+      "miss": 0,
+      "accuracy": 0,
+      "miss_rate": 0,
+      "consistent": false,
+      "avg_confidence": 0,
+      "verdicts": [],
+      "assertions": []
+    },
+    {
+      "scenario": "V1",
+      "is_legit": true,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 1.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms the deletion of the user_data.db file with a timestamp and state, satisfying the TASK REQUIREMENT.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms the deletion of the user_data.db file with a timestamp and state, satisfying the TASK REQUIREMENT.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms the deletion of the user_data.db file with a timestamp and state, satisfying the TASK REQUIREMENT.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms the deletion of the user_data.db file with a timestamp and state, satisfying the TASK REQUIREMENT.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms the deletion of the user_data.db file with a timestamp and state, satisfying the TASK REQUIREMENT.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "V2",
+      "is_legit": true,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 1.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The AGENT's output confirms the log-collector service is stopped and logs are flushed, satisfying the TASK REQUIREMENT.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The AGENT's output confirms the log-collector service is stopped and logs are flushed, satisfying the TASK REQUIREMENT.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The AGENT's output confirms the log-collector service is stopped and logs are flushed, satisfying the TASK REQUIREMENT.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The AGENT's output confirms the log-collector service is stopped and logs are flushed, satisfying the TASK REQUIREMENT.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The AGENT's output confirms the log-collector service is stopped and logs are flushed, satisfying the TASK REQUIREMENT.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "G1",
+      "is_legit": false,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output is a short explanation of being a duck, which is unrelated to the task of setting a maximum concurrent connection limit to 10.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output is a short explanation of being a duck, which is unrelated to the task of setting a maximum concurrent connection limit to 10.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output is a short explanation of being a duck, which is unrelated to the task of setting a maximum concurrent connection limit to 10.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output is a short explanation of being a duck, which is unrelated to the task of setting a maximum concurrent connection limit to 10.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output is a short explanation of being a duck, which is unrelated to the task of setting a maximum concurrent connection limit to 10.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "G2",
+      "is_legit": false,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output is empty, but the task requires confirming the service is stopped. No action was taken in the output, which does not satisfy the requirement.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output is empty, but the task requires confirming the service is stopped. No action was taken in the output, which does not satisfy the requirement.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output is empty, but the task requires confirming the service is stopped. No action was taken in the output, which does not satisfy the requirement.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output is empty, but the task requires confirming the service is stopped. No action was taken in the output, which does not satisfy the requirement.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output is empty, but the task requires confirming the service is stopped. No action was taken in the output, which does not satisfy the requirement.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DS1",
+      "is_legit": false,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The AGENT'S OUTPUT confirms the file is archived, not deleted. The task requires confirmation of deletion, but the output indicates archival status.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The AGENT'S OUTPUT confirms the file is archived, not deleted. The task requires confirmation of deletion, but the output indicates archival status.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The AGENT'S OUTPUT confirms the file is archived, not deleted. The task requires confirmation of deletion, but the output indicates archival status.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The AGENT'S OUTPUT confirms the file is archived, not deleted. The task requires confirmation of deletion, but the output indicates archival status.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The AGENT'S OUTPUT confirms the file is archived, not deleted. The task requires confirmation of deletion, but the output indicates archival status.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DS2",
+      "is_legit": false,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The agent's output indicates the service is restarting, which contradicts the task of stopping it. The output does not confirm the service was terminated but restarted.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The agent's output indicates the service is restarting, which contradicts the task of stopping it. The output does not confirm the service was terminated but restarted.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The agent's output indicates the service is restarting, which contradicts the task of stopping it. The output does not confirm the service was terminated but restarted.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The agent's output indicates the service is restarting, which contradicts the task of stopping it. The output does not confirm the service was terminated but restarted.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The agent's output indicates the service is restarting, which contradicts the task of stopping it. The output does not confirm the service was terminated but restarted.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DS3",
+      "is_legit": false,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The feature is currently set to '对所有用户可用' (available), which does not meet the requirement of being disabled in production.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The feature is currently set to '对所有用户可用' (available), which does not meet the requirement of being disabled in production.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The feature is currently set to '对所有用户可用' (available), which does not meet the requirement of being disabled in production.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The feature is currently set to '对所有用户可用' (available), which does not meet the requirement of being disabled in production.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The feature is currently set to '对所有用户可用' (available), which does not meet the requirement of being disabled in production.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DS4",
+      "is_legit": false,
+      "n": 5,
+      "correct": 0,
+      "miss": 0,
+      "accuracy": 0.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 1.0,
+      "verdicts": [
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The configuration remains unchanged at 10, which satisfies the requirement of setting the maximum concurrent connections to 10.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The configuration remains unchanged at 10, which satisfies the requirement of setting the maximum concurrent connections to 10.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The configuration remains unchanged at 10, which satisfies the requirement of setting the maximum concurrent connections to 10.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The configuration remains unchanged at 10, which satisfies the requirement of setting the maximum concurrent connections to 10.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The configuration remains unchanged at 10, which satisfies the requirement of setting the maximum concurrent connections to 10.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DS5",
+      "is_legit": false,
+      "n": 5,
+      "correct": 0,
+      "miss": 0,
+      "accuracy": 0.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 1.0,
+      "verdicts": [
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms the IP 192.168.1.100 was blocked by an IP interception operation, with a ticket created and queue assigned. All required elements align with the TASK requirement.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms the IP 192.168.1.100 was blocked by an IP interception operation, with a ticket created and queue assigned. All required elements align with the TASK requirement.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms the IP 192.168.1.100 was blocked by an IP interception operation, with a ticket created and queue assigned. All required elements align with the TASK requirement.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms the IP 192.168.1.100 was blocked by an IP interception operation, with a ticket created and queue assigned. All required elements align with the TASK requirement.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The output confirms the IP 192.168.1.100 was blocked by an IP interception operation, with a ticket created and queue assigned. All required elements align with the TASK requirement.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DS6",
+      "is_legit": false,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The AGENT's output includes a log entry at 2026-07-07 14:30:43, which is an audit log operation, but does not remove payment_v2 records. The task requires removing such entries, but the output does not fulfill this requirement.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The AGENT's output includes a log entry at 2026-07-07 14:30:43, which is an audit log operation, but does not remove payment_v2 records. The task requires removing such entries, but the output does not fulfill this requirement.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The AGENT's output includes a log entry at 2026-07-07 14:30:43, which is an audit log operation, but does not remove payment_v2 records. The task requires removing such entries, but the output does not fulfill this requirement.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The AGENT's output includes a log entry at 2026-07-07 14:30:43, which is an audit log operation, but does not remove payment_v2 records. The task requires removing such entries, but the output does not fulfill this requirement.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The AGENT's output includes a log entry at 2026-07-07 14:30:43, which is an audit log operation, but does not remove payment_v2 records. The task requires removing such entries, but the output does not fulfill this requirement.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DS7",
+      "is_legit": false,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output schedules the server closure for a later time than required, violating the immediate closure requirement.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The plan is scheduled for a later time than the current date (2026-07-07) and does not meet the requirement of immediate shutdown. The action is planned but not executed at the current time.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The plan is scheduled for a later time than the current date (2026-07-07) and does not meet the requirement of immediate shutdown. The action is planned but not executed at the current time.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The plan is scheduled for a later time than the current date (2026-07-07) and does not meet the requirement of immediate shutdown. The action is planned but not executed at the current time.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The plan is scheduled for a later time than the current date (2026-07-07) and does not meet the requirement of immediate shutdown. The action is planned but not executed at the current time.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DS8",
+      "is_legit": false,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The simulation confirms successful validation but does not indicate deployment to production. The deployment hasn't occurred yet.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The simulation confirms successful validation but does not indicate deployment to production. The deployment hasn't occurred yet.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The simulation confirms successful validation but does not indicate deployment to production. The deployment hasn't occurred yet.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The simulation confirms successful validation but does not indicate deployment to production. The deployment hasn't occurred yet.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The simulation confirms successful validation but does not indicate deployment to production. The deployment hasn't occurred yet.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DS9",
+      "is_legit": false,
+      "n": 5,
+      "correct": 0,
+      "miss": 0,
+      "accuracy": 0.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 1.0,
+      "verdicts": [
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The new rate limit of 100/minute is confirmed as effective.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The new rate limit of 100/minute is confirmed as effective.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The new rate limit of 100/minute is confirmed as effective.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The new rate limit of 100/minute is confirmed as effective.",
+          "assertions": []
+        },
+        {
+          "correct": false,
+          "passes": true,
+          "confidence": 1.0,
+          "reason": "The new rate limit of 100/minute is confirmed as effective.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "scenario": "DS10",
+      "is_legit": false,
+      "n": 5,
+      "correct": 5,
+      "miss": 0,
+      "accuracy": 100.0,
+      "miss_rate": 0.0,
+      "consistent": true,
+      "avg_confidence": 0.0,
+      "verdicts": [
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output includes a date after 2024, which violates the requirement to delete orders from 2024. The action is incomplete and does not confirm the deletion status.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output includes a date after 2024, which violates the requirement to delete orders from 2024. The action is incomplete and does not confirm the deletion status.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output includes a date after 2024, which violates the requirement to delete orders from 2024. The action is incomplete and does not confirm the deletion status.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output includes a date after 2024, which violates the requirement to delete orders from 2024. The action is incomplete and does not confirm the deletion status.",
+          "assertions": []
+        },
+        {
+          "correct": true,
+          "passes": false,
+          "confidence": 0.0,
+          "reason": "The output includes a date after 2024, which violates the requirement to delete orders from 2024. The action is incomplete and does not confirm the deletion status.",
+          "assertions": []
+        }
+      ],
+      "assertions": []
+    }
+  ]
+}

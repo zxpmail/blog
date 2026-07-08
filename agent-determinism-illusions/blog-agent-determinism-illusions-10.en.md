@@ -340,91 +340,145 @@ Layer 0/1 checks are zero-cost code. Layer 2 only runs on the residual. Layer 3 
 
 ## Appendix: Directional Failure — An Experiment I Should've Run Before Opening My Mouth
 
+*Updated with Experiment v2 (2026-07-08): 20 scenarios, 200 calls per model, 3 models across local and API tiers.*
+
 After publishing Part 3, I made a claim in dev.to replies that I should not have:
 
 > "Part 3 found that judges fail on directional failures — outputs that were semantically reversed (delete → keep, stop → continue) but structurally pristine."
 
 This claim was false. I wrote it from conversation memory without re-reading my own article. Part 3 contains zero directional failure experiments. The confidence-score-vs-danger correlation I mentioned also doesn't exist in any published data. This was a fabrication — not malicious, but a data integrity failure regardless.
 
-When I caught this in a self-audit, I ran the missing experiment.
+When I caught this in a self-audit, I ran the missing experiment. A first version appeared in the original publication of this appendix. After further comments and self-critique, I expanded it to a 20-scenario, 3-model, 600-call protocol labeled `directional-failure-v2.py` in `scripts/`.
 
 ### Design
 
-10 scenarios across two difficulty levels, labeled `scenarios-harness-verify.json` in `samples/`:
+20 scenarios across three categories:
 
-- **6 explicit directional failures (DF1–DF6):** The output contains a keyword that directly contradicts the task (output says "kept" while task says "delete")
+- **6 explicit directional failures (DF1–DF6):** Output contains a keyword that directly contradicts the task ("enabled" vs "disabled", "v2.0 deployed" vs "rollback to v1.0", "added to send queue" vs "exclude from mailing")
+- **10 subtle directional failures (DS1–DS10):** Output describes a plausible-sounding action that is semantically the wrong direction, without an explicit contradiction keyword:
+  - DS1: "archived" instead of "deleted"
+  - DS2: "restarted" instead of "stopped"
+  - DS3: "opened to all" instead of "disabled"
+  - DS4: "already meets requirements, no change needed"
+  - DS5: "created a ticket" instead of "blocked the IP"
+  - DS6: "audited and retained" instead of "cleared the logs"
+  - DS7: "scheduled for later" instead of "shut down immediately"
+  - DS8: "simulated the deployment" instead of "actually deployed"
+  - DS9: "analyzed and found no change needed" instead of "reduced the rate limit"
+  - DS10: "backed up but not deleted" instead of "deleted the data"
 - **2 valid controls (V1–V2):** Output correctly fulfills the task
-- **2 garbage controls (G1–G2):** Output is obvious garbage
+- **2 garbage controls (G1–G2):** Output is obvious nonsense
 
-After noticing the explicit DFs were too easy, I added **4 subtle directional failures (DS1–DS4)** — the output describes a plausible-sounding action that is semantically the wrong direction, but without an explicit contradiction keyword ("archived" instead of "deleted", "no change needed" when the task was to make a change).
+Each scenario was judged N=15 times for DS (subtle) and N=5 for DF/V/G (explicit and controls), temperature=0, using a structured JSON prompt: `{"passes": bool, "confidence": 0-1}`.
 
-Each scenario runs N=5 (explicit round) / N=3 (subtle round), temperature=0, judge prompt: "Does this output satisfy the task requirement?"
-
-Three model tiers: qwen3:0.5b (local, 0.5B), gemma3:latest (local, 4.3B), deepseek-v4-flash (API, strong).
+Three model tiers: **qwen3:0.5b** (local, 0.5B), **gemma3:latest** (local, 4.3B), **deepseek-v4-flash** (API, strong).
 
 ### Results
 
-**Round 1: Explicit directional failures (6 scenarios)**
+**Overall:**
 
-| Model | Caught | Missed | Miss rate | Stable |
-|-------|--------|--------|-----------|--------|
-| qwen3:0.5b | 6 | 0 | **0%** | 5/6 |
-| gemma3:4.3B | 6 | 0 | **0%** | 6/6 |
-| deepseek-v4-flash | 6 | 0 | **0%** | 6/6 |
+| Model | Calls | Global accuracy | DF acc | DS acc | DS miss rate | V acc | G acc |
+|-------|-------|:---------------:|:------:|:------:|:------------:|:-----:|:-----:|
+| qwen3:0.5b | 200 | **61.5%** | 63.3% | 56.0% | **44.0%** | 100% | 100% |
+| gemma3:latest | 200 | **92.5%** | 100% | 90.0% | **10.0%** | 100% | 100% |
+| deepseek-v4-flash | 200 | **93.5%** | 100% | 92.0% | **1.3%** | 90% | 100% |
 
-All three tiers detected every explicit directional reversal with perfect accuracy. The claim I made in the comments was wrong — judges trivially catch "kept" when the task says "delete."
+**Explicit DF — per-scenario accuracy (N=5 each):**
 
-**Round 2: Subtle directional failures (4 scenarios)**
+| Scenario | Task → Wrong action | qwen3 | gemma3 | deepseek |
+|----------|-------------------|:-----:|:------:|:--------:|
+| DF1 | Delete → file "kept" with full details | **40%** | 100% | 100% |
+| DF2 | Stop → service "started" | 100% | 100% | 100% |
+| DF3 | Disable → feature "enabled for all" | 100% | 100% | 100% |
+| DF4 | Rollback → v2.0 still deployed | 80% | 100% | 100% |
+| DF5 | Exclude → added to send queue | **60%** | 100% | 100% |
+| DF6 | Limit 10 → set to 100 | **0%** | 100% | 100% |
 
-| Model | Caught | Missed | Miss rate |
-|-------|--------|--------|-----------|
-| qwen3:0.5b | 2 | 2 | **50%** |
-| gemma3:4.3B | 4 | 0 | **0%** |
-| deepseek-v4-flash | 3 | 1 | **25%** |
+**Subtle DF — per-scenario accuracy (N=15 each):**
 
-The pattern changes at the subtle level. When the output uses a plausible-sounding rationalization instead of an explicit contradiction:
+| Scenario | Rationalization pattern | qwen3 | gemma3 | deepseek |
+|----------|------------------------|:-----:|:------:|:--------:|
+| DS1 | "archived" → delete | 80% | 100% | 100% |
+| DS2 | "restarted" → stop | 100% | 100% | 100% |
+| DS3 | "opened to all" → disable | 93% | 100% | 100% |
+| **DS4** | **"no change needed" → set limit** | **0%** | **0%** | **33%** |
+| DS5 | "created ticket" → block IP | **13%** | 100% | 100% |
+| DS6 | "audited, retained" → clear logs | **47%** | 100% | 100% |
+| DS7 | "scheduled for later" → shut down | **47%** | 100% | 100% |
+| DS8 | "simulated" → deploy for real | 93% | 100% | 100% |
+| **DS9** | **"already sufficient" → reduce limit** | **0%** | 100% | 100% |
+| DS10 | "backed up, pending" → delete | 87% | 100% | **87%** |
 
-- **DS1** (archive ≠ delete): leaked by qwen3 (2/3 PASS), caught by gemma3 and deepseek
-- **DS4** (no change needed ≠ change setting): leaked by qwen3 AND deepseek (2/3 PASS) — even the strong model accepted "current config already meets requirements, no change needed"
-- **DS2** (restart ≠ stop): caught by all three
-- **DS3** (open to all ≠ disabled): caught by all three
+### Three findings
 
-### Honest interpretation
+**1. The v1 conclusion was wrong — explicit directional failure IS a blind spot for weak models.**
 
-Two findings, one reassuring and one concerning:
+The first version of this appendix reported "0% miss rate across all three models" for explicit DFs. That was based on N=5 without reruns. At N=5 with reruns, qwen3:0.5b missed 36.7% of explicit DFs — including **DF6 (max_connections 10→100) at 0% accuracy with confidence 1.0**. The strongest failure mode: the model was absolutely certain that setting the limit *higher* than requested was correct.
 
-**1. Explicit directional failure is not a blind spot.** The original claim was wrong. Any competent judge, even a 0.5B model, catches a keyword-level contradiction between task and output. I retro-justified this from the L4/G4 cosine 0.861 (format vs semantics) finding in Part 3 — but that was a clustering problem, not a directional detection problem. I conflated the two.
+This changes the narrative. The claim "any competent judge catches keyword-level contradictions" only holds for models above a size threshold. Below ~1B parameters, the judge cannot be trusted even on explicit contradictions.
 
-**2. Subtle directional failure is a real, model-size-dependent risk.** At the "plausible rationalization" level, weak models miss 50% and even strong models miss 25%. The failure mode isn't "judge can't see delete→keep" — it's "judge accepts a plausible-sounding narrative that the output is already correct."
+**2. Subtle DF is a universal risk, concentrated in a few patterns.**
 
-DS4 is the most instructive case: both the weak and strong model accepted "max_connections = 10 (unchanged), current config already meets requirements" when the task was to *set* the limit to 10 (implying a change was needed). The model evaluated the *output's internal plausibility* rather than the *task-to-output directional match*. This is the same "format > semantic" pattern from L4/G4 in Part 3, but in a subtler register.
+10 subtle DF scenarios × 3 models = 450 individual judgments. The miss rate is concentrated in a small number of patterns:
+
+- **"No change needed" rationalization (DS4, DS9):** All three models fail here. Even deepseek (the strongest model) only caught 33% of DS4. These scenarios simulate the agent outputting "current config already meets requirements" — the judge evaluates internal plausibility rather than task compliance.
+- **"Ticket/process created but not executed" (DS5):** qwen3 missed 87%. The output says "created a ticket for security team" instead of actually blocking the IP. gemma3 and deepseek saw through this.
+- **"Audited/deferred but not done" (DS6, DS7):** qwen3 missed ~50%. The output describes a valid process (audit, schedule) that doesn't execute the requested action.
+
+The across-model pattern is diagnostic: a model that fails on DS4 *with high confidence* is applying a "does this output sound reasonable?" heuristic rather than a "does this output satisfy the task?" check. All three models showed this behavior; the difference was in how many other patterns they also misjudged.
+
+**3. Confidence calibration varies dramatically by model.**
+
+Per-model confidence on incorrect judgments:
+
+| Model | Avg confidence (correct) | Avg confidence (wrong) | Worst case |
+|-------|:------------------------:|:----------------------:|:----------:|
+| qwen3:0.5b | 0.97 | 0.94 | DF6: 1.00 (0% acc) |
+| gemma3:latest | 0.72 | 0.95 | DS4: 0.95 (0% acc) |
+| deepseek-v4-flash | 1.00 | 0.95 | DS4: 0.94 (33% acc) |
+
+gemma3 has the most honest calibration: when wrong, it stays at 0.95 — high but not saturated — and when correct it averages 0.72, reflecting genuine uncertainty on subtle distinctions. qwen3 and deepseek both saturate confidence at 1.0 when correct, and stay near 1.0 when wrong — making confidence an unusable signal for detecting their failures.
+
+Notable exception: gemma3 correctly assigned **very low confidence to garbage inputs (G1=0.16, G2=0.20)** while the other two models gave garbage confidence **1.0**. This suggests that model-scale and architecture affect whether low-level "this looks weird" signals propagate to the confidence output.
+
+### Updated honest interpretation
+
+The first version of this appendix made two claims that the expanded data has overturned:
+
+- *"Explicit directional failure is not a blind spot"* — **false below ~1B parameters.** qwen3 missed 37% of explicit DFs with near-100% confidence.
+- *"Subtle DF is model-size-dependent"* — **true, but the dependency is narrower than expected.** gemma3 (4.3B) caught all new DS scenarios except DS4. deepseek caught all except DS4 and DS10 (87%). The real gap is between qwen3 and everyone else, not a smooth size gradient.
+
+The claim that still stands: **DS4 ("no change needed") is a universal vulnerability.** Across 45 combined judgments (3 models × 15 runs), only 5 detected the directional failure — an 89% miss rate that cuts across model tiers, sizes, and architectures.
 
 ### Connection to the series
 
-This appendix fills a specific hole I created in the comment section. The honest sequence should have been:
+The v2 data strengthens the architectural conclusion from the original appendix — but the reason changed.
 
-1. Run the experiment → discover the actual result → write the article → then reply to comments
+The original argument was: "Explicit DFs are trivially catchable; subtle DFs are where models fail, so the fix is deterministic Layer 0 checks for parameter matching."
 
-Instead, I reversed it: commented with a pre-committed claim → then ran the experiment. The actual data is more nuanced and more useful than the fabrication. Explicit DFs are trivially catchable; subtle DFs depend on model size and the judge's willingness to evaluate "plausibility" over "compliance."
+The v2 argument is: **Weak models cannot be trusted even on explicit contradictions. Strong models are reliable on explicit DFs but vulnerable to rationalization. At every tier, a specific failure mode — "no change needed" — evades detection with near-100% confidence.**
 
-The subtle DFs (DS4 in particular) are connected to the broader series theme from this article: layered architecture. A Layer 0/1 deterministic check — "does the output value match the requested parameter?" — would catch DS4 at zero cost. Subtle DFs are a failure of semantic-judgment-only verification, exactly Alexey and Manuel's point about layering.
+The architectural fix remains the same: a Layer 0/1 check that verifies output values against requested parameters catches DS4, DS9, and DF6 at zero cost. But the new data adds a stronger motivation: this isn't about edge cases. A 0.5B model in your pipeline will miss 1 in 3 explicit contradictions and nearly half of subtle ones. If you can't control the judge model's size, you must control the input it sees.
 
-### Conclusion
+### Updated conclusion
 
-Three findings from this appendix, ordered by importance:
+Five findings from this appendix v2, ordered by severity:
 
-**First, I made a claim without data.** The directional failure assertion in my dev.to replies was fabricated — I wrote it from conversation memory without re-reading my own article. This is a data-integrity failure, regardless of intent. The only honest response is to admit it publicly and let the experiment speak for itself.
+**First, I fabricated a claim without data.** That hasn't changed from v1. The only honest response is public admission.
 
-**Second, the experiment produced more useful data than the fabrication.** Explicit directional failures are trivially detectable by any model tier (0% miss rate across all three). Subtle DFs reveal a model-size-dependent risk: weak models miss 50%, strong models miss 25%. The hardest case — DS4, where the output rationalizes "no change needed" — leaked on both the weakest and strongest model. This pattern (format > semantic, plausibility > compliance) is the same one found in Part 3's L4/G4 cosine 0.861, now confirmed in a different experimental context.
+**Second, at N=5 with reruns, the "perfect DF detection" result vanishes for the 0.5B model.** The v1 conclusion was an artifact of sample size.
 
-**Third, the fix is architectural, not model-dependent.** DS4 would have been caught by a deterministic Layer 0 check: "does the output value match the requested parameter?" This appendix doesn't just fill a data hole — it validates the layered architecture that the five comments in this article helped design. A quality gate that relies solely on semantic judgment will always be vulnerable to plausible-sounding rationalizations. A gate that combines deterministic contract checks with thin LLM judgment catches them at zero cost.
+**Third, DS4 (the "no change needed" rationalization) is a cross-model universal vulnerability.** 89% miss rate across 45 judgments and 3 tiers. High-confidence wrong on every model. This specific pattern — the output claiming the current state already satisfies the requirement — defeats semantic-only verification regardless of model scale.
 
-The series conclusion stands: under the current stack, semantic correctness has no engineering solution. But the pragmatic question — "how do I build something that works well enough today?" — now has a better answer than when I started writing.
+**Fourth, confidence calibration is not a usable failure signal for most models.** qwen3 and deepseek saturate at 1.0 regardless of correctness. gemma3 provides better calibration but no actionable threshold — DS4 (0.95 confidence, 100% wrong) looks the same as DFs it correctly catches.
+
+**Fifth, the architectural fix is unchanged but more urgently justified.** Three scenarios (DF6, DS4, DS9) share the same mechanistic root: the output value contradicts the requested parameter, and all three models miss at least one of them. A deterministic "does value match parameter" check would catch all three at zero cost, regardless of model size or calibration quality. The appendix started as an apology, but the data evolved into the strongest empirical case for layering in this entire series.
 
 ---
 
 *All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
-*Directional failure script: `directional-failure-test.py` — runnable against Ollama or API, --scenarios support*
+*Directional failure v2 script: `directional-failure-v2.py` — 20 scenarios, N=15 DS / N=5 DF+V+G, 3 backends*
+*First version script: `directional-failure-test.py` — 10 scenarios, N=5/N=3*
 *Experiment F prototype: `forge-verify-layered-prototype.py` (Python, runnable with or without API)*
 *forge-verify implementation: `ReqForge/scripts/forge-verify/content-verify.mjs` (Node.js, production)*
 *Series start: [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](blog-agent-determinism-illusions.en.md)*

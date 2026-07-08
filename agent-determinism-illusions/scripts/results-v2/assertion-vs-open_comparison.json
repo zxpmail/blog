@@ -1,0 +1,52 @@
+{
+  "model": "qwen3:0.5b",
+  "timestamp": "2026-07-08T21:32:37.852434",
+  "open": {
+    "global_accuracy": 73.7,
+    "groups": {
+      "explicit_df": {
+        "accuracy": 60.0,
+        "miss_rate": 0.0,
+        "n": 25
+      },
+      "subtle_df": {
+        "accuracy": 70.0,
+        "miss_rate": 0.0,
+        "n": 50
+      },
+      "valid_ctrl": {
+        "accuracy": 100.0,
+        "n": 10
+      },
+      "garbage_ctrl": {
+        "accuracy": 100.0,
+        "n": 10
+      }
+    },
+    "total_calls": 100
+  },
+  "structured": {
+    "global_accuracy": 60.0,
+    "groups": {
+      "explicit_df": {
+        "accuracy": 50.0,
+        "miss_rate": 0.0,
+        "n": 30
+      },
+      "subtle_df": {
+        "accuracy": 50.0,
+        "miss_rate": 0.0,
+        "n": 50
+      },
+      "valid_ctrl": {
+        "accuracy": 100.0,
+        "n": 10
+      },
+      "garbage_ctrl": {
+        "accuracy": 100.0,
+        "n": 10
+      }
+    },
+    "total_calls": 100
+  }
+}
