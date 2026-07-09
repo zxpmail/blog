@@ -325,6 +325,10 @@ P3 发布后，我在 dev.to 评论区说了句不该说的话：
 
 自审发现后，我补跑了这个实验。第一版出现在本附录的原始发布中。收到更多评论和自我批评后，我将它扩展到 20 场景、3 模型、600 次调用的协议，脚本为 `scripts/directional-failure-v2.py`。
 
+这个附录长成了自己的独立文章。
+
+**→ [我编造了一篇关于 LLM 判据的结论——然后跑了一场"道歉实验"](blog-fabricated-claim-apology.zh.md)**
+
 ### 实验设计
 
 20 个场景，分三类：
@@ -446,4 +450,14 @@ v2 结论是：**弱模型连显式矛盾都不能信任。强模型在显式反
 **第四，置信度校准对大多数模型不是可用的失败信号。** qwen3 和 deepseek 无论正确与否都饱和到 1.0。gemma3 提供更好的校准，但没有可操作的阈值——DS4（0.95 自信度，100% 错误）和它正确检测的其他 DF 没有区别。
 
 **第五，架构修复不变，但紧迫性更强。** 三个场景（DF6、DS4、DS9）共享相同的机制根源：输出值与请求参数矛盾，且三个模型至少漏了一个。一个确定性的"值是否匹配参数"检查可以零成本捕获所有三个，不论模型大小或校准质量。这个附录始于一条道歉，但数据变成了整个系列中关于分层架构的最强实证论据。
-*系列第一篇：[四组数据拆穿「确定性 Agent 循环」的三个断言](blog-agent-determinism-illusions.zh.md)*
+
+---
+
+**系列导航（Agent Determinism Illusions）：**
+1. *[四组数据拆穿「确定性 Agent 循环」的三个断言](blog-agent-determinism-illusions.zh.md)* — 四个实验推翻了自己的修复方案
+2. *[三个模型当 AI Agent 品质检验员——模型越强，拒绝越多合法产出](blog-agent-determinism-illusions-2.zh.md)* — 精度-召回权衡
+3. *[我设计了一个 Harness 来解决 Agent 的品质问题——然后发现自己的设计有 6 个漏洞](blog-agent-determinism-illusions-3.zh.md)* — 设计迭代
+4. *[五条评论重构了我的 LLM 验证 Pipeline（本文）](blog-agent-determinism-illusions-4.zh.md)*
+- *附注：[我编造了一篇关于 LLM 判据的结论——然后跑了一场"道歉实验"](blog-fabricated-claim-apology.zh.md)*
+
+全部实验脚本在 [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)。
