@@ -20,7 +20,7 @@
 | 续篇一 | …这次连我自己也拆了 | embedding 自拆展开 |
 | 续篇二 | 0%假阳是个会骗人的指标 | 三档模型权衡曲线 |
 | 续篇三 | 把「架构画了」当「问题解决了」 | 六刀拆自己的 Harness 方案 |
-| 续篇四 | 拆了四轮之后,这是我给的最诚实的替代方案 | 风险分流框架 + 三刀修正 |
+| 续篇四 | LLM 质量检查的替代方案：确定性路由 + 抽样 | 风险分流框架 + 三刀修正 |
 
 ### 英文(4 篇)
 
@@ -29,7 +29,7 @@
 | 1 | I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix. | Lexical overlap, temperature 0, phase gates: tested and failed |
 | 2 | I tested 3 models as AI agent quality inspectors: the stronger the model, the more valid work it rejects | 3 model tiers as agent quality inspectors — the false-positive/false-rejection tradeoff |
 | 3 | I designed a Harness to fix my agent's quality problem — then found 6 flaws in my own design | 6 flaws in a human-in-the-loop agent quality Harness |
-| 4 | After dismantling four rounds of agent quality solutions, here's the honest alternative | Risk-based agent output quality: an alternative to LLM quality gates |
+| 4 | An alternative to LLM quality gates: deterministic routing + sampling | Risk-based agent output quality: an alternative to LLM quality gates |
 
 ### 红线法则(独立文章)
 

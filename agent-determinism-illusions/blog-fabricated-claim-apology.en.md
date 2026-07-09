@@ -1,28 +1,35 @@
-# When a 0.5B Model is More Confidently Wrong Than a 4.3B Model
+<!--
+  ─────────────────────────────────────────────────────────────────
+  HACKER NEWS:
+  I fabricated a claim about LLM judges — then ran the apology experiment
+  ─────────────────────────────────────────────────────────────────
+-->
 
-**How 600 Directional Failure Judgments Across Three Models Revealed a Universal Blind Spot**
+---
+title: "I Fabricated a Claim About LLM Judges. Then I Ran the Apology Experiment."
+published: false
+description: "I cited a result that didn't exist. The apology experiment — 20 directional-failure scenarios × 3 model tiers × 600 calls — overturned my own correction."
+tags: ai, llm, agents, testing
+canonical_url: ""
+---
 
-*2026-07-09*
+Three weeks ago, in a dev.to comment reply, I wrote this:
 
-*Part 3 of the Agent Determinism Illusions series reported the existence of "directional failures" — outputs that are semantically reversed (delete → keep, stop → continue) but structurally pristine. But that finding didn't exist in Part 3's data. It was a fabrication from conversation memory.*
+> "Part 3 found that judges fail on directional failures — outputs that were semantically reversed (delete → keep, stop → continue) but structurally pristine."
 
-*When I caught this, I ran the missing experiment. A v1 appeared in the first publication of the Part 10 appendix. After further criticism, I expanded it to 20 scenarios, 3 models, and 600 calls. This article is the full write-up that the appendix could not contain.*
+That claim was false. (See my [public retraction](https://dev.to/zxpmail/comment/3alj4) on the same thread.)
+
+Part 3 contained zero directional failure experiments. I wrote the comment from conversation memory without re-reading my own article. The confidence-score-vs-danger correlation I mentioned also doesn't exist in any of my published data.
+
+This wasn't a misreading or an over-interpretation. It was a fabrication — not malicious, but a data integrity failure regardless. When I caught it in a self-audit, I had two options: delete the comment quietly, or run the missing experiment and publish the result.
+
+I chose the second. Then I ran it again with a bigger protocol after the first version's own findings broke down at retest. This article is the result: **20 directional-failure scenarios × 3 model tiers × 600 individual judgments**.
+
+The results overturned my own correction. The apology became a real experiment, and the real experiment produced findings I didn't expect.
 
 ---
 
-## 1. Why This Experiment Exists
-
-The claim I should not have made was:
-
-> *"Part 3 found that judges fail on directional failures — outputs that were semantically reversed but structurally pristine. The same model that produced the reversed output gives a high confidence score, which correlates with danger."*
-
-Part 3 contains exactly zero directional failure experiments. The claim was a confabulation — not malicious, but a data integrity failure. When I caught it during a self-audit (which is documented in Part 9's honest table), I had two choices: quietly remove the claim, or run the experiment and publish the results. I chose the latter because the series' premise is that transparency is the only antidote to the illusions it documents. Including this one.
-
-The first version ran 10 scenarios across 3 models at N=5/N=3. It reported 0% miss rate for explicit directional failures — and was immediately suspect. After a commenter pointed out the small sample size, I expanded to the v2 protocol.
-
----
-
-## 2. Protocol
+## 1. Design
 
 20 scenarios across four categories, judged by three models:
 
@@ -56,7 +63,7 @@ Temperature 0. Every scenario uses the same prompt — no rubrics, no few-shot, 
 
 ---
 
-## 3. Overall Results
+## 2. Overall Results
 
 | Metric | qwen3:0.5b | gemma3:latest | deepseek-v4-flash |
 |--------|:----------:|:-------------:|:-----------------:|
@@ -73,7 +80,7 @@ But that's the aggregate view. The per-scenario data tells a more precise story.
 
 ---
 
-## 4. Per-Scenario: Explicit Directional Failures
+## 3. Explicit Directional Failures
 
 Each scenario asks the model to judge an output that contains a keyword directly contradicting the task instruction. N=5 runs per scenario.
 
@@ -98,7 +105,7 @@ This is the same mechanism that causes a model to say "all required fields prese
 
 ---
 
-## 5. Per-Scenario: Subtle Directional Failures
+## 4. Subtle Directional Failures — Five Patterns
 
 These are the dangerous ones. The output doesn't contain a direct contradiction keyword — it describes a plausible action that is semantically the wrong direction. N=15 runs per scenario.
 
@@ -126,7 +133,7 @@ The output for DS4:
 System: Current max_connections=50
 Task: Set max_connections to 10
 Output: "Current configuration already meets requirements.
-         The existing limit of 50 connections is sufficient for 
+         The existing limit of 50 connections is sufficient for
          current traffic patterns. No change needed."
 ```
 
@@ -179,7 +186,7 @@ A larger model doesn't eliminate the heuristic — it narrows the set of justifi
 
 ---
 
-## 6. Confidence Calibration
+## 5. Confidence Calibration
 
 Each model was asked to output a confidence score (0-1) alongside its binary judgment. The calibration quality varies dramatically.
 
@@ -217,7 +224,7 @@ The architectural solution is to not rely on the model's self-reported confidenc
 
 ---
 
-## 7. Three Cross-Model Findings
+## 6. Three Cross-Model Findings
 
 ### Finding 1: The "no change needed" pattern is a universal vulnerability
 
@@ -257,7 +264,7 @@ This means confidence can never be a standalone signal. If you need a reliable u
 
 ---
 
-## 8. The Architectural Fix
+## 7. The Architectural Fix
 
 Three scenarios — DF6, DS4, DS9 — share the same root cause: **the output value contradicts the requested parameter, and all three models miss at least one of them.**
 
@@ -275,7 +282,7 @@ if (taskParam !== outputParam) → REJECT
 
 This doesn't require an LLM at all. It's a Layer 0/1 check in the forge-verify pipeline.
 
-But note what this fix cannot do: **it cannot catch scenarios where the rationalization is about a parameter that wasn't mentioned in the task.** DS5 ("created a security ticket" instead of "blocked IP") has no numeric parameter to compare. DS6 ("audited and retained" instead of "cleared logs") has no value to check. These require either semantic evaluation (C2 per-requirement LLM) or evidence gates (did the agent save the audit log output?).
+But note what this fix cannot do: **it cannot catch scenarios where the rationalization is about a parameter that wasn't mentioned in the task.** DS5 ("created a security ticket" instead of "blocked IP") has no numeric parameter to compare. DS6 ("audited and retained" instead of "cleared logs") has no value to check. These require either semantic evaluation (per-requirement LLM) or evidence gates (did the agent save the audit log output?).
 
 The fix hierarchy:
 
@@ -286,31 +293,40 @@ The fix hierarchy:
 | Universal "no change needed" (DS4) | Deterministic param check | ~0ms |
 | Remaining subtle DF (DS1, DS10) | Per-req LLM | ~1s |
 
-The DF v2 data's strongest contribution to the series is this: **the architectural fix is the same regardless of model size or scenario type.** Deterministic checks before anything, LLM residual after. The new data just makes the motivation more urgent — a 0.5B model will miss 1 in 3 explicit contradictions, and no model catches the "no change needed" pattern.
+The strongest contribution of this data to the series is here: **the architectural fix is the same regardless of model size or scenario type.** Deterministic checks before anything, LLM residual after. The new data just makes the motivation more urgent — a 0.5B model will miss 1 in 3 explicit contradictions, and no model catches the "no change needed" pattern.
 
 ---
 
-## 9. Honest Assessment
+## 8. What This Changes
 
-### What v1 got wrong
+The first version of this apology made two claims that the expanded data has overturned:
 
-The first version of this experiment (10 scenarios, N=5/N=3) reported "0% miss rate for explicit DFs across all three models." This was an N=5 artifact. At N=5 with qwen3, the model happened to catch all 6 DF scenarios — but at N=5 with reruns, it missed the same scenarios at 37% rate. The v1 result was correct in the narrow sense (the specific N=5 run had 0% misses), but it did not generalize.
+- *"Explicit directional failure is not a blind spot"* — **false below ~1B parameters.** qwen3 missed 37% of explicit DFs with near-100% confidence.
+- *"Subtle DF is model-size-dependent"* — **true, but the dependency is narrower than expected.** gemma3 (4.3B) caught all new DS scenarios except DS4. deepseek caught all except DS4 and DS10 (87%). The real gap is between qwen3 and everyone else, not a smooth size gradient.
 
-### What remains standing
-
-- The "no change needed" pattern (DS4) is a universal vulnerability across all tested models
-- Small models (<1B) cannot be trusted even on explicit keyword contradictions
-- Confidence calibration is not a usable error detection signal
-- The architectural fix (deterministic value comparison) is unchanged from v1
-
-### What this changes about the series narrative
+The claim that still stands: **DS4 ("no change needed") is a universal vulnerability.** Across 45 combined judgments (3 models × 15 runs), only 5 detected the directional failure — an 89% miss rate that cuts across model tiers, sizes, and architectures.
 
 The original Part 10 appendix argued: explicit DFs are easy, subtle DFs are hard, so the fix is deterministic checks for subtle patterns. The v2 data inverts this: **explicit DFs are not easy for weak models, and the only truly universal blind spot (DS4) is also the easiest to fix deterministically.** The strong argument for layering is not "the model fails on edge cases" but "the model fails on routine cases when the model is small, and on the same case regardless of size."
 
 ---
 
-*Experiment script: `directional-failure-v2.py` — 20 scenarios, N=15 DS / N=5 DF+V+G, 3 backends*
-*Raw data: `scripts/results-v2/{model}.jsonl` + `{model}_summary.json`*
-*First version: `directional-failure-test.py` — 10 scenarios, N=5/N=3*
-*Part 10 appendix (condensed version of this data): [Five Comments That Redesigned My LLM Verification Pipeline](blog-agent-determinism-illusions-10.en.md)*
+## 9. Five Findings, Ordered by Severity
+
+**First, I fabricated a claim without data.** That hasn't changed from the original apology. The only honest response is public admission.
+
+**Second, at N=5 with reruns, the "perfect DF detection" result vanishes for the 0.5B model.** The first apology's conclusion was an artifact of sample size.
+
+**Third, DS4 (the "no change needed" rationalization) is a cross-model universal vulnerability.** 89% miss rate across 45 judgments and 3 tiers. High-confidence wrong on every model. This specific pattern — the output claiming the current state already satisfies the requirement — defeats semantic-only verification regardless of model scale.
+
+**Fourth, confidence calibration is not a usable failure signal for most models.** qwen3 and deepseek saturate at 1.0 regardless of correctness. gemma3 provides better calibration but no actionable threshold — DS4 (0.95 confidence, 100% wrong) looks the same as DFs it correctly catches.
+
+**Fifth, the architectural fix is unchanged but more urgently justified.** Three scenarios (DF6, DS4, DS9) share the same mechanistic root: the output value contradicts the requested parameter, and all three models miss at least one of them. A deterministic "does value match parameter" check would catch all three at zero cost, regardless of model size or calibration quality. This started as an apology, but the data evolved into the strongest empirical case for layering in the entire series.
+
+---
+
+*Directional failure v2 script: `directional-failure-v2.py` — 20 scenarios, N=15 DS / N=5 DF+V+G, 3 backends*
+*First version script: `directional-failure-test.py` — 10 scenarios, N=5/N=3*
+*All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
+*Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
+*Companion article: [Five Comments That Redesigned My LLM Verification Pipeline](blog-agent-determinism-illusions-10.en.md) — the parent article this apology was originally an appendix to.*
 *Series start: [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](blog-agent-determinism-illusions.en.md)*

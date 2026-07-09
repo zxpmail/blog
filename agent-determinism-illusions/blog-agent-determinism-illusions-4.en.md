@@ -6,7 +6,7 @@
 -->
 
 ---
-title: "After dismantling four rounds of agent quality solutions, here's the honest alternative"
+title: "An alternative to LLM quality gates: deterministic routing + sampling"
 published: false
 description: "No LLM quality inspectors, no embedding clustering, no confidence scores. Just deterministic routing + SPC + diff review + fixed-rate sampling. With honest cost estimates and known failure modes."
 tags: ai, llm, agents, testing

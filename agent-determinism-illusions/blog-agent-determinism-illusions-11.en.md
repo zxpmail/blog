@@ -12,7 +12,7 @@ This article compares two competing designs for the verification layer — one r
 
 ## 1. The Comment That Changed the Frame
 
-After the series went live, a commenter at renezander.com left this:
+After the series went live, René Zander ([@reneza on dev.to](https://dev.to/reneza/comment/3akon)) left this:
 
 > *"Lexical overlap, a temperature-0 judge, and a phase gate are all trying to make a probabilistic judgment call ('is this done', 'is this a new task') return a binary fact, and dressing it in code does not change what it is."*
 
@@ -28,10 +28,11 @@ Skillgate (`@reneza/skillgate` on npm) is a deterministic, model-independent gat
 
 > *Don't ask whether the task was done. Ask whether the evidence exists.*
 
-The implementation is minimal — ~800 lines of JavaScript in 7 files, with two external dependencies (a YAML parser and a glob matcher). Its gate types:
+The implementation is minimal — a compact TypeScript package with two external dependencies (a YAML parser and a glob matcher). Its gate types:
 
 - `file-exists` — path exists
 - `evidence` — file exists AND non-empty
+- `not-empty` — directory at `path` contains at least `min` entries
 - `absent` — regex pattern does NOT appear in matched files
 - `file-contains` — file matches regex
 - `command` — shell command exits 0

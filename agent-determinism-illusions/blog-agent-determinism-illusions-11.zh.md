@@ -12,7 +12,7 @@
 
 ## 1. 改变问题框架的评论
 
-系列发表后，renezander.com 的一位评论者留下了这段话：
+系列发表后，René Zander（[dev.to 上的 @reneza](https://dev.to/reneza/comment/3akon)）留下了这段话：
 
 > *"词汇重叠阈值、温度 0 judge、Phase Gate——都把一个概率判断包装成了二进制事实，套上代码不会改变它是什么。"*
 
@@ -28,10 +28,11 @@ Skillgate（`@reneza/skillgate` on npm）是一个确定性、模型无关的门
 
 > *不要问任务是否完成。问证据是否存在。*
 
-实现非常精简——7 个文件约 800 行 JavaScript，两个外部依赖（一个 YAML 解析器和一个 glob 匹配器）。它的门类型：
+实现非常精简——一个紧凑的 TypeScript 包，两个外部依赖（一个 YAML 解析器和一个 glob 匹配器）。它的门类型：
 
 - `file-exists` — 路径存在
 - `evidence` — 文件存在**且非空**
+- `not-empty` — 目录 `path` 至少包含 `min` 个条目
 - `absent` — 正则模式在匹配文件中**不出现**
 - `file-contains` — 文件匹配正则
 - `command` — shell 命令退出 0

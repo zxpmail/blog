@@ -1,8 +1,19 @@
-# Five Comments That Redesigned My LLM Verification Pipeline
+<!--
+  ─────────────────────────────────────────────────────────────────
+  HACKER NEWS:
+  Five commenters redesigned my LLM verification pipeline
+  ─────────────────────────────────────────────────────────────────
+-->
 
-**Agent Determinism Illusions (Part 10, Post-Series Appendix)**
+---
+title: "Five Comments That Redesigned My LLM Verification Pipeline"
+published: false
+description: "After six experiments produced no clean answer, five dev.to commenters reshaped my entire verification pipeline. Each insight paired with new experimental validation."
+tags: ai, llm, agents, testing
+canonical_url: ""
+---
 
-Six experiments, 260+ API calls, 15 scripts. The series concluded with an honest answer: there's no clean solution.
+Six experiments, 260+ API calls, 15 scripts. The series concluded with an honest answer: **there's no clean solution** to LLM output verification.
 
 But after publishing, commenters saw something I didn't — not gaps in the data, but an architecture I'd failed to draw from my own results. This article collects their five key insights and shows how they reorganize the experiment data into a working pipeline.
 
@@ -12,11 +23,11 @@ Each insight is paired with experimental validation from a new prototype (Experi
 
 ## 1. Alexey Spinov & Manuel Bruña: Layer Before You Judge
 
-Alexey's comment identified the most fundamental design flaw in my experiments:
+[Alexey's comment](https://dev.to/alex_spinov/comment/3ai7e) identified the most fundamental design flaw in my experiments:
 
 > "G4 ('0 passed, no tests collected') is a fact that can be verified with code in one shot. There is no need to wait for an LLM."
 
-Manuel added the constructive direction:
+[Manuel](https://dev.to/tecnomanu/comment/3aj7c) added the constructive direction:
 
 > "Run deterministic checks first. Then let the LLM handle only the truly ambiguous residual."
 
@@ -94,9 +105,9 @@ The two garbage samples that made it through to Layer 2 (G08: "I cannot parse th
 
 ## 2. Alexey Spinov: Cost Asymmetry
 
-Alexey's second comment pointed out a measurement problem:
+[Alexey's second comment](https://dev.to/alex_spinov/comment/3ai7e) pointed out a measurement problem:
 
-> "False positives and false negatives don't have symmetric costs. A false negative triggers 3x retry cost."
+> "A false accept ships once. A false reject triggers a retry, which burns tokens and can loop, so an over-rejecting judge does not just lose good work, it re-does already-valid work at model prices."
 
 All experiments P1-P4 used symmetric precision-recall metrics. F1 gives FP and FN equal weight. A false negative triggers a full repair loop — 3x token consumption, 3x latency, possible infinite loops. A false positive is one-shot contamination.
 
@@ -161,7 +172,7 @@ P3's multi-perspective voting experiment found a pattern I described but misinte
 
 > "In split-vote scenarios, the majority was always wrong. Majority voting can't correct for systematic bias."
 
-Dipankar flipped the interpretation:
+[Dipankar](https://dev.to/dipankar_sarkar/comment/3aiii) flipped the interpretation:
 
 > "Vote disagreement itself is the most valuable signal. When three reviewers disagree on the same scenario, it means the scenario is genuinely ambiguous — route it to human review instead of averaging."
 
@@ -193,15 +204,17 @@ if max(PASS, REJECT) / N < threshold (default 0.8)
 
 ## 4. Mike Czerwinski & xm_dev_2026: Fixed Sampling Misses Long Tails
 
-P4 reported 83.3% accuracy across 30 samples. Mike Czerwinski identified the risk I'd underweighted:
+[Mike Czerwinski](https://dev.to/jugeni/comment/3ahff) named the architectural limit I'd been circling without stating:
 
-> "The 80% that auto-passes will never be seen by a human in production. When the input distribution shifts, you lose visibility. Auto-passed misses are always silent."
+> "Stacking more symbolic checks on top doesn't grow that reach, it just adds more places for the same blind spot to hide... 'Ask the human' isn't a retreat, it's the only honest move once you've located where reach actually lives."
 
-My original mitigation was "5-10% random audit." xm_dev_2026 demonstrated why the fixed rate fails:
+The verification layer has reach into symbolic events (file exists, exit 0) but not into semantic correctness — the blind spot doesn't shrink, it moves. P4 reported 83.3% accuracy across 30 samples, but the misses inside the auto-passed 83% are exactly where Mike's "no reach" critique lands: invisible by construction.
 
-> "5-10% fixed sampling misses long-tail directional errors. They're rare in the overall stream but catastrophic when they occur."
+[xm_dev_2026](https://dev.to/xm_dev_2026/comment/3ajod) showed where this bites hardest in production — fixed-percentage audits:
 
-This isn't a parameter-tuning problem — it's a design principle problem. Fixed sampling assumes errors are uniformly distributed. Real production errors are long-tailed.
+> "Fixed-percentage audits feel 'fair' but they miss exactly the kind of long-tail directional failures you're describing. The model is most confident when it's wrong in a structured way."
+
+My original mitigation had been "5-10% random audit." This isn't a parameter-tuning problem — it's a design principle problem. Fixed sampling assumes errors are uniformly distributed. Real production errors are long-tailed.
 
 I ran a simulation (`scripts/adaptive-sampling-sim.py`) that generates synthetic verification streams with controlled error distributions, then compares fixed-rate sampling against adaptive sampling (200-trial averages).
 
@@ -270,15 +283,15 @@ P2 and P3 were independent experiments, but their outputs combine into a coheren
 
 ---
 
-## 5. Manuel Bruña & Alexey Spinov: Verifiable Evidence, Not Narrative Reasons
+## 5. Manuel Bruña & Alexey Spinov: Evidence, Not Narrative
 
-Throughout P1-P4, all LLM review experiments output free-text "reason" fields. Alexey identified the structural problem:
+Throughout P1-P4, all LLM review experiments output free-text "reason" fields. [Manuel](https://dev.to/tecnomanu/comment/3aj7c) identified the structural problem and the fix in one sentence:
 
-> "The reviewer's 'reason' is narrative, not verifiable. The model says 'missing required section X' but X is actually present — just worded differently."
+> "Treat the LLM inspector as an evidence-producing reviewer, not the final binary gate. Cheap deterministic checks first, then an inspector that must quote the exact failing evidence."
 
-Manuel proposed the concrete alternative:
+[Alexey](https://dev.to/alex_spinov/comment/3ai7e) sharpened the architectural split:
 
-> "Force the reviewer to output verifiable atomic assertions instead of narrative judgments. Bad: 'output is irrelevant to requirements.' Good: 'output text contains none of the required keywords.'"
+> "Deterministic assertions own everything mechanically checkable (tests collected greater than zero, schema conformance, non-emptiness thresholds), and the LLM only judges the irreducibly fuzzy residue."
 
 My experiments had this blind spot:
 
@@ -315,9 +328,9 @@ This creates a cascade: when a deterministic assertion is code-verified and foun
 | Alexey (2nd) | Symmetric FP/FN metrics | Weighted cost (FN×3) shifts optimal operating point |
 | Dipankar | Split votes averaged by majority | Divergence = UNCLEAR → human, no majority |
 | Mike + xm_dev_2026 | Fixed 5-10% audit rate | Adaptive sampling by confidence × risk |
-| Manuel + Alexey (2nd) | Narrative "reason" field | Atomic assertions + code verification |
+| Manuel + Alexey (2nd) | Narrative "reason" field | Evidence-quoted reviewer + deterministic assertions |
 
-Combined, these form a complete verification system: L0/L1 handle deterministic filtering (Alexey+Manuel), L2 LLM outputs structured assertions (Manuel+Alexey), divergence escalates to L3 human review (Dipankar), audit rate adapts by confidence (Mike+xm_dev_2026), and system thresholds are selected by weighted cost (Alexey 2nd).
+Combined, these form a complete verification system: L0/L1 handle deterministic filtering (Alexey+Manuel), L2 LLM quotes exact failing evidence (Manuel+Alexey), divergence escalates to L3 human review (Dipankar), audit rate adapts by confidence (Mike+xm_dev_2026), and system thresholds are selected by weighted cost (Alexey 2nd).
 
 This article doesn't claim to have solved anything. It just puts the design decisions I made and the corrections the community provided side by side.
 
@@ -338,147 +351,30 @@ Layer 0/1 checks are zero-cost code. Layer 2 only runs on the residual. Layer 3 
 
 ---
 
-## Appendix: Directional Failure — An Experiment I Should've Run Before Opening My Mouth
+## A Side Note: An Apology Experiment
 
-*Updated with Experiment v2 (2026-07-08): 20 scenarios, 200 calls per model, 3 models across local and API tiers.*
+An earlier version of this article had a long appendix — an apology for a fabricated claim I'd made in a dev.to comment about "directional failure" experiments. The apology included the actual experiment I should have run (20 scenarios × 3 model tiers × 600 calls).
 
-After publishing Part 3, I made a claim in dev.to replies that I should not have:
+That appendix grew into a real finding in its own right: across all three model tiers I tested, a model that confidently says *"current state already meets requirements"* defeats every text-channel judge — **DS4 is an 89% miss rate cutting across model size and architecture**. It's the strongest empirical case for the L0/L1 layered approach in this whole series.
 
-> "Part 3 found that judges fail on directional failures — outputs that were semantically reversed (delete → keep, stop → continue) but structurally pristine."
+That deserves its own article now.
 
-This claim was false. I wrote it from conversation memory without re-reading my own article. Part 3 contains zero directional failure experiments. The confidence-score-vs-danger correlation I mentioned also doesn't exist in any published data. This was a fabrication — not malicious, but a data integrity failure regardless.
-
-When I caught this in a self-audit, I ran the missing experiment. A first version appeared in the original publication of this appendix. After further comments and self-critique, I expanded it to a 20-scenario, 3-model, 600-call protocol labeled `directional-failure-v2.py` in `scripts/`.
-
-### Design
-
-20 scenarios across three categories:
-
-- **6 explicit directional failures (DF1–DF6):** Output contains a keyword that directly contradicts the task ("enabled" vs "disabled", "v2.0 deployed" vs "rollback to v1.0", "added to send queue" vs "exclude from mailing")
-- **10 subtle directional failures (DS1–DS10):** Output describes a plausible-sounding action that is semantically the wrong direction, without an explicit contradiction keyword:
-  - DS1: "archived" instead of "deleted"
-  - DS2: "restarted" instead of "stopped"
-  - DS3: "opened to all" instead of "disabled"
-  - DS4: "already meets requirements, no change needed"
-  - DS5: "created a ticket" instead of "blocked the IP"
-  - DS6: "audited and retained" instead of "cleared the logs"
-  - DS7: "scheduled for later" instead of "shut down immediately"
-  - DS8: "simulated the deployment" instead of "actually deployed"
-  - DS9: "analyzed and found no change needed" instead of "reduced the rate limit"
-  - DS10: "backed up but not deleted" instead of "deleted the data"
-- **2 valid controls (V1–V2):** Output correctly fulfills the task
-- **2 garbage controls (G1–G2):** Output is obvious nonsense
-
-Each scenario was judged N=15 times for DS (subtle) and N=5 for DF/V/G (explicit and controls), temperature=0, using a structured JSON prompt: `{"passes": bool, "confidence": 0-1}`.
-
-Three model tiers: **qwen3:0.5b** (local, 0.5B), **gemma3:latest** (local, 4.3B), **deepseek-v4-flash** (API, strong).
-
-### Results
-
-**Overall:**
-
-| Model | Calls | Global accuracy | DF acc | DS acc | DS miss rate | V acc | G acc |
-|-------|-------|:---------------:|:------:|:------:|:------------:|:-----:|:-----:|
-| qwen3:0.5b | 200 | **61.5%** | 63.3% | 56.0% | **44.0%** | 100% | 100% |
-| gemma3:latest | 200 | **92.5%** | 100% | 90.0% | **10.0%** | 100% | 100% |
-| deepseek-v4-flash | 200 | **93.5%** | 100% | 92.0% | **1.3%** | 90% | 100% |
-
-**Explicit DF — per-scenario accuracy (N=5 each):**
-
-| Scenario | Task → Wrong action | qwen3 | gemma3 | deepseek |
-|----------|-------------------|:-----:|:------:|:--------:|
-| DF1 | Delete → file "kept" with full details | **40%** | 100% | 100% |
-| DF2 | Stop → service "started" | 100% | 100% | 100% |
-| DF3 | Disable → feature "enabled for all" | 100% | 100% | 100% |
-| DF4 | Rollback → v2.0 still deployed | 80% | 100% | 100% |
-| DF5 | Exclude → added to send queue | **60%** | 100% | 100% |
-| DF6 | Limit 10 → set to 100 | **0%** | 100% | 100% |
-
-**Subtle DF — per-scenario accuracy (N=15 each):**
-
-| Scenario | Rationalization pattern | qwen3 | gemma3 | deepseek |
-|----------|------------------------|:-----:|:------:|:--------:|
-| DS1 | "archived" → delete | 80% | 100% | 100% |
-| DS2 | "restarted" → stop | 100% | 100% | 100% |
-| DS3 | "opened to all" → disable | 93% | 100% | 100% |
-| **DS4** | **"no change needed" → set limit** | **0%** | **0%** | **33%** |
-| DS5 | "created ticket" → block IP | **13%** | 100% | 100% |
-| DS6 | "audited, retained" → clear logs | **47%** | 100% | 100% |
-| DS7 | "scheduled for later" → shut down | **47%** | 100% | 100% |
-| DS8 | "simulated" → deploy for real | 93% | 100% | 100% |
-| **DS9** | **"already sufficient" → reduce limit** | **0%** | 100% | 100% |
-| DS10 | "backed up, pending" → delete | 87% | 100% | **87%** |
-
-### Three findings
-
-**1. The v1 conclusion was wrong — explicit directional failure IS a blind spot for weak models.**
-
-The first version of this appendix reported "0% miss rate across all three models" for explicit DFs. That was based on N=5 without reruns. At N=5 with reruns, qwen3:0.5b missed 36.7% of explicit DFs — including **DF6 (max_connections 10→100) at 0% accuracy with confidence 1.0**. The strongest failure mode: the model was absolutely certain that setting the limit *higher* than requested was correct.
-
-This changes the narrative. The claim "any competent judge catches keyword-level contradictions" only holds for models above a size threshold. Below ~1B parameters, the judge cannot be trusted even on explicit contradictions.
-
-**2. Subtle DF is a universal risk, concentrated in a few patterns.**
-
-10 subtle DF scenarios × 3 models = 450 individual judgments. The miss rate is concentrated in a small number of patterns:
-
-- **"No change needed" rationalization (DS4, DS9):** All three models fail here. Even deepseek (the strongest model) only caught 33% of DS4. These scenarios simulate the agent outputting "current config already meets requirements" — the judge evaluates internal plausibility rather than task compliance.
-- **"Ticket/process created but not executed" (DS5):** qwen3 missed 87%. The output says "created a ticket for security team" instead of actually blocking the IP. gemma3 and deepseek saw through this.
-- **"Audited/deferred but not done" (DS6, DS7):** qwen3 missed ~50%. The output describes a valid process (audit, schedule) that doesn't execute the requested action.
-
-The across-model pattern is diagnostic: a model that fails on DS4 *with high confidence* is applying a "does this output sound reasonable?" heuristic rather than a "does this output satisfy the task?" check. All three models showed this behavior; the difference was in how many other patterns they also misjudged.
-
-**3. Confidence calibration varies dramatically by model.**
-
-Per-model confidence on incorrect judgments:
-
-| Model | Avg confidence (correct) | Avg confidence (wrong) | Worst case |
-|-------|:------------------------:|:----------------------:|:----------:|
-| qwen3:0.5b | 0.97 | 0.94 | DF6: 1.00 (0% acc) |
-| gemma3:latest | 0.72 | 0.95 | DS4: 0.95 (0% acc) |
-| deepseek-v4-flash | 1.00 | 0.95 | DS4: 0.94 (33% acc) |
-
-gemma3 has the most honest calibration: when wrong, it stays at 0.95 — high but not saturated — and when correct it averages 0.72, reflecting genuine uncertainty on subtle distinctions. qwen3 and deepseek both saturate confidence at 1.0 when correct, and stay near 1.0 when wrong — making confidence an unusable signal for detecting their failures.
-
-Notable exception: gemma3 correctly assigned **very low confidence to garbage inputs (G1=0.16, G2=0.20)** while the other two models gave garbage confidence **1.0**. This suggests that model-scale and architecture affect whether low-level "this looks weird" signals propagate to the confidence output.
-
-### Updated honest interpretation
-
-The first version of this appendix made two claims that the expanded data has overturned:
-
-- *"Explicit directional failure is not a blind spot"* — **false below ~1B parameters.** qwen3 missed 37% of explicit DFs with near-100% confidence.
-- *"Subtle DF is model-size-dependent"* — **true, but the dependency is narrower than expected.** gemma3 (4.3B) caught all new DS scenarios except DS4. deepseek caught all except DS4 and DS10 (87%). The real gap is between qwen3 and everyone else, not a smooth size gradient.
-
-The claim that still stands: **DS4 ("no change needed") is a universal vulnerability.** Across 45 combined judgments (3 models × 15 runs), only 5 detected the directional failure — an 89% miss rate that cuts across model tiers, sizes, and architectures.
-
-### Connection to the series
-
-The v2 data strengthens the architectural conclusion from the original appendix — but the reason changed.
-
-The original argument was: "Explicit DFs are trivially catchable; subtle DFs are where models fail, so the fix is deterministic Layer 0 checks for parameter matching."
-
-The v2 argument is: **Weak models cannot be trusted even on explicit contradictions. Strong models are reliable on explicit DFs but vulnerable to rationalization. At every tier, a specific failure mode — "no change needed" — evades detection with near-100% confidence.**
-
-The architectural fix remains the same: a Layer 0/1 check that verifies output values against requested parameters catches DS4, DS9, and DF6 at zero cost. But the new data adds a stronger motivation: this isn't about edge cases. A 0.5B model in your pipeline will miss 1 in 3 explicit contradictions and nearly half of subtle ones. If you can't control the judge model's size, you must control the input it sees.
-
-### Updated conclusion
-
-Five findings from this appendix v2, ordered by severity:
-
-**First, I fabricated a claim without data.** That hasn't changed from v1. The only honest response is public admission.
-
-**Second, at N=5 with reruns, the "perfect DF detection" result vanishes for the 0.5B model.** The v1 conclusion was an artifact of sample size.
-
-**Third, DS4 (the "no change needed" rationalization) is a cross-model universal vulnerability.** 89% miss rate across 45 judgments and 3 tiers. High-confidence wrong on every model. This specific pattern — the output claiming the current state already satisfies the requirement — defeats semantic-only verification regardless of model scale.
-
-**Fourth, confidence calibration is not a usable failure signal for most models.** qwen3 and deepseek saturate at 1.0 regardless of correctness. gemma3 provides better calibration but no actionable threshold — DS4 (0.95 confidence, 100% wrong) looks the same as DFs it correctly catches.
-
-**Fifth, the architectural fix is unchanged but more urgently justified.** Three scenarios (DF6, DS4, DS9) share the same mechanistic root: the output value contradicts the requested parameter, and all three models miss at least one of them. A deterministic "does value match parameter" check would catch all three at zero cost, regardless of model size or calibration quality. The appendix started as an apology, but the data evolved into the strongest empirical case for layering in this entire series.
+**→ [I Fabricated a Claim About LLM Judges. Then I Ran the Apology Experiment.](blog-fabricated-claim-apology.en.md)**
 
 ---
 
-*All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
-*Directional failure v2 script: `directional-failure-v2.py` — 20 scenarios, N=15 DS / N=5 DF+V+G, 3 backends*
-*First version script: `directional-failure-test.py` — 10 scenarios, N=5/N=3*
+**Series navigation (Agent Determinism Illusions):**
+1. *I tested the 'deterministic agent loop' claims with four experiments — they all failed, including my own fix.*
+2. *I tested 3 models as AI agent quality inspectors — the stronger the model, the more valid work it rejects.*
+3. *I designed a Harness to fix my agent's quality problem — then found 6 flaws in my own design.*
+4. *Five commenters redesigned my LLM verification pipeline (this article).*
+- *Side note: [I Fabricated a Claim About LLM Judges. Then I Ran the Apology Experiment.](blog-fabricated-claim-apology.en.md)*
+
+All four parts are on [dev.to/zxpmail](https://dev.to/zxpmail). All experiment scripts are in [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts).
+
 *Experiment F prototype: `forge-verify-layered-prototype.py` (Python, runnable with or without API)*
 *forge-verify implementation: `ReqForge/scripts/forge-verify/content-verify.mjs` (Node.js, production)*
-*Series start: [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](blog-agent-determinism-illusions.en.md)*
+
+---
+
+**Which comment did I miss?** If you've hit a verification failure mode that the L0/L1/L2/L3 pipeline doesn't catch, drop it in the comments — I'll run it through Experiment F and report what each layer does with it.

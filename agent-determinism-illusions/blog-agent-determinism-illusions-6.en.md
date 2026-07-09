@@ -1,10 +1,10 @@
-# The Precision-Recall Tradeoff in Adversarial Verification — P1 Experiment Log
+# I added an LLM judge to my Phase Gate — false positives hit 0%, false negatives hit 75%
 
 **Agent Determinism Illusions (Part 6)**
 
 ## Background
 
-A previous experiment ([Phase Gate formalism test, Part 4](blog-agent-determinism-illusions-4.en.md)) found that a checkpoint mechanism implemented per the described specification passed all 8 scenarios indiscriminately — including outputs like "I am a little duck, quack quack" and "。". False positive rate: 50%.
+A previous experiment ([Phase Gate formalism test, Part 1](blog-agent-determinism-illusions.en.md)) found that a checkpoint mechanism implemented per the described specification passed all 8 scenarios indiscriminately — including outputs like "I am a little duck, quack quack" and "。". False positive rate: 50%.
 
 A natural follow-up question: can adding an LLM-based review step (Agent B) to Phase Gate reduce the false positive rate?
 

@@ -2,7 +2,7 @@
 
 ## We didn't find a silver bullet. We drew a better map.
 
-**Agent Determinism Illusions (Part 8, Series Finale)**
+**Agent Determinism Illusions (Part 8)**
 
 ## The Full Experiment Log
 
