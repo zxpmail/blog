@@ -1,10 +1,10 @@
 {
   "model": "gemma3:latest",
   "backend": "ollama",
-  "timestamp": "2026-07-08T20:03:27.731308",
+  "timestamp": "2026-07-10T15:44:17.949067",
   "n_scenarios": 20,
   "total_calls": 200,
-  "global_accuracy": 0.925,
+  "global_accuracy": 0.92,
   "groups": {
     "explicit_df": {
       "n_scenarios": 6,
@@ -15,19 +15,19 @@
           "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.6199999999999999
+          "avg_confidence": 0.6599999999999999
         },
         "DF2": {
           "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.67
+          "avg_confidence": 0.85
         },
         "DF3": {
           "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.89
+          "avg_confidence": 0.95
         },
         "DF4": {
           "accuracy": 1.0,
@@ -51,20 +51,20 @@
     },
     "subtle_df": {
       "n_scenarios": 10,
-      "accuracy": 0.9,
-      "miss_rate": 0.1,
+      "accuracy": 0.8933333333333333,
+      "miss_rate": 0.10666666666666667,
       "scenarios": {
         "DS1": {
           "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.7233333333333333
+          "avg_confidence": 0.6
         },
         "DS2": {
           "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.5733333333333334
+          "avg_confidence": 0.5399999999999999
         },
         "DS3": {
           "accuracy": 1.0,
@@ -88,7 +88,7 @@
           "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.8466666666666666
+          "avg_confidence": 0.85
         },
         "DS7": {
           "accuracy": 1.0,
@@ -100,19 +100,19 @@
           "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.77
+          "avg_confidence": 0.8
         },
         "DS9": {
           "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.6199999999999999
+          "avg_confidence": 0.76
         },
         "DS10": {
-          "accuracy": 1.0,
-          "miss_rate": 0.0,
-          "consistent": true,
-          "avg_confidence": 0.6
+          "accuracy": 0.9333333333333333,
+          "miss_rate": 0.06666666666666667,
+          "consistent": false,
+          "avg_confidence": 0.63
         }
       }
     },
@@ -125,7 +125,7 @@
           "accuracy": 1.0,
           "miss_rate": null,
           "consistent": true,
-          "avg_confidence": 0.96
+          "avg_confidence": 0.9800000000000001
         },
         "V2": {
           "accuracy": 1.0,
@@ -144,7 +144,7 @@
           "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.16
+          "avg_confidence": 0.14
         },
         "G2": {
           "accuracy": 1.0,

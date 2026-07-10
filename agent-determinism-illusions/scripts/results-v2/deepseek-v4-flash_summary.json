@@ -1,10 +1,10 @@
 {
   "model": "deepseek-v4-flash",
   "backend": "openai",
-  "timestamp": "2026-07-08T19:39:50.604897",
+  "timestamp": "2026-07-10T15:38:47.738299",
   "n_scenarios": 20,
   "total_calls": 200,
-  "global_accuracy": 0.935,
+  "global_accuracy": 0.92,
   "groups": {
     "explicit_df": {
       "n_scenarios": 6,
@@ -51,8 +51,8 @@
     },
     "subtle_df": {
       "n_scenarios": 10,
-      "accuracy": 0.92,
-      "miss_rate": 0.013333333333333334,
+      "accuracy": 0.9,
+      "miss_rate": 0.02,
       "scenarios": {
         "DS1": {
           "accuracy": 1.0,
@@ -67,25 +67,25 @@
           "avg_confidence": 1.0
         },
         "DS3": {
-          "accuracy": 1.0,
+          "accuracy": 0.9333333333333333,
           "miss_rate": 0.0,
           "consistent": true,
           "avg_confidence": 1.0
         },
         "DS4": {
-          "accuracy": 0.3333333333333333,
-          "miss_rate": 0.13333333333333333,
+          "accuracy": 0.13333333333333333,
+          "miss_rate": 0.2,
           "consistent": false,
-          "avg_confidence": 0.9428571428571428
+          "avg_confidence": 0.9333333333333332
         },
         "DS5": {
           "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.9892857142857142
+          "avg_confidence": 0.99
         },
         "DS6": {
-          "accuracy": 1.0,
+          "accuracy": 0.9333333333333333,
           "miss_rate": 0.0,
           "consistent": true,
           "avg_confidence": 1.0
@@ -94,13 +94,13 @@
           "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.9966666666666666
+          "avg_confidence": 1.0
         },
         "DS8": {
           "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.9966666666666666
+          "avg_confidence": 1.0
         },
         "DS9": {
           "accuracy": 1.0,
@@ -109,10 +109,10 @@
           "avg_confidence": 1.0
         },
         "DS10": {
-          "accuracy": 0.8666666666666667,
+          "accuracy": 1.0,
           "miss_rate": 0.0,
           "consistent": true,
-          "avg_confidence": 0.9807692307692307
+          "avg_confidence": 0.9933333333333334
         }
       }
     },
@@ -130,8 +130,8 @@
         "V2": {
           "accuracy": 0.8,
           "miss_rate": null,
-          "consistent": false,
-          "avg_confidence": 0.9099999999999999
+          "consistent": true,
+          "avg_confidence": 0.95
         }
       }
     },
