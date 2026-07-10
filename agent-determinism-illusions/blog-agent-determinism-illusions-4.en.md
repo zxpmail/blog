@@ -229,7 +229,17 @@ The scanner fires — user gets blocked — forced into manual flow. The agent's
 
 In practice, keyword-based interception has a **30–50% false-positive rate** (users say "pretend to send," "let me see first," "save as draft"). Every false block erodes user trust. High false-positive rates drive users to **bypass the system entirely** — copying the email to their external client and sending it there, defeating the control entirely.
 
-**Revised response:** Execution-time interception only. Block the agent *at the point of tool invocation* (`send_email` called = block; `preview_email` called = pass). Don't scan the user's request text. This sacrifices "early interception saves inference cost" but delivers **zero false positives** — the tool was either called or it wasn't, no ambiguity.
+**Revised response (v1, at publication):** Execution-time interception only. Block the agent *at the point of tool invocation* (`send_email` called = block; `preview_email` called = pass). Don't scan the user's request text. This sacrifices "early interception saves inference cost" but delivers **zero false positives** — the tool was either called or it wasn't, no ambiguity.
+
+**Revised response (v2, post-publication):** The either/or framing in v1 drops a viable middle ground (raised by Nazar Boyko in the dev.to comments). Keep the request-text scan, but demote it to a **soft signal that never blocks**: scan fires → agent prompts user "this task looks like it ends in a send — confirm the plan before I spend steps on it." If the user says "actually send," the agent proceeds to the tool call where the **hard gate** still fires (zero FP). If the user says "just previewing," the agent routes to `preview_email` and never hits the gate.
+
+The layered design takes both benefits v1 traded off:
+
+- **Finding 4 preserved:** soft signal fires before inference is spent, so the agent doesn't burn 4 steps before being stopped or redirected.
+- **Knife 2's zero-FP-block preserved:** the hard gate at tool invocation never false-positives.
+- **Cost:** extra UX friction on simulation requests — unavoidable, since the LLM itself can't reliably tell "simulate" from "real" either.
+
+**Measured (post-publication):** `scripts/knife2-fp-rate-test.py` (N=40, zero-LLM) verified the original "30-50% FP" claim. Coverage on FP-prone scenarios (simulate / draft / conditional / discussion): **95%** (19/20 — the miss was "submission" not matching the "submit" regex root, itself a keyword-scan blind spot). Implied FP rate under 50/50 real/sim mix: **48.7%** — within the claimed band. The FP mechanism is real; the layered design is the right answer.
 
 ### Knife 3: diff review "10 seconds" shrinks in real UI
 
@@ -248,7 +258,7 @@ With context-switching overhead, real per-item time is **30–45 seconds**. At 5
 | Dimension | Original design | After all corrections |
 |----------|---------------|----------------------|
 | SPC cold start | Not addressed | Dual thresholds in parallel, robust to 4x drift |
-| Sensitive-tool interception | Keyword scan (30-50% FP) | Execution-time only (zero FP) |
+| Sensitive-tool interception | Keyword scan (30-50% FP) | Layered: soft signal (request scan, non-blocking) + hard gate (tool invocation) — v2 post-pub |
 | Diff review time | 10 s | 30-90 s (0.3 → 0.5 FTE) |
 | Engineering cost | 2 engineer-months | 3.5 engineer-months |
 | LLM dependency in control layers | None | None (verifiable, deterministic code throughout) |
