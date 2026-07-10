@@ -11,6 +11,7 @@ published: false
 description: "After six experiments produced no clean answer, five dev.to commenters reshaped my entire verification pipeline. Each insight paired with new experimental validation."
 tags: ai, llm, agents, testing
 canonical_url: ""
+series: "Agent Determinism Illusions"
 ---
 
 Six experiments, 260+ API calls, 15 scripts. The series concluded with an honest answer: **there's no clean solution** to LLM output verification.

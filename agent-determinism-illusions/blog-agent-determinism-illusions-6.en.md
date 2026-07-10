@@ -1,3 +1,12 @@
+---
+title: "I added an LLM judge to my Phase Gate — false positives hit 0%, false negatives hit 75%"
+published: false
+description: "A single Agent B as Phase Gate inspector on 8 scenarios. False positives dropped to 0%, but the false-negative rate hit 75% — every garbage catch cost ~3 valid outputs."
+tags: ai, llm, agents, testing
+canonical_url: ""
+series: "Agent Determinism Illusions"
+---
+
 # I added an LLM judge to my Phase Gate — false positives hit 0%, false negatives hit 75%
 
 **Agent Determinism Illusions (Part 6)**

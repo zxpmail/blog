@@ -453,11 +453,19 @@ v2 结论是：**弱模型连显式矛盾都不能信任。强模型在显式反
 
 ---
 
-**系列导航（Agent Determinism Illusions）：**
-1. *[四组数据拆穿「确定性 Agent 循环」的三个断言](blog-agent-determinism-illusions.zh.md)* — 四个实验推翻了自己的修复方案
-2. *[三个模型当 AI Agent 品质检验员——模型越强，拒绝越多合法产出](blog-agent-determinism-illusions-2.zh.md)* — 精度-召回权衡
-3. *[我设计了一个 Harness 来解决 Agent 的品质问题——然后发现自己的设计有 6 个漏洞](blog-agent-determinism-illusions-3.zh.md)* — 设计迭代
-4. *[五条评论重构了我的 LLM 验证 Pipeline（本文）](blog-agent-determinism-illusions-4.zh.md)*
+**系列导航（Agent Determinism Illusions，中文已发布部分）：**
+1. *[我用四组数据,拆穿了一篇 7000 行的"生产级 Agent"文章](blog-agent-determinism-illusions.zh.md)* — 四个实验推翻了自己的修复方案
+6. *[给 Phase Gate 加一个 LLM 审查官：假阳率归零，假阴率 75%](blog-agent-determinism-illusions-6.zh.md)* — 单审查官
+7. *[把 LLM 审查官重跑 10 次——75% 假阴率是系统性的，不是随机的](blog-agent-determinism-illusions-7.zh.md)* — 系统性假阴
+8. *[五轮实验之后，对抗验证的答案比想象中简单](blog-agent-determinism-illusions-8.zh.md)* — 对抗验证
+9. *[我的"调 prompt 就行"只通过了 8 个样本](blog-agent-determinism-illusions-9.zh.md)* — prompt 校准
+10. *[五条评论，一张我没画出来的架构图（本文）](blog-agent-determinism-illusions-10.zh.md)*
+11. *[通道缺口：为什么你的 LLM 评估器只有一只眼](blog-agent-determinism-illusions-11.zh.md)*
+12. *[Weng Harness 阶梯上的盲阶——弱判据不是不精确，是方向性错误](blog-agent-determinism-illusions-12.zh.md)*
 - *附注：[我编造了一篇关于 LLM 判据的结论——然后跑了一场"道歉实验"](blog-fabricated-claim-apology.zh.md)*
+- *附注：[红线法则:生产级 Agent 的收敛条件](blog-redline-principle.zh.md)*
+- *附注：[模型是引擎,Harness 是车身:AI Agent 工程化的真实边界](blog-harness-summary.zh.md)*
+
+*注：Parts 2–5 仅英文版（dev.to），中文跳过。*
 
 全部实验脚本在 [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)。

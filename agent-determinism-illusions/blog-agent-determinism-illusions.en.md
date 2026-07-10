@@ -18,6 +18,7 @@ published: false
 description: "Lexical-overlap thresholds, temperature-0 evaluators, phase gates — and an embedding 'upgrade' I thought would save them. The data says no."
 tags: ai, llm, agents, testing
 canonical_url: ""
+series: "Agent Determinism Illusions"
 ---
 
 A certain genre of "production-grade AI agent" article has been making the rounds. You know the shape: it argues that ReAct loops break in production, so you have to stack *deterministic* constraints on top of the LLM's uncertainty — a pre-AL gate, an LLM-as-Judge at temperature 0, a phase gate, a decision state machine. The one I have in mind claims 7000+ lines of production Rust.

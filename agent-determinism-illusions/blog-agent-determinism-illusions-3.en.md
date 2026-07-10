@@ -11,6 +11,7 @@ published: false
 description: "After measuring the precision-recall tradeoff of LLM quality inspectors, I designed a human-in-the-loop Harness. Then I tore it apart. Six flaws, with honest revision."
 tags: ai, llm, agents, testing
 canonical_url: ""
+series: "Agent Determinism Illusions"
 ---
 
 In my previous article (part 2 of this series), I measured three model tiers as agent output quality inspectors across 8 scenarios (4 valid, 4 garbage). The result was a clean precision-recall tradeoff:

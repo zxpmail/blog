@@ -10,11 +10,12 @@ published: false
 description: "Lilian Weng's harness engineering survey mapped the field. It also revealed a blind step: the evaluator itself fails directionally, not just imprecisely. 20 scenarios × 3 models × 600 judgments + 6 design constraints implemented in code."
 tags: ai, llm, agents, testing
 canonical_url: ""
+series: "Agent Determinism Illusions"
 ---
 
 ## 1. The Ladder Has a Blind Step
 
-Lilian Weng's July 2024 survey, *Harness Engineering for Self-Improvement*, organizes the field into a clear optimization ladder:
+Lilian Weng's July 2026 survey, *Harness Engineering for Self-Improvement*, organizes the field into a clear optimization ladder:
 
 ```
 instruction prompts → structured context → workflow → harness code → optimizer code

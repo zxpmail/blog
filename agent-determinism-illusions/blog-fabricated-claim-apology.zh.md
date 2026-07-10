@@ -11,6 +11,7 @@ published: false
 description: "我引用了一个不存在的实验结果。道歉实验——20个方向性失效场景 × 3个模型层次 × 600次判据——推翻了我自己的纠正。"
 tags: ai, llm, agents, testing
 canonical_url: ""
+series: "Agent Determinism Illusions"
 ---
 
 三周前，在 dev.to 的一条评论回复里，我写了这样一句话：
@@ -327,5 +328,5 @@ if (taskParam !== outputParam) → REJECT
 *初版脚本：`directional-failure-test.py` — 10 场景，N=5/N=3*
 *所有实验脚本：[GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
 *系列：[Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
-*姊妹篇：[Five Comments That Redesigned My LLM Verification Pipeline](blog-agent-determinism-illusions-10.en.md) — 本道歉最初是其附录的母文。*
-*系列起点：[I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](blog-agent-determinism-illusions.en.md)*
+*姊妹篇：[五条评论，一张我没画出来的架构图](blog-agent-determinism-illusions-10.zh.md) — 本道歉最初是其附录的母文。*
+*系列起点：[我用四组数据,拆穿了一篇 7000 行的"生产级 Agent"文章](blog-agent-determinism-illusions.zh.md)*

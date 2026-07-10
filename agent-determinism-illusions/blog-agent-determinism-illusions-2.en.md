@@ -11,6 +11,7 @@ published: false
 description: "qwen3:0.5b, gemma3:4.3b, and GLM-5.2 as agent output quality gates. The tradeoff: every garbage catch comes at the cost of false-rejecting real work. With data."
 tags: ai, llm, agents, testing
 canonical_url: ""
+series: "Agent Determinism Illusions"
 ---
 
 In my previous article (part 1 of this series), I tested the three "determinism" pillars that popular production-agent articles claim:

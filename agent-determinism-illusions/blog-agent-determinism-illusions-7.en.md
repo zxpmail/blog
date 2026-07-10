@@ -1,3 +1,12 @@
+---
+title: "I reran my LLM judge 10 times — the 75% false-negative rate was systematic, not random"
+published: false
+description: "10-run consistency test on Agent B. The 75% false-negative rate was 100% unanimous across reruns — a structural property of the design, not prompt variance. Majority voting cannot fix it."
+tags: ai, llm, agents, testing
+canonical_url: ""
+series: "Agent Determinism Illusions"
+---
+
 # I reran my LLM judge 10 times — the 75% false-negative rate was systematic, not random
 
 **Agent Determinism Illusions (Part 7)**

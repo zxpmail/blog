@@ -11,6 +11,7 @@ published: false
 description: "Same code task, two signal types: compile+test pass vs. LLM self-judgment. Directional evidence that objective signals improve convergence. Scope: verifiable tasks only (code, structured output). Not applicable to open-ended semantic tasks."
 tags: ai, llm, agents, testing
 canonical_url: ""
+series: "Agent Determinism Illusions"
 ---
 
 *The scope of this article is limited to tasks with objectively verifiable acceptance criteria (code, structured output, assertable results). For open-ended semantic tasks (writing copy, drafting analysis), the Red Line Principle does not apply.*

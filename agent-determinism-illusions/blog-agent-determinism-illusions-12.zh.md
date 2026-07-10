@@ -10,6 +10,7 @@ published: false
 description: "Lilian Weng 的 Harness 综述画出了整个领域的地图。它也露出了一个盲阶：判据本身的方向性失效。20 场景 × 3 模型 × 600 判据 + 6 条设计约束的代码实现。"
 tags: ai, llm, agents, testing
 canonical_url: ""
+series: "Agent Determinism Illusions"
 ---
 
 ## 1. 阶梯上有盲阶

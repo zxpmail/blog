@@ -1,3 +1,12 @@
+---
+title: "My \"Just Calibrate Your Prompt\" Only Held for 8 Samples"
+published: false
+description: "Prompt calibration sweep across 5 strictness levels. v3 'balanced' aced 8 Phase Gate scenarios at 100% but collapsed on 30 — the calibration effect disappeared. With Wilson CIs."
+tags: ai, llm, agents, testing
+canonical_url: ""
+series: "Agent Determinism Illusions"
+---
+
 # My "Just Calibrate Your Prompt" Only Held for 8 Samples
 
 ## At 30 samples, the calibration effect disappeared

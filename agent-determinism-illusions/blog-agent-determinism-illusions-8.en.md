@@ -1,3 +1,12 @@
+---
+title: "After Six Experiments, This Is the Most Honest Conclusion I Can Give"
+published: false
+description: "Six experiments, two iterations, 200+ API calls, 30 scenarios. We didn't find a silver bullet — we drew a better map of where adversarial verification works and where it fails."
+tags: ai, llm, agents, testing
+canonical_url: ""
+series: "Agent Determinism Illusions"
+---
+
 # After Six Experiments, This Is the Most Honest Conclusion I Can Give
 
 ## We didn't find a silver bullet. We drew a better map.

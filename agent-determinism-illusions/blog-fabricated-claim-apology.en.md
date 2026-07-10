@@ -11,6 +11,7 @@ published: false
 description: "I cited a result that didn't exist. The apology experiment — 20 directional-failure scenarios × 3 model tiers × 600 calls — overturned my own correction."
 tags: ai, llm, agents, testing
 canonical_url: ""
+series: "Agent Determinism Illusions"
 ---
 
 Three weeks ago, in a dev.to comment reply, I wrote this:

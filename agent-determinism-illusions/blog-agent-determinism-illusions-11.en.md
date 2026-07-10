@@ -1,3 +1,12 @@
+---
+title: "The Channel Gap: Why Your LLM Judge is Blind in One Eye"
+published: false
+description: "Text-channel LLM judging vs filesystem-channel deterministic checks. Neither works alone, but the combination closes all but one theoretically uncloseable gap. René Zander's Data Processing Inequality, applied to agent verification."
+tags: ai, llm, agents, testing
+canonical_url: ""
+series: "Agent Determinism Illusions"
+---
+
 # The Channel Gap: Why Your LLM Judge is Blind in One Eye
 
 **Agent Determinism Illusions (Part 11)**
