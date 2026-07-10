@@ -5,7 +5,7 @@
 -->
 
 ---
-title: "The Blind Step in Weng's Harness Ladder — Weak Evaluators Are Directional, Not Just Imprecise"
+title: "Weng's Harness Ladder Has a Blind Step"
 published: false
 description: "Lilian Weng's harness engineering survey mapped the field. It also revealed a blind step: the evaluator itself fails directionally, not just imprecisely. 20 scenarios × 3 models × 600 judgments + 6 design constraints implemented in code."
 tags: ai, llm, agents, testing
