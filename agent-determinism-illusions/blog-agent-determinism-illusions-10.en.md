@@ -356,7 +356,7 @@ Layer 0/1 checks are zero-cost code. Layer 2 only runs on the residual. Layer 3 
 
 An earlier version of this article had a long appendix — an apology for a fabricated claim I'd made in a dev.to comment about "directional failure" experiments. The apology included the actual experiment I should have run (20 scenarios × 3 model tiers × 600 calls).
 
-That appendix grew into a real finding in its own right: across all three model tiers I tested, a model that confidently says *"current state already meets requirements"* defeats every text-channel judge — **DS4 is an 89% miss rate cutting across model size and architecture**. It's the strongest empirical case for the L0/L1 layered approach in this whole series.
+That appendix grew into a real finding in its own right, though the framing has since been revised after re-checking the data: **DS4 ("no change needed") defeats weak text-channel judges (qwen3:0.5b 100% miss, gemma3:latest 100%), but strong models partially recover (deepseek-v4-flash 13% miss, 53% PARSE_FAIL/hesitation).** The directional failure is real but uneven — strongest empirical case for L0/L1 layering on weak models, with the strong-model residual still justifying deterministic checks.
 
 That deserves its own article now.
 

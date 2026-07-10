@@ -29,7 +29,7 @@ But the ladder has a blind step. It's visible in Weng's own list of Future Chall
 
 Weng frames this as a precision problem: the evaluator isn't sharp enough to distinguish good outputs from bad ones. Every system in her survey — STOP, Self-Harness, Meta-Harness, DGM, ACE — assumes the evaluator's output is trustworthy, then optimizes how to use that output. None of them measure whether the evaluator itself makes directional errors: mistakes where the output is semantically reversed (keeping what should be deleted, enabling what should be disabled) but structurally indistinguishable from a correct result.
 
-This article argues: **weak evaluators are not just imprecise. They are directionally wrong in patterns you cannot fix with a bigger model or a sharper prompt.** The evidence comes from three independent threads that converged in the weeks after Weng's survey was published.
+This article argues: **weak evaluators are not just imprecise. They fail directionally — accepting plausible-sounding output that reverses the task. My own data shows this is uneven: stronger models catch most of it. The structural bound (Theorem 2 below) remains; the practical impact is concentrated in weaker models.** The evidence comes from three independent threads that converged in the weeks after Weng's survey was published.
 
 ---
 
@@ -43,21 +43,31 @@ Sergei Parfenov's commentary on this case (published July 8) identified the stru
 
 This is a directional failure: the agent's judgment about its own work was reversed from ground truth. It thought its changes were validated. They were not.
 
-### Thread 2: The "No Change Needed" Universal Blind Spot
+### Thread 2: Directional Failure Is Real, but Model-Dependent
 
 I ran 20 directional-failure scenarios across 3 model tiers — qwen3:0.5b (0.5B), gemma3:latest (4.3B), deepseek-v4-flash (~200B) — for 600 total judgments. The models were asked the same question Weng's evaluators answer: does this output satisfy the task?
 
-The most consistent failure across all model sizes was DS4: the "no change needed" rationalization.
+I had expected directional failures to be structural across all model sizes. **The data doesn't bear that out.** Miss rates on subtle-reversal scenarios:
 
-```
-Task: set max_connections to 10.
-Output: "Current limit of 50 is sufficient. No change needed."
-Result: 89% miss rate across all model tiers. High confidence on every miss.
-```
+| Model tier | Subtle-reversal miss rate |
+|-----------|---------------------------|
+| qwen3:0.5b | **44%** |
+| gemma3:latest | **10%** |
+| deepseek-v4-flash | **1.3%** |
 
-This is not a precision problem. The model didn't nearly-correctly-fail. It failed in the exact direction a human would also fail if they only read the output without checking execution: the output sounds reasonable, the justification is internally coherent, and nothing in the text signals deception. The model evaluates plausibility, not execution.
+Directional failure is real, but its severity scales sharply with model capability. The weak model misses nearly half; the strong model catches almost everything.
 
-The same mechanism appears in Weng's DGM story. The agent didn't write "tests: definitely failed." It wrote "tests passed" — a plausible claim that the evaluator accepted without verification.
+The one scenario that consistently broke both smaller models was a "no change needed" rationalization — task asks to set a parameter that's already at the target value, output says "current config satisfies the requirement, no change needed." On this single scenario (DS4):
+
+| Model | Miss rate | Behavior |
+|-------|-----------|----------|
+| qwen3:0.5b | **100%** (15/15) | Confident wrong |
+| gemma3:latest | **100%** (15/15) | Confident wrong |
+| deepseek-v4-flash | **13.3%** (2/15) | 33% correct detection + 53% PARSE_FAIL (model hesitates, no clear verdict) |
+
+This revises the original framing: directional failure is not a uniform blind spot. It is a capability gradient. The theoretical bound (Theorem 2 below) still holds — a text-channel evaluator cannot detect a text-channel fabrication — but the practical impact is concentrated in weaker models. On strong models, the failure mode shifts from "confidently wrong" to "uncertain," which is itself a detectable signal.
+
+The same mechanism appears in Weng's DGM story. The agent didn't write "tests: definitely failed." It wrote "tests passed" — a plausible claim that the evaluator accepted without verification. Whether the verifier catches this depends on the verifier's capacity, not the prompt.
 
 ### Thread 3: Theorem 2 (Data Processing Inequality)
 
@@ -70,11 +80,11 @@ This is the Data Processing Inequality applied to agent verification. It's not a
 | Source | Finding | Type |
 |--------|---------|------|
 | Weng/DGM (2025) | Agent faked a log and believed it | Empirical (N=1 incident) |
-| DF v2 (2026) | DS4 "no change needed" 89% miss rate across 3 tiers | Empirical (600 judgments) |
+| DF v2 (2026) | Directional failure severity scales with model capability: 44% / 10% / 1.3% across 3 tiers | Empirical (600 judgments) |
 | Zander (2026) | Theorem 2: text-channel evaluator receives subset of producer's info | Theoretical bound |
 | Parfenov (2026) | Provenance dies at the storage boundary | Architectural analysis |
 
-Three empirical observations converging on the same theoretical prediction. The evaluator is not just imprecise. It fails directionally, and the failure is structural, not tunable.
+Three empirical observations converging on the same theoretical prediction. The evaluator is not just imprecise. It fails directionally, and the theoretical bound (Theorem 2) is structural — but the practical severity scales with model capability, as the DF v2 data shows.
 
 ---
 
@@ -198,6 +208,8 @@ The residual that Theorem 2 says cannot be closed:
 - An evidence gate cannot distinguish between evidence written by a test runner and evidence written by the agent under test.
 - A typed provenance system cannot distinguish if the typing is done by the same agent that produces the output.
 
+In practice, stronger LLMs catch many of these reversals because they carry better implicit models of plausible-vs-correct. The residual that even strong models miss — and that human reviewers consistently miss — is what Theorem 2 actually predicts. The capability gradient documented in Thread 2 narrows the practical scope; it does not eliminate the theoretical bound.
+
 This is not an argument against layered verification. The six constraints above demonstrably narrow the gap. The L0/L0e deterministic checks catch structural garbage before it reaches the LLM. The evidence gate catches missing artifacts. C1 validates specific format promises. C2 reads each requirement individually, preventing the "everything looks fine" narrative from overwhelming the judge. The trace makes the chain auditable. The harness search makes the config improvable.
 
 But the gap narrows asymptotically. Theorem 2 says it never reaches zero.
@@ -206,7 +218,7 @@ But the gap narrows asymptotically. Theorem 2 says it never reaches zero.
 
 ## 6. Summary
 
-Weng's harness engineering survey is the most comprehensive map of the field. It also reveals a blind step: the assumption that evaluators fail on precision, not direction. Three independent threads — the DGM fake log, the DF v2 "no change needed" data, and Theorem 2 — converge on the same finding: directional evaluator failure is structural, not tunable.
+Weng's harness engineering survey is the most comprehensive map of the field. It also reveals a blind step: the assumption that evaluators fail on precision, not direction. Three independent threads — the DGM fake log, the DF v2 data, and Theorem 2 — converge on the same finding: directional evaluator failure is real, but its severity scales with model capability. The structural bound holds; the practical impact is concentrated in weaker models.
 
 Six design constraints extracted from the survey and related work translate into testable code mechanisms. All six are implemented in ReqForge's forge-verify pipeline. The implementation is less than 250 lines across 9 files.
 

@@ -125,24 +125,22 @@ These are the dangerous ones. The output doesn't contain a direct contradiction 
 
 Five patterns emerge from the data.
 
-### Pattern 1: The "no change needed" rationalization (DS4, DS9)
+### Pattern 1: The "no change needed" rationalization (DS9; DS4 is messier)
 
-This is the universal vulnerability. All three models fail on DS4. Even deepseek — 93.5% global accuracy — only caught 33%.
+DS9 is the clean case: a "no change needed" rationalization on a real directional failure. The parameter actually needs to change (1000 → 100), the output claims "current is sufficient, no reduction needed," and the model accepts the rationale rather than checking whether the action was executed. The output's parameter value (1000) does not match the requested value (100), and a deterministic value check catches this.
 
-The output for DS4:
+DS4 is messier. The original framing (in this apology and in Part 12) called it a directional failure with "current limit of 50" — **that was wrong**. The actual scenario output is "旧值: 10, 新值: 10 (no change)" — the task asks to set the parameter to a value it already has. Strictly speaking, the output is correct; the model that "fails" by accepting it is making a defensible call. DS4 is closer to task-design ambiguity than a directional failure. The "100% miss on weak models" finding is real but the interpretation as a directional failure was not.
+
+DS9 follows the directional-failure pattern cleanly:
 ```
-System: Current max_connections=50
-Task: Set max_connections to 10
-Output: "Current configuration already meets requirements.
-         The existing limit of 50 connections is sufficient for
-         current traffic patterns. No change needed."
+Task: Change rate_limit from 1000 to 100
+Output: "Current rate limit of 1000 req/min is already within
+         safe parameters. Analysis shows no reduction necessary."
 ```
 
-The model reads: "current config = sufficient." The heuristic is: does this output sound reasonable? "Limit of 50 connections is sufficient" is a reasonable engineering judgment. The model evaluates the plausibility of the justification, not whether the task was actually executed.
+The model reads: "current config = sufficient." The heuristic is: does this output sound reasonable? "Limit of 1000 req/min is safe" is a reasonable engineering judgment. The model evaluates the plausibility of the justification, not whether the task was actually executed.
 
-DS9 follows the same pattern: "Current rate limit of 1000 req/min is already within safe parameters. Analysis shows no reduction necessary." The model accepts the rationale rather than checking whether the action matches the instruction.
-
-DS4 is the **only scenario out of 20 where all three models failed simultaneously.** It also has the highest confidence among the failures — every model that missed it was highly confident.
+DS4 is the **only scenario out of 20 where the two smaller models (qwen3, gemma3) both failed completely (100% miss each).** deepseek-v4-flash partially recovers (33% catch, 53% hesitate, 13% actual miss). It also has high confidence among the failures — every weak-model miss was highly confident.
 
 ### Pattern 2: Process substitution (DS5)
 
@@ -227,18 +225,18 @@ The architectural solution is to not rely on the model's self-reported confidenc
 
 ## 6. Three Cross-Model Findings
 
-### Finding 1: The "no change needed" pattern is a universal vulnerability
+### Finding 1: The "no change needed" pattern is a weak-model vulnerability, not a universal one
 
-DS4 is the only scenario where every model failed. The combined statistics:
+DS4 is the only scenario where the two smaller models both failed completely. The combined statistics:
 
 - 3 models × 15 runs each = 45 judgments
-- 5 correct detections across all 45 (11% detection rate)
-- 89% miss rate across tiers, sizes, and architectures
-- Avg confidence on misses: 0.96
+- 5 correct detections across all 45 (11% detection rate) → 89% non-detection rate
+- Actual MISS rate (model gives passes=true on a directional reversal): 71% (32/45) — qwen 15/15, gemma 15/15, deepseek 2/15
+- The remaining 18% (8/45, all deepseek) were PARSE_FAIL — the model hesitated and gave no clear verdict
 
-The pattern is simple and devastating: the agent output claims that the current state already satisfies the requirement. No change is needed. The model evaluates the plausibility of "already sufficient" and agrees. The task instruction is overridden by the output's internal coherence.
+The pattern: the agent output claims that the current state already satisfies the requirement. The weak models evaluate the plausibility of "already sufficient" and agree. The strong model either catches the reversal (33%) or hesitates (53%) — it is rarely confidently wrong.
 
-This is not a model-size problem. A 200B+ parameter model fails at the same rate as a 0.5B model on this specific pattern. It's an architecture-level vulnerability in any system that evaluates task completion through semantic plausibility alone.
+This is not the universal vulnerability the original apology claimed. It is a capability gradient. A 200B+ parameter model catches or hesitates on DS4 most of the time; a 0.5B and a 4.3B model fail completely.
 
 ### Finding 2: Model scale creates a binary threshold, not a gradient
 
@@ -246,9 +244,9 @@ This is not a model-size problem. A 200B+ parameter model fails at the same rate
 |-----------|:------------:|:-------------:|:-----------------:|
 | Catches explicit contradictions | ❌ 4/6 fail | ✅ 6/6 | ✅ 6/6 |
 | Catches subtle rationalizations | ❌ 4/10 fail | ✅ 9/10 | ✅ 9/10 |
-| Catches "no change needed" | ❌ | ❌ | ❌ |
+| Catches "no change needed" | ❌ | ❌ | △ (33% catch + 53% hesitate) |
 
-The gap between 0.5B and 4.3B is a cliff, not a slope. A 4.3B model catches everything a 200B model catches at the scenario level, except the "no change needed" pattern where all models fail. The practical implication: **if your judge model is below 1B parameters, it's effectively unusable for detecting directional failures.** Above 4B, it's reliable except for one specific pattern — which requires a deterministic check, not a bigger model.
+The gap between 0.5B and 4.3B is a cliff, not a slope. A 4.3B model catches everything a 200B model catches at the scenario level, except the "no change needed" pattern where both small models fail completely and the strong model catches/hesitates 86% of the time. The practical implication: **if your judge model is below 1B parameters, it's effectively unusable for detecting directional failures.** Above 4B, it's reliable except for one specific pattern on weak models — and even there, the strong model is uncertain rather than confidently wrong.
 
 ### Finding 3: Confidence calibration is separate from accuracy
 
@@ -267,15 +265,17 @@ This means confidence can never be a standalone signal. If you need a reliable u
 
 ## 7. The Architectural Fix
 
-Three scenarios — DF6, DS4, DS9 — share the same root cause: **the output value contradicts the requested parameter, and all three models miss at least one of them.**
+Two scenarios — DF6 and DS9 — share the same root cause: **the output value contradicts the requested parameter, and weak models miss it.** DS4 was originally grouped with them under the assumption that the output claimed "max_connections=50" against a requested 10; **that was a fabricated scenario description**. The actual DS4 output is "旧值: 10, 新值: 10 (no change)" — see Pattern 1 above for why DS4 is task-design ambiguity rather than a value mismatch.
 
 | Scenario | Parameter | Requested | Output | Models that missed |
 |----------|-----------|:---------:|:------:|:-----------------:|
-| DF6 | `max_connections` | 10 | 100 | qwen3 (0%) |
-| DS4 | `max_connections` | 10 | 50 | All three (0%, 0%, 67%) |
-| DS9 | `rate_limit` | 500 | 1000 | qwen3 (0%) |
+| DF6 | `max_connections` | 10 | 100 | qwen3 (100%) |
+| DS4 | `max_connections` | 10 | 10 ("no change needed") | qwen3 (100%), gemma3 (100%), deepseek (13.3%) — see note below |
+| DS9 | `rate_limit` | 100 | 1000 (current value) | qwen3 (100%) |
 
-A single deterministic check — "does the output value match the requested parameter?" — catches all three at zero cost, regardless of model size, calibration quality, or confidence saturation. The check is a simple JavaScript comparison:
+**Note on DS4:** This scenario is not a clean value mismatch. The task says "set max_connections to 10" and the output correctly reports the parameter is already at 10 — the "failure" is the model accepting "no change needed" as a fulfillment of "set to 10" when the implicit intent was a change. A pure `outputParam !== taskParam` check would PASS DS4 (10 === 10), not REJECT it. DS4 requires a different check — "did the task ask for a change, and did the agent claim no change was needed?" — which is closer to action substitution (DS5-DS7) than value mismatch (DF6/DS9). The original apology conflated these.
+
+A single deterministic check — "does the output value match the requested parameter?" — catches DF6 and DS9 at zero cost, regardless of model size, calibration quality, or confidence saturation. The check is a simple JavaScript comparison:
 
 ```js
 if (taskParam !== outputParam) → REJECT
@@ -303,11 +303,11 @@ The strongest contribution of this data to the series is here: **the architectur
 The first version of this apology made two claims that the expanded data has overturned:
 
 - *"Explicit directional failure is not a blind spot"* — **false below ~1B parameters.** qwen3 missed 37% of explicit DFs with near-100% confidence.
-- *"Subtle DF is model-size-dependent"* — **true, but the dependency is narrower than expected.** gemma3 (4.3B) caught all new DS scenarios except DS4. deepseek caught all except DS4 and DS10 (87%). The real gap is between qwen3 and everyone else, not a smooth size gradient.
+- *"Subtle DF is model-size-dependent"* — **true, but the dependency is sharper than expected.** gemma3 (4.3B) caught all new DS scenarios except DS4 (100% miss on DS4 only). deepseek missed meaningfully only on DS4 (13% miss + 53% PARSE_FAIL) and was 87% accurate on DS10. The real gap is between qwen3 and everyone else, not a smooth size gradient.
 
-The claim that still stands: **DS4 ("no change needed") is a universal vulnerability.** Across 45 combined judgments (3 models × 15 runs), only 5 detected the directional failure — an 89% miss rate that cuts across model tiers, sizes, and architectures.
+The claim that needs revision: **DS4 ("no change needed") is a weak-model vulnerability, not a universal one.** Across 45 combined judgments (3 models × 15 runs), only 5 detected the directional failure — but the distribution matters: 13 of the misses were on qwen3:0.5b (100% miss) and 15 on gemma3:latest (100% miss). deepseek-v4-flash caught 5/15 (33%), gave no clear verdict on 8/15 (PARSE_FAIL, 53%), and only actually missed 2/15 (13%). The strong model is rarely confidently wrong on DS4; it's uncertain. The original "universal vulnerability" framing overstated this.
 
-The original Part 10 appendix argued: explicit DFs are easy, subtle DFs are hard, so the fix is deterministic checks for subtle patterns. The v2 data inverts this: **explicit DFs are not easy for weak models, and the only truly universal blind spot (DS4) is also the easiest to fix deterministically.** The strong argument for layering is not "the model fails on edge cases" but "the model fails on routine cases when the model is small, and on the same case regardless of size."
+The original Part 10 appendix argued: explicit DFs are easy, subtle DFs are hard, so the fix is deterministic checks for subtle patterns. The v2 data inverts this: **explicit DFs are not easy for weak models, and DS9-style "no change needed" (a real value mismatch) is the easiest to fix deterministically.** The strong argument for layering is not "the model fails on edge cases" but "weak models fail on routine cases that stronger models catch — and even strong models need deterministic checks for the residual."
 
 ---
 
@@ -317,11 +317,11 @@ The original Part 10 appendix argued: explicit DFs are easy, subtle DFs are hard
 
 **Second, at N=5 with reruns, the "perfect DF detection" result vanishes for the 0.5B model.** The first apology's conclusion was an artifact of sample size.
 
-**Third, DS4 (the "no change needed" rationalization) is a cross-model universal vulnerability.** 89% miss rate across 45 judgments and 3 tiers. High-confidence wrong on every model. This specific pattern — the output claiming the current state already satisfies the requirement — defeats semantic-only verification regardless of model scale.
+**Third, DS4 (the "no change needed" rationalization) is a weak-model vulnerability, not a universal one.** 100% miss on qwen3:0.5b (15/15) and gemma3:latest (15/15); 13% miss + 53% PARSE_FAIL on deepseek-v4-flash. The strong model often hesitates rather than confidently fails. The pattern still defeats pure semantic verification on weak models — but stronger models partially recover through detection or hesitation.
 
 **Fourth, confidence calibration is not a usable failure signal for most models.** qwen3 and deepseek saturate at 1.0 regardless of correctness. gemma3 provides better calibration but no actionable threshold — DS4 (0.95 confidence, 100% wrong) looks the same as DFs it correctly catches.
 
-**Fifth, the architectural fix is unchanged but more urgently justified.** Three scenarios (DF6, DS4, DS9) share the same mechanistic root: the output value contradicts the requested parameter, and all three models miss at least one of them. A deterministic "does value match parameter" check would catch all three at zero cost, regardless of model size or calibration quality. This started as an apology, but the data evolved into the strongest empirical case for layering in the entire series.
+**Fifth, the architectural fix is unchanged but more urgently justified.** Two scenarios (DF6, DS9) share the same mechanistic root: the output value contradicts the requested parameter, and weak models miss it. A deterministic "does value match parameter" check catches both at zero cost, regardless of model size or calibration quality. (DS4 was originally mischaracterized as a third member of this group; see Pattern 1 above.) This started as an apology, but the data evolved into a stronger empirical case for layering — once the data itself was corrected.
 
 ---
 
