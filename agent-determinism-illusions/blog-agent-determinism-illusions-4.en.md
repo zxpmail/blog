@@ -45,7 +45,7 @@ Before a task enters the agent engine, a router classifies it by output type:
 
 | Type | Criterion | Strategy |
 |------|-----------|----------|
-| **A (verifiable)** | Output is compilable / schema-validatable (code, JSON, SQL) | **Fully automatic.** Compile check or schema validation is the one and only gate. No LLM quality inspector called. |
+| **A (verifiable)** | Output is compilable / schema-validatable (code, JSON, SQL) | Compile check or schema validation as the deterministic gate, plus a sampled fraction routed to diff review (see Layer 4). No LLM quality inspector called for the gate itself. |
 | **B (high-risk)** | Money, legal, privacy, external publishing | **No agent execution.** Prompt: "This task requires human handling." AI provides a draft only, never auto-executes. |
 | **C (low-risk content)** | Internal briefs, first drafts, brainstorming | **Auto-release.** Tag as "draft" (80% default confidence). No quality queue. |
 | **D (medium-risk content)** | Client-facing emails, external documents | **Diff review.** Don't judge content quality. Only show what changed. |
@@ -103,11 +103,13 @@ Alternative: **fixed-rate sampling. No confidence math.**
 
 | Type | Handling | Sample rate |
 |------|----------|-------------|
-| A (verifiable) | Fully automatic | 0% |
+| A (verifiable) | Compile / schema gate + **sampled into diff review** | **X%** (tuned) |
 | B (high-risk) | Mandatory human | — |
 | C (low-risk content) | Auto-release | 0% |
 | D (medium-risk content) | Diff review (all items) | 100% |
 | Zero-shot generation (no prior version, no template) | Sample review | **Fixed 5%** |
+
+**Post-publication correction (raised by Dipankar Sarkar in the dev.to comments):** the original version of this table had Type A at 0% sample rate. That quietly treated schema-validatable syntax as a stand-in for semantic correctness — schema-valid JSON with a plausible-but-wrong value clears the gate silently, code that compiles can still book the wrong flight. This is the same class as the G4 finding in Layer 3 above (format-channel gate kills format-channel failure, not semantic failure); I called it out for SPC and then let Type A make the same mistake one layer up. The 0% was an indefensible asymmetry: zero-shot content gets sampled because there's no prior version to diff against, but schema-validatable code doesn't? X% should be calibrated from defect-rate data using the same logic as zero-shot's 5%. Start at 1-2% in week one, tune from there.
 
 I admit: 5% is a guess. But its mathematical properties are known and quantifiable — which is more than can be said for a confidence score with no feedback loop.
 
@@ -164,13 +166,14 @@ That's **30% cheaper** than the 5 engineer-month human-in-the-loop Harness — n
 
 ### Does solve
 
-- **ROI inversion:** Type A fully automatic + C auto-release + D diff-only. The fraction requiring human review drops enough that 3.5 engineer-months of investment breaks even within a reasonable horizon for most mid-volume deployments.
+- **ROI inversion:** Type A deterministic gate + sampled diff review + C auto-release + D diff-only. The fraction requiring human review drops enough that 3.5 engineer-months of investment breaks even within a reasonable horizon for most mid-volume deployments.
 - **Clustering failure:** SPC on behavioral features replaces embedding clustering. Verifiable by code, zero LLM cost.
 - **Human error:** Diff review reduces cognitive load. It doesn't eliminate errors (semantic traps still need domain knowledge), but it measurably reduces the error rate.
 
 ### Doesn't solve
 
 - **G4-class semantic traps (zero-case test log).** These are caught by sampling, not prevented. The honest difference from the original "deterministic agent" articles: they claimed prevention; we acknowledge detection.
+- **Type A semantic traps (compile-pass-but-wrong).** Compiles-but-books-wrong-flight is sampled into diff review, not prevented. Same class as G4 above. The Layer 4 table originally had Type A at 0% sample rate — an indefensible asymmetry, corrected above.
 - **Humans are still the final decision layer.** In sensitive operations and edit reviews, humans are not optional.
 - **Zero-shot generation is sampled, not guaranteed.** 5% sampling means 67% single-day detection probability at 20% defect rate. For critical content, raise to 20% (98% detection probability).
 - **Classification is imperfect.** Automatic keyword and tool-chain classification has measurable false-positive and false-negative rates that must be tuned post-launch.
@@ -191,7 +194,7 @@ That's **30% cheaper** than the 5 engineer-month human-in-the-loop Harness — n
 | LLM dependency in control layers? | **Zero.** All control logic is deterministic code. |
 | Engineering cost estimated? | Yes: 3.5 engineer-months (honest, with integration costs) |
 | Honest boundary declarations? | Yes: G4 traps not prevented, zero-shot sampled, humans not free, classification imperfect |
-| Self-dismantling? | Yes — the five findings above dismantle everything that could be dismantled. What remains are engineering facts: Type A auto-verification, sensitive-tool hard interception, SPC format anomaly detection, and diff review cognitive-load reduction. |
+| Self-dismantling? | Yes — the five findings above dismantle everything that could be dismantled, plus the post-publication correction on Type A's sample rate (raised by Dipankar Sarkar). What remains are engineering facts: Type A deterministic gate + sampling, sensitive-tool hard interception, SPC format anomaly detection, and diff review cognitive-load reduction. |
 
 ---
 
