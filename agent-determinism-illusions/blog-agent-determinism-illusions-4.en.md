@@ -45,12 +45,14 @@ Before a task enters the agent engine, a router classifies it by output type:
 
 | Type | Criterion | Strategy |
 |------|-----------|----------|
-| **A (verifiable)** | Output is compilable / schema-validatable (code, JSON, SQL) | Compile check or schema validation as the deterministic gate, plus a sampled fraction routed to diff review (see Layer 4). No LLM quality inspector called for the gate itself. |
+| **A (verifiable)** | Output is compilable / schema-validatable (code, JSON, SQL) | Compile/schema gate + sampled diff review (Layer 4), no LLM quality inspector. **Requires gate runner independent from agent — see caveat below.** |
 | **B (high-risk)** | Money, legal, privacy, external publishing | **No agent execution.** Prompt: "This task requires human handling." AI provides a draft only, never auto-executes. |
 | **C (low-risk content)** | Internal briefs, first drafts, brainstorming | **Auto-release.** Tag as "draft" (80% default confidence). No quality queue. |
 | **D (medium-risk content)** | Client-facing emails, external documents | **Diff review.** Don't judge content quality. Only show what changed. |
 
 Why this beats an "LLM quality inspector": it acknowledges the LLM's limit at the source. Use the LLM for what it can do (generate). Never use an LLM for what it does poorly (judge semantic quality).
+
+**Caveat — runner independence (raised by Mike Czerwinski in the dev.to comments):** "verifiable" is a property of the check's independence from the generator, not of the output itself. If the agent can write to the verify scripts, the runner configuration, or the test definitions — "compile-green" stops being a deterministic gate and becomes a self-report wearing a green checkmark. This is the DGM fake-log mechanism Weng documented in her harness survey (agent modified its own harness, wrote "tests passed" to a log without running tests, downstream the same agent read the log and concluded validation passed). Engineering pattern: an `editable-surface.json` (or equivalent) explicitly declares which paths the agent can write; verify scripts, runner config, and the editable-surface file itself sit in the readonly section. Without runtime-verified provenance at the storage boundary, "I ran the tests" and "I claim I ran the tests" are both just text.
 
 ### Layer 2: diff review — replace "judge right/wrong"
 
@@ -174,6 +176,7 @@ That's **30% cheaper** than the 5 engineer-month human-in-the-loop Harness — n
 
 - **G4-class semantic traps (zero-case test log).** These are caught by sampling, not prevented. The honest difference from the original "deterministic agent" articles: they claimed prevention; we acknowledge detection.
 - **Type A semantic traps (compile-pass-but-wrong).** Compiles-but-books-wrong-flight is sampled into diff review, not prevented. Same class as G4 above. The Layer 4 table originally had Type A at 0% sample rate — an indefensible asymmetry, corrected above.
+- **Type A runner independence (compile-green as self-report).** Even a correctly-sized sampling rate doesn't help if the agent can author the verify scripts or the runner. "Compile-green" then becomes a self-report wearing a green checkmark — same mechanism as the DGM fake-log incident. Requires an `editable-surface.json` or equivalent to put verify scripts and runner config outside the agent's writable surface. (Raised by Mike Czerwinski in the dev.to comments; see Layer 1 caveat above.)
 - **Humans are still the final decision layer.** In sensitive operations and edit reviews, humans are not optional.
 - **Zero-shot generation is sampled, not guaranteed.** 5% sampling means 67% single-day detection probability at 20% defect rate. For critical content, raise to 20% (98% detection probability).
 - **Classification is imperfect.** Automatic keyword and tool-chain classification has measurable false-positive and false-negative rates that must be tuned post-launch.
