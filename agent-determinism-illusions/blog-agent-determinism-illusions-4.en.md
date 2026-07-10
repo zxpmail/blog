@@ -11,7 +11,10 @@ published: false
 description: "No LLM quality inspectors, no embedding clustering, no confidence scores. Just deterministic routing + SPC + diff review + fixed-rate sampling. With honest cost estimates and known failure modes."
 tags: ai, llm, agents, testing
 canonical_url: ""
+series: "Agent Determinism Illusions"
 ---
+
+*Every "agent quality gate" I tested shares one fatal assumption: that an LLM can judge whether an LLM did the right thing. This article drops that assumption. The alternative isn't a smarter judge — it's no judge at all, in the control layer.*
 
 Over the last three articles, I tested the popular "production agent loop" design across six separate experiments:
 
@@ -62,9 +65,9 @@ Measured cognitive load:
 | Method | Reading load | Cognitive demand | Time |
 |--------|-------------|-----------------|------|
 | Full-text quality judgment (500 words) | 500 words | High | ~60 s |
-| Diff review (50-word change) | 50 words | **Low** | **~10 s** |
+| Diff review (50-word change) | 50 words | **Low** | **~10 s** *(lab; production: 30–90 s — see Knife 3 below)* |
 
-The shift: open-ended judgment ("Is this article good?") becomes closed-ended ("Did this paragraph break something?"). The cognitive demand drops by an order of magnitude.
+The shift: open-ended judgment ("Is this article good?") becomes closed-ended ("Did this paragraph break something?"). Cognitive demand drops significantly — though the lab "~10 s" compresses to 30–90 s in production once context-switching overhead is included (Knife 3 below).
 
 ### Layer 3: statistical process control — replace semantic clustering
 
@@ -87,7 +90,7 @@ All code. Zero LLM cost. And it catches "quack quack" (length anomaly) and "." (
 | G1 (duck, garbage) | **ANOMALY** (high CJK ratio) | Garbage | ✅ |
 | G2 (period, garbage) | **ANOMALY** (100% special char) | Garbage | ✅ |
 | G3 (TODO, garbage) | **ANOMALY** (100% alphabetic) | Garbage | ✅ |
-| **G4 (zero-case, garbage)** | **NORMAL** (same features as L4) | **Garbage** | **FOFN** |
+| **G4 (zero-case, garbage)** | **NORMAL** (same features as L4) | **Garbage** | **❌ FN** |
 | L1-L4 (valid) | Normal (one mild false-positive) | Valid | ✅ |
 
 SPC catches format anomalies (period, TODO, duck). **G4 (zero-case test log) has the exact same behavioral profile as L4 (valid test log) — SPC misses it 100%.** This directly validates the stated blind spot: SPC catches format anomalies but not semantic traps. G4‑class failures can only be caught by sampling, never prevented.
