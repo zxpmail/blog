@@ -338,7 +338,7 @@ When `evidence_gates` is configured, the pipeline runs the evidence gate → C1 
 
 **Second, per-requirement evaluation outperforms holistic evaluation by a wide margin.** The same LLM, same temperature, same evidence — but asking "does this evidence prove requirement N?" instead of "is the work done?" raised detection rate from 20% to 100%. The frame matters more than the model.
 
-**Third, contract regex is a practical zero-cost filter for a surprisingly wide set of constraints.** Numerical thresholds, format validity, and fixed-pattern detection all work reliably. The exception — negation patterns — can be handled by routing them to the per-requirement LLM.
+**Third, contract regex is a practical zero-cost filter for a surprisingly wide set of constraints.** Numerical thresholds, format validity, and fixed-pattern detection all work reliably. The exception — negation patterns — can be handled by routing them to the per-requirement LLM. Caveat: "wide" applies to numerical/format constraints; for functional/semantic requirements, real-agent-authored evidence is far harsher — C1 collapses under agent vocabulary drift (see Part 13 §B).
 
 **Fourth, the negation blind spot in regex evaluation is the same problem as the DPI blind spot, one level down.** A regex that matches "write-invalidation" in "not write-invalidation" is making the same error as an LLM that reads "all tests pass" and misses that the wrong test suite was run. Both are pattern-matchers that can't distinguish "mentioned" from "satisfied."
 
