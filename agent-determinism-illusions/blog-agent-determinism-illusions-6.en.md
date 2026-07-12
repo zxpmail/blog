@@ -13,7 +13,7 @@ series: "Agent Determinism Illusions"
 
 ## Background
 
-A previous experiment ([Phase Gate formalism test, Part 1](blog-agent-determinism-illusions.en.md)) found that a checkpoint mechanism implemented per the described specification passed all 8 scenarios indiscriminately — including outputs like "I am a little duck, quack quack" and "。". False positive rate: 50%.
+A previous experiment ([Phase Gate formalism test, Part 1](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)) found that a checkpoint mechanism implemented per the described specification passed all 8 scenarios indiscriminately — including outputs like "I am a little duck, quack quack" and "。". False positive rate: 50%.
 
 A natural follow-up question: can adding an LLM-based review step (Agent B) to Phase Gate reduce the false positive rate?
 
@@ -80,7 +80,7 @@ L4 passed all 3 runs because the test execution result (stdout: "42 passed, 0 fa
 
 ### The precision-recall tradeoff
 
-Comparing this result with the earlier experiment (Experiment E, [Part 2](blog-agent-determinism-illusions-2.en.md)):
+Comparing this result with the earlier experiment (Experiment E, [Part 2](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7)):
 
 | Model | False Positive | False Negative |
 |-------|---------------|---------------|
