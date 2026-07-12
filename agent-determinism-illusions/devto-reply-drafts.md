@@ -291,3 +291,20 @@ Your risk routing is the next layer the series took — route by risk instead of
 Routing shrinks scope; it doesn't break the precision-recall trap underneath. Part 4 develops this: [An alternative to LLM quality gates: deterministic routing + sampling](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf).
 
 ---
+
+## 回复十四：@Mike Czerwinski — argument-space 的边界：addressable referent / paraphrase 悬崖
+
+**目标文章：** [Vibe coding is not a level. It's an axis.](https://dev.to/jugeni/vibe-coding-is-not-a-level-its-an-axis-12gb)（**Mike Czerwinski 自己的文章**）评论区 —— Mike 在自己文章里论述 argument-space 边界，引用了我的 Part 4 + 回复十二的 5/5。**回复发在这里，不是我的 Part 4。**
+**主题：** Mike 第三轮 push —— vibe coding 是 axis（适用域）不是 level（程度）；C3 decidable only to addressable referent，paraphrase 退化 C2；接受边界 + 接受两数实验
+
+---
+
+You're right, and the boundary you're naming is sharper than the one I drew. I said "C3 covers claims with observable side effects, not pure design or tradeoff claims." Your version is more precise: C3 is decidable exactly to the depth the argument carries an addressable referent, and degrades to C2 the moment it becomes paraphrase. Same edge, better language.
+
+The mechanism confirms your prediction. C3 escapes word-space only because `verify_command` can address the named referent—the method, the side effect—and run it. Strip the addressable referent, make the claim a paraphrase ("the design is clean," "this is the right tradeoff"), and there's nothing to execute, so inference falls back inside the proposer where C2 already lives. C3 doesn't beat C2 on paraphrase; on paraphrase it becomes C2.
+
+So the honest experiment column is two numbers, not one: addressable (C3, structural invariant, 5/5) and unaddressable (→C2, word-space, DPI-bound). An unaddressable-referent case would make the split visible; a single 5/5 hides exactly the edge you're pointing at.
+
+This maps onto your axis framing: addressable arguments come off the vibe axis (run the code), paraphrase stays on it — where C2 already lives. The sharpened claim: C3 is the synonym-immune floor on addressable arguments, and paraphrase is the cliff back to vibe.
+
+---
