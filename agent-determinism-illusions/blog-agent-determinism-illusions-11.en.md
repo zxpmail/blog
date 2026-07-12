@@ -361,4 +361,4 @@ The architectural conclusion: replace the single free-text LLM evaluation (old L
 - Phase 2: `contract-comparison-test.py` — 7 scenarios, 3 mechanisms
 - skillgate source: v0.5.0 on [npm](https://www.npmjs.com/package/@reneza/skillgate) and [GitHub](https://github.com/renezander030/skillgate)
 - Pipeline implementation: `ReqForge/scripts/forge-verify/content-verify.mjs`
-- *Series start:* [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](blog-agent-determinism-illusions.en.md)
+- *Series start:* [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)
