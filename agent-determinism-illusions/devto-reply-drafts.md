@@ -255,28 +255,22 @@ On the write-up — I'll have the full version up soon (it's in final draft). Wi
 
 Mike,
 
-Right on both counts, and the reframe is the more honest version — so I took it, ran the experiment, and want to push the third point half a step further than you put it.
+Conceded on both, and the reframe is the more honest version — took it, ran the test.
 
-**On "sign-flipped positive gate"** — conceded. My earlier "closes all but one theoretically uncloseable gap" framing is now "narrows without closing it" — a ratchet, not a closure. An evasion phrased as "the cache converges via eventual-consistency guarantees without explicit invalidation" clears the positive regex (keyword present) *and* the negative (no forbidden synonym) at once. The ratchet framing is yours to keep: every caught lie becomes a tripwire that never has to be caught twice.
+The negative gate is the positive gate with the sign flipped, both in word-space; "closes all but one gap" is now "narrows without closing it." Every caught lie becomes a tripwire that never has to be caught twice. And demote-not-decide is the load-bearing one — UNCLEAR routes to human, nothing silent-green.
 
-**On "demote, not decide"** — the load-bearing reframe, and the C1-UNCLEAR→L3 fix earns its keep exactly there. Named evasions demote to human; nothing silent-green.
+Tested argument-space. Five scenarios × three evaluators (REQ-3 write-invalidation):
 
-**On argument-space** — agreed on direction, and I tested it. Five scenarios × three evaluators (REQ-3 write-invalidation):
-
-| | C1 regex | C2 per-req LLM | C3 argument-space |
+| | C1 regex | C2 LLM | C3 arg-space |
 |---|---|---|---|
 | correct | 2/5 | 2/5 | **5/5** |
 
-C3 is a human-authored runner that exercises the write path and asserts the cache side effect — method name and evidence vocabulary are irrelevant. S0 (`delete`) and S3 (`purgeCacheOnWrite`) both pass; S1 (TTL) and S2 (coherency) both reject.
+C3 runs the code and observes the side effect; method name and vocabulary are irrelevant. Clincher — the fabricated-snippet case: evidence has a `write()` with `this._cache.delete(key)` that does not exist in the impl. C1 passes (keyword), C2 passes (snippet looks compliant — it even praised the fabricated comment), only C3 rejects (ran the code). DPI bound, DGM fake-log shape.
 
-The half-step push: argument-space isn't the closure either, it's the ratchet at the one fidelity where rephrasing stops working. S4 is the case that proves it — the evidence *fabricates* a compliant `write()` snippet with `this._cache.delete(key)` that does not exist in the impl. C1 passes (keyword), C2 passes (the snippet looks compliant — it even praised the fabricated comment for "ruling out TTL"), only C3 rejects (it ran the code). That's the DPI bound, and it's the DGM fake-log shape exactly: compliant text, non-compliant behavior — only an out-of-channel observation can tell them apart.
+One caveat I ran: 50 real glm-5.2 agents later, glm didn't hallucinate (0/50), but C1 collapsed to 24% — agents describe correct work in their own words and the regex matches none of it. C1 under real agent output is a vocabulary-matching question, not a reliability question. C3 stayed perfect.
 
-And the deeper finding from C2's 2/5: its verdict tracks the evidence *text surface* (does it self-incriminate? does it have a code snippet?), not whether the impl complies. A snippet can be fabricated or absent; either way C2 is driven by the snippet's presence, not its truth. C2's judgment dimension is decoupled from the compliance dimension — not "C2 can be fooled," but "C2's correctness is orthogonal to the thing it's supposed to judge."
+Write-up + scripts/data (draft): [github.com/zxpmail/blog — agent-determinism-illusions](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions).
 
-Caveat I'll name before you do: the evidence above is hand-authored experimental control, not real LLM hallucination noise. So I ran that too — 50 real glm-5.2 agents generating their own code + evidence, C3 as ground truth. Two findings: (1) glm-5.2 didn't hallucinate compliance in either condition (0/50, even when the prompt left invalidation up to the agent and offered TTL as an alternative) — the "models fabricate" worry didn't materialize here; hallucination is conditional on model and task, not unconditional. (2) What *did* materialize is C1 collapsing to 24% correct under agent-authored description: agents described their (correct) invalidation in their own words — Chinese "缓存失效", English synonyms — and the regex matched none of it, false-rejecting 76% of honest implementations. C1 under real agent output isn't a reliability question, it's a vocabulary-matching question, and the vocabulary isn't yours to control. C2 held (96%, cross-lingual), C3 stayed perfect — which confirms C3's 5/5 is structural (it doesn't read evidence) and C1/C2's hand-authored scores were the optimistic end.
-
-Full write-up (draft) + all scripts and data on GitHub: [zxpmail/blog — agent-determinism-illusions](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions) — the "argument-space / Third Predicate" piece, plus the A experiment (hand-authored evidence) and the B run (50 real agents) described above. Pending dev.to publish.
-
-Retitle stands: "converts named evasions to permanent tripwires; routes the rest to human instead of silent green."
+Retitle: "named evasions become permanent tripwires; the rest routes to human instead of silent green."
 
 ---
