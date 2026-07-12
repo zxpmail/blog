@@ -1,0 +1,3 @@
+# B 实验 fixtures（agent 生成中间产物，~400 文件；harness 可重跑复现，json 含 verdict）
+agent-determinism-illusions/scripts/fixtures-b/
+agent-determinism-illusions/scripts/fixtures-b-vague/

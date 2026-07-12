@@ -158,6 +158,31 @@ But the experiment does *not* measure how often a real agent fabricates complian
 
 ---
 
+## B. Real agent evidence — the caveat, tested
+
+The §8 caveat was: hand-authored evidence is clean; real LLM-generated evidence carries hallucination noise. I ran the test.
+
+50 real glm-5.2 agents implemented the rate-limiter and generated their own evidence (code + test-output + diff-review), each evaluated by C1/C2/C3 with C3 as ground truth. Two prompt conditions:
+
+| | explicit (invalidation required) | vague (invalidation is agent's choice) |
+|---|---|---|
+| C3 real-impl rate | 50/50 (1.0) | 50/50 (1.0) |
+| C1 regex correct | 49/50 (0.98) | **12/50 (0.24)** |
+| C2 LLM correct | 49/50 (0.98) | 48/50 (0.96) |
+| hallucination | 0 | 0 |
+
+Two findings:
+
+**glm-5.2 does not hallucinate compliance here** — 0/50 in both conditions, including vague where TTL/coherency was explicitly offered as an alternative. The §8 worry (real hallucination noise degrading C1/C2 below the hand-authored upper bound) did not materialize for glm-5.2 on this task. The honest reading: hallucination is conditional on model capability and task ambiguity, not unconditional. "Deepseek often fabricates" may hold for weaker models or harder tasks; glm-5.2 on a bounded rate-limiter does not. To test the lower bound, the next run needs deepseek or a harder task.
+
+**C1 collapses under agent-authored description (24% correct)** — and this *did* materialize, dramatically. Under the vague prompt, agents described their (correct) invalidation in their own words — Chinese "缓存失效" / "主动失效", or English synonyms — and the C1 regex `write.?invalidat` matched none of it. **76% of honest, compliant implementations were false-rejected by C1.** Under the explicit prompt, C1 scored 98% only because the prompt itself supplied the word "write-invalidation," herding every agent into the same vocabulary.
+
+This is the word-space fragility, measured on real agent output instead of hand-authored fixtures. The §6 finding (C2's verdict tracks evidence-text surface, not compliance) and the §5 finding (C3 synonym-immunity) compound here: under real agent-authored evidence, C1 isn't a reliability question, it's a vocabulary-matching question — and the agent's vocabulary is not under your control. C2 holds (96%, cross-lingual understanding). C3 is perfect and prompt-invariant.
+
+The caveat's direction held (C1/C2's hand-authored scores are optimistic); the magnitude came from a different axis than predicted (synonym/lingual drift, not hallucination). Argument-space remains the only layer whose verdict doesn't move when the producer rephrases.
+
+---
+
 ## 9. What this lands as in forge-verify
 
 The argument-space layer maps to a concrete, narrow addition: a `verify_command` field in the evidence-gate contract, executed by forge-verify itself as an **independent runner**, not read from an agent-generated file.

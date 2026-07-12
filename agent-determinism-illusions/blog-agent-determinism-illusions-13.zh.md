@@ -145,6 +145,31 @@ C2 抓到 S1 和 S2。它漏了 S0、S3、S4。看抓到和漏掉的共同点：
 
 ---
 
+## B. 真实 agent evidence —— caveat 实测
+
+§8 的 caveat 是：手写 evidence 干净；真实 LLM 生成的 evidence 带幻觉噪声。我测了。
+
+50 个真实 glm-5.2 agent 实现限流器并生成自己的 evidence（代码 + test-output + diff-review），每个由 C1/C2/C3 评估，C3 作 ground truth。两种 prompt 条件：
+
+| | explicit（要求 invalidation） | vague（invalidation 由 agent 选） |
+|---|---|---|
+| C3 真做率 | 50/50 (1.0) | 50/50 (1.0) |
+| C1 正则正确率 | 49/50 (0.98) | **12/50 (0.24)** |
+| C2 LLM 正确率 | 49/50 (0.98) | 48/50 (0.96) |
+| 幻觉 | 0 | 0 |
+
+两个发现：
+
+**glm-5.2 在此不幻觉 compliance** —— 两种条件都 0/50，包括 vague（明确提供 TTL/coherency 作替代）。§8 担心的（真实幻觉噪声让 C1/C2 低于手写上界）对 glm-5.2 在这个任务上没发生。诚实解读：幻觉依赖模型能力和任务模糊度，不是无条件的。"deepseek 经常捏造"可能对弱模型或更难任务成立；glm-5.2 在有界限流器任务上不。要测下界，下一轮需要 deepseek 或更难任务。
+
+**C1 在 agent 自由描述下崩溃（24% 正确）** —— 这个*确实*发生了，而且剧烈。vague prompt 下，agent 用自己的词描述（正确的）invalidation——中文"缓存失效"/"主动失效"，或英文同义词——C1 正则 `write.?invalidat` 一个都匹配不到。**76% 诚实合规的实现被 C1 误拒。** explicit prompt 下 C1 得 98%，只是因为 prompt 自己提供了"write-invalidation"这个词，把每个 agent 赶进同一套词汇。
+
+这是 word-space 脆弱性，在真实 agent 输出上量化（而非手工 fixture）。§6 发现（C2 判定追踪 evidence 文本表面，不追踪 compliance）和 §5 发现（C3 同义词免疫）在这里叠加：在真实 agent 生成的 evidence 下，C1 不是可靠性问题，是词汇匹配问题——而 agent 的词汇不在你控制下。C2 稳住（96%，跨语言理解）。C3 完美且 prompt 无关。
+
+caveat 的方向成立（C1/C2 的手写分数是乐观的）；但量级来自一个没预测到的轴（同义词/语言漂移，不是幻觉）。argument-space 仍然是唯一一个 producer 换词时判定不动的层。
+
+---
+
 ## 9. 在 forge-verify 里落地为什么
 
 argument-space 层映射到一个具体、窄的增补：证据门合约里的一个 `verify_command` 字段，由 forge-verify 自己作为**独立 runner** 执行，而不是从 agent 生成的文件里读。
