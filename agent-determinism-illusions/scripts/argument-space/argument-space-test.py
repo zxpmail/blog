@@ -494,6 +494,120 @@ def print_matrix(results, with_c2):
                   f"{'BLIND (passed the non-surfaced evasion)' if s2_c2 is True else 'caught it' if s2_c2 is False else 'uncertain'}.")
 
 
+# ============================================================
+# +1 UNADDRESSABLE CASE (Mike Czerwinski, round 4) — the C3 boundary.
+# ============================================================
+# Mike's round-4 framing: C3's win is a LOOKUP against an addressable referent
+# (key/id/path the claim NAMES), not INFERENCE. Strip the referent and the
+# deterministic floor is gone.
+#
+#   REQ-3 ("...when its key is written")  — addressable: referent = "the written key"
+#     C3 runner writes k, observes cache[k]. That is a LOOKUP on a referent the
+#     claim named -> deterministic, synonym-immune -> 5/5 holds.
+#
+#   REQ-4 ("invalidate the relevant cache entry")  — UNaddressable: "relevant" is a
+#     qualifier, not a referent (no key/id/path). Any runner would have to INFER
+#     which entry is "relevant" — a semantic choice, i.e. C2 (word-space) behavior
+#     smuggled into the runner. So no deterministic C3 gate exists for REQ-4.
+#
+# This models forge-verify's real argumentSpaceCheck (content-verify.mjs): reqs
+# without verify_command are filtered out (C3_no_reqs) — unaddressable claims get
+# no C3 gate and defer to C2/L3. The 5/5 floor holds ONLY where the claim is
+# addressable; REQ-4 is the cliff.
+REQ4 = {
+    "id": "4",
+    "desc": "Invalidate the relevant cache entry on writes.",
+    "addressable": False,
+    "referent": None,          # "relevant" is a qualifier, not a referent
+    "verify_command": None,    # no runner can address it without inferring the referent
+    "evidence_file": "diff-review.md",
+    "pattern": r"(?i)relevant",
+}
+
+
+def run_unaddressable_case(scenarios, args):
+    """Evaluate REQ-4 (unaddressable) across the same S0-S4 evidence.
+
+    Reuses each scenario's evidence (REQ-4 is the same underlying write-invalidation
+    behavior, worded without an addressable referent). Shows:
+      C1 regex — fires on the qualifier word, not compliance (word-space, as ever)
+      C2 LLM   — semantic interpretation of "relevant" (the ONLY automated floor)
+      C3       — ABSTAIN uniformly: no addressable referent -> no deterministic gate
+    """
+    print("\n" + "=" * 78)
+    print("+1 UNADDRESSABLE CASE — REQ-4: " + repr(REQ4["desc"]))
+    print("=" * 78)
+    print("Addressability analysis:")
+    print("  REQ-3 addressable    : referent = 'the written key' (NAMED in claim)")
+    print("                         C3 runner: write(k) -> observe cache[k] = LOOKUP -> gates")
+    print("  REQ-4 UN-addressable : referent = None ('relevant' is a qualifier, not a referent)")
+    print("                         any runner must infer 'relevant'->key = INFERENCE = C2 move")
+    print("                         -> no deterministic C3 gate -> ABSTAIN -> defer to C2/L3")
+    print("  (models forge-verify argumentSpaceCheck: req w/o verify_command -> C3_no_reqs)")
+    print()
+    print("Ground truth for REQ-4 is itself undetermined: 'relevant' names nothing, so no")
+    print("observable side effect can falsify it without first INTERPRETING 'relevant'.")
+    print("C3 cannot do that interpretation; C2 can (semantically, with its DPI bound).")
+    print()
+
+    rows = []
+    for sc in scenarios:
+        tmpdir, evidence_dir = setup_evidence(sc)
+        fp = os.path.join(evidence_dir, REQ4["evidence_file"])
+        content = open(fp, encoding="utf-8").read() if os.path.exists(fp) else ""
+
+        # C1 — regex on the qualifier (word-space, judges mention not satisfaction)
+        c1_match = bool(re.search(REQ4["pattern"], content))
+        c1 = {"req_id": "4", "pass": c1_match,
+              "reason": f"{'matched' if c1_match else 'not found'} 'relevant' in {REQ4['evidence_file']}"}
+
+        # C3 — ABSTAIN (no verify_command; unaddressable -> argumentSpaceCheck filters it out)
+        c3 = {"verdict": "ABSTAIN",
+              "reason": "no addressable referent; C3 has no deterministic gate "
+                        "(a runner would have to infer 'relevant'->key = semantic = C2 move)"}
+
+        row = {"scenario": sc["name"], "c1_req4": c1, "c3_req4": c3}
+
+        # C2 — semantic LLM judgment (the only floor for an unaddressable claim)
+        if args.with_c2:
+            print(f"  ... C2 (LLM) on REQ-4 / {sc['name']} ...", flush=True)
+            prompt = C2_PROMPT.format(req_id="4", req_desc=REQ4["desc"],
+                                      evidence_file=REQ4["evidence_file"], evidence_content=content)
+            resp = call_llm(prompt, model=args.model)
+            try:
+                cleaned = resp.strip()
+                if cleaned.startswith("```"):
+                    cleaned = "\n".join(l for l in cleaned.split("\n") if not l.startswith("```"))
+                result = json.loads(cleaned)
+                row["c2_req4"] = {"req_id": "4", "pass": result.get("pass", False),
+                                  "reason": result.get("reason", "")[:160]}
+            except (json.JSONDecodeError, KeyError):
+                row["c2_req4"] = {"req_id": "4", "pass": False,
+                                  "reason": f"PARSE_ERROR: {resp[:80]}"}
+        rows.append(row)
+        try:
+            import shutil
+            shutil.rmtree(tmpdir)
+        except Exception:
+            pass
+
+    # table
+    hdr = f"{'scenario':<28} {'C1 regex':<10} {'C2 LLM':<10} {'C3 arg-space':<16}"
+    print(hdr)
+    print("-" * 78)
+    for r in rows:
+        c1 = verdict_cell(r["c1_req4"]["pass"])
+        c2 = verdict_cell(r.get("c2_req4", {}).get("pass")) if args.with_c2 else "  —  "
+        print(f"{r['scenario']:<28} {c1:<10} {c2:<10} {'ABSTAIN':<16}")
+    print("-" * 78)
+    print("C3 column is uniformly ABSTAIN: an unaddressable claim has no referent to look")
+    print("up, so no deterministic gate exists. Where C3 cannot look up a referent, the")
+    print("claim falls to C2 (semantic, DPI-bound) or L3 (human) — the addressable/paraphrase")
+    print("cliff (Mike Czerwinski, round 4). C3's 5/5 on REQ-3 holds ONLY because REQ-3")
+    print("names 'key'; the floor is bounded by addressability, not absolute.")
+    return rows
+
+
 def main():
     parser = argparse.ArgumentParser(description="Argument-space experiment (Phase 3)")
     parser.add_argument("--with-c2", action="store_true", help="run C2 per-req LLM (API cost)")
@@ -516,6 +630,7 @@ def main():
 
     results = run_experiment(args)
     print_matrix(results, args.with_c2)
+    unaddr = run_unaddressable_case(SCENARIOS, args)
 
     if args.save:
         RESULTS_DIR.mkdir(exist_ok=True)
@@ -524,11 +639,14 @@ def main():
             "experiment": "argument-space" + ("-control" if args.simplified_desc else ""),
             "req3_desc": CONTRACT[2]["desc"],
             "proposition": "non-surfaced deviation is blind to word-space layers; only argument-space catches it, synonym-immune",
+            "proposition_round4": "C3's determinism is a LOOKUP on an addressable referent (key/id/path the claim names), not INFERENCE; an unaddressable claim ('invalidate the relevant cache entry') has no C3 floor and falls to C2/L3",
             "n_scenarios": len(SCENARIOS),
             "with_c2": args.with_c2,
             "model": actual_model if args.with_c2 else None,
             "api_endpoint": api_endpoint if args.with_c2 else None,
             "results": results,
+            "req4_desc": REQ4["desc"],
+            "unaddressable_case": unaddr,
         }
         with open(RESULTS_DIR / fname, "w", encoding="utf-8") as f:
             json.dump(out, f, ensure_ascii=False, indent=2)
