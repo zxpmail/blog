@@ -231,3 +231,4 @@ Weng 的 Harness 综述是领域最全面的地图。它也露出了一个盲阶
 *源综述：[Harness Engineering for Self-Improvement](https://lilianweng.github.io/posts/2026-07-04-harness/) — Lilian Weng, July 2026*
 *系列：[Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
 *上一篇：[通道缺口：为什么你的 LLM 判据一只眼睛是瞎的](blog-agent-determinism-illusions-11.zh.md)*
+*下一篇：[第三个谓词：argument-space 验证实测](blog-agent-determinism-illusions-13.zh.md)*
