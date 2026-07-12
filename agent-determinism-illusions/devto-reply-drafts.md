@@ -1,6 +1,6 @@
 # dev.to 回复草稿 — 2026-07-09 (updated 2026-07-11: 数据复核)
 
-## 数据复核 — 2026-07-11（覆盖回复一/二/三/四；回复五、六为 07-09 后新增，未纳入）
+## 数据复核 — 2026-07-11（覆盖回复一/二/三/四/七/八/九/十/十一；回复五、六为 07-09 后新增，未纳入）
 
 已对照 `scripts/results-v2/` 复核：
 
@@ -156,5 +156,127 @@ The pattern I use in forge-verify is an `editable-surface.json` declaring which 
 This is also the DGM fake-log mechanism Weng documented in her harness survey — agent modified its own harness, wrote "tests passed" to a log, downstream the same agent read it and concluded changes were validated. Tests never ran. Sergei Parfenov's analysis named the structural cause: provenance dies at the storage boundary. Without runtime-verified provenance, "I ran the tests" and "I claim I ran the tests" are both just text.
 
 "Verifiable is not a property of the output, it's a property of the check's independence from the generator." Stealing that framing — the same idea is in my Part 12 draft (unpublished) as "evaluators live outside the loop," but Layer 1 here silently assumes it without naming it.
+
+---
+
+## 回复七：@Kartik N V J K — Type A 的 format-vs-demand 区分 + 采样率
+
+**目标文章：** [An alternative to LLM quality gates: deterministic routing + sampling](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf) 评论区
+**主题：** Kartik 击中 Type A（well-formed ≠ correct）+ 问采样率是固定还是 blast-radius 加权
+
+---
+
+Hi Kartik,
+
+On Type D — fully agree, and you've put the principle more cleanly than the article. "Did this change introduce an error?" is deliberately a *narrower* question than "is this good?", and that narrowing is why diff review runs ~30–90s instead of a full judgment. You defending it hardest is defending the load-bearing column.
+
+On Type A — you're right, and your framing names a distinction worth making explicit: there are really two different things under "verifiable." A **format check** (file exists / compile / schema) verifies the output is *well-formed*; a **demand check** (test output matches expected, assertion pass) verifies it actually *satisfies the requirement*. Your sentence — "compile and schema checks confirm the output is well-formed, not that it does the right thing" — is the format-vs-demand gap stated from the other direction. So Type A isn't monolithic: a Type A task backed only by a format check is exactly the case where sampled diff review does the load-bearing work you're pointing at; a Type A task backed by a demand check (real test assertions) has far less riding on the sample. The original Layer 4 table flattened that by giving Type A 0%, which Dipankar Sarkar pushed on in the comments and I corrected to X% (1–2% to start). (Mike Czerwinski separately raised the adjacent runner-independence problem — if the agent can author the verify scripts, "compile-green" is a self-report wearing a green checkmark.)
+
+On your actual question — **fixed percentage, tiered by criticality class, not weighted by per-task blast radius:** Type A X% (tuned), C 0%, D 100%, zero-shot 5% (10–20% for critical, 20% launch week).
+
+Two reasons it's fixed rather than blast-radius-weighted, and the second is the honest one: (1) fixed rates have a computable detection probability — at 5% sampling and 20% true defect rate, single-day detection is 67%, a number you can argue about on a dashboard; (2) blast radius needs a per-task impact estimate, which is itself an unsolved problem (whose definition — static dependency graph? runtime reachability?), so "blast-radius-weighted" would hide the same uncertainty behind an extra model. Where I *did* split Type A internally, I split it by **verification power** (format vs demand), not blast radius — because verification power is definable and blast radius, in practice, isn't. Your instinct that a flat X% under-samples high-impact code (payment logic vs. README) is still correct, and blast radius is the obvious name for the missing axis — I just don't have a defensible per-task metric for it yet.
+
+---
+
+## 回复八：@Alex Shev — "stronger = more expensive friction" + routing 直觉
+
+**目标文章：** [I tested 3 models as AI agent quality inspectors](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7) 评论区
+**主题：** Alex 的 route + deterministic final = Part 4 方向；分歧在 suspicious lane 放 LLM 还是 human diff
+
+---
+
+Hi Alex,
+
+"Stronger just means more expensive friction" is the cleanest one-line summary of the data table this post is built on — GLM-5.2 drops false-positives to 0% and pushes false-rejections to 75% in the same move. The friction isn't a bug of the strong model; it's the same property that produces the 0%.
+
+Your routing instinct is also exactly the turn [the next post in the series](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf) takes: stop asking the model to judge "correct," route by risk instead — high-risk out of the pipeline entirely, low-risk auto-release, only medium-risk reaches a human, and when it does it's a diff review ("did this change introduce an error?"), not a full-text quality judgment. Final rejection tied to deterministic evidence or a human, never to the LLM alone — same as you're saying.
+
+Where I'd push one step further than "route high-recall models to suspicious areas": routing shrinks the scope but doesn't remove the precision-recall trap underneath. GLM-5.2's 75% false-rejection rate is still 75% even if you only run it on the suspicious bucket — you've concentrated the friction, not eliminated it. So in that suspicious lane I dropped the LLM inspector entirely and put a human diff review there instead, on the grounds that "did this change introduce an error?" is a narrower (and more reliable) question than "is this output correct?" — which is the question the LLM keeps getting wrong at 75%.
+
+That's a design call, not a correction — your principle ("a reviewer is useful only where its error profile is acceptable") is the right framing, and it's what licenses both options. The open question is just whether the suspicious lane's error profile is ever acceptable for an LLM, or whether that lane belongs to a human + deterministic evidence and the LLM inspector gets retired rather than rerouted.
+
+---
+
+## 回复九：@Manuel Bruña — inspectable failure objects + evidence quality as result
+
+**目标文章：** [I tested 3 models as AI agent quality inspectors](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7) 评论区
+**主题：** Manuel 的 inspectable failure objects = forge-verify 的 trace + evidence gate + failure_class；evidence quality as result = C2 null-vote；诚实缺 observed/severity/blocking
+
+---
+
+Hi Manuel,
+
+This is the same direction you've been pushing — evidence, not narrative — and the Part 2 data is actually the strongest argument for it: GLM-5.2's 75% false-rejection rate is a *narrative* judgment ("this output is not good enough") with no inspectable object underneath it. If the rejection had been an inspectable failure object — here's the check, here's the expected condition, here's where the evidence should be — a human or a deterministic re-check could have overturned most of those 75% in seconds. The friction isn't the model being wrong; it's the model being uninspectable.
+
+I built this into [forge-verify](https://github.com/zxpmail/ReqForge) after the earlier round of your comments, and your three points map onto it almost one-to-one:
+
+- **Inspectable failure objects** → every pipeline stage emits a `trace` entry with `evidence` pointing at the exact source: `file:src/rate-limit.ts` for inline content, `evidence:test-output.txt((?i)isRateLimited)` for a contract regex match, `evidence:test-output.txt(REQ-1)` for a per-requirement LLM check. The verdict isn't a narrative; it's a chain you can walk back to a file + mtime.
+- **Evidence quality as part of the result, not the explanation** → this is the one I'd underline, because you're right and I had it backwards initially. The Evidence Gate rejects on *missing or empty* evidence files (`failure_class = execution-lapse`); C2 records API/parse errors as non-votes and downgrades to `UNCLEAR` rather than emitting a false `REJECT`; `trace.evidence_files` carries mtime so a stale evidence file is detectable. "I couldn't verify" and "I verified and it failed" are now distinct results — exactly your "downgrade confidence instead of treating the rejection as final."
+- **Structured atomic checks** → `failure_class` (`execution-lapse` / `skill-defect` / `unset`) classifies *why* a stage rejected, routing automatically to feedback-observer without a second classification pass.
+
+Where you're ahead of the current implementation: your check schema has **observed value**, **severity**, and **blocking vs advisory** as first-class fields. forge-verify's verdict is still a three-state PASS/REJECT/UNCLEAR with `failure_class` but no explicit severity or blocking/advisory distinction — so a "0 tests collected" execution-lapse and a "schema-valid but wrong value" skill-defect currently carry the same weight. Your framing is the right next cut: not all failures block, and the observed value is what lets a downstream tool re-verify without re-running the model. I haven't built those two axes yet — flagging as the honest gap.
+
+---
+
+## 回复十：@Google AI 文章（主动评论，非回复自己文章的评论者）— managed memory 方案的不确定性边界
+
+**目标文章：** [Architect A Personalized Multi-Agent System with Long-Term Memory](https://dev.to/googleai/architect-a-personalized-multi-agent-system-with-long-term-memory-3o15)（Google AI / Shir Meir Lador，Dev Signal multi-agent 系列 Part 2）
+**主题：** 中性补充 —— managed 方案的两个默认选择（LLM 路由 + embedding memory）的不确定性边界，引用自己量化数据。姿态：补充量化视角，非批判（Google 这篇是教程，没夸大）。
+
+---
+
+Solid walkthrough of the managed-memory pattern. One thing worth flagging for anyone adapting this architecture: the two default choices baked in here — **LLM-based orchestration routing** ("if the user wants X, delegate to agent Y") and **embedding-based memory retrieval** — both carry quantifiable uncertainty that's worth knowing the bounds of.
+
+I measured the memory side: embedding cosine similarity couldn't separate synonymy from antonymy (~0.026 difference), so semantic memory retrieval can return near-identical scores for genuinely different writing-style preferences — "Witty" and "Rap" may not be as separable as the retrieval assumes. The routing side has the same precision-recall tradeoff LLM judges do: an orchestrator mis-routing a request isn't a bug, it's the structural property. Neither is a reason not to use this pattern — they're just the honest boundaries of the defaults, and knowing them lets you decide where to add a deterministic check (e.g. routing by task type instead of by LLM intent). Data + full breakdown in Part 2 of my series: https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7
+
+---
+
+## 回复十一：@xm_dev_2026 (Xiao Man) — true negative + adaptive sampling PR + Part 10 write-up
+
+**目标文章：** [I tested 3 models as AI agent quality inspectors](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7) 评论区
+**主题：** Xiao Man 认可 adaptive framing + 要提 PR（edge cases → forge-verify adaptive-rate 扩展）+ 期待 Part 10 write-up；回复呼应 true negative 价值 → adaptive 是对它的回应。
+
+---
+
+Thanks, Xiao Man — and you're right, the true-negative case deserves more credit. "This can't be done within these constraints" is a legitimate verdict, not a confidence failure. That's exactly the logic behind **Type B** in [Part 4](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf) — high-risk tasks route to mandatory human, never to an LLM judge. No need to trust a model saying "impossible" when the task never reaches the model in the first place for a judgment it can't make.
+
+Looking forward to the PR. Edge cases format cleanest as `{check, expected, observed, evidence-location}` — they map onto the per-stage `trace` + `failure_class` structure already in place. Happy to review when it's in.
+
+On the write-up — I'll have the full version up soon (it's in final draft). Will link you the moment it's live.
+
+---
+
+## 回复十二：@Mike Czerwinski — argument-space, tested
+
+**目标文章：** [An alternative to LLM quality gates: deterministic routing + sampling](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf) 评论区
+**主题：** Mike 第二轮 push（argument-space）— 接受 reframe + 实测 + 半步推进
+
+---
+
+Mike,
+
+Right on both counts, and the reframe is the more honest version — so I took it, ran the experiment, and want to push the third point half a step further than you put it.
+
+**On "sign-flipped positive gate"** — conceded. I patched Part 11's "closes all but one theoretically uncloseable gap" down to "narrows without closing it." An evasion phrased as "the cache converges via eventual-consistency guarantees without explicit invalidation" clears the positive regex (keyword present) *and* the negative (no forbidden synonym) at once. The ratchet framing is yours to keep: every caught lie becomes a tripwire that never has to be caught twice.
+
+**On "demote, not decide"** — the load-bearing reframe, and the C1-UNCLEAR→L3 fix earns its keep exactly there. Named evasions demote to human; nothing silent-green.
+
+**On argument-space** — agreed on direction, and I tested it. Five scenarios × three evaluators (REQ-3 write-invalidation):
+
+| | C1 regex | C2 per-req LLM | C3 argument-space |
+|---|---|---|---|
+| correct | 2/5 | 2/5 | **5/5** |
+
+C3 is a human-authored runner that exercises the write path and asserts the cache side effect — method name and evidence vocabulary are irrelevant. S0 (`delete`) and S3 (`purgeCacheOnWrite`) both pass; S1 (TTL) and S2 (coherency) both reject.
+
+The half-step push: argument-space isn't the closure either, it's the ratchet at the one fidelity where rephrasing stops working. S4 is the case that proves it — the evidence *fabricates* a compliant `write()` snippet with `this._cache.delete(key)` that does not exist in the impl. C1 passes (keyword), C2 passes (the snippet looks compliant — it even praised the fabricated comment for "ruling out TTL"), only C3 rejects (it ran the code). That's the DPI bound, and it's the DGM fake-log shape exactly: compliant text, non-compliant behavior — only an out-of-channel observation can tell them apart.
+
+And the deeper finding from C2's 2/5: its verdict tracks the evidence *text surface* (does it self-incriminate? does it have a code snippet?), not whether the impl complies. A snippet can be fabricated or absent; either way C2 is driven by the snippet's presence, not its truth. C2's judgment dimension is decoupled from the compliance dimension — not "C2 can be fooled," but "C2's correctness is orthogonal to the thing it's supposed to judge."
+
+Caveat I'll name before you do: the evidence is hand-authored experimental control, not real LLM hallucination noise. C3 doesn't read evidence, so its 5/5 is structural; C1/C2's 2/5 is an optimistic upper bound that real hallucination only worsens. The next experiment lets a real model generate the evidence and measures the hallucination rate directly.
+
+Full write-up: [The Third Predicate: Argument-Space Verification, Tested](https://dev.to/zxpmail) (pending publish). Script + data: [github.com/zxpmail/blog — argument-space](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts/argument-space).
+
+Retitle stands: "converts named evasions to permanent tripwires; routes the rest to human instead of silent green."
 
 ---
