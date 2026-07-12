@@ -257,7 +257,7 @@ Mike,
 
 Right on both counts, and the reframe is the more honest version — so I took it, ran the experiment, and want to push the third point half a step further than you put it.
 
-**On "sign-flipped positive gate"** — conceded. I patched Part 11's "closes all but one theoretically uncloseable gap" down to "narrows without closing it." An evasion phrased as "the cache converges via eventual-consistency guarantees without explicit invalidation" clears the positive regex (keyword present) *and* the negative (no forbidden synonym) at once. The ratchet framing is yours to keep: every caught lie becomes a tripwire that never has to be caught twice.
+**On "sign-flipped positive gate"** — conceded. My earlier "closes all but one theoretically uncloseable gap" framing is now "narrows without closing it" — a ratchet, not a closure. An evasion phrased as "the cache converges via eventual-consistency guarantees without explicit invalidation" clears the positive regex (keyword present) *and* the negative (no forbidden synonym) at once. The ratchet framing is yours to keep: every caught lie becomes a tripwire that never has to be caught twice.
 
 **On "demote, not decide"** — the load-bearing reframe, and the C1-UNCLEAR→L3 fix earns its keep exactly there. Named evasions demote to human; nothing silent-green.
 
@@ -273,9 +273,9 @@ The half-step push: argument-space isn't the closure either, it's the ratchet at
 
 And the deeper finding from C2's 2/5: its verdict tracks the evidence *text surface* (does it self-incriminate? does it have a code snippet?), not whether the impl complies. A snippet can be fabricated or absent; either way C2 is driven by the snippet's presence, not its truth. C2's judgment dimension is decoupled from the compliance dimension — not "C2 can be fooled," but "C2's correctness is orthogonal to the thing it's supposed to judge."
 
-Caveat I'll name before you do: the evidence is hand-authored experimental control, not real LLM hallucination noise. C3 doesn't read evidence, so its 5/5 is structural; C1/C2's 2/5 is an optimistic upper bound that real hallucination only worsens. The next experiment lets a real model generate the evidence and measures the hallucination rate directly.
+Caveat I'll name before you do: the evidence above is hand-authored experimental control, not real LLM hallucination noise. So I ran that too — 50 real glm-5.2 agents generating their own code + evidence, C3 as ground truth. Two findings: (1) glm-5.2 didn't hallucinate compliance in either condition (0/50, even when the prompt left invalidation up to the agent and offered TTL as an alternative) — the "models fabricate" worry didn't materialize here; hallucination is conditional on model and task, not unconditional. (2) What *did* materialize is C1 collapsing to 24% correct under agent-authored description: agents described their (correct) invalidation in their own words — Chinese "缓存失效", English synonyms — and the regex matched none of it, false-rejecting 76% of honest implementations. C1 under real agent output isn't a reliability question, it's a vocabulary-matching question, and the vocabulary isn't yours to control. C2 held (96%, cross-lingual), C3 stayed perfect — which confirms C3's 5/5 is structural (it doesn't read evidence) and C1/C2's hand-authored scores were the optimistic end.
 
-Full write-up: [The Third Predicate: Argument-Space Verification, Tested](https://dev.to/zxpmail) (pending publish). Script + data: [github.com/zxpmail/blog — argument-space](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts/argument-space).
+Full write-up (draft) + all scripts and data on GitHub: [zxpmail/blog — agent-determinism-illusions](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions) — the "argument-space / Third Predicate" piece, plus the A experiment (hand-authored evidence) and the B run (50 real agents) described above. Pending dev.to publish.
 
 Retitle stands: "converts named evasions to permanent tripwires; routes the rest to human instead of silent green."
 
