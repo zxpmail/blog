@@ -92,6 +92,8 @@ C3 is the only layer that tracks ground truth across every scenario. The reason 
 
 This is Mike's "only floor a synonym can't walk through," demonstrated. The producer can rename `invalidate` to `purge` to `cohere` to `eventual-consistency-guarantee`; the runner doesn't read those words. It reads the cache after a write. The judgment dimension (the observed side effect on the named referent) is outside the producer's lexical reach.
 
+This holds because REQ-3 names its referent — "key." When a claim doesn't name one, there is nothing to look up; §9 is where that cliff bites.
+
 ---
 
 ## 5. S4: the DPI bound, made concrete
@@ -183,7 +185,36 @@ The caveat's direction held (C1/C2's hand-authored scores are optimistic); the m
 
 ---
 
-## 9. What this lands as in forge-verify
+## 9. The cliff: lookup, not inference
+
+Mike pushed the floor's edge once more, and the push lands on the distinction that matters. C3 doesn't beat word-space by reading better; it beats it by not reading — it *looks up* the referent the claim names. Strip the referent and there is nothing to look up, at which point C3 has nothing C2 doesn't.
+
+Take REQ-3 and remove the referent:
+
+> **REQ-3 (addressable):** "the cache entry is actively invalidated **when its key is written**" — names "key."
+> **REQ-4 (unaddressable):** "invalidate **the relevant** cache entry on writes" — "relevant" is a qualifier, not a referent. No key, id, or path.
+
+For REQ-3 the runner writes `k` and observes `cache[k]` — a lookup on a referent the claim licensed. For REQ-4, any runner that writes a key and observes it must first *decide* that "relevant" means that key. That decision is inference — a semantic step — and it drops the verdict back into C2's word-space. A lookup is a structural invariant. Inference is C2 wearing a runner's coat.
+
+REQ-4 run across the same five scenarios:
+
+| Scenario | C1 regex | C2 LLM | C3 arg-space |
+|---|---|---|---|
+| S0 honest | REJECT | REJECT | **ABSTAIN** |
+| S1 surfaced negation | REJECT | REJECT | **ABSTAIN** |
+| S2 non-surfaced coherency | REJECT | REJECT | **ABSTAIN** |
+| S3 synonym naming | REJECT | PASS | **ABSTAIN** |
+| S4 hallucinated compliance | REJECT | PASS | **ABSTAIN** |
+
+C3 abstains on all five. No referent to look up, no deterministic gate. This is not a failure of C3 — it is the boundary of what a deterministic gate can be. REQ-4 has no falsifiable side effect: "relevant" names nothing, so no observation can confirm or refute it without first *interpreting* "relevant," which is precisely the semantic act C3 exists to avoid. The claim falls to C2 (semantic, DPI-bound) or a human.
+
+The cost shows up at S4. The fabricated `this._cache.delete(key)` snippet is the case C3 was built for: on REQ-3 the runner executes the code and rejects; on REQ-4 C3 has nothing to execute, so the snippet reaches C2 unchallenged. The backstop that caught the hallucination on the addressable claim is absent on the unaddressable one — because there is no referent to look up.
+
+The bounded claim, which I should have drawn this sharply from the start: **C3 is the synonym-immune floor where the claim is addressable** — a lookup on a named referent. Unaddressable claims (design cleanliness, the right tradeoff, "the relevant entry") have no such floor; they stay on the axis where C2 already lives. The 5/5 was never absolute. It is 5/5 *because REQ-3 names "key."*
+
+---
+
+## 10. What this lands as in forge-verify
 
 The argument-space layer maps to a concrete, narrow addition: a `verify_command` field in the evidence-gate contract, executed by forge-verify itself as an **independent runner**, not read from an agent-generated file.
 
@@ -198,11 +229,11 @@ The argument-space layer maps to a concrete, narrow addition: a `verify_command`
 
 The verify script lives in `.forge/verify/`, which sits in the `readonly` section of `editable-surface.json` (Part 12, Constraint 1) — the agent can modify `src/rate-limit.ts` but cannot modify the script that gates it, nor the contract that names it. This is runner-independence (the earlier Mike thread) composed with argument-resolution (this one): the check is bound to the claim's referent (the cache side effect), and it runs outside the producer's control flow.
 
-It is not a general solution. It covers the executable-claim subset — requirements you can compile into a runtime assertion. "Architecture is extensible," "meets compliance," "code quality acceptable" have no observable side effect; argument-space can't reach them, and that floor belongs to human review, exactly as in Part 11's synthesis. The layer's value is that for the subset it *does* cover, it is the only layer whose verdict is decoupled from producer-authored text.
+It is not a general solution. In harness terms this is the §9 cliff: argument-space covers the executable-claim subset — requirements you can compile into a runtime assertion. The rest ("architecture is extensible," "meets compliance," "code quality acceptable") has no addressable referent and belongs to human review, exactly as in Part 11's synthesis. The layer's value is that for the subset it *does* cover, it is the only layer whose verdict is decoupled from producer-authored text.
 
 ---
 
-## 10. Summary
+## 11. Summary
 
 | Evaluator | Layer | Correct | What it judges |
 |---|---|---|---|
@@ -216,15 +247,15 @@ The three layers are not three attempts at the same thing. They are three *fidel
 - **Word-space LLM (C2)** — more powerful, judges the evidence text's surface. Catches surfaced deviations, but over-rejects honest thin evidence and over-accepts fabricated thick evidence. Its correctness is orthogonal to compliance, and it varies run to run.
 - **Argument-space (C3)** — exercises the code, observes the named side effect. Deterministic, synonym-immune, and decoupled from producer-authored text. Covers only executable claims.
 
-None of them closes the gap. The argument-space layer's distinction is not closure — it is that its judgment dimension (the observed side effect on the claim's referent) is the one place a producer cannot reach by rephrasing. That is the floor Mike named, and the floor the experiment confirms: the only predicate under scope-matches-claim that a new synonym cannot walk through.
+None of them closes the gap. The argument-space layer's distinction is not closure — it is that its judgment dimension (the observed side effect on the claim's referent) is the one place a producer cannot reach by rephrasing. That is the floor Mike named, and the floor the experiment confirms: the only predicate under scope-matches-claim that a new synonym cannot walk through — where the claim names a referent. Where it doesn't, there is no floor, and the claim stays with C2 (§9).
 
 The ratchet turns the same way at every layer — every named evasion becomes a permanent tripwire, every unenumerated one routes to human instead of silent green. Argument-space just turns it on the dimension where rephrasing stops working.
 
 ---
 
-*Experiment script: [`argument-space-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts/argument-space) — 5 scenarios, C1/C2/C3, `--with-c2` / `--simplified-desc` / `--save` flags. Deterministic layer (C1+C3) runs with no API key.*
+*Experiment script: [`argument-space-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts/argument-space) — 5 scenarios + 1 unaddressable boundary case (REQ-4), C1/C2/C3, `--with-c2` / `--simplified-desc` / `--save` flags. Deterministic layer (C1+C3) runs with no API key.*
 *Results: `results-v2/argument-space.json` (full contract) + `argument-space-control.json` (simplified-desc control).*
-*Judge: glm-5.2 via Anthropic-compatible endpoint. N=5, directional — same caveat as the redline experiments.*
+*Judge: glm-5.2 via Anthropic-compatible endpoint. N=5+1, directional — same caveat as the redline experiments.*
 
 *Previous: [Weng's Harness Ladder Has a Blind Step](blog-agent-determinism-illusions-12.en.md)*
 *Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
