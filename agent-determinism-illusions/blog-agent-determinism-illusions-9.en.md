@@ -11,7 +11,7 @@ series: "Agent Determinism Illusions"
 
 ## At 30 samples, the calibration effect disappeared
 
-**Agent Determinism Illusions (Part 9, Series Finale)**
+**Agent Determinism Illusions (Part 9)**
 
 ## Context
 
@@ -101,4 +101,4 @@ Once you accept this premise, the choices are clear: cover obvious garbage with 
 ---
 
 *All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
-*Series start: [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](blog-agent-determinism-illusions.en.md)*
+*Series start: [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)*
