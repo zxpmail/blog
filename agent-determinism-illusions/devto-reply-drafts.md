@@ -321,3 +321,25 @@ This maps onto your axis framing: addressable arguments come off the vibe axis (
 For expensive mistakes the silent direction is the worse one. A false rejection costs reviewer attention; a false negative ships the defect. "Narrow the job, deterministic checks, human diff review" all attack the false-negative directly, which is why they beat judge-shopping in that lane. The strict model earns its keep where false-negatives are cheap (low-stakes filtering — passing bad work is harmless) and retires where they're expensive. Same boundary you're drawing.
 
 ---
+
+## 回复十六：@Mike Czerwinski — lookup, not inference: 第 6 个 case 实测
+
+**目标文章：** ⚠️ TBD（需确认）—— Mike 第四轮评论所在。Round 3 在他自己的《[Vibe coding is not a level. It's an axis.](https://dev.to/jugeni/vibe-coding-is-not-a-level-its-an-axis-12gb)》文；round 4 可能续在该 thread，或回到 Part 4 评论区。dev.to 正文 webReader 读不到（JS 渲染），**需你确认贴哪**。
+**主题：** Mike 第四轮收敛（lookup vs inference）；"invalidate the relevant cache entry" = unaddressable。带 5+1 数据闭环（实验 commit 98eaa99，已 push）。
+
+---
+
+You sharpened it again, and the sharper version is the right one. First the edge was addressable-vs-paraphrase; now you've named what makes the difference: C3 is a *lookup* against the referent the claim names, not *inference* about it. A lookup is a structural invariant. Inference is C2 wearing a runner's coat.
+
+I ran the case we agreed on — your example, "invalidate the relevant cache entry," as the +1. "Relevant" is a qualifier, not a referent: no key, id, or path for a runner to address. Any runner that writes a key and observes it has to first decide that "relevant" means that key — which is the inference step, and it drops the verdict back into C2's word-space.
+
+Two columns now, not one:
+
+- **Addressable** (REQ-3, "…when its key is written" — names "key"): C3 = 5/5, unchanged. The runner writes k, observes cache[k]. Lookup, synonym-immune.
+- **Unaddressable** (REQ-4, "invalidate the relevant cache entry"): C3 = ABSTAIN, all five scenarios. No referent to look up, so no deterministic gate — it falls to C2 (semantic, DPI-bound) or a human.
+
+The cost of losing the floor shows up at exactly the case C3 was built for. S4 is a fabricated `this._cache.delete(key)` snippet — evidence claims compliance the code doesn't have. On the addressable claim, C3 runs the code and rejects. On the unaddressable claim, C3 has nothing to run, so the snippet reaches C2 unchallenged. The backstop that caught the hallucination on REQ-3 is absent on REQ-4 — because there's no referent to look up.
+
+So the honest, bounded claim: C3 is the synonym-immune floor *where the claim is addressable* — a lookup on a named referent. Unaddressable claims have no such floor; they stay on the vibe axis with C2. The 5/5 was never absolute — it's 5/5 *because REQ-3 names "key."*
+
+---
