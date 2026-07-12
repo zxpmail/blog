@@ -308,3 +308,16 @@ So the honest experiment column is two numbers, not one: addressable (C3, struct
 This maps onto your axis framing: addressable arguments come off the vibe axis (run the code), paraphrase stays on it — where C2 already lives. The sharpened claim: C3 is the synonym-immune floor on addressable arguments, and paraphrase is the cliff back to vibe.
 
 ---
+
+## 回复十五：@Alex Shev — retire 不够：softer judge 把失败从 loud 挪到 silent
+
+**目标文章：** [I tested 3 models as AI agent quality inspectors](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7) 评论区（延续回复八/十三）
+**主题：** Alex 第三轮收敛（"retire not reroute is the clean move" + "别买 softer judge"）。追问：softer judge 不是修好失败，是把失败从 loud（false rejection）挪到 silent（false negative）；贵 mistake 上 silent 方向更糟——FN 把缺陷发出去。
+
+---
+
+"A weaker model can hide the same failure under cheaper tokens" — that's the half the data table makes visible. The strict model fails loud: 75% false-rejection, felt immediately. The softer model fails quiet: it passes the defective work the strict one caught, and a pass raises no alarm. Shopping softer doesn't remove the failure — it shifts it from the loud direction (false rejection) to the silent one (false negative).
+
+For expensive mistakes the silent direction is the worse one. A false rejection costs reviewer attention; a false negative ships the defect. "Narrow the job, deterministic checks, human diff review" all attack the false-negative directly, which is why they beat judge-shopping in that lane. The strict model earns its keep where false-negatives are cheap (low-stakes filtering — passing bad work is harmless) and retires where they're expensive. Same boundary you're drawing.
+
+---
