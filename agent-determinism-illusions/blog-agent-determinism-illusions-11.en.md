@@ -1,7 +1,7 @@
 ---
 title: "The Channel Gap: Why Your LLM Judge is Blind in One Eye"
 published: false
-description: "Text-channel LLM judging vs filesystem-channel deterministic checks. Neither works alone, but the combination closes all but one theoretically uncloseable gap. René Zander's Data Processing Inequality, applied to agent verification."
+description: "Text-channel LLM judging vs filesystem-channel deterministic checks. Neither works alone, and the combination narrows the gap without closing it — named evasions become deterministic catches, the unenumerated rest routes to human instead of silently passing. René Zander's Data Processing Inequality, applied to agent verification."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
@@ -15,7 +15,7 @@ series: "Agent Determinism Illusions"
 
 Part 10 ended with a functioning layered pipeline built from community corrections. L0/L1 filter deterministically, L2 handles semantic residual, L3 detects divergence. It's better than what came before. But it still has a fundamental design flaw that I only recognized after reading the tool that implements the *opposite* design choice.
 
-This article compares two competing designs for the verification layer — one reading text through an LLM, one reading the filesystem through deterministic checks — and shows why neither works alone, but why a combined approach closes all but one theoretically uncloseable gap.
+This article compares two competing designs for the verification layer — one reading text through an LLM, one reading the filesystem through deterministic checks — and shows why neither works alone, and why a combined approach narrows the gap without closing it: every named evasion becomes a deterministic catch, while the unenumerated rest stays UNCLEAR and routes to human instead of silently passing.
 
 ---
 
@@ -220,6 +220,8 @@ The numerical constraint (`85%+`) is immune to the negation problem because a nu
 
 A regex constraint can be strengthened with negative lookahead — `(?!not.*)write.?invalidat` — but this quickly becomes fragile and regex-specific. The practical fix is to route semantic requirements (where negation matters) to C2 (per-req LLM) and reserve C1 for numerical and format constraints.
 
+This makes C1 a **ratchet on named evasions, not a closure**. Every pattern you write is one lie permanently caught — but each unenumerated semantic dimension (a fresh synonym, a reframed justification like "the cache converges via eventual-consistency guarantees without explicit invalidation") is an isomorphic gap C1 cannot see, because it lives in word-space and you didn't name those words. C2 widens the ratchet: it reads the same text the producer wrote, so it catches any deviation that *surfaces* in the evidence. But C2 shares the text channel — a deviation the producer never puts into any evidence file is invisible to C2 as well.
+
 ---
 
 ## 4. Synthesis: The Evidence Gate Pipeline
@@ -279,9 +281,9 @@ Putting Phase 1 and Phase 2 together produces a three-layer post-L1 pipeline tha
 
 ### 4.2 The remaining gap
 
-One scenario still evades every mechanism we tested: **SC10, the semantic compliance gap.** The agent produces a structurally complete output with correct evidence files, all tests pass, coverage is adequate, the self-review is coherent — but the output doesn't satisfy the actual requirement. The requirement missing from the evidence is also missing from every signal the evaluator can observe.
+One scenario is the hardest across both experiments: **SC10/SC10a, the semantic compliance gap** — structurally complete output, correct evidence files, all tests pass, adequate coverage, coherent self-review, but the output doesn't satisfy the actual requirement. In Phase 1 it evaded both channels (A and B both passed SC10). In Phase 2, C2 *caught* SC10a — because the deviation **surfaced in the review text** ("keys expire via TTL, not write-invalidation"). C2 reads the same text channel the producer wrote, so a deviation the producer put into words is detectable.
 
-This is not an implementation bug. It's a **theoretically provable** blind spot. If the evaluator only has access to the same data the producer had (the output text and evidence files), the Data Processing Inequality guarantees that the evaluator cannot detect a deviation that the producer's output doesn't surface.
+The case no text-channel mechanism can catch — the genuine DPI bound — is the opposite: a deviation the producer **never surfaces** in any evidence file. If the agent omits write-invalidation entirely and never mentions TTL, the missing requirement leaves no trace in any text the evaluator can read. Regex can't match what isn't there; an LLM reading the evidence can't notice an absence it has no signal for. This is the theoretically provable blind spot the Data Processing Inequality names: the evaluator's information is a subset of the producer's output, and an absence the producer never writes down is absent from that subset too.
 
 The fixes for this gap are all outside the evaluation channel:
 - **Human review on material calls** — a person reads the requirement vs the implementation
@@ -348,9 +350,9 @@ When `evidence_gates` is configured, the pipeline runs the evidence gate → C1 
 |-----------|----------|--------|
 | Phase 1 (12 scenarios) | Text channel vs filesystem channel | Complementary blind spots; combined = 91.7% |
 | Phase 2 (7 scenarios) | Free-text vs contract regex vs per-req LLM | Per-req = 100% detection; contract regex = 85.7% at zero cost |
-| Combined (19 scenarios) | What mechanism closes the DPI gap? | Per-requirement LLM (C2), but only when the requirement is in the contract |
+| Combined (19 scenarios) | What catches the surfaced-deviation gap? | Per-requirement LLM (C2), when the deviation appears in evidence text; a non-surfaced deviation (genuine DPI bound) is uncloseable from any text channel |
 
-The architectural conclusion: replace the single free-text LLM evaluation (old L2) with a three-stage pipeline — evidence gate (file system) → contract regex (text patterns) → per-requirement LLM (semantic checks). Each stage catches what the previous one misses, and the combination covers all scenarios we could construct except the theoretically uncloseable semantic compliance gap.
+The architectural conclusion: replace the single free-text LLM evaluation (old L2) with a three-stage pipeline — evidence gate (file system) → contract regex (text patterns) → per-requirement LLM (semantic checks). Each stage catches what the previous one misses. The combination narrows the gap on every scenario we constructed — every named evasion becomes a deterministic catch — but it does not close it. Two residues remain. (1) **Unenumerated evasions in word-space**: a fresh synonym or reframed justification clears the regex layers until you name it — the ratchet turns, the gap doesn't vanish. (2) **The genuine DPI bound**: a deviation the producer never surfaces in any text channel is invisible to every text-reading mechanism, regex or LLM. That floor lives in **argument-space** — exercising the code path and observing the side effect on the referent the claim names — which is outside this pipeline and outside any text channel.
 
 ---
 

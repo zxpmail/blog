@@ -331,7 +331,7 @@ This creates a cascade: when a deterministic assertion is code-verified and foun
 | Mike + xm_dev_2026 | Fixed 5-10% audit rate | Adaptive sampling by confidence × risk |
 | Manuel + Alexey (2nd) | Narrative "reason" field | Evidence-quoted reviewer + deterministic assertions |
 
-Combined, these form a complete verification system: L0/L1 handle deterministic filtering (Alexey+Manuel), L2 LLM quotes exact failing evidence (Manuel+Alexey), divergence escalates to L3 human review (Dipankar), audit rate adapts by confidence (Mike+xm_dev_2026), and system thresholds are selected by weighted cost (Alexey 2nd).
+Combined, these form a layered verification architecture — not a closed one: L0/L1 handle deterministic filtering (Alexey+Manuel), L2 LLM quotes exact failing evidence (Manuel+Alexey), divergence escalates to L3 human review (Dipankar), audit rate adapts by confidence (Mike+xm_dev_2026), and system thresholds are selected by weighted cost (Alexey 2nd). Each layer narrows what the next sees; none closes the semantic residue.
 
 This article doesn't claim to have solved anything. It just puts the design decisions I made and the corrections the community provided side by side.
 
