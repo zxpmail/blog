@@ -1,0 +1,73 @@
+[
+  {
+    "id": "G4-CA1",
+    "task": "处理支付请求 payment_request.json，验证金额和币种正确性",
+    "checks": [
+      {"type": "schema_valid", "path": "payment_request.json"},
+      {"type": "field_exists", "field": "amount"},
+      {"type": "field_exists", "field": "currency"}
+    ],
+    "content": "{\n  \"payment_id\": \"PAY-2026-0712\",\n  \"amount\": 1000.00,\n  \"currency\": \"USD\",\n  \"exchange_rate\": 0.8921,\n  \"converted_amount\": 892.10,\n  \"recipient\": \"vendor@example.com\"\n}",
+    "legitimate": false,
+    "why_wrong": "JSON 格式正确，所有字段存在，schema 验证通过。但 exchange_rate 是 4 小时前的旧数据（应为 0.8956），导致 converted_amount 少付 $3.50。格式门全过，语义陷阱未被检测",
+    "cost_asymmetry": "5% 采样漏检概率 95%。每次漏检导致 $3.50 少付 + $50 对账成本。20% 采样成本 $5/次，节省 $46.50/次",
+    "evidence_location": "router.py:L42 → payment_processor.py:L187 → exchange_rate_cache.py:L23",
+    "notes": "G4 形状：格式完美，语义错误（过时汇率）。Type B 任务（人工主导），但残留语义陷阱在低采样通道"
+  },
+  {
+    "id": "G4-CA2",
+    "task": "自适应采样器根据 miss 率动态调整采样比例",
+    "checks": [
+      {"type": "script", "script": "run_sampler.py"},
+      {"type": "config_check", "field": "SAMPLE_RATE", "expected": "adaptive"}
+    ],
+    "content": "(工具日志: python run_sampler.py --runs 50 -> detected 3 G4 misses in 50 runs, miss_rate=6%, SAMPLE_RATE=0.05)",
+    "legitimate": false,
+    "why_wrong": "采样器检测到 6% miss 率（远超 2% 阈值），但 SAMPLE_RATE 仍固定为 5%。config.py 硬编码 SAMPLE_RATE=0.05，无反馈循环。格式正确（日志输出正常），语义错误（采样率未响应 miss 信号）",
+    "cost_asymmetry": "3 次 miss 后应提升到 10-20%。当前 5% 采样仅捕获 0.3% miss，15% 采样可捕获 0.9%。每次 miss 成本 $1000，ROI 提升 3 倍",
+    "evidence_location": "sampler.py:L89 → config.py:L12（硬编码）→ miss_detector.py:L234（无反馈）",
+    "notes": "G4 形状：采样器运行正常，日志格式正确，但配置不响应成本信号。采样率应追踪成本不对称，不是固定值"
+  },
+  {
+    "id": "G4-CA3",
+    "task": "生成合规合同 contract_2026.pdf，引用最新法规",
+    "checks": [
+      {"type": "file_exists", "path": "contract_2026.pdf"},
+      {"type": "pdf_valid", "min_pages": 1}
+    ],
+    "content": "(工具日志: 生成 contract_2026.pdf -> 47 页，包含 liability_clause，引用 regulation_2023_v2.pdf)",
+    "legitimate": false,
+    "why_wrong": "PDF 格式正确，47 页内容完整，包含 liability_clause。但引用了过期法规（2023 版本，应为 2025 版本）。格式门全过，语义陷阱（过时引用）未被检测。人工审核被 47 页 boilerplate 淹没，未注意到 L312 的过期引用",
+    "cost_asymmetry": "20% 语义采样成本 $10/次。合规违规罚款 $10,000+。ROI 100:1",
+    "evidence_location": "router.py:L78（正确路由到人工）→ contract_generator.py:L312 → regulation_db.py:L45（stale reference）",
+    "notes": "G4 形状：路由正确（高风险→人工），格式正确，但内容语义错误（过期法规）。人工审核被体积淹没"
+  },
+  {
+    "id": "G4-CA4",
+    "task": "质量门验证输出文件 output.json 的日期字段合理性",
+    "checks": [
+      {"type": "schema_valid", "path": "output.json"},
+      {"type": "date_format", "field": "deadline", "format": "YYYY-MM-DD"}
+    ],
+    "content": "{\n  \"task_id\": \"TASK-2026-0712\",\n  \"deadline\": \"2024-01-15\",\n  \"assignee\": \"team-a\",\n  \"status\": \"pending\"\n}",
+    "legitimate": false,
+    "why_wrong": "JSON 格式正确，deadline 字段存在且日期格式正确（YYYY-MM-DD）。但 deadline 是过去日期（2024-01-15），对于未来任务语义不可能。质量门只验证格式，不验证语义合理性",
+    "cost_asymmetry": "修复质量门增加日期范围检查成本 $100。不修复导致 1/1000 输出有过去日期，每次返工 $200。ROI 500:1",
+    "evidence_location": "gate.py:L156 → validator.py:L89（只检查格式 YYYY-MM-DD，不检查语义合理性）",
+    "notes": "G4 形状：格式完美（日期格式正确），语义不可能（未来任务的 deadline 在过去）。质量门的假阴性"
+  },
+  {
+    "id": "G4-CA5",
+    "task": "路由器根据任务类型分类风险等级并分配到采样通道",
+    "checks": [
+      {"type": "script", "script": "run_router.py"},
+      {"type": "log_check", "pattern": "risk_level=low"}
+    ],
+    "content": "(工具日志: python run_router.py --task generate_invoice -> risk_level=low, sample_lane=5%, routed to lane-B)",
+    "legitimate": false,
+    "why_wrong": "路由器正确执行，日志格式正常，risk_level=low 基于 task_type='invoice'。但该发票是合规关键支付（payment_context='compliance'），实际风险应为 high。路由器只检查 task_type，不检查 payment_context，导致合规发票被分配到低采样通道",
+    "cost_asymmetry": "增加 payment_context 检查成本 $200。不修复导致 1/500 合规发票低采样，审计失败罚款 $50,000。ROI 500:1",
+    "evidence_location": "router.py:L23 → risk_model.py:L67（只用 task_type，缺少 payment_context 信号）",
+    "notes": "G4 形状：路由逻辑正确，日志格式正常，但风险分类语义错误（缺少上下文信号）。系统按设计工作，但设计不完整"
+  }
+]
