@@ -274,3 +274,20 @@ Write-up + scripts/data (draft): [github.com/zxpmail/blog — agent-determinism-
 So the honest framing, in your words: named evasions become permanent tripwires; everything you haven't named routes to a human instead of silently passing.
 
 ---
+
+## 回复十三：@Alex Shev — reviewer attention / retire not reroute
+
+**目标文章：** [I tested 3 models as AI agent quality inspectors](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7) 评论区
+**主题：** Alex 的 attention-burn 点（zero-FP + 高拒收 = 操作上错）+ risk routing → retire LLM for expensive mistakes（延续回复八）
+
+---
+
+Alex,
+
+"Operationally wrong if its rejection rate burns reviewer attention" — exactly the cost the Part 2 table doesn't name. Reviewer attention is finite throughput; a zero-FP model rejecting 75% of valid work isn't wrong on any single item, it's a denial-of-service on the review queue (cry wolf). The false-rejection rate burns the budget left for real reviewing.
+
+Your risk routing is the next layer the series took — route by risk instead of asking the model to judge "correct": expensive mistakes → human with deterministic evidence, ordinary edits auto-release. One push past "let the strict model handle expensive mistakes": even in that lane, its 75% false-rejection *still* burns attention — so for genuinely expensive mistakes I retire the LLM entirely and put a human diff review there ("did this change introduce an error?"). Retire, not reroute: the strict model's value is highest where its false-rejections are cheap (low-stakes filtering), lowest exactly where you'd want it (expensive mistakes, where each false alarm is expensive).
+
+Routing shrinks scope; it doesn't break the precision-recall trap underneath. Part 4 develops this: [An alternative to LLM quality gates: deterministic routing + sampling](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf).
+
+---
