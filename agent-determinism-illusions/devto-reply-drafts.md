@@ -271,6 +271,6 @@ One caveat I ran: 50 real glm-5.2 agents later, glm didn't hallucinate (0/50), b
 
 Write-up + scripts/data (draft): [github.com/zxpmail/blog — agent-determinism-illusions](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions).
 
-Retitle: "named evasions become permanent tripwires; the rest routes to human instead of silent green."
+So the honest framing, in your words: named evasions become permanent tripwires; everything you haven't named routes to a human instead of silently passing.
 
 ---
