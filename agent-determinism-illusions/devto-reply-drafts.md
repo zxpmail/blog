@@ -343,3 +343,45 @@ The cost of losing the floor shows up at exactly the case C3 was built for. S4 i
 So the honest, bounded claim: C3 is the synonym-immune floor *where the claim is addressable* — a lookup on a named referent. Unaddressable claims have no such floor; they stay on the vibe axis with C2. The 5/5 was never absolute — it's 5/5 *because REQ-3 names "key."*
 
 ---
+
+
+## 回复十七：@Mike Czerwinski — refuse entry vs fallback: 实验回答
+
+**目标文章：** 应续在 Part 4 他的 7/13 评论 thread 下。
+**主题：** Mike 第五轮：addressable/unaddressable 分类后的设计选择——refuse-entry（拒绝录入不可寻址的 claim）还是 fallback（降级到 C2/human）。用 39 条需求的实证数据回答。
+
+---
+
+You asked a design question that the experiment column doesn't settle on its own: once we split C3 into addressable and unaddressable, what happens to the unaddressable half — fallback (→ C2, word-space, DPI-bound, known failure mode), or refuse entry entirely?
+
+I ran a frequency experiment on 39 requirements (14 from forge-verify fixtures, 14 from open-source cache/RBAC specs — vertz, hass-mcp, orval, iceberg-lakehouse, Kong Mesh, rateShield, GasGuard, AGAD — and 11 from the categories we've been discussing). For each, classified whether the core referent is addressable (names a key, id, path, entity, or parameterized condition) or unaddressable (requires inference to resolve). Then for every unaddressable or mixed case, attempted a concrete rewrite into addressable form and measured semantic loss.
+
+The results:
+
+**1. The "shape not key" category** — your "cross-cutting invalidations that touch a shape rather than a key" — IS addressable in practice. Each case resolves to a deterministic operation:
+
+- `prefix user:*` → string prefix match `starts_with('user:')`. Loss: none.
+- `decisions derived from role` → dependency tracking table `role_dependency_id`. Loss: low.
+- `queries referencing table` → `source_tables` set per query entry. Loss: low.
+- `cascade any depth` → materialized path prefix recursion. Loss: none.
+- `sessions by userId (keyed by sessionId)` → parameterized query on `session.user_id`. Loss: none.
+
+None of these fall back to C2. They're not lookups by a single key, but they're still deterministic: the check binds against a traced relation (materialized path, dependency table, source-table index), not against word similarity. The referent is addressable — it just requires a join, not a direct index.
+
+**2. The real rewrite failures**
+
+- *"UI changes should feel responsive"* — cannot be rewritten. UX property, not a structural invariant. But outside C3's scope.
+- *"System gracefully handles load spikes"* — P50 latency targets capture one dimension; loses UX degradation behavior. Outside C3's scope.
+- *"invalidate the relevant cache entry"* — your example, and the only cache-domain case that truly resists rewriting. "Relevant" is a paraphrase, and any rewrite that replaces it with a named referent either over-constrains or under-constrains.
+
+**3. So "refuse on unaddressable" — too blunt?**
+
+In C3's domain (cache invalidation, authorization, write-path): the data says no. Every cache/authorization-domain requirement was either already addressable or rewritable with acceptable loss. The cases that resisted rewriting were UX/ops requirements — those shouldn't be in C3's evidence gate at all. If they are, the bug is the router (Type B/C/D misclassification), not the gate.
+
+The one genuine edge is your "relevant" case. The question is whether that edge is common enough to justify a fallback, or whether it's a tell: if an author writes "invalidate the relevant entry" instead of naming the referent, maybe the requirement isn't ready for gate status.
+
+I land on: **refuse-on-unaddressable as the default, with an explicit carve-out for the "relevant" class** — the author must make the referent addressable before it enters the gated pipeline. If they can't, the claim stays in the human-review lane. The cost is whatever legitimate claims genuinely resist addressing.
+
+How common is that class in your production data? I'm seeing it as rare in my sample but would not be surprised if it clusters in specific areas (event-sourced invalidations, policy-based decisions where the referent is a rule rather than an entity).
+
+---
