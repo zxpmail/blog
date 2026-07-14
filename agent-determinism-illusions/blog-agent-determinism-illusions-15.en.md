@@ -135,19 +135,48 @@ In every case, the agent's wrong resolution is caught because the declared space
 
 ---
 
-## 4. The remaining boundary
+## 4. The remaining boundary — measured
 
-Key-space C3 requires the key space to be **declarable**. Three cases:
+Key-space C3 requires the key space to be **declarable**. The boundary question is: how large is the undeclarable class in real requirements?
 
-| Space type | Works? | Example | Mechanism |
-|-----------|--------|---------|-----------|
-| Prefix pattern | ✅ Always | `user:*`, `session:*` | String prefix match |
-| Traced relation | ✅ Usually | "sessions by userId" → `SELECT session_id FROM sessions WHERE user_id = ?` | Parameterized query against dependency trace |
-| Open-ended relevance | ⚠️ Depends | "invalidate related entries" without trace | Falls back to single-key |
+I ran a corpus classification experiment: 35 requirements from cache invalidation, authorization, and write-path domains. Each classified by human ground truth (can a key space be declared?) and by an automated classifier (deterministic rules).
 
-The first two types cover the scenarios in this experiment. The third is the honest boundary: when "related" can't be resolved to a declarable space, key-space C3 falls back to single-key C3 — but with an explicit admission that the space was undeclarable, which is itself actionable evidence for the reviewer.
+### Human ground truth
 
-This isn't the same as Part 14's under-inv gap. Under-inv was invisible because no state change produced evidence. Key-space undeclarability is *visible as a classification failure* — the system knows it couldn't resolve the space, and that knowledge can drive a sampling decision or a human review escalation.
+| Class | Count | Rate |
+|-------|-------|------|
+| Declarable | 20 | 57% |
+| Partial (needs human resolution) | 7 | 20% |
+| Undeclarable | 5 | 14% |
+| Out-of-scope (UX/ops/freshness) | 3 | 9% |
+
+### The undeclarable class — what is it?
+
+The 8 undeclarable + out-of-scope cases are not cache write-path requirements. They are:
+
+- **Freshness/timing properties** (3): "eventually consistent", "latest state", "latest hierarchy"
+- **UX/robustness claims** (2): "gracefully handle cache misses", "feel responsive"
+- **Non-write-path mechanisms** (2): TTL-based expiry, data integrity consistency
+- **Distribution property** (1): "synchronize across all nodes"
+
+**Zero of these belong in C3's domain.** They are not write-path cache invalidation requirements — they were misclassified at the routing step.
+
+### The partial class — resolvable?
+
+| Subtype | Count | Resolution |
+|---------|-------|-----------|
+| Needs dependency trace | 3 | `SELECT session_id FROM sessions WHERE user_id = ?` — architecturally resolvable |
+| Needs intent inference | 4 | "relevant", "related", "stale" — requires human judgment |
+
+### Automated classifier
+
+The classifier (deterministic pattern rules) achieves 66% exact agreement with human ground truth. The critical direction: **zero false undeclarables** — the classifier never said "can't declare" when a human said "can declare." It tends to be conservative (says "partial" for 8 cases the human called "declarable"), which is the safe direction for a gate: false partials slow things down, false undeclarables would silently reopen the gap.
+
+### What this means
+
+The undeclarable-space class that would reopen Part 14's under-inv gap is **effectively empty for requirements legitimately in C3's domain**. The cases that resist space declaration turn out to be requirements that shouldn't have entered the C3 pipeline — they are UX, freshness, or timing properties misrouted to an invalidation gate.
+
+The honest boundary shifts from "undeclarable space size" to **"routing accuracy into C3"** — a classification problem upstream of the gate. That's a different problem, addressable by the same sampling layer, but not a structural gap in key-space C3 itself.
 
 ---
 
@@ -156,7 +185,7 @@ This isn't the same as Part 14's under-inv gap. Under-inv was invisible because 
 | Mechanism | Gap it addresses | Catch rate | Remaining boundary |
 |-----------|-----------------|------------|-------------------|
 | Single-key C3 | DPI-bound fabrications | 5/5 (Part 13) | Referent gameability (0/5) |
-| **Key-space C3** | **Referent gameability** | **5/5** | **Space undeclarability** |
+| **Key-space C3** | **Referent gameability** | **5/5** | **Routing into C3 (not space size)** |
 | Evidence feedback loop | Over-invalidation | Converges 2 rounds | Under-inv invisible |
 | Sampling | All residual gaps | — | Fixed cost, no adaptive signal |
 
@@ -164,15 +193,16 @@ The move from single-key to key-space C3 is a structural improvement: it changes
 
 The three mechanisms from Part 14 (C3, evidence feedback, L3 human review) now have a fourth: **key-space declaration**. It's not a new mechanism — it's a more precise contract field that constrains what C3 iterates over. The Bloom filter analogy holds: a membership test against a declared space is stronger than a point lookup, and declaring the space (rather than implying it) makes the contract's scope explicit.
 
-The honest claim: **wrong-referent gameability is structurally closed for declarable spaces.** The remaining open question is how large the undeclarable-space class is in production requirements — and whether that class is common enough to warrant an adaptive sampling strategy keyed to space-declarability confidence.
+The honest claim: **wrong-referent gameability is structurally closed for declarable spaces.** The 35-requirement corpus shows that for requirements legitimately in C3's domain, the undeclarable class is empty — the boundary is not space size but routing accuracy into the gated pipeline.
 
 ---
 
 *Experiment scripts:*
 - [`write-time-resolution-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 6 scenarios × resolution enumeration + LLM phase
 - [`key-space-verify-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 6 scenarios × 2 C3 modes × 3 cache impls
+- [`space-declarability-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 35-requirement corpus × human × automated classifier
 
-*Results: `results-v2/write-time-resolution.json`, `results-v2/key-space-verify.json`*
+*Results: `results-v2/write-time-resolution.json`, `results-v2/key-space-verify.json`, `results-v2/space-declarability.json`*
 
 *Previous: [The honest boundary of argument-space verification](blog-agent-determinism-illusions-14.en.md)*
 *Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
