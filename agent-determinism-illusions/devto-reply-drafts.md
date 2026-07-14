@@ -524,3 +524,21 @@ Key-space C3 requires the space to be declarable. Prefix patterns always work. T
 Experiment script: `scripts/key-space-verify-test.py`
 Results: `scripts/results-v2/key-space-verify.json`
 
+---
+
+## 回复二十一：@Max Quimby — explicit criteria + collapse onto deterministic ground truth
+
+**目标文章：** Part 5 "Six experiments on adversarial verification" 评论区
+
+**主题：** Max 问显式验收标准是否移动了 75% 墙；他的 escape hatch 和 Red Line + Part 15 的结构对齐。
+
+---
+
+Thanks — "N votes collapse to 1 vote with more confidence from a systematic bias" is the exact mechanism the N=10 data makes visible. The model isn't uncertain about its wrong call; it's certain and consistent.
+
+On explicit acceptance criteria: I tested this across the P-series (P1→P4, 8→30 scenarios), and the answer depends on which layer you're measuring. Explicit criteria moved C1 (regex, deterministic) from 24% to 98% — because the prompt provided the vocabulary. C2 (LLM judge) stayed at ~96% in both conditions. The explicit criteria helped the *deterministic* floor, not the *judge* layer. Applied to the wall: it looked like it moved (v3 hit 100% on 8 scenarios), but that was test-set composition bias — expanded to 30, v3 and v2 returned identical verdicts on every valid call.
+
+Your escape hatch ("collapse onto deterministic ground truth before the LLM weighs in") and the Red Line experiments converge on the same claim. A corpus of 35 requirements showed that for requirements legitimately in the cache-invalidation domain, the "collapse" is almost always possible: 57% directly declarable as key spaces, 20% partially resolvable via dependency tracing, and the remaining 23% were UX/freshness/timing properties that shouldn't have been routed to the gated pipeline at all. The boundary isn't how much can be collapsed — it's whether the requirement was correctly classified as gatable in the first place.
+
+The three signals you named ("did the test suite actually run, does the file exist, does the output parse") plus "does the declared key space coverage pass" is a tighter floor than any single-layer LLM judge can provide. The Part 15 experiments tested the fourth signal specifically — key-space C3 catches 5/5 wrong-referent cases that single-key C3 missed, because it checks the declared space rather than the agent-chosen key.
+
