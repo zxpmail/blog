@@ -1,7 +1,7 @@
 ---
 title: "Six experiments on adversarial verification — and the 75% wall that didn't move"
-published: false
-description: "Adversarial verification, consistency checks, multi-perspective voting, prompt calibration, and a 30-scenario expansion. The 75% false-negative wall didn't move — because the fuzziness is in the question, not the model."
+published: true
+description: "Four models across multiple experimental rounds, same 0% FP / 75% FN wall. A reviewer is a line-drawing mechanism, and the line lives on a 3D semantic surface — so it can't be eliminated, only moved."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
@@ -11,7 +11,9 @@ series: "Agent Determinism Illusions"
 
 **Agent Determinism Illusions (Part 5)**
 
-The argument, in one line: a reviewer is a mechanism for drawing a line. Every fix moves the line — but the line can't be eliminated, because it lives on a 3-dimensional surface where multiple defensible boundaries cross. So the 75% false-negative wall doesn't move, and the practical move is to stop trying to move it.
+---
+
+> **The argument, in one line:** a reviewer is a mechanism for drawing a line. Every fix moves the line — but the line can't be eliminated, because it lives on a 3-dimensional surface where multiple defensible boundaries cross. So the 75% false-negative wall doesn't move, and the practical move is to stop trying to move it.
 
 ---
 
@@ -31,8 +33,6 @@ I tried three standard moves to shift off the wall.
 
 The wall is real. None of the standard levers moved it.
 
----
-
 ## 2. Why the wall doesn't move
 
 A reviewer is a mechanism for drawing a line. The line separates "sufficient output" from "insufficient output" — that's the whole job. Formal checks, LLM judgments, prompt wording — these are choices of where and how to draw it.
@@ -45,7 +45,7 @@ So why not find a sharper line — or a different kind of line — that catches 
 
 The boundary between "sufficient" and "insufficient" depends on at least three independent questions: **Who consumes the output** — a junior engineer taking it at face value, or a senior reviewer who'll catch edge cases? **Where it's deployed** — a prototype thrown away next week, or production that runs for years? **What fails if it's wrong** — a demo that embarrasses you in a meeting, or a deploy that takes down the service?
 
-These three dimensions are mostly independent. They correlate — consumer type gives a weak hint about deployment context — but not enough to collapse into one axis. Knowing the consumer doesn't determine the deployment. Knowing the deployment doesn't determine the cost of failure. So the boundary isn't a point in 1D space; it's a surface in 3D space. And most real outputs land somewhere in the interior — where multiple defensible boundaries cross.
+These three dimensions are mostly independent, not perfectly orthogonal. They correlate — consumer type gives a weak hint about deployment context — but not enough to collapse into one axis. Knowing the consumer doesn't determine the deployment. Knowing the deployment doesn't determine the cost of failure. So the boundary isn't a point in 1D space; it's a surface in 3D space. And most real outputs land somewhere in the interior — where multiple defensible boundaries cross.
 
 "Is this output sufficient?" doesn't have a single answer because the question is underspecified. Different consumers, contexts, and costs give different defensible answers. The fuzziness isn't a property of weak models. It's a property of the question.
 
@@ -53,19 +53,13 @@ The practical conclusion falls out of the geometry. If the fuzziness is in the q
 
 We weren't failing to find the right trick. We were looking for a trick that doesn't exist.
 
----
-
 ## 3. Design around the wall
 
 So design around it. The move is not "fix the wall." The move is "stop trying to fix the wall" — and that acceptance changes the design.
 
-If the 75% is structural, you stop spending LLM calls on garbage that rules can catch (keyword match catches "I am a little duck", length check catches "。"). You stop trying to vote your way out of a systematic bias. You stop calibrating prompt wording and pretending the model's boundary will follow. Instead, you put rules where rules work, one calibrated LLM where semantics actually matters, and humans where the 3D boundary surface gets fuzzy — which the dimension argument tells you is exactly where models disagree.
-
-In practice: cheap deterministic checks (length, keyword, format) catch the obvious garbage, one calibrated LLM call judges the semantic residual per requirement, and any split verdict escalates to a human. The LLM never sees the cases rules can handle — it sees only what rules can't.
+If the 75% is structural, you stop spending LLM calls on garbage that rules can catch (keyword match catches "I am a little duck", length check catches "。"). You stop trying to vote your way out of a systematic bias. You stop calibrating prompt wording and pretending the model's boundary will follow. Instead, you put rules where rules work, one calibrated LLM where semantics actually matters, and humans where the 3D boundary surface gets fuzzy — which Section 2's dimension argument tells you is exactly where models disagree. In practice: cheap deterministic checks (length, keyword, format) catch the obvious garbage, one calibrated LLM call judges the semantic residual per requirement, and any split verdict escalates to a human. The LLM never sees the cases rules can handle — it sees only what rules can't.
 
 And then you pick a side of the wall. This is not a TODO; it is the load-bearing decision the rest of the design implements. More false positives means more reviewer attention burned on valid work flagged as suspect. More false negatives means more defective work ships. The tradeoff is structural. The only mistake is pretending you don't have to choose.
-
----
 
 ## 4. The illusion kept moving
 
@@ -78,7 +72,6 @@ The illusion keeps moving because we keep chasing it. The work isn't to catch it
 ---
 
 *Experiment code: [`phasegate-formalism-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts), [`adversarial-verify-p1.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts), [`consistency-test-p2.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts), [`multi-perspective-vote-p3.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts), [`prompt-calibration-p3b.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts), [`p4-expanded-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
-
 *Previous: [An alternative to LLM quality gates: deterministic routing + sampling](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf)*
-
 *Series start: [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)*
+*Full series: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions)*

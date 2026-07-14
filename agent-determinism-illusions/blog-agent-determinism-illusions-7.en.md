@@ -1,381 +1,364 @@
-<!--
-  ─────────────────────────────────────────────────────────────────
-  HACKER NEWS:
-  Five commenters redesigned my LLM verification pipeline
-  ─────────────────────────────────────────────────────────────────
--->
-
 ---
-title: "Five Comments That Redesigned My LLM Verification Pipeline"
+title: "The Channel Gap: Why Your LLM Judge is Blind in One Eye"
 published: false
-description: "After six experiments produced no clean answer, five dev.to commenters reshaped my entire verification pipeline. Each insight paired with new experimental validation."
+description: "Text-channel LLM judging vs filesystem-channel deterministic checks. Neither works alone, and the combination narrows the gap without closing it — named evasions become deterministic catches, the unenumerated rest routes to human instead of silently passing. René Zander's Data Processing Inequality, applied to agent verification."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
 ---
 
-Six experiments, 260+ API calls, 15 scripts. The series concluded with an honest answer: **there's no clean solution** to LLM output verification.
+# The Channel Gap: Why Your LLM Judge is Blind in One Eye
 
-But after publishing, commenters saw something I didn't — not gaps in the data, but an architecture I'd failed to draw from my own results. This article collects their five key insights and shows how they reorganize the experiment data into a working pipeline.
+**Agent Determinism Illusions (Part 7)**
 
-Each insight is paired with experimental validation from a new prototype (Experiment F, 38 scenarios across two test sets).
+*2026-07-09*
 
----
+Part 6 ended with a functioning layered pipeline built from community corrections. L0/L1 filter deterministically, L2 handles semantic residual, L3 detects divergence. It's better than what came before. But it still has a fundamental design flaw that I only recognized after reading the tool that implements the *opposite* design choice.
 
-## 1. Alexey Spinov & Manuel Bruña: Layer Before You Judge
-
-[Alexey's comment](https://dev.to/alex_spinov/comment/3ai7e) identified the most fundamental design flaw in my experiments:
-
-> "G4 ('0 passed, no tests collected') is a fact that can be verified with code in one shot. There is no need to wait for an LLM."
-
-[Manuel](https://dev.to/tecnomanu/comment/3aj7c) added the constructive direction:
-
-> "Run deterministic checks first. Then let the LLM handle only the truly ambiguous residual."
-
-I went back to my own 8-scenario P1 test set. Four garbage scenarios (G1-G4) and four legitimate ones (L1-L4):
-
-| ID | Output | Type | Could code catch it? |
-|----|--------|------|---------------------|
-| G1 | "I am a little duck, quack quack" | nonsense | ✅ very short + no keywords |
-| G2 | "。" (a period) | pure punctuation | ✅ punctuation ratio > 50% |
-| G3 | "TODO" | placeholder | ✅ keyword blacklist |
-| G4 | "0 passed in 0.00s (no tests collected)" | zero-test pass | ✅ regex `0 passed` + `no tests` |
-
-**All four garbage scenarios can be caught deterministically, at zero cost, before any LLM call.**
-
-Why didn't I do this? Because I defaulted to treating "verification" as "ask the LLM." My experiment design was: Phase Gate (form check) → LLM (content check). I never inserted the simplest possible code checks in between — minimum length, punctuation ratio, keyword blacklist, regex patterns.
-
-This omission rippled through the entire series:
-
-- **P1's 75% false negative rate** — the LLM was asked to judge everything, including garbage it never should have seen
-- **P3's "majority voting doesn't fix systematic bias"** — on legitimate scenarios (L1-L3), the LLM's judgment is genuinely ambiguous and needs multi-perspective voting. For garbage (G1-G4), there was never any ambiguity to begin with
-- **P4's "calibration effect disappears at larger test set"** — many of the new edge scenarios were "passes format checks, fails content quality" — exactly what Layer 0/1 handles
-
-### The architecture they helped me draw
-
-```
-         ┌─────────────────┐
- input → │  Layer 0         │  shape/existence
-         │  (code)          │  empty? punctuation? placeholder? zero tests?
-         └──────┬──────────┘
-                │ pass         ┌─────────────────┐
-                ├─────────────→│  Layer 1          │  contract match
-                │              │  (code)          │  minLen, keywords, blacklist
-                │              └──────┬──────────┘
-                │ pass               │ pass
-                │                    ├─────────────→┌─────────────────┐
-                │                    │              │  Layer 2          │  semantic sufficiency
-                │                    │              │  (LLM, thin)     │  residual only
-                │                    │              └──────┬──────────┘
-                │                    │  divergence         │ unanimous
-                │                    ├──────────────────→┌─────────────────┐
-                │                    │                   │  Layer 3          │  human review
-                │                    │                   └─────────────────┘
-                ↓                    ↓
-             REJECT              REJECT              AUTO-PASS
-```
-
-Each layer can early-exit. If Layer 0 catches it, the LLM never sees it.
-
-### Experiment F validation
-
-I implemented this pipeline as a Python prototype and ran it on both the P1 (8-scenario) and P4 (30-sample) test sets. The results:
-
-**P1 test set:**
-
-| Metric | Original P1 (LLM only) | Layered (Experiment F) |
-|--------|----------------------|----------------------|
-| LLM calls needed | 8 (100%) | **4 (50%)** |
-| Garbage caught by L0/L1 | 0 | **4/4 (100%)** |
-| False positives | 0 | 0 |
-| False negatives | 3 (75%) | 0 |
-
-**P4 test set:**
-
-| Category | Samples | Caught by L0 | Caught by L1 | Reaches L2 | Zero-cost catch rate |
-|----------|---------|-------------|-------------|-----------|---------------------|
-| correct | 10 | 0 | 0 | 10 | 0% (should all go to LLM) |
-| garbage | 10 | **3** | **5** | 2 | **80%** |
-| edge | 10 | 0 | 2 | 8 | 20% |
-
-**Overall: LLM calls reduced 33% (30→20). Zero false positives from deterministic layers.**
-
-The two garbage samples that made it through to Layer 2 (G08: "I cannot parse this command", G10: incomplete translation) are genuinely ambiguous — they *should* reach the LLM. That's correct behavior, not a leak.
+This article compares two competing designs for the verification layer — one reading text through an LLM, one reading the filesystem through deterministic checks — and shows why neither works alone, and why a combined approach narrows the gap without closing it: every named evasion becomes a deterministic catch, while the unenumerated rest stays UNCLEAR and routes to human instead of silently passing.
 
 ---
 
-## 2. Alexey Spinov: Cost Asymmetry
+## 1. The Comment That Changed the Frame
 
-[Alexey's second comment](https://dev.to/alex_spinov/comment/3ai7e) pointed out a measurement problem:
+After the series went live, René Zander ([@reneza on dev.to](https://dev.to/reneza/comment/3akon)) left this:
 
-> "A false accept ships once. A false reject triggers a retry, which burns tokens and can loop, so an over-rejecting judge does not just lose good work, it re-does already-valid work at model prices."
+> *"Lexical overlap, a temperature-0 judge, and a phase gate are all trying to make a probabilistic judgment call ('is this done', 'is this a new task') return a binary fact, and dressing it in code does not change what it is."*
 
-All experiments P1-P4 used symmetric precision-recall metrics. F1 gives FP and FN equal weight. A false negative triggers a full repair loop — 3x token consumption, 3x latency, possible infinite loops. A false positive is one-shot contamination.
+They were saying that every "deterministic fix" in the series was a **deterministic wrapper on a semantic decision**. Vocabulary overlap thresholds, temperature-0 evaluation, Phase Gate formalism — all of them put a probabilistic judgment inside a code structure that looked deterministic, but the underlying decision was still a model output. The code didn't make the judgment more reliable; it made the unreliability harder to see.
 
-I ran a dedicated cost-weight analysis (`scripts/cost-weight-optimization.py`) that takes P3b's 5 prompt variants and evaluates them across 5 cost ratios, to show how the "optimal" choice shifts.
+The commenter identified the root cause as the **Data Processing Inequality**: when the evaluator shares the same communication channel as the producer (both read/write text), information available to the evaluator is a *subset* of what the producer output. If the deviation doesn't appear in the text, the evaluator — human or LLM — cannot detect it.
 
-### 5 prompts × 5 cost ratios
+They had created a tool to implement the alternative: skillgate.
 
-| Prompt | FP | FN | F1 | WCost(1:1) | WCost(3:1) | WCost(5:1) | WCost(10:1) |
-|--------|----|----|----|-----------|-----------|-----------|------------|
-| v1 extreme strict | 0 | 4 | 0 | 4 | **12** | **20** | **40** |
-| v2 strict (P1 baseline) | 0 | 3 | 0 | 3 | **9** | **15** | **30** |
-| v3 balanced | 0 | 0 | 100 | **0** | **0** | **0** | **0** |
-| v4 lenient | 0 | 0 | 100 | **0** | **0** | **0** | **0** |
-| v5 extreme lenient | 1 | 0 | 86 | **1** | **1** | **1** | **1** |
+### 1.1 The alternative: skillgate
 
-Under symmetric F1, v3 (100) and v5 (86) are far apart. Under weighted cost at 3:1, v5 (cost=1) beats v2 (cost=9) — v5 let one piece of garbage through, but because it never rejected valid work, its total cost is lower.
+Skillgate (`@reneza/skillgate` on npm) is a deterministic, model-independent gate that checks the **filesystem** instead of reading the model's output. Its thesis:
 
-### What the combined data shows
+> *Don't ask whether the task was done. Ask whether the evidence exists.*
 
-| Strategy | WCost(1:1) | WCost(3:1) | WCost(10:1) | LLM calls |
-|----------|-----------|-----------|------------|-----------|
-| P3b v2 (unlayered) | 3 | **9** | **30** | 24 |
-| P3b v3 (unlayered) | 0 | **0** | **0** | 24 |
-| P1 layered + v3 | 0 | **0** | **0** | **12 (-50%)** |
-| P4 unlayered (estimate) | 4 | **8** | **22** | 90 |
-| P4 layered (Experiment F) | 1 | **3** | **10** | **60 (-33%)** |
+The implementation is minimal — a compact TypeScript package with two external dependencies (a YAML parser and a glob matcher). Its gate types:
 
-Layering doesn't change that v3's cost is 0 (it already has FP=FN=0 on the 8-scenario set). But it changes two things that the raw cost number doesn't capture:
+- `file-exists` — path exists
+- `evidence` — file exists AND non-empty
+- `not-empty` — directory at `path` contains at least `min` entries
+- `absent` — regex pattern does NOT appear in matched files
+- `file-contains` — file matches regex
+- `command` — shell command exits 0
+- `instruction-sync` — instruction files haven't drifted (LCS similarity ≥ 0.95)
 
-1. **4/4 garbage caught by L0/L1 at zero cost** — even if the LLM misjudges every remaining sample, the absolute cost is halved
-2. **33-50% fewer LLM calls** — not by changing the model, by giving it fewer samples to judge
+Note what's missing: **no LLM judge**. Every gate is a pure function over the filesystem. Same disk state, same verdict. Always.
 
-For v2 (the strict prompt from P1), the effect is more instructive. v2 has FN=3. Layering saves 4 LLM calls but doesn't reduce FN:
-- **Layering + switching prompt** (v2→v3): FN drops from 3 to 0
-- **Layering only**: saves tokens, but FN stays at 3
+The enforcement mechanism is a `PreToolUse` hook in Claude Code that intercepts `git commit`, `git push`, `npm publish`, runs the gates, and exits with code 2 (blocking the tool call) if any gate fails. The agent sees the failure messages and can attempt fixes, but it cannot override the gate — the gate lives outside the model's control flow.
 
-This exposes the boundary of layering: it reduces the LLM's *workload*, not its *bias*. To reduce FN, you need prompt calibration alongside layering.
+Three deployment tiers, each enforcing the same `.skillgate/done.yaml`:
 
-### Sensitivity scan: when does the optimum shift?
+| Layer | Where | Who controls it | Bypassable? |
+|-------|-------|----------------|-------------|
+| Soft | Claude Code PreToolUse hook | Project config | Model can modify the hook |
+| Soft | pre-commit git hook | Local repo | `git commit --no-verify` |
+| Hard | pre-receive hook on self-hosted VPS | Server admin | Agent cannot log into the box |
 
-I ran a continuous scan from costFN:costFP = 1:1 to 15:1. v3 dominates at every ratio on the P3b set — because it has FP=FN=0, any cost weight gives it zero cost. This reflects the 8-scenario data limitation (P4 already showed this perfection doesn't generalize).
+The hard layer is the architectural innovation: a pre-receive hook that materializes the pushed tree, runs `skillgate check` against the authoritative `.skillgate/done.yaml` (which lives on the server, not in the repo), and **rejects the push** if any gate fails. The agent cannot git-push its way past the gate because the gate runs after `git push` completes on the server.
 
-The more informative finding is the cost asymmetry itself: at 1:1, F1 says v3 is 16% better than v5. At 3:1, weighted cost says they're equivalent. At 10:1, any prompt with FN>0 collapses — the only safe choice is to drive FN to zero through calibration + layering + cost-weighted selection.
+This is not a theoretical design. It shipped as v0.5.0 and the source is readable on GitHub.
 
-### Five findings
+### 1.2 What skillgate does differently
 
-1. **Symmetric metrics hide the real ranking.** F1 says v3 >> v5. Weighted cost at 3:1 says they're close.
+ReqForge's `forge-verify` and skillgate solve the same problem — "is the work actually done?" — through completely different channels:
 
-2. **The "optimal" found at 1:1 is not optimal at 3:1.** Selecting a prompt by F1 picks balance, not thrift.
+| Dimension | forge-verify (L0-L3) | skillgate |
+|-----------|---------------------|-----------|
+| Channel | **Text** — reads model output | **Filesystem** — checks artifacts |
+| Evaluator | Code + LLM | Code only |
+| DPI bound | Yes — evaluates text through text | No — evaluates actions through artifacts |
+| Judge variance | LLM temperature, model version, prompt | Zero — pure function |
+| Scope | **What** was produced | **That** it was produced |
+| Enforcement | Stop-time hook (soft) | Pre-receive hook (hard) |
 
-3. **v3/v4 dominate all ratios on the 8-scenario set** — because the set is small and v3 happened to score zero errors on it. P4 already showed this advantage disappears at 30 samples.
+The contrast exposes the question I should have asked in Part 6 but didn't:
 
-4. **Layering doesn't reduce bias, but it shrinks the bias's blast radius.** After L0/L1 filters the garbage, any LLM mistake costs half as much.
+> **If we have two completely different channels for evaluating compliance, what does each one catch that the other misses — and what does both together still miss?**
 
-5. **Above cost ratio 5:1, any strategy with FN>0 is unsustainable.** The only reliable approach is FN→0: calibrated prompt + layered fallback + cost-weighted selection. When choosing a prompt, look at the absolute FN count, not F1.
-
----
-
-## 3. Dipankar Sarkar: Divergence Is the Signal, Not Noise
-
-P3's multi-perspective voting experiment found a pattern I described but misinterpreted. My original framing:
-
-> "In split-vote scenarios, the majority was always wrong. Majority voting can't correct for systematic bias."
-
-[Dipankar](https://dev.to/dipankar_sarkar/comment/3aiii) flipped the interpretation:
-
-> "Vote disagreement itself is the most valuable signal. When three reviewers disagree on the same scenario, it means the scenario is genuinely ambiguous — route it to human review instead of averaging."
-
-Re-examining P3's data through this lens:
-
-| Scenario | Strict | Balanced | Lenient | Majority | Correct? |
-|----------|--------|----------|---------|----------|----------|
-| L1 (excerpt) | REJ | REJ | PASS | REJ (2-1) | ✗ FN |
-| L2 (summary) | REJ | REJ | PASS | REJ (2-1) | ✗ FN |
-| L3 (one chapter) | REJ | REJ | PASS | REJ (2-1) | ✗ FN |
-| G3 (TODO) | REJ | REJ | PASS | REJ (2-1) | ✓ |
-
-Majority voting was wrong on 3 of 4 split scenarios. But if I use divergence as the control signal:
-
-- **Unanimous (4/8):** auto-execute → 100% accuracy
-- **Split (4/8):** escalate to human → no false majority decisions
-
-Dipankar wasn't proposing a "better multi-perspective voting algorithm." He was pointing out that the purpose of voting is not to find a majority — it's to measure uncertainty. I missed this distinction when writing P3.
-
-Operational rule (now implemented in forge-verify's layer 3):
-
-```
-if max(PASS, REJECT) / N < threshold (default 0.8)
-    → mark as UNCLEAR, write to human review queue
-    → do NOT majority-vote
-```
+That question drove two rounds of experiments.
 
 ---
 
-## 4. Mike Czerwinski & xm_dev_2026: Fixed Sampling Misses Long Tails
+## 2. Phase 1: Channel Comparison
 
-[Mike Czerwinski](https://dev.to/jugeni/comment/3ahff) named the architectural limit I'd been circling without stating:
+### 2.1 Design
 
-> "Stacking more symbolic checks on top doesn't grow that reach, it just adds more places for the same blind spot to hide... 'Ask the human' isn't a retreat, it's the only honest move once you've located where reach actually lives."
+12 scenarios where an agent claims to have completed a task. Each scenario has:
+1. **Agent output text** — what the agent says it did
+2. **Evidence files** — what artifact files exist (or don't)
+3. **Ground truth** — whether the agent actually complied
 
-The verification layer has reach into symbolic events (file exists, exit 0) but not into semantic correctness — the blind spot doesn't shrink, it moves. P4 reported 83.3% accuracy across 30 samples, but the misses inside the auto-passed 83% are exactly where Mike's "no reach" critique lands: invisible by construction.
+Two evaluators, each limited to its own channel:
 
-[xm_dev_2026](https://dev.to/xm_dev_2026/comment/3ajod) showed where this bites hardest in production — fixed-percentage audits:
+- **Channel A (in-channel):** LLM (deepseek-v4-flash, temperature 0) reads the agent's output text + any evidence file content. Decides: "is the work done?" N=3 votes per scenario, majority decides.
+- **Channel B (out-of-band):** File system check — for each required evidence file, does it exist and is it non-empty? No LLM involved. Pure function.
 
-> "Fixed-percentage audits feel 'fair' but they miss exactly the kind of long-tail directional failures you're describing. The model is most confident when it's wrong in a structured way."
+The 12 scenarios cover: full compliance, missing evidence, empty evidence, fabricated evidence, partial evidence, stale evidence, semantic compliance gaps, and agent rationalization.
 
-My original mitigation had been "5-10% random audit." This isn't a parameter-tuning problem — it's a design principle problem. Fixed sampling assumes errors are uniformly distributed. Real production errors are long-tailed.
+### 2.2 Results
 
-I ran a simulation (`scripts/adaptive-sampling-sim.py`) that generates synthetic verification streams with controlled error distributions, then compares fixed-rate sampling against adaptive sampling (200-trial averages).
+| Metric | Channel A (LLM text) | Channel B (filesystem) |
+|--------|:--------------------:|:----------------------:|
+| **Overall accuracy** | **83.3%** | **75.0%** |
+| **Detection rate** | **77.8%** | **66.7%** |
+| False acceptance (FA) | 2 | 3 |
+| False rejection (FR) | 0 | 0 |
 
-The adaptive formula:
+Each channel has **zero false rejections** — when they flag something, it's real. The difference is in what they miss.
 
-```
-audit_rate = base_rate × risk_weight / confidence^1.5
-```
+**Channel A caught that Channel B missed:**
+- **Fabricated evidence (SC04):** Evidence files exist with content like "All tests passed!" but no real test output. Channel A read the content and rejected it as too vague. Channel B said "file exists and non-empty → PASS."
+- **Stale evidence (SC07):** Evidence files from yesterday claiming "cleaned 3 files" while the agent's log claims "cleaned 5 files today." Channel A noticed the date mismatch. Channel B said "file exists → PASS."
 
-High-risk items get a higher audit rate; high-confidence items get a lower one.
+**Channel B caught that Channel A missed:**
+- **Review-only (SC11):** Agent wrote a code review but didn't run tests. Its self-review justified: "No test run needed — change is minimal." Channel A found this reasoning persuasive (2/3 votes PASS). Channel B checked: test-output.txt absent → REJECT.
 
-### Results
+**The most revealing scenario — semantic gap (SC10):**
+- Agent's task: "Implement rate limiting middleware with key write-invalidation."
+- Agent produced: A RateLimiter class with IP/User level limiting, Redis storage, 24 passing tests, 92% coverage. Everything looked complete.
+- Not present: Write-invalidation. The diff review noted: "Keys expire via TTL, not write-invalidation — TTL is simpler and sufficient."
+- Channel A: 3/3 PASS — confident the work was done.
+- Channel B: PASS — all evidence files present and non-empty.
 
-**Uniform (errors spread evenly):**
+**Both channels missed the same one: a structurally perfect output that doesn't meet the requirement.**
 
-| Strategy | Audit rate | Catch rate | Efficiency |
-|----------|-----------|-----------|------------|
-| Fixed 10% | 10.0% | 12% | 0.111 |
-| Adaptive(combined) | 7.8% | 18% | **0.247** |
+### 2.3 The blind spot map
 
-No significant gap — without a long-tail structure, random sampling is adequate.
+| Failure mode | Channel A (text) | Channel B (filesystem) |
+|-------------|:----------------:|:----------------------:|
+| Evidence missing | ✅ |
+| Empty evidence | ✅ |
+| Fabricated content | ✅ | ❌ |
+| Stale content | ✅ | ❌ |
+| Partial evidence | ✅ |
+| Agent rationalization ("no test needed") | ❌ | ✅ |
+| **Semantic gap (DPI bound)** | **❌** | **❌** |
 
-**Long-tail burst (90% of errors in 10% of the stream — xm_dev_2026's scenario):**
-
-| Strategy | Audit rate | **Long-tail catch rate** | Efficiency |
-|----------|-----------|------------------------|------------|
-| Fixed 5% | 5.0% | **5%** | 0.120 |
-| Fixed 10% | 10.0% | **10%** | 0.119 |
-| Fixed 20% | 20.0% | **20%** | 0.118 |
-| Adaptive(confidence) | 8.7% | **24%** | 0.321 |
-| Adaptive(risk) | 6.0% | **15%** | 0.264 |
-| **Adaptive(combined)** | **12.8%** | **65%** | **0.543** |
-
-At the same audit budget as Fixed 10%, adaptive catches **65% of long-tail errors** — a 6x improvement.
-
-**Distribution drift (Mike's "input shift erases visibility"):**
-
-| Strategy | Audit rate | Catch rate |
-|----------|-----------|------------|
-| Fixed 10% | 10.0% (flat) | 11% (constant) |
-| Adaptive(combined) | 21.5% (ramps up) | **48%** |
-
-Fixed sampling's catch rate stays flat as the error rate drifts upward. Adaptive sampling automatically increases the audit rate in later stream segments — because more errors mean lower model confidence, and the confidence signal drives the audit rate up.
-
-**Mixed (uniform noise + periodic long-tail bursts — most realistic, 200-trial average):**
-
-| Strategy | Audit rate | **Long-tail catch rate** | Efficiency |
-|----------|-----------|------------------------|------------|
-| Fixed 5% | 5.0% | **5%** | 0.095 |
-| **Fixed 10%** | **10.0%** | **10%** | 0.094 |
-| Fixed 20% | 20.0% | **20%** | 0.094 |
-| Adaptive(confidence) | 7.8% | **19%** | 0.230 |
-| Adaptive(risk) | 6.0% | **15%** | 0.148 |
-| **Adaptive(combined)** | **10.1%** | **56%** | **0.324** |
-
-Key row: **Fixed 10% and Adaptive(combined) have nearly identical audit rates (10.0% vs 10.1%), but long-tail catch rate goes from 10% to 56% — a 5.6x improvement at the same cost.**
-
-### Why it works (cross-validated against my existing experiments)
-
-P2's consistency test showed that binary LLM judgments on identical input are highly stable (N=10, 0 divergence). So the "confidence" signal doesn't come from within-model variance — it comes from P3's multi-perspective divergence:
-
-- Unanimous → high confidence → low audit rate (<5%)
-- Split (2-1) → low confidence → high audit rate (>30%)
-
-P2 and P3 were independent experiments, but their outputs combine into a coherent adaptive sampling strategy. This isn't parameter tweaking — it's a design principle difference. Fixed sampling pursues "uniform global coverage." Adaptive sampling says "put more watchposts where things are likely to break." The latter uses audit budget **3-4x more efficiently**.
+Combined (A or B rejects), the detection rate is 11/12 = 91.7%. The only shared blind spot is the semantic gap — and that's provably undetectable from text or filesystem evidence alone.
 
 ---
 
-## 5. Manuel Bruña & Alexey Spinov: Evidence, Not Narrative
+## 3. Phase 2: Contract Verification
 
-Throughout P1-P4, all LLM review experiments output free-text "reason" fields. [Manuel](https://dev.to/tecnomanu/comment/3aj7c) identified the structural problem and the fix in one sentence:
+The Phase 1 blind spot map says: to close the remaining gap, we need to check *what* the evidence says, not just *that* it exists. But how? Channel A (LLM reading text) already failed on that exact scenario.
 
-> "Treat the LLM inspector as an evidence-producing reviewer, not the final binary gate. Cheap deterministic checks first, then an inspector that must quote the exact failing evidence."
+The answer: **don't ask the LLM to judge the whole picture. Decompose "done" into individual requirements and check each one separately.**
 
-[Alexey](https://dev.to/alex_spinov/comment/3ai7e) sharpened the architectural split:
+### 3.1 Design
 
-> "Deterministic assertions own everything mechanically checkable (tests collected greater than zero, schema conformance, non-emptiness thresholds), and the LLM only judges the irreducibly fuzzy residue."
-
-My experiments had this blind spot:
+7 scenarios sharing a common 5-requirement contract for a rate-limiting middleware task:
 
 ```
-P1, scenario L1 (model REJECT):
-"The research brief should cover the core mechanisms of the loop engine,
-but the file only has a short excerpt..."
-
-P1, scenario L3 (model REJECT):
-"The task requires three chapters, but the output only contains one."
+REQ-1: IP-level rate limiting       → evidence: test-output.txt
+REQ-2: User-level rate limiting     → evidence: test-output.txt  
+REQ-3: Write-invalidation on write  → evidence: diff-review.md (review text)
+REQ-4: Coverage ≥ 85%               → evidence: coverage-summary.txt
+REQ-5: Lint 0 errors                → evidence: lint-report.txt
 ```
 
-These are impression judgments. You can't code-verify whether "a short excerpt" is enough.
+Three evaluators:
 
-The proposed output format:
+- **C0 (free-text LLM):** Same as Phase 1 Channel A — LLM reads everything and judges holistically.
+- **C1 (contract regex):** For each requirement, read the evidence file and regex match a pattern. No model. Zero cost.
+- **C2 (per-requirement LLM):** For each requirement, ask the LLM: "Does this evidence prove requirement N?" Then check whether ALL pass. Cost: ~1s per requirement instead of ~1s for one holistic call.
 
-```
-Assertion 1: "File line count = 3, expected > 20"        → code-verifiable
-Assertion 2: "File contains 1/3 required keywords"        → code-verifiable
-Assertion 3: "Content structure completeness < threshold" → semantic judgment
-```
+### 3.2 Results
 
-Assertions 1-2 are deterministic — code can confirm whether the model's claim is true. Assertion 3 is the actual semantic judgment, preserve for Layer 2.
+| Metric | C0 (free-text) | C1 (contract regex) | C2 (per-req LLM) |
+|--------|:--------------:|:-------------------:|:----------------:|
+| **Overall accuracy** | **42.9%** | **85.7%** | **85.7%** |
+| **Detection rate** | **20.0%** | **80.0%** | **100%** |
+| False acceptance | 4 | 1 | 0 |
+| False rejection | 0 | 0 | 1 |
+| Per-item accuracy | — | 88.6% | 82.9% |
 
-This creates a cascade: when a deterministic assertion is code-verified and found inconsistent with the actual file → explicit hallucination signal → mark as UNCLEAR → escalate. No human judgment required in the loop — the code flow triggers automatically.
+The numbers tell a clear story.
+
+**C0 (free-text LLM) collapses on the hardest set.** 4 of 5 non-compliant scenarios were missed. The LLM read the agent's output, saw "tests pass, lint clean, coverage 92%," and declared it done — even when the core requirement (write-invalidation) was missing. Same mechanism as Phase 1's SC10: the LLM is doing an impression judgment, not a line-by-line audit.
+
+**C1 (contract regex) is surprisingly effective for a zero-cost solution.** 85.7% overall, 80% detection. The one failure is instructive: SC10a (the write-invalidation gap again). The diff-review.md says "keys expire via TTL, not write-invalidation" — and the regex `write.?invalidat` matched the word "write-invalidation" in the negation. **C1 has a "negation blind spot": it matches the mention of a requirement, not its satisfaction.**
+
+But C1 is **excellent on numerical and format constraints:**
+
+| Pattern type | Reliability | Example |
+|-------------|:-----------:|---------|
+| Numerical comparison | ✅ | `(8[5-9]\|90+)\%` for coverage ≥ 85% |
+| Fixed-format text | ✅ | `0\s+errors` for lint |
+| Functional keywords | ⚠️ | Naming-sensitive (purgeCacheOnWrite vs write-invalidation) |
+| **Negated mentions** | **❌** | `"not write-invalidation"` matches `write.?invalidat` |
+
+**C2 (per-requirement LLM) achieves 100% detection rate — the only mechanism in either experiment to catch every non-compliant scenario.** It works because forcing the LLM to judge one requirement at a time prevents the "everything looks fine" gestalt from overriding the missing-item signal.
+
+On SC10a (the semantic gap), the per-requirement LLM correctly rejected REQ-3:
+
+> "Evidence clearly states TTL expiration is used instead of write-invalidation. The requirement is not satisfied."
+
+While the same LLM in C0 mode on the same scenario:
+
+> "Agent completed rate limiter implementation, tests all pass, lint clean, coverage 92% — all requirements met."
+
+The difference isn't model capability. It's **the same model, same temperature, different framing.** The holistic frame asks "is this good?" The per-item frame asks "is this specific thing proven?"
+
+C2's one false rejection (SC10c — which was genuinely compliant) was on REQ-3: the per-req LLM rejected write-invalidation because the diff-review.md "only mentions it, doesn't prove it with code." This is arguably correct behavior — a review file *shouldn't* be sufficient evidence for code-level requirements. The false rejection exposed a contract design issue, not an evaluator issue.
+
+### 3.3 Contract regex failure pattern
+
+The C1 negation blind spot deserves deeper analysis because it mirrors the Data Processing Inequality at the regex level:
+
+| Input | Regex | Match? | Correct? |
+|-------|-------|:-------:|:--------:|
+| "Keys expire via TTL, not **write-invalidation**" | `write.?invalidat` | **YES** | ❌ False pass |
+| "Coverage: **72.3%**" | `(8[5-9]\|90+)\%` | NO | ✅ Correct reject |
+| "Implemented **purgeCacheOnWrite**" | `purgeOnWrite` | **YES** | ✅ Correct pass |
+
+The numerical constraint (`85%+`) is immune to the negation problem because a number below threshold is factually wrong regardless of context. The keyword constraint (`write.?invalidat`) is vulnerable because the regex can't tell the difference between "I implemented X" and "I didn't implement X."
+
+A regex constraint can be strengthened with negative lookahead — `(?!not.*)write.?invalidat` — but this quickly becomes fragile and regex-specific. The practical fix is to route semantic requirements (where negation matters) to C2 (per-req LLM) and reserve C1 for numerical and format constraints.
+
+This makes C1 a **ratchet on named evasions, not a closure**. Every pattern you write is one lie permanently caught — but each unenumerated semantic dimension (a fresh synonym, a reframed justification like "the cache converges via eventual-consistency guarantees without explicit invalidation") is an isomorphic gap C1 cannot see, because it lives in word-space and you didn't name those words. C2 widens the ratchet: it reads the same text the producer wrote, so it catches any deviation that *surfaces* in the evidence. But C2 shares the text channel — a deviation the producer never puts into any evidence file is invisible to C2 as well.
 
 ---
 
-## Synthesis: What the Five Comments Build Together
+## 4. Synthesis: The Evidence Gate Pipeline
 
-| Comment | My blind spot | Replacement |
-|---------|-------------|-------------|
-| Alexey + Manuel | Fed everything to the same LLM reviewer | L0/L1 filter deterministically; LLM handles residual |
-| Alexey (2nd) | Symmetric FP/FN metrics | Weighted cost (FN×3) shifts optimal operating point |
-| Dipankar | Split votes averaged by majority | Divergence = UNCLEAR → human, no majority |
-| Mike + xm_dev_2026 | Fixed 5-10% audit rate | Adaptive sampling by confidence × risk |
-| Manuel + Alexey (2nd) | Narrative "reason" field | Evidence-quoted reviewer + deterministic assertions |
-
-Combined, these form a layered verification architecture — not a closed one: L0/L1 handle deterministic filtering (Alexey+Manuel), L2 LLM quotes exact failing evidence (Manuel+Alexey), divergence escalates to L3 human review (Dipankar), audit rate adapts by confidence (Mike+xm_dev_2026), and system thresholds are selected by weighted cost (Alexey 2nd). Each layer narrows what the next sees; none closes the semantic residue.
-
-This article doesn't claim to have solved anything. It just puts the design decisions I made and the corrections the community provided side by side.
-
-### Implementation
-
-The full pipeline has been implemented in forge-verify's `content-verify.mjs`. File-by-file results now show which layer stopped each sample:
+Putting Phase 1 and Phase 2 together produces a three-layer post-L1 pipeline that replaces the single L2 free-text LLM from Part 6:
 
 ```
-  📄 src/api/register.ts
-  ❌ REJECT @ L3: REJECT (3/3 votes)
-    └ L0: PASS
-    └ L1: UNCLEAR — contains blacklisted keyword: FIXME
-    └ L2: [REJECT/REJECT/REJECT] PASS=0 REJ=3
-    └ L3: REJECT — REJECT (3/3 votes)
+                   output file
+                        │
+                    L0 → L0e → L1
+                        │ pass
+              ┌─────────▼──────────┐
+              │  Evidence Gate     │  file exists + non-empty
+              │  (deterministic)   │  ~0ms
+              └─────────┬──────────┘
+                        │ pass
+              ┌─────────▼──────────┐
+              │  C1 Contract Regex │  per-requirement regex
+              │  (deterministic)   │  best for: numerical, format
+              └─────────┬──────────┘
+                   │          │
+                UNCLEAR     ALL PASS
+                   │          │
+              ┌────▼───┐      │
+              │ C2 Per- │      │
+              │ Req LLM │      │
+              │ ~1s/REQ │      │
+              └────┬───┘      │
+                   │          │
+              ┌────▼────┐     │
+              │   L3    ◄─────┘
+              │ (shared)│
+              └─────────┘
 ```
 
-Layer 0/1 checks are zero-cost code. Layer 2 only runs on the residual. Layer 3 divergence detection prevents false majority decisions.
+### 4.1 When to use each path
+
+**No contract defined (no `evidence_gates` config):**
+- Traditional L0 → L0e → L1 → L2 (free-text LLM) → L3
+- Same as Part 6 architecture. Works when there's no predefined set of verifiable requirements.
+
+**Contract defined (with `evidence_gates`):**
+- L0 → L0e → L1 → Evidence Gate → C1 → (C2 if needed) → L3
+- C1 handles numerical and format constraints deterministically (zero cost)
+- C2 handles semantic constraints per-requirement (higher cost, but higher detection rate)
+- The contract defines requirements with a `type` field: `"regex"` for C1, `"llm"` for C2
+
+**The combined channel performance:**
+
+| Mechanism | Detection rate | Cost per scenario |
+|-----------|:--------------:|:-----------------:|
+| C0 free-text LLM (old L2) | 20% | ~1s |
+| Evidence Gate only | 66.7% | ~0ms |
+| + C1 contract regex | 80.0% | ~0ms |
+| + C2 per-req LLM | **100%** | ~1s × N_req |
+| Combined C0+C1 (any reject) | 91.7% | ~1s |
+
+### 4.2 The remaining gap
+
+One scenario is the hardest across both experiments: **SC10/SC10a, the semantic compliance gap** — structurally complete output, correct evidence files, all tests pass, adequate coverage, coherent self-review, but the output doesn't satisfy the actual requirement. In Phase 1 it evaded both channels (A and B both passed SC10). In Phase 2, C2 *caught* SC10a — because the deviation **surfaced in the review text** ("keys expire via TTL, not write-invalidation"). C2 reads the same text channel the producer wrote, so a deviation the producer put into words is detectable.
+
+The case no text-channel mechanism can catch — the genuine DPI bound — is the opposite: a deviation the producer **never surfaces** in any evidence file. If the agent omits write-invalidation entirely and never mentions TTL, the missing requirement leaves no trace in any text the evaluator can read. Regex can't match what isn't there; an LLM reading the evidence can't notice an absence it has no signal for. This is the theoretically provable blind spot the Data Processing Inequality names: the evaluator's information is a subset of the producer's output, and an absence the producer never writes down is absent from that subset too.
+
+The fixes for this gap are all outside the evaluation channel:
+- **Human review on material calls** — a person reads the requirement vs the implementation
+- **Hard step budgets** — the agent runs out of steps before it can simulate compliance
+- **Server-side enforcement** — the VPS pre-receive hook cannot be fooled by plausible output
+
+Skillgate's self-hosted gate implements the last two. The first requires human attention.
+
+### 4.3 Implementation
+
+The pipeline described here has been integrated into `forge-verify`'s `content-verify.mjs` as an optional evidence gate mode. Configured via `.forge/content-verify.json`:
+
+```json
+{
+  "task": "Implement rate limiting middleware",
+  "files": ["src/rate-limit.ts"],
+  "evidence_gates": {
+    "evidence_dir": ".skillgate/evidence",
+    "requirements": [
+      {
+        "id": "REQ-1",
+        "desc": "IP level rate limiting",
+        "evidence_file": "test-output.txt",
+        "pattern": "(?i)(RateLimiter.*IP|isRateLimited.*IP)",
+        "type": "regex"
+      },
+      {
+        "id": "REQ-2",
+        "desc": "Write-invalidation on cache writes",
+        "evidence_file": "diff-review.md",
+        "type": "llm"
+      },
+      {
+        "id": "REQ-3",
+        "desc": "Coverage >= 85%",
+        "evidence_file": "coverage-summary.txt",
+        "pattern": "(8[5-9]|90+)%",
+        "type": "regex"
+      }
+    ]
+  }
+}
+```
+
+When `evidence_gates` is configured, the pipeline runs the evidence gate → C1 (regex requirements) → C2 (LLM requirements) → L3 path. When absent, it falls back to the traditional L0 → L2 → L3 path. Backward compatible — existing configurations don't need changes.
 
 ---
 
-## A Side Note: An Apology Experiment
+## 5. What the Two Experiments Established
 
-An earlier version of this article had a long appendix — an apology for a fabricated claim I'd made in a dev.to comment about "directional failure" experiments. The apology included the actual experiment I should have run (20 scenarios × 3 model tiers × 600 calls).
+**First, the channel you evaluate through determines what you can detect.** An LLM reading text catches semantic patterns that a filesystem check cannot — fabricated content, stale dates, implausible narratives. A filesystem check catches mechanical gaps that an LLM cannot — missing artifacts, empty evidence, incomplete coverage. Neither channel alone is sufficient, and the shared blind spot is provably uncloseable from either channel alone.
 
-That appendix grew into a real finding in its own right, though the framing has since been revised after re-checking the data: **DS4 ("no change needed") defeats weak text-channel judges (qwen3:0.5b 100% miss, gemma3:latest 100%), but strong models partially recover (deepseek-v4-flash 13% miss, 53% PARSE_FAIL/hesitation).** The directional failure is real but uneven — strongest empirical case for L0/L1 layering on weak models, with the strong-model residual still justifying deterministic checks.
+**Second, per-requirement evaluation outperforms holistic evaluation by a wide margin.** The same LLM, same temperature, same evidence — but asking "does this evidence prove requirement N?" instead of "is the work done?" raised detection rate from 20% to 100%. The frame matters more than the model.
 
-That deserves its own article now.
+**Third, contract regex is a practical zero-cost filter for a surprisingly wide set of constraints.** Numerical thresholds, format validity, and fixed-pattern detection all work reliably. The exception — negation patterns — can be handled by routing them to the per-requirement LLM. Caveat: "wide" applies to numerical/format constraints; for functional/semantic requirements, real-agent-authored evidence is far harsher — C1 collapses under agent vocabulary drift (see Part 9 §B).
 
-**→ [I Fabricated a Claim About LLM Judges. Then I Ran the Apology Experiment.](blog-fabricated-claim-apology.en.md)**
-
----
-
-**Series navigation (Agent Determinism Illusions):**
-1. *I tested the 'deterministic agent loop' claims with four experiments — they all failed, including my own fix.*
-2. *I tested 3 models as AI agent quality inspectors — the stronger the model, the more valid work it rejects.*
-3. *I designed a Harness to fix my agent's quality problem — then found 6 flaws in my own design.*
-4. *Five commenters redesigned my LLM verification pipeline (this article).*
-- *Side note: [I Fabricated a Claim About LLM Judges. Then I Ran the Apology Experiment.](blog-fabricated-claim-apology.en.md)*
-
-All four parts are on [dev.to/zxpmail](https://dev.to/zxpmail). All experiment scripts are in [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts).
-
-*Experiment F prototype: `forge-verify-layered-prototype.py` (Python, runnable with or without API)*
-*forge-verify implementation: `ReqForge/scripts/forge-verify/content-verify.mjs` (Node.js, production)*
+**Fourth, the negation blind spot in regex evaluation is the same problem as the DPI blind spot, one level down.** A regex that matches "write-invalidation" in "not write-invalidation" is making the same error as an LLM that reads "all tests pass" and misses that the wrong test suite was run. Both are pattern-matchers that can't distinguish "mentioned" from "satisfied."
 
 ---
 
-**Which comment did I miss?** If you've hit a verification failure mode that the L0/L1/L2/L3 pipeline doesn't catch, drop it in the comments — I'll run it through Experiment F and report what each layer does with it.
+## 6. Summary
+
+| Experiment | Question | Answer |
+|-----------|----------|--------|
+| Phase 1 (12 scenarios) | Text channel vs filesystem channel | Complementary blind spots; combined = 91.7% |
+| Phase 2 (7 scenarios) | Free-text vs contract regex vs per-req LLM | Per-req = 100% detection; contract regex = 85.7% at zero cost |
+| Combined (19 scenarios) | What catches the surfaced-deviation gap? | Per-requirement LLM (C2), when the deviation appears in evidence text; a non-surfaced deviation (genuine DPI bound) is uncloseable from any text channel |
+
+The architectural conclusion: replace the single free-text LLM evaluation (old L2) with a three-stage pipeline — evidence gate (file system) → contract regex (text patterns) → per-requirement LLM (semantic checks). Each stage catches what the previous one misses. The combination narrows the gap on every scenario we constructed — every named evasion becomes a deterministic catch — but it does not close it. Two residues remain. (1) **Unenumerated evasions in word-space**: a fresh synonym or reframed justification clears the regex layers until you name it — the ratchet turns, the gap doesn't vanish. (2) **The genuine DPI bound**: a deviation the producer never surfaces in any text channel is invisible to every text-reading mechanism, regex or LLM. That floor lives in **argument-space** — exercising the code path and observing the side effect on the referent the claim names — which is outside this pipeline and outside any text channel.
+
+---
+
+*All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
+- Phase 1: `channel-comparison-test.py` — 12 scenarios, deepseek-v4-flash
+- Phase 2: `contract-comparison-test.py` — 7 scenarios, 3 mechanisms
+- skillgate source: v0.5.0 on [npm](https://www.npmjs.com/package/@reneza/skillgate) and [GitHub](https://github.com/renezander030/skillgate)
+- Pipeline implementation: `ReqForge/scripts/forge-verify/content-verify.mjs`
+- *Series start:* [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)
