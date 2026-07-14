@@ -483,3 +483,44 @@ The gap is real, bounded, and belongs to sampling. A human reviewer sees the req
 Experiment script: `scripts/write-time-resolution-test.py`
 Results: `scripts/results-v2/write-time-resolution.json`
 
+---
+
+## 回复二十：@Mike Czerwinski — key-space C3（Bloom filter）实验验证
+
+**目标文章：** Part 5 "An Alternative to LLM Quality Gates" 评论区
+
+**主题：** Bloom filter 思路：声明 key 空间而非单 key，C3 验证空间覆盖率。
+
+---
+
+Following the Bloom filter analogy: instead of verifying a single key, declare the **key space** ("user:*") and verify ALL keys in that space.
+
+I built the experiment. Same 6 ambiguous scenarios, two C3 modes, three cache implementations.
+
+**Single-key C3 (original):** 0/5 wrong-referent cases caught. Every wrong resolution passes.
+
+**Key-space C3 (Bloom filter):** 5/5 wrong-referent cases caught with LiveCache; 4/5 with BulkCache.
+
+| Mode | Cache | Wrong-ref caught | Rate |
+|------|-------|-----------------|------|
+| single-key | any | 0/5 | 0% |
+| **key-space** | **LiveCache** | **5/5** | **100%** |
+| **key-space** | **BulkCache** | **4/5** | **80%** |
+| key-space | FlushCache | 5/5 | 100% |
+
+The one BulkCache miss (S1: user:* space with user:123 trigger) is the *desired* behavior — trigger prefix matches space, BulkCache handles it, gate confirms. Not a miss.
+
+**What changed:**
+
+Single-key C3: "is cache[k] gone after write(k)?"
+Key-space C3: "is EVERY key in space S gone after write(k)?"
+
+If the agent resolves to `user:123` but the declared space is `session:*`, key-space C3 checks ALL session:* keys → they weren't invalidated → FAIL. The agent's wrong resolution gets caught even though `user:123` itself passed the mechanical check.
+
+**The remaining boundary:**
+
+Key-space C3 requires the space to be declarable. Prefix patterns always work. Traced relations resolve to parameterized queries — still a space. Open-ended relevance without a dependency trace is where it stalls — but the explicit admission of undeclarability is itself actionable evidence for the reviewer.
+
+Experiment script: `scripts/key-space-verify-test.py`
+Results: `scripts/results-v2/key-space-verify.json`
+

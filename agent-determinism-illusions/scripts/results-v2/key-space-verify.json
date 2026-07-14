@@ -1,0 +1,776 @@
+{
+  "experiment": "key-space-verify-test",
+  "design": {
+    "claim": "Key-space C3 catches wrong-referent cases single-key C3 misses, analogous to a Bloom filter before cache lookup",
+    "method": "6 scenarios × 2 C3 modes × 3 cache impls",
+    "wrong_referent_scenarios": [
+      "S1",
+      "S3",
+      "S4",
+      "S5",
+      "S6"
+    ]
+  },
+  "results": [
+    {
+      "scenario": "S1",
+      "cache": "LiveCache",
+      "mode": "single-key",
+      "requirement": "invalidate the relevant cache entry when user data changes",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": true,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S2",
+      "cache": "LiveCache",
+      "mode": "single-key",
+      "requirement": "clear stale cache entries before writing new data",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:123",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": true,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S3",
+      "cache": "LiveCache",
+      "mode": "single-key",
+      "requirement": "invalidate cache if write affects the user's active session",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "session:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": false,
+      "single_key_blind": true,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S4",
+      "cache": "LiveCache",
+      "mode": "single-key",
+      "requirement": "when updating a user profile, invalidate all related entries",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:*,profile:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": false,
+      "single_key_blind": true,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S5",
+      "cache": "LiveCache",
+      "mode": "single-key",
+      "requirement": "on password change, invalidate the user's security token",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "token:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": false,
+      "single_key_blind": true,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S6",
+      "cache": "LiveCache",
+      "mode": "single-key",
+      "requirement": "when permissions change, invalidate all sessions for this user",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "session:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": false,
+      "single_key_blind": true,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S1",
+      "cache": "LiveCache",
+      "mode": "key-space",
+      "requirement": "invalidate the relevant cache entry when user data changes",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:*",
+      "passed": false,
+      "detail": "space 'user:*' (2 keys): 1 invalidated, 1 survived → FAIL",
+      "resolution_ok": true,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "user:123",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        },
+        {
+          "key": "user:456",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        }
+      ]
+    },
+    {
+      "scenario": "S2",
+      "cache": "LiveCache",
+      "mode": "key-space",
+      "requirement": "clear stale cache entries before writing new data",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:123",
+      "passed": true,
+      "detail": "space 'user:123' (1 keys): 1 invalidated, 0 survived → PASS",
+      "resolution_ok": true,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "user:123",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "scenario": "S3",
+      "cache": "LiveCache",
+      "mode": "key-space",
+      "requirement": "invalidate cache if write affects the user's active session",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "session:*",
+      "passed": false,
+      "detail": "space 'session:*' (2 keys): 0 invalidated, 2 survived → FAIL",
+      "resolution_ok": false,
+      "single_key_blind": true,
+      "key_space_catches": true,
+      "per_key": [
+        {
+          "key": "session:abc",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        },
+        {
+          "key": "session:xyz",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        }
+      ]
+    },
+    {
+      "scenario": "S4",
+      "cache": "LiveCache",
+      "mode": "key-space",
+      "requirement": "when updating a user profile, invalidate all related entries",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:*,profile:*",
+      "passed": false,
+      "detail": "compound space 'user:*,profile:*' (3 keys): 1 invalidated, 2 survived → FAIL",
+      "resolution_ok": false,
+      "single_key_blind": true,
+      "key_space_catches": true,
+      "per_key": [
+        {
+          "key": "user:123",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        },
+        {
+          "key": "user:456",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        },
+        {
+          "key": "profile:123",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        }
+      ]
+    },
+    {
+      "scenario": "S5",
+      "cache": "LiveCache",
+      "mode": "key-space",
+      "requirement": "on password change, invalidate the user's security token",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "token:*",
+      "passed": false,
+      "detail": "space 'token:*' (1 keys): 0 invalidated, 1 survived → FAIL",
+      "resolution_ok": false,
+      "single_key_blind": true,
+      "key_space_catches": true,
+      "per_key": [
+        {
+          "key": "token:789",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        }
+      ]
+    },
+    {
+      "scenario": "S6",
+      "cache": "LiveCache",
+      "mode": "key-space",
+      "requirement": "when permissions change, invalidate all sessions for this user",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "session:*",
+      "passed": false,
+      "detail": "space 'session:*' (2 keys): 0 invalidated, 2 survived → FAIL",
+      "resolution_ok": false,
+      "single_key_blind": true,
+      "key_space_catches": true,
+      "per_key": [
+        {
+          "key": "session:abc",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        },
+        {
+          "key": "session:xyz",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        }
+      ]
+    },
+    {
+      "scenario": "S1",
+      "cache": "BulkCache",
+      "mode": "single-key",
+      "requirement": "invalidate the relevant cache entry when user data changes",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": true,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S2",
+      "cache": "BulkCache",
+      "mode": "single-key",
+      "requirement": "clear stale cache entries before writing new data",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:123",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": true,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S3",
+      "cache": "BulkCache",
+      "mode": "single-key",
+      "requirement": "invalidate cache if write affects the user's active session",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "session:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S4",
+      "cache": "BulkCache",
+      "mode": "single-key",
+      "requirement": "when updating a user profile, invalidate all related entries",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:*,profile:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S5",
+      "cache": "BulkCache",
+      "mode": "single-key",
+      "requirement": "on password change, invalidate the user's security token",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "token:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S6",
+      "cache": "BulkCache",
+      "mode": "single-key",
+      "requirement": "when permissions change, invalidate all sessions for this user",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "session:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S1",
+      "cache": "BulkCache",
+      "mode": "key-space",
+      "requirement": "invalidate the relevant cache entry when user data changes",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:*",
+      "passed": true,
+      "detail": "space 'user:*' (2 keys): 2 invalidated, 0 survived → PASS",
+      "resolution_ok": true,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "user:123",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        },
+        {
+          "key": "user:456",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "scenario": "S2",
+      "cache": "BulkCache",
+      "mode": "key-space",
+      "requirement": "clear stale cache entries before writing new data",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:123",
+      "passed": true,
+      "detail": "space 'user:123' (1 keys): 1 invalidated, 0 survived → PASS",
+      "resolution_ok": true,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "user:123",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "scenario": "S3",
+      "cache": "BulkCache",
+      "mode": "key-space",
+      "requirement": "invalidate cache if write affects the user's active session",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "session:*",
+      "passed": false,
+      "detail": "space 'session:*' (2 keys): 0 invalidated, 2 survived → FAIL",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "session:abc",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        },
+        {
+          "key": "session:xyz",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        }
+      ]
+    },
+    {
+      "scenario": "S4",
+      "cache": "BulkCache",
+      "mode": "key-space",
+      "requirement": "when updating a user profile, invalidate all related entries",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:*,profile:*",
+      "passed": false,
+      "detail": "compound space 'user:*,profile:*' (3 keys): 2 invalidated, 1 survived → FAIL",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "user:123",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        },
+        {
+          "key": "user:456",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        },
+        {
+          "key": "profile:123",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        }
+      ]
+    },
+    {
+      "scenario": "S5",
+      "cache": "BulkCache",
+      "mode": "key-space",
+      "requirement": "on password change, invalidate the user's security token",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "token:*",
+      "passed": false,
+      "detail": "space 'token:*' (1 keys): 0 invalidated, 1 survived → FAIL",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "token:789",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        }
+      ]
+    },
+    {
+      "scenario": "S6",
+      "cache": "BulkCache",
+      "mode": "key-space",
+      "requirement": "when permissions change, invalidate all sessions for this user",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "session:*",
+      "passed": false,
+      "detail": "space 'session:*' (2 keys): 0 invalidated, 2 survived → FAIL",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "session:abc",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        },
+        {
+          "key": "session:xyz",
+          "present_before": true,
+          "present_after": true,
+          "passed": false
+        }
+      ]
+    },
+    {
+      "scenario": "S1",
+      "cache": "FlushCache",
+      "mode": "single-key",
+      "requirement": "invalidate the relevant cache entry when user data changes",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": true,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S2",
+      "cache": "FlushCache",
+      "mode": "single-key",
+      "requirement": "clear stale cache entries before writing new data",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:123",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": true,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S3",
+      "cache": "FlushCache",
+      "mode": "single-key",
+      "requirement": "invalidate cache if write affects the user's active session",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "session:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S4",
+      "cache": "FlushCache",
+      "mode": "single-key",
+      "requirement": "when updating a user profile, invalidate all related entries",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:*,profile:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S5",
+      "cache": "FlushCache",
+      "mode": "single-key",
+      "requirement": "on password change, invalidate the user's security token",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "token:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S6",
+      "cache": "FlushCache",
+      "mode": "single-key",
+      "requirement": "when permissions change, invalidate all sessions for this user",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "session:*",
+      "passed": true,
+      "detail": "check 'user:123': before=present, after=gone",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false
+    },
+    {
+      "scenario": "S1",
+      "cache": "FlushCache",
+      "mode": "key-space",
+      "requirement": "invalidate the relevant cache entry when user data changes",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:*",
+      "passed": true,
+      "detail": "space 'user:*' (2 keys): 2 invalidated, 0 survived → PASS",
+      "resolution_ok": true,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "user:123",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        },
+        {
+          "key": "user:456",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "scenario": "S2",
+      "cache": "FlushCache",
+      "mode": "key-space",
+      "requirement": "clear stale cache entries before writing new data",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:123",
+      "passed": true,
+      "detail": "space 'user:123' (1 keys): 1 invalidated, 0 survived → PASS",
+      "resolution_ok": true,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "user:123",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "scenario": "S3",
+      "cache": "FlushCache",
+      "mode": "key-space",
+      "requirement": "invalidate cache if write affects the user's active session",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "session:*",
+      "passed": true,
+      "detail": "space 'session:*' (2 keys): 2 invalidated, 0 survived → PASS",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "session:abc",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        },
+        {
+          "key": "session:xyz",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "scenario": "S4",
+      "cache": "FlushCache",
+      "mode": "key-space",
+      "requirement": "when updating a user profile, invalidate all related entries",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "user:*,profile:*",
+      "passed": true,
+      "detail": "compound space 'user:*,profile:*' (3 keys): 3 invalidated, 0 survived → PASS",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "user:123",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        },
+        {
+          "key": "user:456",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        },
+        {
+          "key": "profile:123",
+          "present_before": false,
+          "present_after": false,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "scenario": "S5",
+      "cache": "FlushCache",
+      "mode": "key-space",
+      "requirement": "on password change, invalidate the user's security token",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "token:*",
+      "passed": true,
+      "detail": "space 'token:*' (1 keys): 1 invalidated, 0 survived → PASS",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "token:789",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "scenario": "S6",
+      "cache": "FlushCache",
+      "mode": "key-space",
+      "requirement": "when permissions change, invalidate all sessions for this user",
+      "trigger_key": "user:123",
+      "single_key_to_check": "user:123",
+      "true_keyspace": "session:*",
+      "passed": true,
+      "detail": "space 'session:*' (2 keys): 2 invalidated, 0 survived → PASS",
+      "resolution_ok": false,
+      "single_key_blind": false,
+      "key_space_catches": false,
+      "per_key": [
+        {
+          "key": "session:abc",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        },
+        {
+          "key": "session:xyz",
+          "present_before": true,
+          "present_after": false,
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "catch_rates": {
+    "single-key_LiveCache": {
+      "caught": 0,
+      "total": 5,
+      "rate": 0.0
+    },
+    "single-key_BulkCache": {
+      "caught": 0,
+      "total": 5,
+      "rate": 0.0
+    },
+    "key-space_LiveCache": {
+      "caught": 5,
+      "total": 5,
+      "rate": 1.0
+    },
+    "key-space_BulkCache": {
+      "caught": 4,
+      "total": 5,
+      "rate": 0.8
+    }
+  }
+}
