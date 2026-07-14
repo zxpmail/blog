@@ -1,116 +1,78 @@
 ---
-title: "I added an LLM judge to my Phase Gate — false positives hit 0%, false negatives hit 75%"
+title: "Six experiments on adversarial verification — and the 75% wall that didn't move"
 published: false
-description: "A single Agent B as Phase Gate inspector on 8 scenarios. False positives dropped to 0%, but the false-negative rate hit 75% — every garbage catch cost ~3 valid outputs."
+description: "Four models, 260+ API calls, same 0% FP / 75% FN wall. A reviewer is a line-drawing mechanism, and the line lives on a 3D semantic surface — so it can't be eliminated, only moved."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
 ---
 
-# I added an LLM judge to my Phase Gate — false positives hit 0%, false negatives hit 75%
+# Six experiments on adversarial verification — and the 75% wall that didn't move
 
 **Agent Determinism Illusions (Part 6)**
 
-## Background
-
-A previous experiment ([Phase Gate formalism test, Part 1](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)) found that a checkpoint mechanism implemented per the described specification passed all 8 scenarios indiscriminately — including outputs like "I am a little duck, quack quack" and "。". False positive rate: 50%.
-
-A natural follow-up question: can adding an LLM-based review step (Agent B) to Phase Gate reduce the false positive rate?
-
-## Experiment Design
-
-**Review model**: deepseek-v4-flash (via Anthropic-compatible API, temperature=0)
-
-**Scenarios**: Reusing the 8 scenarios from the Phase Gate experiment
-- L1-L4: Correct content (research brief, draft document, chapter files, passing tests)
-- G1-G4: Garbage content (nonsense text, single punctuation, TODO placeholder, zero collected tests)
-
-**Method**: Each scenario passes the task description and output to the model, asking it to judge whether the output actually satisfies the requirements. Each scenario repeated 3 times, majority vote.
-
-**Judgment format**: JSON `{"pass": true/false, "reason": "..."}`. pass=true means the model considers the output satisfactory.
-
-## Results
-
-| Scenario | Ground Truth | Agent B Verdict (3 runs) | Phase Gate |
-|----------|-------------|--------------------------|------------|
-| L1 | Correct | Rejected (0/3) | Pass |
-| L2 | Correct | Rejected (0/3) | Pass |
-| L3 | Correct | Rejected (0/3) | Pass |
-| L4 | Correct | Passed (3/3) | Pass |
-| G1 | Garbage | Rejected (3/3) | Pass |
-| G2 | Garbage | Rejected (3/3) | Pass |
-| G3 | Garbage | Rejected (3/3) | Pass |
-| G4 | Garbage | Rejected (3/3) | Pass |
-
-### Summary
-
-| Metric | Phase Gate | Agent B |
-|--------|-----------|---------|
-| False positive (passed garbage) | 50% (4/4) | **0%** (0/4) |
-| False negative (rejected correct) | 0% (0/4) | **75%** (3/4) |
-
-Agent B performed perfectly on garbage detection — all 4 garbage scenarios rejected, false positive rate down to 0%. But it performed poorly on correct content — 3 out of 4 correct scenarios rejected (L1-L3), false negative rate 75%. The only scenario that passed all 3 rounds was L4 (test execution: 42 passed, 0 failed).
-
-## Analysis
-
-### Why garbage scenarios were rejected
-
-Agent B's reasons for rejecting G1-G4:
-
-- G1 ("I am a little duck, quack quack") → "Content is completely unrelated to the user's requirements"
-- G2 ("。") → "Output is only a single period, no substantive content"
-- G3 ("TODO") → "Output is only a placeholder, no actual files or content generated"
-- G4 ("0 passed in 0.00s") → "Script ran successfully but no tests were collected"
-
-These 4 scenarios exhibit obvious problem patterns: irrelevant content, minimal content, placeholder text, empty test results. Technically, **none of these require LLM-level semantic understanding** — keyword matching, length checks, regex matching, and stdout parsing would all suffice.
-
-Phase Gate missed them not because they are hard to detect — but because its check items (file exists, exit code 0) are orthogonal to content quality.
-
-### Why correct scenarios were rejected
-
-L1-L3 share a common pattern in their rejection reasons:
-
-- L1 output was a snippet from an article about loop engine internals → model judged "did not generate a complete research brief file"
-- L2 output included a title and structural description, annotated as "~2000 words body text" → model judged "only provided title and summary description"
-- L3 output showed chapter titles and content previews → model judged "only output one chapter's placeholder content"
-
-A notable detail: L1-L3's outputs were presented as **content excerpts** (simulating "file has been generated"), not complete files. Agent B interpreted this form as "incomplete" rather than "content correct but shown as excerpt."
-
-L4 passed all 3 runs because the test execution result (stdout: "42 passed, 0 failed") is a **self-contained complete signal** — unlike file content excerpts that carry ambiguity about completeness.
-
-### The precision-recall tradeoff
-
-Comparing this result with the earlier experiment (Experiment E, [Part 2](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7)):
-
-| Model | False Positive | False Negative |
-|-------|---------------|---------------|
-| qwen3:0.5b | 25% | 50% |
-| gemma3:4.3b | 25% | 50% |
-| GLM-5.2 | 0% | 75% |
-| **deepseek-v4-flash (this experiment)** | **0%** | **75%** |
-
-deepseek-v4-flash lands at the same point as GLM-5.2: 0% false positive, 75% false negative. This is consistent with the pattern observed in Experiment E — **stronger models in review tasks do not improve across all metrics. Instead, they shift along the precision-recall curve toward the precision end.**
-
-A plausible explanation: more precise semantic understanding gives the model a sharper boundary for what constitutes "satisfying the requirements." The sharper the boundary, the more willing the model is to reject outputs that appear insufficient. The result: fewer false positives (harder for garbage to slip through), but more false negatives (more marginally-correct outputs get rejected).
-
-### Artifact discussion
-
-L1-L3's rejection results are partially affected by how the output was presented — providing complete file content instead of excerpts might have changed the judgment. However, this raises a more general question:
-
-In real Agent workflows, the reviewer (Agent B) also sees Agent A's output — not a human-annotated ground truth. If Agent A's output varies in form and completeness (which is common in auto-generated content), the calibration problem the reviewer faces is real, not just an experimental artifact.
-
-## Summary
-
-P1 experiment data shows:
-
-1. Adversarial verification (single Agent B) reduced Phase Gate's 50% false positive rate to 0%
-2. The cost: false negative rate rose from 0% to 75%
-3. This result is consistent with the precision-recall tradeoff pattern from earlier experiments — the stronger the model, the higher the precision but the lower the recall
-4. The 4 garbage scenarios suggest that code-level content quality checks (length, format, keywords) could cover most of these cases without relying on LLM judgment
-
-Next step (P2) will test Agent B's output stability — whether the 75% false negative rate from this single experiment is reproducible or has significant random variance.
+*Merges previous Parts 6/7/8/9. P1–P4 scripts unchanged.*
 
 ---
 
-*Experiment code: `agent-determinism-illusions/scripts/adversarial-verify-p1.py`*
+> **The argument, in one line:** a reviewer is a mechanism for drawing a line. Every fix moves the line — but the line can't be eliminated, because it lives on a 3-dimensional surface where multiple defensible boundaries cross. So the 75% false-negative wall doesn't move, and the practical move is to stop trying to move it.
+
+---
+
+## 1. The wall
+
+The setup was simple. Let an LLM review what an AI agent produced and judge whether it satisfies the task. Outputs were a mix of obvious garbage ("I am a little duck, quack quack", "。", TODO placeholders, zero collected tests) and legitimate work (research briefs, draft documents, passing test runs, code, translations). 8 scenarios in the first round, expanded to 30 in the second.
+
+When the reviewer is sharp enough to catch all the garbage, it lands at 0% false positives and 75% false negatives — three out of four valid outputs rejected. This is the wall. GLM-5.2 and deepseek-v4-flash both hit it. Smaller models (qwen3:0.5b, gemma3:4.3b) sit earlier on the curve at 25% / 50% — letting some garbage through, rejecting less valid work. They're not better; they're just at a different operating point on the same curve.
+
+I tried three standard moves to shift off the wall.
+
+**Rerun and majority-vote the same prompt.** N=10 reruns per scenario. The verdict was unanimous on every scenario with enough valid calls. The 75% is systematic, not random — the model commits to the same wrong call every time. You can't vote away a verdict that doesn't vary.
+
+**Vote across different prompts.** Strict, balanced, and lenient prompts judged each scenario. Split votes are a useful signal — they flag scenarios where the test set itself is contested. But majority voting still hits 75% false negatives, because all three prompts share the same bias direction. Why? Section 2's answer: the model's boundary is stable; prompt wording labels the line, it doesn't move it. Voting smooths noise; it doesn't fix bias.
+
+**Calibrate the prompt wording.** A "balanced" prompt (v3) hit 100% accuracy on the 8 Phase Gate scenarios. The standard "calibrate your prompt" advice seemed to work. Expanded to 30 scenarios, v3 and the strict v2 returned identical verdicts on every valid call. The improvement on 8 was test-set composition bias — the original scenarios happened to favor v3's leniency.
+
+The wall is real. None of the standard levers moved it.
+
+## 2. Why the wall doesn't move
+
+A reviewer is a mechanism for drawing a line. The line separates "sufficient output" from "insufficient output" — that's the whole job. Formal checks, LLM judgments, prompt wording — these are choices of where and how to draw it.
+
+Here is the property that matters. A sharper line catches more garbage and rejects more marginal-valid output. Same sharpness, opposite effects on the two error types. Sharpen the line and false positives drop while false negatives rise. Dull it and the reverse. The precision-recall tradeoff isn't a model defect — it's the geometry of drawing a line with imperfect discrimination. A perfect reviewer wouldn't have this tradeoff; reviewers have opinions about where the boundary lives, and those opinions are noisy.
+
+The six experiments were three attempts to draw a better line. Phase Gate drew it on form — file exists, exit code 0 — which is independent of content. Four pieces of garbage ("I am a little duck", "。", TODO placeholder, zero collected tests) sailed through. False positives: 50%. Adversarial verification drew the line on semantics with an LLM. Much sharper. Caught all the garbage (false positives → 0%), and the same sharpness rejected three out of four marginal-but-valid outputs (false negatives → 75%). Prompt calibration tried to move the line by changing the wording — strict vs. balanced vs. lenient. On 30 scenarios, v2 and v3 returned identical verdicts on every valid call. The line didn't move, because wording doesn't draw lines. Wording labels lines. The third attempt is the limit of the substitution approach: once you're using words to move a line the model already drew, you're not substituting anymore. You're decorating.
+
+So why not find a sharper line — or a different kind of line — that catches garbage without burning valid work? Because the line doesn't live in a one-dimensional space.
+
+The boundary between "sufficient" and "insufficient" depends on at least three independent questions. Who consumes the output — a junior engineer taking it at face value, or a senior reviewer who'll catch edge cases? Where it's deployed — a prototype thrown away next week, or production that runs for years? What fails if it's wrong — a demo that embarrasses you in a meeting, or a deploy that takes down the service?
+
+These three dimensions are mostly independent, not perfectly orthogonal. They correlate — consumer type gives a weak hint about deployment context — but not enough to collapse into one axis. Knowing the consumer doesn't determine the deployment. Knowing the deployment doesn't determine the cost of failure. So the boundary isn't a point in 1D space; it's a surface in 3D space. And most real outputs land somewhere in the interior — where multiple defensible boundaries cross.
+
+"Is this output sufficient?" doesn't have a single answer because the question is underspecified. Different consumers, contexts, and costs give different defensible answers. The fuzziness isn't a property of weak models. It's a property of the question.
+
+The practical conclusion falls out of the geometry. If the fuzziness is in the question, no model removes it. No prompt removes it. No voting scheme removes it. They just draw lines in different places on the same surface. The 75% didn't move across four models because there's nowhere to move it to — moving the operating point along the surface trades FP for FN, but the surface itself doesn't disappear.
+
+We weren't failing to find the right trick. We were looking for a trick that doesn't exist.
+
+## 3. Design around the wall
+
+So design around it. The move is not "fix the wall." The move is "stop trying to fix the wall" — and that acceptance changes the design.
+
+If the 75% is structural, you stop spending LLM calls on garbage that rules can catch (keyword match catches "I am a little duck", length check catches "。"). You stop trying to vote your way out of a systematic bias. You stop calibrating prompt wording and pretending the model's boundary will follow. Instead, you put rules where rules work, one calibrated LLM where semantics actually matters, and humans where the 3D boundary surface gets fuzzy — which Section 2's dimension argument tells you is exactly where models disagree. In practice: cheap deterministic checks (length, keyword, format) catch the obvious garbage, one calibrated LLM call judges the semantic residual per requirement, and any split verdict escalates to a human. The LLM never sees the cases rules can handle — it sees only what rules can't.
+
+And then you pick a side of the wall. This is not a TODO; it is the load-bearing decision the rest of the design implements. More false positives means more reviewer attention burned on valid work flagged as suspect. More false negatives means more defective work ships. The tradeoff is structural. The only mistake is pretending you don't have to choose.
+
+## 4. The illusion kept moving
+
+The series is called "Agent Determinism Illusions." Across six experiments, the illusion kept moving.
+
+It started in output determinism — temp=0 was supposed to guarantee consistency, and it doesn't (20 different versions of the same listing on a structured task). Caught, the illusion moved into review standards — formal checks were supposed to guarantee quality, and they don't ("file exists" passes "I am a little duck, quack quack"). Caught again, it moved into solution complexity — surely multi-model voting, or calibrated prompts, or layered pipelines would help. They don't, not really; each layer inherits the same wall. Caught a third time, the illusion stopped hiding in technical assumptions and moved up a level: into the meta-expectation that enough experiments produce a clean conclusion. They produce the conclusion that there is no clean conclusion.
+
+The illusion keeps moving because we keep chasing it. The work isn't to catch it. The work is to stop expecting it to stand still.
+
+---
+
+*Experiment code: `agent-determinism-illusions/scripts/adversarial-verify-p1.py`, `consistency-test-p2.py`, `multi-perspective-vote-p3.py`, `prompt-calibration-p3b.py`, `p4-expanded-test.py`*
+*Series start: [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)*
 *Full series: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions)*

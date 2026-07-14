@@ -9,11 +9,11 @@
 - DS4 三模型全败（accuracy 0.0 / 0.0 / 0.33），最一致盲区 ✅
 - 89% 聚合接受率 = 逐调用 26.67/30 misses；置信度 1.0 / 0.95 / 0.94 ✅
 - 0.5B 关键词反转 4/6 漏检（DF1/DF4/DF5/DF6 accuracy <1.0）✅
-- "Part 10" 引用有效：Part 10 附录含 v2 扩展（`-10.zh.md:326`），Part 12 亦引用该数据集
-  → 发布时建议把 "Part 10" 换成 dev.to 上的 canonical 链接
+- "Part 7" 引用有效：Part 7 附录含 v2 扩展（`-7.zh.md:326`），Part 9 亦引用该数据集
+  → 发布时建议把 "Part 7" 换成 dev.to 上的 canonical 链接
 
 **回复三 (@Dipankar):**
-- "4 split / 3 wrong" ✅ — 源自 Part 10 第 188 行 "Majority voting was wrong on 3 of 4 split scenarios"
+- "4 split / 3 wrong" ✅ — 源自 Part 7 第 188 行 "Majority voting was wrong on 3 of 4 split scenarios"
 - L3 分歧逻辑 `max(PASS,REJECT)/N < 0.8 → UNCLEAR` ✅ — 与现行 `content-verify.mjs` `layer3Check` 一致
 
 **回复四 (@Vinicius + @Lior):**
@@ -33,7 +33,7 @@
 
 ---
 
-The DGM fake-log incident illustrates a pattern that appears in my experimental data from Part 10 of the Agent Determinism Illusions series.
+The DGM fake-log incident illustrates a pattern that appears in my experimental data from Part 7 of the Agent Determinism Illusions series.
 
 I ran 20 directional-failure scenarios across 3 model tiers (0.5B, 4.3B, ~200B) for 600 total judgments. The most consistent failure across all model sizes was DS4: the "no change needed" rationalization.
 
@@ -81,7 +81,7 @@ No majority voting. Split = escalate. The data from P3 confirmed it — 4 split 
 
 I also expanded the directional failure experiment to 20 scenarios × 3 models × 600 calls. Most scenarios had consistent judgments across N=15 runs, but the ones that didn't (DS4 on deepseek, V2) are exactly the edge cases where models struggle — which aligns with your framing: inconsistency across runs is itself diagnostic.
 
-The full write-up with v2 data is in the updated appendix of Part 10. Would love your take on the expanded subtle-DF results.
+The full write-up with v2 data is in the updated appendix of Part 7. Would love your take on the expanded subtle-DF results.
 
 ---
 
@@ -155,7 +155,7 @@ The pattern I use in forge-verify is an `editable-surface.json` declaring which 
 
 This is also the DGM fake-log mechanism Weng documented in her harness survey — agent modified its own harness, wrote "tests passed" to a log, downstream the same agent read it and concluded changes were validated. Tests never ran. Sergei Parfenov's analysis named the structural cause: provenance dies at the storage boundary. Without runtime-verified provenance, "I ran the tests" and "I claim I ran the tests" are both just text.
 
-"Verifiable is not a property of the output, it's a property of the check's independence from the generator." Stealing that framing — the same idea is in my Part 12 draft (unpublished) as "evaluators live outside the loop," but Layer 1 here silently assumes it without naming it.
+"Verifiable is not a property of the output, it's a property of the check's independence from the generator." Stealing that framing — the same idea is in my Part 9 draft (unpublished) as "evaluators live outside the loop," but Layer 1 here silently assumes it without naming it.
 
 ---
 
@@ -231,10 +231,10 @@ I measured the memory side: embedding cosine similarity couldn't separate synony
 
 ---
 
-## 回复十一：@xm_dev_2026 (Xiao Man) — true negative + adaptive sampling PR + Part 10 write-up
+## 回复十一：@xm_dev_2026 (Xiao Man) — true negative + adaptive sampling PR + Part 7 write-up
 
 **目标文章：** [I tested 3 models as AI agent quality inspectors](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7) 评论区
-**主题：** Xiao Man 认可 adaptive framing + 要提 PR（edge cases → forge-verify adaptive-rate 扩展）+ 期待 Part 10 write-up；回复呼应 true negative 价值 → adaptive 是对它的回应。
+**主题：** Xiao Man 认可 adaptive framing + 要提 PR（edge cases → forge-verify adaptive-rate 扩展）+ 期待 Part 7 write-up；回复呼应 true negative 价值 → adaptive 是对它的回应。
 
 ---
 

@@ -129,7 +129,7 @@ Five patterns emerge from the data.
 
 DS9 is the clean case: a "no change needed" rationalization on a real directional failure. The parameter actually needs to change (1000 → 100), the output claims "current is sufficient, no reduction needed," and the model accepts the rationale rather than checking whether the action was executed. The output's parameter value (1000) does not match the requested value (100), and a deterministic value check catches this.
 
-DS4 is messier. The original framing (in this apology and in Part 12) called it a directional failure with "current limit of 50" — **that was wrong**. The actual scenario output is "旧值: 10, 新值: 10 (no change)" — the task asks to set the parameter to a value it already has. Strictly speaking, the output is correct; the model that "fails" by accepting it is making a defensible call. DS4 is closer to task-design ambiguity than a directional failure. The "100% miss on weak models" finding is real but the interpretation as a directional failure was not.
+DS4 is messier. The original framing (in this apology and in Part 9) called it a directional failure with "current limit of 50" — **that was wrong**. The actual scenario output is "旧值: 10, 新值: 10 (no change)" — the task asks to set the parameter to a value it already has. Strictly speaking, the output is correct; the model that "fails" by accepting it is making a defensible call. DS4 is closer to task-design ambiguity than a directional failure. The "100% miss on weak models" finding is real but the interpretation as a directional failure was not.
 
 DS9 follows the directional-failure pattern cleanly:
 ```
@@ -219,7 +219,7 @@ This is expected behavior for a model that's been trained to project confidence.
 
 Across 600 judgments and 3 models, confidence is not a reliable signal for detecting evaluation errors. The only model with non-saturated calibration (gemma3) still fails on the critical scenario. A confidence threshold would either miss the failures (at any threshold below 0.95) or generate excessive false alarms.
 
-The architectural solution is to not rely on the model's self-reported confidence at all. Use deterministic checks for what they can verify, and use divergence between multiple judgments (Part 10's Layer 3) as the uncertainty signal instead.
+The architectural solution is to not rely on the model's self-reported confidence at all. Use deterministic checks for what they can verify, and use divergence between multiple judgments (Part 7's Layer 3) as the uncertainty signal instead.
 
 ---
 
@@ -259,7 +259,7 @@ The gap between 0.5B and 4.3B is a cliff, not a slope. A 4.3B model catches ever
 
 Accuracy, saturation, garbage detection, and failure calibration are four independent properties. A model can have high accuracy and useless confidence (deepseek), or mediocre accuracy with useful garbage detection (gemma3 on garbage), or low accuracy with saturated confidence (qwen3). None of the three models has all four.
 
-This means confidence can never be a standalone signal. If you need a reliable uncertainty metric, use between-model divergence (Layer 3 from Part 10), not within-model confidence.
+This means confidence can never be a standalone signal. If you need a reliable uncertainty metric, use between-model divergence (Layer 3 from Part 7), not within-model confidence.
 
 ---
 
@@ -307,7 +307,7 @@ The first version of this apology made two claims that the expanded data has ove
 
 The claim that needs revision: **DS4 ("no change needed") is a weak-model vulnerability, not a universal one.** Across 45 combined judgments (3 models × 15 runs), only 5 detected the directional failure — but the distribution matters: 13 of the misses were on qwen3:0.5b (100% miss) and 15 on gemma3:latest (100% miss). deepseek-v4-flash caught 5/15 (33%), gave no clear verdict on 8/15 (PARSE_FAIL, 53%), and only actually missed 2/15 (13%). The strong model is rarely confidently wrong on DS4; it's uncertain. The original "universal vulnerability" framing overstated this.
 
-The original Part 10 appendix argued: explicit DFs are easy, subtle DFs are hard, so the fix is deterministic checks for subtle patterns. The v2 data inverts this: **explicit DFs are not easy for weak models, and DS9-style "no change needed" (a real value mismatch) is the easiest to fix deterministically.** The strong argument for layering is not "the model fails on edge cases" but "weak models fail on routine cases that stronger models catch — and even strong models need deterministic checks for the residual."
+Part 7's original appendix argued: explicit DFs are easy, subtle DFs are hard, so the fix is deterministic checks for subtle patterns. The v2 data inverts this: **explicit DFs are not easy for weak models, and DS9-style "no change needed" (a real value mismatch) is the easiest to fix deterministically.** The strong argument for layering is not "the model fails on edge cases" but "weak models fail on routine cases that stronger models catch — and even strong models need deterministic checks for the residual."
 
 ---
 
