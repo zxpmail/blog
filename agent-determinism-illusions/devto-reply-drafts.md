@@ -385,3 +385,48 @@ I land on: **refuse-on-unaddressable as the default, with an explicit carve-out 
 How common is that class in your production data? I'm seeing it as rare in my sample but would not be surprised if it clusters in specific areas (event-sourced invalidations, policy-based decisions where the referent is a rule rather than an entity).
 
 ---
+
+## 回复十八：@Mike Czerwinski — referent gameability 的分类边界 + 实验数据
+
+**目标文章：** Part 4 评论区，续 Jul 14 thread。
+**主题：** Mike 第6轮：referent 存在性检查是 C1 同构上移；参数化 vs non-parameterized 验证的边界；实验覆盖了 non-parameterized，参数化残余是需求定义质量。
+
+---
+
+你的 game 成立，但需要明确它属于哪个层。你说的不是 agent 绕开门禁——是**人写了错误的需求，然后人被同一个错误需求误导、写出了验证错误东西的验证脚本**。这是需求定义质量边界，不在门禁承诺范围内。
+
+一组实验数据覆盖了 non-parameterized 验证：C3（argument-space runner）不读需求文本，只运行代码观察 side effect。验证脚本通用（写 k、测 cache[k]），不绑定到具体 referent。
+
+5 场景实验结果：
+
+| | C1 正则 | C2 LLM | C3 arg-space |
+|---|---|---|---|
+| 正确 | 2/5 | 2/5 | 5/5 |
+
+S4（伪造 `write()` + `this._cache.delete(key)` 片段，impl 不存在）是临界 case：C1 放行（关键词匹配）、C2 放行（模型背书了伪造注释）、C3 拒绝（跑了代码，条目还在——DPI bound 具体化）。50 个真实 glm-5.2 agent 的扩展验证中，C3 在 explicit（要求 invalidation）和 vague（agent 可自行选择）条件下都完美、prompt 无关——agent 用自己的语言描述行为，C3 判定不动。
+
+参数化验证（验证脚本必须绑定到具体 referent）是另一个问题。39 需求实验里你 reframe 过的"shape not key → traced relation"覆盖了一部分——很多参数化场景其实是 deterministic join 而非具体 key 绑定——但不完整。当验证脚本真的必须按某个 referent 参数化时，错误的 referent 会导致人写出错误的验证脚本。这个缺口不是 agent game，是合约定义质量的问题，属于 Contract Review（人审）+ Type A 抽样覆盖的范围，不是门禁架构能解决的。
+
+这个分类的边界我后续会继续验证——参数化场景的频率、合约审核的实际漏检率、以及是否存在 deterministic 接口能收紧这个缺口。
+
+---
+
+**English version:**
+
+The game is real, but the layer it lives in matters. This isn't an agent gaming the gate — it's a human writing a wrong requirement, then the same wrong requirement misleading the human into writing a verify script that checks the wrong thing. That's a requirements-definition quality boundary, outside what the gate architecture claims to handle.
+
+I ran experiments covering the non-parameterized side. C3 (argument-space runner) doesn't read the requirement text — it runs code and observes the side effect. The verify script is general (write k, observe cache[k]), not bound to any specific referent.
+
+5 scenarios, 3 evaluators:
+
+| | C1 regex | C2 LLM | C3 arg-space |
+|---|---|---|---|
+| Correct | 2/5 | 2/5 | 5/5 |
+
+S4 (fabricated `write()` + `this._cache.delete(key)` snippet, impl doesn't have it) is the critical case: C1 passes (keyword match), C2 passes (model endorsed the fabricated comment), C3 rejects (ran the code, entry survived — DPI bound made concrete). Extended to 50 real glm-5.2 agents: C3 was perfect under both explicit and vague conditions, prompt-invariant — agents described their work in their own words, C3's verdict didn't move.
+
+Parameterized verification (where the verify script must bind to a specific referent) is a separate question. Your "shape not key → traced relation" reframe from the 39-requirement experiment covers part of it — many parameterized scenarios are actually deterministic joins rather than specific key bindings — but not all. When a verify script genuinely has to be parameterized by referent, a wrong referent leads the human to write the wrong script. This gap isn't an agent game; it's contract-definition quality, covered by Contract Review (human) + Type A sampling — outside the gate architecture's scope.
+
+I'll follow up with more experiments on this boundary — the frequency of parameterized scenarios, the actual miss rate of contract review, and whether a deterministic interface can tighten this gap.
+
+---

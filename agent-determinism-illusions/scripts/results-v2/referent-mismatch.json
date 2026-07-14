@@ -1,0 +1,55 @@
+{
+  "scenarios": [
+    {
+      "id": "S1",
+      "impl": "targeted (key-level delete)",
+      "wrong_referent": "invalidate user:123",
+      "true_intent": "invalidate ALL user:* entries",
+      "verify_command": "check user:123 gone (follows req referent)",
+      "c3_result": "PASS",
+      "game_succeeded": true
+    },
+    {
+      "id": "S2",
+      "impl": "flush-all (over-invalidates)",
+      "wrong_referent": "invalidate user:123 only, leave user:456",
+      "true_intent": "invalidate user:123 only, preserve user:456",
+      "verify_command": "check user:456 alive (req says leave it)",
+      "c3_result": "FAIL",
+      "game_succeeded": false
+    },
+    {
+      "id": "S3",
+      "impl": "prefix:user/* only",
+      "wrong_referent": "invalidate admin:123",
+      "true_intent": "invalidate user:123",
+      "verify_command": "check admin:* gone (req says admin)",
+      "c3_result": "FAIL",
+      "game_succeeded": false
+    },
+    {
+      "id": "S4",
+      "impl": "tiered L1/L2 (partial invalidation)",
+      "wrong_referent": "invalidate user:123 (L1 only)",
+      "true_intent": "invalidate user:123 (L1 AND L2)",
+      "verify_command": "check L2 gone (req says L1, we check deeper)",
+      "c3_result": "FAIL",
+      "game_succeeded": false
+    },
+    {
+      "id": "S5",
+      "impl": "cascade (over-invalidates all)",
+      "wrong_referent": "invalidate user:123, NOT user:456",
+      "true_intent": "invalidate user:123 only, preserve user:456",
+      "verify_command": "check user:456 alive (req says preserve it)",
+      "c3_result": "FAIL",
+      "game_succeeded": false
+    }
+  ],
+  "summary": {
+    "game_succeeded": 1,
+    "game_caught": 4,
+    "total": 5,
+    "honest_boundary": "C3 catches mismatch when verify checks a gap the impl doesn't fill. It misses when verify checks something the impl satisfies by accident (over-invalidation, correct-by-coincidence). This is contract-definition quality — L3 territory."
+  }
+}

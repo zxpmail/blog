@@ -1,0 +1,111 @@
+{
+  "scenario": "A",
+  "impl": "TARGETED — user:456 NOT invalidated (under-invalidation)",
+  "rounds": [
+    {
+      "round": 1,
+      "scope": [
+        "user:123"
+      ],
+      "pass": 1,
+      "fail": 0,
+      "coverage_pct": 50.0,
+      "evidence_count": 1,
+      "unexpected_changes": [],
+      "missing_expected": []
+    },
+    {
+      "round": 2,
+      "scope": [
+        "user:123"
+      ],
+      "pass": 1,
+      "fail": 0,
+      "coverage_pct": 50.0,
+      "evidence_count": 1,
+      "unexpected_changes": [],
+      "missing_expected": []
+    },
+    {
+      "round": 3,
+      "scope": [
+        "user:123"
+      ],
+      "pass": 1,
+      "fail": 0,
+      "coverage_pct": 50.0,
+      "evidence_count": 1,
+      "unexpected_changes": [],
+      "missing_expected": []
+    },
+    {
+      "round": 4,
+      "scope": [
+        "user:123"
+      ],
+      "pass": 1,
+      "fail": 0,
+      "coverage_pct": 50.0,
+      "evidence_count": 1,
+      "unexpected_changes": [],
+      "missing_expected": []
+    },
+    {
+      "round": 5,
+      "scope": [
+        "user:123"
+      ],
+      "pass": 1,
+      "fail": 0,
+      "coverage_pct": 50.0,
+      "evidence_count": 1,
+      "unexpected_changes": [],
+      "missing_expected": []
+    },
+    {
+      "round": 6,
+      "scope": [
+        "user:123"
+      ],
+      "pass": 1,
+      "fail": 0,
+      "coverage_pct": 50.0,
+      "evidence_count": 1,
+      "unexpected_changes": [],
+      "missing_expected": []
+    },
+    {
+      "round": 7,
+      "scope": [
+        "user:123"
+      ],
+      "pass": 1,
+      "fail": 0,
+      "coverage_pct": 50.0,
+      "evidence_count": 1,
+      "unexpected_changes": [],
+      "missing_expected": []
+    },
+    {
+      "round": 8,
+      "scope": [
+        "user:123"
+      ],
+      "pass": 1,
+      "fail": 0,
+      "coverage_pct": 50.0,
+      "evidence_count": 1,
+      "unexpected_changes": [],
+      "missing_expected": []
+    }
+  ],
+  "true_scope": [
+    "user:123",
+    "user:456"
+  ],
+  "converged": false,
+  "design": {
+    "claim": "Evidence feedback loop converges when over-invalidation is detectable",
+    "honest_boundary": "Under-invalidation (scope too narrow, impl correct-but-incomplete) is invisible to automated audit. The loop can only detect scope gaps that produce unexpected state changes."
+  }
+}
