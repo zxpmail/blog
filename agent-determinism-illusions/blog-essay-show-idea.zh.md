@@ -2,7 +2,7 @@
 title: "从 \"show me your code\" 到 \"show me your idea\""
 published: false
 description: "vibecoding 为什么让程序员空。活儿从造变成了判，code 失去了作为不偏不倚裁判的权威。剩下给人的，是不补给人的那部分。"
-series: "AI 时代的判与造"
+series: "Judging vs. Building in the AI Era"
 series_part: 2
 tags: ai, llm, essay
 canonical_url: ""

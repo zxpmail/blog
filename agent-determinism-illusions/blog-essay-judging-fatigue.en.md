@@ -3,7 +3,7 @@ title: "Judging Fatigue: From Verifying AI to Verifying Myself"
 published: false
 description: "I built a verification system to check whether AI's output can be trusted. Then I asked what it was actually for. The answer explained a fatigue I couldn't name for months."
 tags: ai, llm, essay
-series: "AI 时代的判与造"
+series: "Judging vs. Building in the AI Era"
 series_part: 1
 canonical_url: ""
 ---

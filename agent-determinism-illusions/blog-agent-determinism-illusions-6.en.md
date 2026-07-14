@@ -11,7 +11,9 @@ series: "Agent Determinism Illusions"
 
 **Agent Determinism Illusions (Part 6)**
 
-*Merges previous Parts 6/7/8/9. P1–P4 scripts unchanged.*
+*Note: No Part 5 was published — the original draft was absorbed into revisions of Parts 1–4. This continues directly from Part 4.*
+
+*This Part also merges previous Parts 6/7/8/9. P1–P4 scripts unchanged.*
 
 ---
 

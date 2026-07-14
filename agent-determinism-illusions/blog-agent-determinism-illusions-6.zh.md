@@ -11,7 +11,9 @@ series: "Agent Determinism Illusions"
 
 **Agent Determinism Illusions (Part 6)**
 
-*合并原 Parts 6/7/8/9。P1–P4 脚本未变。*
+*注：本系列没有 Part 5——初稿被吸收进 Parts 1–4 的修订里。本篇直接接续 Part 4。*
+
+*本篇同时合并了原 Parts 6/7/8/9。P1–P4 脚本未变。*
 
 ---
 

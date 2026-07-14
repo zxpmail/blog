@@ -3,7 +3,7 @@ title: "The Mirror Cannot Reflect Thought"
 published: false
 description: "I built a style mirror to detect AI-written text. Then three sentences from a reader made me realize the question was wrong from the start. The mirror can catch habits, but thought has no surface fingerprint."
 tags: ai, writing, essay
-series: "AI 时代的判与造"
+series: "Judging vs. Building in the AI Era"
 series_part: 3
 canonical_url: ""
 ---

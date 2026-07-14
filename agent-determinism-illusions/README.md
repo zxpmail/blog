@@ -8,7 +8,7 @@
 
 1. **[红线法则](/agent-determinism-illusions/blog-redline-principle.zh.md)**——独立文章,不依赖系列。3 组核心实验,结论:生产级 Agent 需要客观收敛信号,不是更聪明的循环设计
 2. **Agent Determinism Illusions 系列**(技术主线)——从拆靶子到给替代方案,一条完整弧线
-3. **AI 时代的判与造**(程序员视角 essay)——三姊妹篇,从"判的疲惫"到"工具的边界"
+3. **Judging vs. Building in the AI Era**(程序员视角 essay)——三姊妹篇,从"判的疲惫"到"工具的边界"
 
 ## 文章索引(按类型)
 
@@ -33,7 +33,7 @@
 | 3 | I designed a Harness to fix my agent's quality problem — then found 6 flaws in my own design | 6 flaws in a human-in-the-loop agent quality Harness |
 | 4 | An alternative to LLM quality gates: deterministic routing + sampling | Risk-based agent output quality: an alternative to LLM quality gates |
 
-### 2. AI 时代的判与造(三姊妹 essay)
+### 2. Judging vs. Building in the AI Era(三姊妹 essay)
 
 | # | 中文 | 英文 | 核心 |
 |---|------|------|------|

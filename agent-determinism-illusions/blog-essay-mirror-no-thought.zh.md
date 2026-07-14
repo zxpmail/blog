@@ -2,7 +2,7 @@
 title: "镜子照不到思想"
 published: false
 description: "我造了一面风格镜来识别 AI 写的文字。然后读者三句话让我意识到问题问错了。镜子能照见习惯，但思想没有表面指纹。"
-series: "AI 时代的判与造"
+series: "Judging vs. Building in the AI Era"
 series_part: 3
 tags: ai, writing, essay
 canonical_url: ""

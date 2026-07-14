@@ -3,7 +3,7 @@ title: "From 'show me your code' to 'show me your idea'"
 published: false
 description: "Why vibecoding leaves programmers hollow. The work shifted from building to judging, and code lost its authority as the impartial judge. What's left for humans is the part that doesn't refuel them."
 tags: ai, llm, essay
-series: "AI 时代的判与造"
+series: "Judging vs. Building in the AI Era"
 series_part: 2
 canonical_url: ""
 ---
