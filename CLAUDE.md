@@ -72,11 +72,11 @@ L2  per-requirement LLM  — LLM judges each REQ atom   (model, ~1s × N_REQ)
 L3  human                — residual ambiguous cases
 ```
 
-Without a contract, the pipeline degrades to L0 → Channel-A (free-text LLM judge). The Data Processing Inequality (DPI) is the recurring theoretical constraint: a text-channel evaluator cannot detect a compliance gap that is not present in the text. The skillgate design (file-system channel) is the proposed escape — see `pipeline-architecture.md` and `compliance-gap-test.md`.
+Without a contract, the pipeline degrades to L0 → Channel-A (free-text LLM judge). The Data Processing Inequality (DPI) is the recurring theoretical constraint: a text-channel evaluator cannot detect a compliance gap that is not present in the text. The skillgate design (file-system channel) is the proposed escape — see `working-notes/pipeline-architecture.md` and `working-notes/compliance-gap-test.md`.
 
 Two recurring experiment patterns:
 
-1. **Channel comparison** — text-channel LLM (Channel A) vs. file-system gate (Channel B). See `channel-comparison-test.py`, `channel-comparison-experiment.md`.
+1. **Channel comparison** — text-channel LLM (Channel A) vs. file-system gate (Channel B). See `channel-comparison-test.py`, `working-notes/channel-comparison-experiment.md`.
 2. **Directional failure** — paraphrase vs. antonym vs. unrelated pairs, measured across model tiers. See `directional-failure-v2.py`, `embedding-semantic-test.py`.
 
 ### The P-series progression (read before adding a new "P" script)
@@ -97,6 +97,6 @@ When asked to add another experiment in this line, extend the table rather than 
 ## Editing articles
 
 - Article filename format: `blog-{slug}-{part}.{locale}.md`. Locales are `zh`, `en`, `wechat`. Do not change an existing file's locale suffix — multiple locales are kept in sync by the author, not auto-translated.
-- The same content appears across `blog-agent-determinism-illusions-N.{en,zh}.md` (series) and `blog-{topic}.{en,zh}.md` (standalone). When updating a claim, check whether the same claim appears in the appendix articles (`blog-directional-failure-v2.en.md`, `blog-harness-summary.zh.md`, `blog-redline-principle.{en,zh}.md`) — keeping these consistent matters more than brevity.
+- The same content appears across `blog-agent-determinism-illusions-N.{en,zh}.md` (series) and `blog-{topic}.{en,zh}.md` (standalone). When updating a claim, check whether the same claim appears in the appendix articles (`blog-fabricated-claim-apology.{en,zh}.md`, `blog-redline-principle.{en,zh}.md`) — keeping these consistent matters more than brevity.
 - Experiment numbers in articles (`N=3`, `N=5`, etc.) are load-bearing — they tie the prose to specific script runs. Do not round or change them without re-running the script.
-- `devto-reply-drafts.md` and `pipeline-architecture.md` are working notes, not published posts.
+- The `working-notes/` directory holds experiment design notes, architecture diagrams, and reply drafts — not published posts.
