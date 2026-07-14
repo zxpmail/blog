@@ -462,7 +462,6 @@ v2 结论是：**弱模型连显式矛盾都不能信任。强模型在显式反
 10. *[第三个谓词：argument-space 验证实测](blog-agent-determinism-illusions-10.zh.md)*
 - *附注：[我编造了一篇关于 LLM 判据的结论——然后跑了一场"道歉实验"](blog-fabricated-claim-apology.zh.md)*
 - *附注：[红线法则:生产级 Agent 的收敛条件](blog-redline-principle.zh.md)*
-- *附注：[模型是引擎,Harness 是车身:AI Agent 工程化的真实边界](blog-harness-summary.zh.md)*
 
 *注：Parts 2–5 仅英文版（dev.to），中文跳过。*
 
