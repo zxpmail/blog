@@ -1,3 +1,13 @@
+---
+title: "从 \"show me your code\" 到 \"show me your idea\""
+published: false
+description: "vibecoding 为什么让程序员空。活儿从造变成了判，code 失去了作为不偏不倚裁判的权威。剩下给人的，是不补给人的那部分。"
+series: "AI 时代的判与造"
+series_part: 2
+tags: ai, llm, essay
+canonical_url: ""
+---
+
 # 从 "show me your code" 到 "show me your idea"
 
 ### vibecoding 为什么让程序员空
@@ -64,4 +74,4 @@ vibecoding 把这个合体拆开了。code 廉价了——任何人都能让 AI 
 
 ---
 
-*姊妹篇：[判的疲惫——从验证 AI，到验证自己](blog-judging-fatigue.zh.md) · [镜子照不到思想](blog-mirror-no-thought.zh.md)*
+*姊妹篇：[判的疲惫——从验证 AI，到验证自己](blog-essay-judging-fatigue.zh.md) · [镜子照不到思想](blog-essay-mirror-no-thought.zh.md)*

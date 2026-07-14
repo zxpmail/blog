@@ -1,3 +1,13 @@
+---
+title: "判的疲惫：从验证 AI 到验证自己"
+published: false
+description: "我建了一套验证系统来检查 AI 写的代码可不可信。然后我问这套东西到底有什么用。答案解释了我几个月说不清的疲惫。"
+series: "AI 时代的判与造"
+series_part: 1
+tags: ai, llm, essay
+canonical_url: ""
+---
+
 # 判的疲惫
 
 **——从验证 AI,到验证自己**
@@ -66,4 +76,4 @@
 
 ---
 
-*姊妹篇：[从 "show me your code" 到 "show me your idea"](blog-show-idea.zh.md) · [镜子照不到思想](blog-mirror-no-thought.zh.md)*
+*姊妹篇：[从 "show me your code" 到 "show me your idea"](blog-essay-show-idea.zh.md) · [镜子照不到思想](blog-essay-mirror-no-thought.zh.md)*

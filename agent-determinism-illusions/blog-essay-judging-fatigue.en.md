@@ -3,6 +3,8 @@ title: "Judging Fatigue: From Verifying AI to Verifying Myself"
 published: false
 description: "I built a verification system to check whether AI's output can be trusted. Then I asked what it was actually for. The answer explained a fatigue I couldn't name for months."
 tags: ai, llm, essay
+series: "AI 时代的判与造"
+series_part: 1
 canonical_url: ""
 ---
 
@@ -74,4 +76,4 @@ So this article doesn't declare any truth. It's just one person trying to transl
 
 ---
 
-*Companion essays: [From "show me your code" to "show me your idea"](blog-show-idea.en.md) · [The Mirror Cannot Reflect Thought](blog-mirror-no-thought.en.md)*
+*Companion essays: [From "show me your code" to "show me your idea"](blog-essay-show-idea.en.md) · [The Mirror Cannot Reflect Thought](blog-essay-mirror-no-thought.en.md)*

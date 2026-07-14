@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `agent-determinism-illusions/` is a **research blog + reproducible-experiment** repository. It is not an application. Outputs are:
 
-- **Articles** (`blog-*.md`) — Chinese (`.zh.md`) and English (`.en.md`) variants of the same content. The Agent Determinism Illusions series spans Part 1 (main article, both locales), Parts 2–5 (English-only), Parts 6–10 (both locales, post-merge). There is also an independent "Red Line Principle" article, a "fabricated claim apology" appendix, and three standalone Chinese essays (`judging-fatigue`, `show-idea`, `mirror-no-thought`).
+- **Articles** (`blog-*.md`) — Chinese (`.zh.md`) and English (`.en.md`) variants of the same content. Three groupings: (1) the **Agent Determinism Illusions series** — Part 1 (main article, both locales), Parts 2–5 (English-only), Parts 6–10 (both locales, post-merge), filenames `blog-agent-determinism-illusions-{part}.{locale}.md`; (2) the **"AI 时代的判与造" essay series** — three sister essays (`blog-essay-judging-fatigue`, `blog-essay-show-idea`, `blog-essay-mirror-no-thought`), each with `series:` frontmatter and both locales; (3) **standalones** — `blog-redline-principle` (methodology), `blog-fabricated-claim-apology` (correction appendix).
 - **Experiment scripts** (`scripts/*.py`) — standalone Python files that falsify or validate specific claims. Each script is self-documenting (docstring states the claim under test, sample size, dependencies, env vars, expected result).
 - **Inputs and results** — `samples/*.json` (reference scenario copies for the user — **not loaded by any script**, each script hardcodes its own `SCENARIOS`), `scripts/test_cases/*.py` (hand-written tests for the redline tasks), `scripts/results-v2/` (JSON/JSONL output from the Phase-2 experiments).
 
@@ -96,7 +96,7 @@ When asked to add another experiment in this line, extend the table rather than 
 
 ## Editing articles
 
-- Article filename format: `blog-{slug}-{part}.{locale}.md`. Locales are `zh`, `en`, `wechat`. Do not change an existing file's locale suffix — multiple locales are kept in sync by the author, not auto-translated.
-- The same content appears across `blog-agent-determinism-illusions-N.{en,zh}.md` (series) and `blog-{topic}.{en,zh}.md` (standalone). When updating a claim, check whether the same claim appears in the appendix articles (`blog-fabricated-claim-apology.{en,zh}.md`, `blog-redline-principle.{en,zh}.md`) — keeping these consistent matters more than brevity.
+- Article filename formats: `blog-agent-determinism-illusions-{part}.{locale}.md` (main series), `blog-essay-{slug}.{locale}.md` (essays in the "AI 时代的判与造" series), `blog-{slug}.{locale}.md` (standalones like `redline-principle`, `fabricated-claim-apology`). Locales are `zh`, `en`. Do not change an existing file's locale suffix — multiple locales are kept in sync by the author, not auto-translated.
+- When updating a claim, check whether the same claim appears in the appendix articles (`blog-fabricated-claim-apology.{en,zh}.md`, `blog-redline-principle.{en,zh}.md`) or across the essay series (`blog-essay-*`) — keeping these consistent matters more than brevity.
 - Experiment numbers in articles (`N=3`, `N=5`, etc.) are load-bearing — they tie the prose to specific script runs. Do not round or change them without re-running the script.
 - The `working-notes/` directory holds experiment design notes, architecture diagrams, and reply drafts — not published posts.

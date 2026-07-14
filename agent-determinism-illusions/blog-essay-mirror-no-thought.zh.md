@@ -1,3 +1,13 @@
+---
+title: "镜子照不到思想"
+published: false
+description: "我造了一面风格镜来识别 AI 写的文字。然后读者三句话让我意识到问题问错了。镜子能照见习惯，但思想没有表面指纹。"
+series: "AI 时代的判与造"
+series_part: 3
+tags: ai, writing, essay
+canonical_url: ""
+---
+
 # 镜子照不到思想
 
 **或者：一篇文章如何证明自己无效**
@@ -166,4 +176,4 @@ AI 执笔，但思想是人给的。文章指纹少不是因为"像人写的"—
 
 ---
 
-*姊妹篇：[判的疲惫——从验证 AI，到验证自己](blog-judging-fatigue.zh.md) · [从 "show me your code" 到 "show me your idea"](blog-show-idea.zh.md)*
+*姊妹篇：[判的疲惫——从验证 AI，到验证自己](blog-essay-judging-fatigue.zh.md) · [从 "show me your code" 到 "show me your idea"](blog-essay-show-idea.zh.md)*

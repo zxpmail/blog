@@ -3,6 +3,8 @@ title: "The Mirror Cannot Reflect Thought"
 published: false
 description: "I built a style mirror to detect AI-written text. Then three sentences from a reader made me realize the question was wrong from the start. The mirror can catch habits, but thought has no surface fingerprint."
 tags: ai, writing, essay
+series: "AI 时代的判与造"
+series_part: 3
 canonical_url: ""
 ---
 
@@ -174,4 +176,4 @@ The boundary is drawn. The mirror sits here. It can catch inertia, but it can't 
 
 ---
 
-*Companion essays: [Judging Fatigue — From Verifying AI to Verifying Myself](blog-judging-fatigue.en.md) · [From "show me your code" to "show me your idea"](blog-show-idea.en.md)*
+*Companion essays: [Judging Fatigue — From Verifying AI to Verifying Myself](blog-essay-judging-fatigue.en.md) · [From "show me your code" to "show me your idea"](blog-essay-show-idea.en.md)*
