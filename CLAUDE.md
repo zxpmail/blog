@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `agent-determinism-illusions/` is a **research blog + reproducible-experiment** repository. It is not an application. Outputs are:
 
-- **Articles** (`blog-*.md`) — Chinese (`.zh.md`), English (`.en.md`), and WeChat-friendly (`.wechat.md`) variants of the same content. There is a main article, a 5-part Chinese series, a 4-part English series, an independent "Red Line Principle" article, and several appendix/comparison posts.
+- **Articles** (`blog-*.md`) — Chinese (`.zh.md`) and English (`.en.md`) variants of the same content. The Agent Determinism Illusions series spans Part 1 (main article, both locales), Parts 2–5 (English-only), Parts 6–10 (both locales, post-merge). There is also an independent "Red Line Principle" article, a "fabricated claim apology" appendix, and three standalone Chinese essays (`judging-fatigue`, `show-idea`, `mirror-no-thought`).
 - **Experiment scripts** (`scripts/*.py`) — standalone Python files that falsify or validate specific claims. Each script is self-documenting (docstring states the claim under test, sample size, dependencies, env vars, expected result).
 - **Inputs and results** — `samples/*.json` (reference scenario copies for the user — **not loaded by any script**, each script hardcodes its own `SCENARIOS`), `scripts/test_cases/*.py` (hand-written tests for the redline tasks), `scripts/results-v2/` (JSON/JSONL output from the Phase-2 experiments).
 
