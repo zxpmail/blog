@@ -430,3 +430,56 @@ Parameterized verification (where the verify script must bind to a specific refe
 I'll follow up with more experiments on this boundary — the frequency of parameterized scenarios, the actual miss rate of contract review, and whether a deterministic interface can tighten this gap.
 
 ---
+
+## 回复十九：@Mike Czerwinski — write-time resolution 实验验证（第七轮）
+
+**目标文章：** Part 5 "An Alternative to LLM Quality Gates" 评论区
+
+**主题：** Mike 提出 write-time-resolution 本身能被 plausible-but-wrong key 绕过。实验验证。
+
+---
+
+I built the experiment you described. Six ambiguous requirements that defer scope on purpose — each with a true intent and multiple possible resolutions. Two phases.
+
+**Phase A (deterministic, zero API cost):**
+Enumerate all possible resolutions per scenario, run C3 on each. Result:
+
+| Error type | Total | Pass C3 | Blocked by C3 |
+|-----------|-------|---------|---------------|
+| wrong-referent | 4 | **3** | 1 |
+| under-inv | 4 | 2 | 2 |
+| over-inv | 3 | 0 | 3 |
+| under-inv-empty | 1 | 1 | 0 |
+
+Wrong resolutions that PASS C3: **6** / 12 total — **50%**.
+Wrong resolutions that FAIL C3: 6 — always over-inv (claimed too many keys).
+
+Your claim confirmed: **3 of 4 wrong-referent resolutions pass C3** — S1 (user:123 instead of all user:\*), S3 (user:123 instead of session:abc), S5 (user:123 instead of token:789). The gate accepts the bad resolution every time the chosen key happens to align with C3's mechanical check.
+
+**Phase B (LLM resolves the requirement itself, deepseek-v4-flash):**
+Let the model read each ambiguous requirement and produce the concrete key list. Result: **1/6 accuracy (17%).**
+
+| Scenario | Model chose | Correct? |
+|----------|------------|----------|
+| S1 (user data → all user:\*) | user:123 + profile:123 + admin:123 | ❌ mixed, over-inv |
+| S2 (stale entries → only user:123) | user:123 + profile:123 + admin:123 | ❌ over-inv |
+| S3 (active session → session:abc) | [] | ❌ empty — conservative refusal |
+| **S4 (profile update → user:123 + profile:123)** | **user:123 + profile:123** | **✅** |
+| S5 (password change → token:789) | [] | ❌ empty |
+| S6 (permissions change → all sessions) | [] | ❌ empty |
+
+The model returned *empty arrays* for 3 scenarios — it didn't choose wrong keys, it chose *nothing*, meaning the resolution step failed silently. When it did choose, it over-invalidated (S1, S2). Only one scenario was correctly resolved.
+
+**The structural boundary:**
+
+Write-time resolution makes the agent's k choice explicit, auditable, and reviewable — a real improvement over implicit scope handling. But:
+
+1. The resolution step itself is a semantic judgment ("relevant" → concrete k) — DPI-bound, outside C3's reach.
+2. On this model, the resolution accuracy is 17%. Even accounting for prompt engineering, the underlying problem is structural: an ambiguous requirement produces unreliable resolution by definition.
+3. C3's 50% pass rate on wrong resolutions means half of those resolution errors are invisible to the automated gate.
+
+The gap is real, bounded, and belongs to sampling. A human reviewer sees the requirement, the resolution choice, and the outcome in one pass — and can judge whether the chosen k was the right one. No automated step in the chain can close this loop.
+
+Experiment script: `scripts/write-time-resolution-test.py`
+Results: `scripts/results-v2/write-time-resolution.json`
+

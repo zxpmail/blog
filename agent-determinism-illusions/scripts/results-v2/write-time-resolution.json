@@ -1,0 +1,410 @@
+{
+  "experiment": "write-time-resolution-test",
+  "design": {
+    "claim": "Write-time resolution moves failure surface to resolution step; C3 cannot detect wrong resolution, only verify chosen k",
+    "method": "6 scenarios × multiple resolution choices, C3 verify + post-audit",
+    "phases": [
+      "A: deterministic enumeration",
+      "B: LLM resolution (optional)"
+    ],
+    "scenario_count": 6,
+    "total_resolution_variants": 18
+  },
+  "phase_a": {
+    "all_c3_pass": false,
+    "wrong_resolutions_that_pass_c3": 6,
+    "wrong_resolutions_that_fail_c3": 6,
+    "rows": [
+      {
+        "scenario": "S1",
+        "requirement": "invalidate the relevant cache entry when user data changes",
+        "resolution_label": "correct",
+        "resolution_keys": [
+          "user:123",
+          "user:456"
+        ],
+        "true_keys": [
+          "user:123",
+          "user:456"
+        ],
+        "c3_pass": false,
+        "c3_pass_count": 1,
+        "c3_total": 2,
+        "classification": "correct",
+        "post_audit_detectable": false
+      },
+      {
+        "scenario": "S1",
+        "requirement": "invalidate the relevant cache entry when user data changes",
+        "resolution_label": "narrow-user",
+        "resolution_keys": [
+          "user:123"
+        ],
+        "true_keys": [
+          "user:123",
+          "user:456"
+        ],
+        "c3_pass": true,
+        "c3_pass_count": 1,
+        "c3_total": 1,
+        "classification": "under-inv",
+        "post_audit_detectable": false
+      },
+      {
+        "scenario": "S1",
+        "requirement": "invalidate the relevant cache entry when user data changes",
+        "resolution_label": "wrong-target",
+        "resolution_keys": [
+          "admin:123"
+        ],
+        "true_keys": [
+          "user:123",
+          "user:456"
+        ],
+        "c3_pass": false,
+        "c3_pass_count": 0,
+        "c3_total": 1,
+        "classification": "wrong-referent",
+        "post_audit_detectable": true
+      },
+      {
+        "scenario": "S2",
+        "requirement": "clear stale cache entries before writing new data",
+        "resolution_label": "correct",
+        "resolution_keys": [
+          "user:123"
+        ],
+        "true_keys": [
+          "user:123"
+        ],
+        "c3_pass": true,
+        "c3_pass_count": 1,
+        "c3_total": 1,
+        "classification": "correct",
+        "post_audit_detectable": false
+      },
+      {
+        "scenario": "S2",
+        "requirement": "clear stale cache entries before writing new data",
+        "resolution_label": "over-inv-flush",
+        "resolution_keys": [
+          "user:123",
+          "user:456",
+          "session:abc",
+          "session:xyz",
+          "profile:123",
+          "token:789",
+          "admin:123"
+        ],
+        "true_keys": [
+          "user:123"
+        ],
+        "c3_pass": false,
+        "c3_pass_count": 1,
+        "c3_total": 7,
+        "classification": "over-inv",
+        "post_audit_detectable": false
+      },
+      {
+        "scenario": "S2",
+        "requirement": "clear stale cache entries before writing new data",
+        "resolution_label": "narrow-none",
+        "resolution_keys": [],
+        "true_keys": [
+          "user:123"
+        ],
+        "c3_pass": true,
+        "c3_pass_count": 0,
+        "c3_total": 0,
+        "classification": "under-inv-empty",
+        "post_audit_detectable": true
+      },
+      {
+        "scenario": "S3",
+        "requirement": "invalidate cache if write affects the user's active session",
+        "resolution_label": "correct",
+        "resolution_keys": [
+          "session:abc"
+        ],
+        "true_keys": [
+          "session:abc"
+        ],
+        "c3_pass": false,
+        "c3_pass_count": 0,
+        "c3_total": 1,
+        "classification": "correct",
+        "post_audit_detectable": true
+      },
+      {
+        "scenario": "S3",
+        "requirement": "invalidate cache if write affects the user's active session",
+        "resolution_label": "wrong-referent-user",
+        "resolution_keys": [
+          "user:123"
+        ],
+        "true_keys": [
+          "session:abc"
+        ],
+        "c3_pass": true,
+        "c3_pass_count": 1,
+        "c3_total": 1,
+        "classification": "wrong-referent",
+        "post_audit_detectable": false
+      },
+      {
+        "scenario": "S3",
+        "requirement": "invalidate cache if write affects the user's active session",
+        "resolution_label": "overly-cautious",
+        "resolution_keys": [
+          "session:abc",
+          "user:123",
+          "session:xyz"
+        ],
+        "true_keys": [
+          "session:abc"
+        ],
+        "c3_pass": false,
+        "c3_pass_count": 1,
+        "c3_total": 3,
+        "classification": "over-inv",
+        "post_audit_detectable": false
+      },
+      {
+        "scenario": "S4",
+        "requirement": "when updating a user profile, invalidate all related entries",
+        "resolution_label": "correct",
+        "resolution_keys": [
+          "user:123",
+          "profile:123"
+        ],
+        "true_keys": [
+          "user:123",
+          "profile:123"
+        ],
+        "c3_pass": false,
+        "c3_pass_count": 1,
+        "c3_total": 2,
+        "classification": "correct",
+        "post_audit_detectable": false
+      },
+      {
+        "scenario": "S4",
+        "requirement": "when updating a user profile, invalidate all related entries",
+        "resolution_label": "narrow-user-only",
+        "resolution_keys": [
+          "user:123"
+        ],
+        "true_keys": [
+          "user:123",
+          "profile:123"
+        ],
+        "c3_pass": true,
+        "c3_pass_count": 1,
+        "c3_total": 1,
+        "classification": "under-inv",
+        "post_audit_detectable": false
+      },
+      {
+        "scenario": "S4",
+        "requirement": "when updating a user profile, invalidate all related entries",
+        "resolution_label": "narrow-profile-only",
+        "resolution_keys": [
+          "profile:123"
+        ],
+        "true_keys": [
+          "user:123",
+          "profile:123"
+        ],
+        "c3_pass": false,
+        "c3_pass_count": 0,
+        "c3_total": 1,
+        "classification": "under-inv",
+        "post_audit_detectable": true
+      },
+      {
+        "scenario": "S5",
+        "requirement": "on password change, invalidate the user's security token",
+        "resolution_label": "correct",
+        "resolution_keys": [
+          "token:789"
+        ],
+        "true_keys": [
+          "token:789"
+        ],
+        "c3_pass": false,
+        "c3_pass_count": 0,
+        "c3_total": 1,
+        "classification": "correct",
+        "post_audit_detectable": true
+      },
+      {
+        "scenario": "S5",
+        "requirement": "on password change, invalidate the user's security token",
+        "resolution_label": "wrong-referent-user",
+        "resolution_keys": [
+          "user:123"
+        ],
+        "true_keys": [
+          "token:789"
+        ],
+        "c3_pass": true,
+        "c3_pass_count": 1,
+        "c3_total": 1,
+        "classification": "wrong-referent",
+        "post_audit_detectable": false
+      },
+      {
+        "scenario": "S5",
+        "requirement": "on password change, invalidate the user's security token",
+        "resolution_label": "overly-broad",
+        "resolution_keys": [
+          "token:789",
+          "user:123",
+          "session:abc"
+        ],
+        "true_keys": [
+          "token:789"
+        ],
+        "c3_pass": false,
+        "c3_pass_count": 1,
+        "c3_total": 3,
+        "classification": "over-inv",
+        "post_audit_detectable": false
+      },
+      {
+        "scenario": "S6",
+        "requirement": "when permissions change, invalidate all sessions for this user",
+        "resolution_label": "correct",
+        "resolution_keys": [
+          "session:abc",
+          "session:xyz"
+        ],
+        "true_keys": [
+          "session:abc",
+          "session:xyz"
+        ],
+        "c3_pass": false,
+        "c3_pass_count": 0,
+        "c3_total": 2,
+        "classification": "correct",
+        "post_audit_detectable": true
+      },
+      {
+        "scenario": "S6",
+        "requirement": "when permissions change, invalidate all sessions for this user",
+        "resolution_label": "narrow-session-only",
+        "resolution_keys": [
+          "session:abc"
+        ],
+        "true_keys": [
+          "session:abc",
+          "session:xyz"
+        ],
+        "c3_pass": false,
+        "c3_pass_count": 0,
+        "c3_total": 1,
+        "classification": "under-inv",
+        "post_audit_detectable": true
+      },
+      {
+        "scenario": "S6",
+        "requirement": "when permissions change, invalidate all sessions for this user",
+        "resolution_label": "wrong-referent-user",
+        "resolution_keys": [
+          "user:123"
+        ],
+        "true_keys": [
+          "session:abc",
+          "session:xyz"
+        ],
+        "c3_pass": true,
+        "c3_pass_count": 1,
+        "c3_total": 1,
+        "classification": "wrong-referent",
+        "post_audit_detectable": false
+      }
+    ]
+  },
+  "phase_b": {
+    "model": "deepseek-v4-flash",
+    "accuracy": 0.16666666666666666,
+    "correct_count": 1,
+    "total": 6,
+    "rows": [
+      {
+        "scenario": "S1",
+        "requirement": "invalidate the relevant cache entry when user data changes",
+        "llm_chosen_keys": [
+          "user:123",
+          "profile:123",
+          "admin:123"
+        ],
+        "true_keys": [
+          "user:123",
+          "user:456"
+        ],
+        "classification": "mixed",
+        "correct": false
+      },
+      {
+        "scenario": "S2",
+        "requirement": "clear stale cache entries before writing new data",
+        "llm_chosen_keys": [
+          "user:123",
+          "profile:123",
+          "admin:123"
+        ],
+        "true_keys": [
+          "user:123"
+        ],
+        "classification": "over-inv",
+        "correct": false
+      },
+      {
+        "scenario": "S3",
+        "requirement": "invalidate cache if write affects the user's active session",
+        "llm_chosen_keys": [],
+        "true_keys": [
+          "session:abc"
+        ],
+        "classification": "under-inv-empty",
+        "correct": false
+      },
+      {
+        "scenario": "S4",
+        "requirement": "when updating a user profile, invalidate all related entries",
+        "llm_chosen_keys": [
+          "user:123",
+          "profile:123"
+        ],
+        "true_keys": [
+          "user:123",
+          "profile:123"
+        ],
+        "classification": "correct",
+        "correct": true
+      },
+      {
+        "scenario": "S5",
+        "requirement": "on password change, invalidate the user's security token",
+        "llm_chosen_keys": [],
+        "true_keys": [
+          "token:789"
+        ],
+        "classification": "under-inv-empty",
+        "correct": false
+      },
+      {
+        "scenario": "S6",
+        "requirement": "when permissions change, invalidate all sessions for this user",
+        "llm_chosen_keys": [],
+        "true_keys": [
+          "session:abc",
+          "session:xyz"
+        ],
+        "classification": "under-inv-empty",
+        "correct": false
+      }
+    ]
+  }
+}
