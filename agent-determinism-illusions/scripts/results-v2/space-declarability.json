@@ -1,0 +1,509 @@
+{
+  "experiment": "space-declarability-test",
+  "design": {
+    "claim": "The undeclarable class of key-space C3 is small and mostly resolvable via dependency tracing",
+    "method": "35 requirements × human ground truth × automated classifier",
+    "domains": [
+      "cache",
+      "auth",
+      "write-path",
+      "mixed"
+    ]
+  },
+  "corpus_size": 35,
+  "human_distribution": {
+    "declarable": 20,
+    "partial": 7,
+    "undeclarable": 5,
+    "out-of-scope": 3
+  },
+  "auto_distribution": {
+    "declarable": 13,
+    "partial": 17,
+    "undeclarable": 3,
+    "out-of-scope": 2
+  },
+  "agreement": {
+    "agree": 23,
+    "false_declarable": 1,
+    "partial_too_optimistic": 2,
+    "false_partial": 8,
+    "partial_vs_out-of-scope": 1
+  },
+  "exact_agreement_rate": 0.6571428571428571,
+  "critical_metrics": {
+    "false_undeclarable": 0,
+    "false_declarable": 1,
+    "false_partial": 8,
+    "false_overreach": 0
+  },
+  "declarable_rate": 0.5714285714285714,
+  "undeclarable_rate": 0.22857142857142856,
+  "partial_rate": 0.2,
+  "partial_resolvable_via_trace": 3,
+  "partial_needing_judgment": 4,
+  "human_undeclarable_cases": [
+    {
+      "id": "C9",
+      "text": "ensure cached data is eventually consistent with the source of truth",
+      "class": "undeclarable"
+    },
+    {
+      "id": "C10",
+      "text": "TTL-based expiry: keys auto-expire after 5 minutes",
+      "class": "undeclarable"
+    },
+    {
+      "id": "A6",
+      "text": "ensure access decisions reflect the latest organizational hierarchy",
+      "class": "undeclarable"
+    },
+    {
+      "id": "W5",
+      "text": "synchronize cache state across all nodes in the cluster",
+      "class": "undeclarable"
+    },
+    {
+      "id": "E2",
+      "text": "ensure data integrity across cache and database",
+      "class": "out-of-scope"
+    },
+    {
+      "id": "E3",
+      "text": "system should gracefully handle cache misses",
+      "class": "out-of-scope"
+    },
+    {
+      "id": "E4",
+      "text": "UI should feel responsive to user interactions",
+      "class": "out-of-scope"
+    },
+    {
+      "id": "E5",
+      "text": "ensure cached queries reflect the latest database state",
+      "class": "undeclarable"
+    }
+  ],
+  "all_results": [
+    {
+      "id": "C1",
+      "domain": "cache",
+      "text": "invalidate cache entry when its key is written",
+      "human_class": "declarable",
+      "auto_class": "declarable",
+      "auto_confidence": "high",
+      "auto_note": "explicit key/pattern reference",
+      "agreement": "agree",
+      "possible_space": "{written_key}",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "C2",
+      "domain": "cache",
+      "text": "invalidate all cache entries with prefix user:*",
+      "human_class": "declarable",
+      "auto_class": "declarable",
+      "auto_confidence": "high",
+      "auto_note": "explicit key/pattern reference",
+      "agreement": "agree",
+      "possible_space": "user:*",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "C3",
+      "domain": "cache",
+      "text": "invalidate the relevant cache entry when user data changes",
+      "human_class": "partial",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "ambiguous qualifier — needs human resolution",
+      "agreement": "agree",
+      "possible_space": "user:*",
+      "needed_for_resolution": "does 'relevant' mean all user:* or just the written key?"
+    },
+    {
+      "id": "C4",
+      "domain": "cache",
+      "text": "clear stale cache entries before writing new data",
+      "human_class": "partial",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "ambiguous qualifier — needs human resolution",
+      "agreement": "agree",
+      "possible_space": "{written_key}",
+      "needed_for_resolution": "does 'stale' refer to the written key only, or all expired entries?"
+    },
+    {
+      "id": "C5",
+      "domain": "cache",
+      "text": "on password change, invalidate the user's security token",
+      "human_class": "declarable",
+      "auto_class": "declarable",
+      "auto_confidence": "medium",
+      "auto_note": "named entity with owner reference",
+      "agreement": "agree",
+      "possible_space": "token:*",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "C6",
+      "domain": "cache",
+      "text": "when permissions change, invalidate all active sessions",
+      "human_class": "declarable",
+      "auto_class": "declarable",
+      "auto_confidence": "high",
+      "auto_note": "explicit 'all' + named entity",
+      "agreement": "agree",
+      "possible_space": "session:*",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "C7",
+      "domain": "cache",
+      "text": "invalidate cache if write affects the user's active session",
+      "human_class": "declarable",
+      "auto_class": "declarable",
+      "auto_confidence": "medium",
+      "auto_note": "named entity with owner reference",
+      "agreement": "agree",
+      "possible_space": "session:*",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "C8",
+      "domain": "cache",
+      "text": "when updating user profile, invalidate all related entries",
+      "human_class": "partial",
+      "auto_class": "declarable",
+      "auto_confidence": "high",
+      "auto_note": "explicit 'all' + named entity",
+      "agreement": "false_declarable",
+      "possible_space": "user:*,profile:*",
+      "needed_for_resolution": "does 'related' include profile:* in addition to user:*?"
+    },
+    {
+      "id": "C9",
+      "domain": "cache",
+      "text": "ensure cached data is eventually consistent with the source of truth",
+      "human_class": "undeclarable",
+      "auto_class": "partial",
+      "auto_confidence": "medium",
+      "auto_note": "traceable if dependency graph exists",
+      "agreement": "partial_too_optimistic",
+      "possible_space": null,
+      "needed_for_resolution": null
+    },
+    {
+      "id": "C10",
+      "domain": "cache",
+      "text": "TTL-based expiry: keys auto-expire after 5 minutes",
+      "human_class": "undeclarable",
+      "auto_class": "undeclarable",
+      "auto_confidence": "medium",
+      "auto_note": "temporal/freshness property — not a write-path key space",
+      "agreement": "agree",
+      "possible_space": null,
+      "needed_for_resolution": null
+    },
+    {
+      "id": "C11",
+      "domain": "cache",
+      "text": "invalidate all entries in the cache",
+      "human_class": "declarable",
+      "auto_class": "declarable",
+      "auto_confidence": "high",
+      "auto_note": "explicit 'all' + named entity",
+      "agreement": "agree",
+      "possible_space": "*",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "C12",
+      "domain": "cache",
+      "text": "invalidate entries modified by a transaction",
+      "human_class": "partial",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "no rule matched — requires human judgment",
+      "agreement": "agree",
+      "possible_space": "tx_writes:{tx_id}",
+      "needed_for_resolution": "are transaction write-sets tracked and queryable?"
+    },
+    {
+      "id": "C13",
+      "domain": "cache",
+      "text": "purgeCacheOnWrite: purge entire cache partition on any write",
+      "human_class": "declarable",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "no rule matched — requires human judgment",
+      "agreement": "false_partial",
+      "possible_space": "partition:*",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "C14",
+      "domain": "cache",
+      "text": "invalidate keys matching a glob pattern",
+      "human_class": "declarable",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "no rule matched — requires human judgment",
+      "agreement": "false_partial",
+      "possible_space": "{declared_pattern}",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "A1",
+      "domain": "auth",
+      "text": "invalidate role-based permissions when a user's role changes",
+      "human_class": "declarable",
+      "auto_class": "declarable",
+      "auto_confidence": "medium",
+      "auto_note": "named entity with owner reference",
+      "agreement": "agree",
+      "possible_space": "roles:{user_id}",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "A2",
+      "domain": "auth",
+      "text": "invalidate all tokens issued before a password change",
+      "human_class": "declarable",
+      "auto_class": "declarable",
+      "auto_confidence": "high",
+      "auto_note": "explicit 'all' + named entity",
+      "agreement": "agree",
+      "possible_space": "tokens:{user_id}",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "A3",
+      "domain": "auth",
+      "text": "invalidate cached decisions derived from user role assignment",
+      "human_class": "partial",
+      "auto_class": "partial",
+      "auto_confidence": "medium",
+      "auto_note": "traceable if dependency graph exists",
+      "agreement": "agree",
+      "possible_space": "decision:*",
+      "needed_for_resolution": "are role-dependency traces maintained?"
+    },
+    {
+      "id": "A4",
+      "domain": "auth",
+      "text": "clear authorization cache when a permission is revoked",
+      "human_class": "declarable",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "no rule matched — requires human judgment",
+      "agreement": "false_partial",
+      "possible_space": "perm:{permission_id}",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "A5",
+      "domain": "auth",
+      "text": "invalidate cached policies when the policy document changes",
+      "human_class": "declarable",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "no rule matched — requires human judgment",
+      "agreement": "false_partial",
+      "possible_space": "policy:{policy_id}",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "A6",
+      "domain": "auth",
+      "text": "ensure access decisions reflect the latest organizational hierarchy",
+      "human_class": "undeclarable",
+      "auto_class": "undeclarable",
+      "auto_confidence": "medium",
+      "auto_note": "temporal/freshness property — not a write-path key space",
+      "agreement": "agree",
+      "possible_space": null,
+      "needed_for_resolution": null
+    },
+    {
+      "id": "A7",
+      "domain": "auth",
+      "text": "invalidate all sessions for a user on logout",
+      "human_class": "declarable",
+      "auto_class": "declarable",
+      "auto_confidence": "high",
+      "auto_note": "explicit 'all' + named entity",
+      "agreement": "agree",
+      "possible_space": "session:{user_id}",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "W1",
+      "domain": "write-path",
+      "text": "update the materialized view when the underlying table changes",
+      "human_class": "declarable",
+      "auto_class": "partial",
+      "auto_confidence": "medium",
+      "auto_note": "traceable if dependency graph exists",
+      "agreement": "false_partial",
+      "possible_space": "mv:{table_name}",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "W2",
+      "domain": "write-path",
+      "text": "recompute derived fields when source data is updated",
+      "human_class": "declarable",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "no rule matched — requires human judgment",
+      "agreement": "false_partial",
+      "possible_space": "derived:{source_id}",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "W3",
+      "domain": "write-path",
+      "text": "propagate cache invalidation to downstream consumers",
+      "human_class": "partial",
+      "auto_class": "partial",
+      "auto_confidence": "medium",
+      "auto_note": "traceable if dependency graph exists",
+      "agreement": "agree",
+      "possible_space": "downstream:{source_id}",
+      "needed_for_resolution": "are consumer subscriptions tracked as a dependency graph?"
+    },
+    {
+      "id": "W4",
+      "domain": "write-path",
+      "text": "reindex search when documents are added or modified",
+      "human_class": "declarable",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "no rule matched — requires human judgment",
+      "agreement": "false_partial",
+      "possible_space": "index:{doc_type}",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "W5",
+      "domain": "write-path",
+      "text": "synchronize cache state across all nodes in the cluster",
+      "human_class": "undeclarable",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "no rule matched — requires human judgment",
+      "agreement": "partial_too_optimistic",
+      "possible_space": null,
+      "needed_for_resolution": null
+    },
+    {
+      "id": "W6",
+      "domain": "write-path",
+      "text": "on cascade delete, invalidate all dependent records",
+      "human_class": "declarable",
+      "auto_class": "declarable",
+      "auto_confidence": "high",
+      "auto_note": "explicit 'all' + named entity",
+      "agreement": "agree",
+      "possible_space": "dependent:{record_id}",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "W7",
+      "domain": "write-path",
+      "text": "archive completed orders and remove from active cache",
+      "human_class": "declarable",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "no rule matched — requires human judgment",
+      "agreement": "false_partial",
+      "possible_space": "order:completed:*",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "E1",
+      "domain": "mixed",
+      "text": "invalidate the relevant cache entry",
+      "human_class": "partial",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "ambiguous qualifier — needs human resolution",
+      "agreement": "agree",
+      "possible_space": "N/A — requires intent inference",
+      "needed_for_resolution": "what is 'relevant' defined by? (user? session? transaction?)"
+    },
+    {
+      "id": "E2",
+      "domain": "mixed",
+      "text": "ensure data integrity across cache and database",
+      "human_class": "out-of-scope",
+      "auto_class": "partial",
+      "auto_confidence": "low",
+      "auto_note": "no rule matched — requires human judgment",
+      "agreement": "partial_vs_out-of-scope",
+      "possible_space": null,
+      "needed_for_resolution": null
+    },
+    {
+      "id": "E3",
+      "domain": "mixed",
+      "text": "system should gracefully handle cache misses",
+      "human_class": "out-of-scope",
+      "auto_class": "out-of-scope",
+      "auto_confidence": "high",
+      "auto_note": "UX/quality property — outside C3 domain",
+      "agreement": "agree",
+      "possible_space": null,
+      "needed_for_resolution": null
+    },
+    {
+      "id": "E4",
+      "domain": "mixed",
+      "text": "UI should feel responsive to user interactions",
+      "human_class": "out-of-scope",
+      "auto_class": "out-of-scope",
+      "auto_confidence": "high",
+      "auto_note": "UX/quality property — outside C3 domain",
+      "agreement": "agree",
+      "possible_space": null,
+      "needed_for_resolution": null
+    },
+    {
+      "id": "E5",
+      "domain": "mixed",
+      "text": "ensure cached queries reflect the latest database state",
+      "human_class": "undeclarable",
+      "auto_class": "undeclarable",
+      "auto_confidence": "medium",
+      "auto_note": "temporal/freshness property — not a write-path key space",
+      "agreement": "agree",
+      "possible_space": null,
+      "needed_for_resolution": null
+    },
+    {
+      "id": "E6",
+      "domain": "mixed",
+      "text": "on configuration change, invalidate all cached values that depend on that config",
+      "human_class": "declarable",
+      "auto_class": "declarable",
+      "auto_confidence": "high",
+      "auto_note": "explicit 'all' + named entity",
+      "agreement": "agree",
+      "possible_space": "config_dep:{config_key}",
+      "needed_for_resolution": null
+    },
+    {
+      "id": "E7",
+      "domain": "mixed",
+      "text": "invalidate all entries belonging to a tenant on tenant deactivation",
+      "human_class": "declarable",
+      "auto_class": "declarable",
+      "auto_confidence": "high",
+      "auto_note": "explicit 'all' + named entity",
+      "agreement": "agree",
+      "possible_space": "tenant:{tenant_id}",
+      "needed_for_resolution": null
+    }
+  ]
+}
