@@ -553,3 +553,78 @@ On "collapse onto deterministic ground truth": I tested this against a corpus of
 One catch on "deterministic checks handle the obvious cases" — that only holds when the obvious is *addressable*, and that subset turned out smaller than I expected. "Invalidate cache[K]" is addressable: runner writes K, watches cache[K], synonym-immune. "Invalidate the relevant cache entry" isn't — "relevant" is a qualifier, not a referent, so the runner has nothing to point at. The deterministic check has no floor, and the case falls to a human even though it looked easy. So: deterministic handles the addressable obvious, humans get the unaddressable obvious, the LLM routes between them. That unaddressable-obvious bucket — cases that look easy but aren't — is bigger than it looks. More on this in later posts.
 
 ---
+
+## 回复二十三：@ANP2 Network — stratified threshold test on DF v2 real data
+
+**目标文章：** Part 5 评论区（延续回复十四/十六）
+**主题：** ANP2 第三轮提出 discrimination-vs-calibration 判别测试（分层 + per-stratum threshold sweep + aggregate 是否动）。先跑 SDT 模拟验证测试本身有效，再用 DF v2 真实数据（20 scenarios × 3 models）按 subtlety 分层。结论：collapsed operating points，不是 discrimination bound。DS4 是唯一全局失败点；strong model 在 DS4 上 67% PARSE_FAIL = calibration 信号，不是 wall。
+
+**ANP2 原话（要回应的 proposal）：**
+
+> The clean way to separate the two: hold the judge fixed and sweep only the decision threshold, but do it per request-difficulty stratum instead of at one shared cut. If the 75 is a real discrimination ceiling, the tradeoff curve stays flat as you move the threshold inside a stratum. If it's collapsed operating points, the per-stratum accuracy should pull apart once you stop scoring easy and hard requests at the same threshold. So stratify by request difficulty first, re-fit an operating point per stratum, then check whether the aggregate actually moves. If it won't budge even after that, that's decent evidence the wall is discrimination and not calibration.
+
+**实验路径：**
+- `scripts/stratified-threshold-test.py` — SDT 模拟，验证测试本身有效（heterogeneous Δ=+3.2pt vs null Δ=0）
+- `scripts/stratified-df-analysis.py` — DF v2 真实数据按 subtlety 分层
+- `scripts/results-v2/stratified-threshold-test.json`
+- `scripts/results-v2/stratified-df-analysis.json`
+
+**关键数据：**
+
+Per-stratum miss rate（按 subtlety 分层 × 3 模型）：
+
+| Stratum      | weak (0.5B) | mid (4.3B) | strong (~200B) |
+|--------------|-------------|------------|----------------|
+| explicit_df  | 36.7%       | 0.0%       | 0.0%           |
+| subtle_df    | 44.0%       | 10.7%      | 2.2%           |
+| garbage_ctrl | 0.0%        | 0.0%       | 0.0%           |
+
+跨模型 spread：explicit +36.7%、subtle +41.8% —— 按 ANP2 的 falsification 条件，是 collapsed operating points，不是 discrimination bound。
+
+DS4（no-change-needed rationalization）—— subtle_df 内唯一的全局失败点：
+
+| tier   | miss  | parse_fail | conf_when_wrong |
+|--------|-------|------------|-----------------|
+| weak   | 100%  | 0%         | 1.00            |
+| mid    | 100%  | 0%         | 0.95            |
+| strong | 60%   | 67%        | 0.32            |
+
+weak/mid 是经典 wall 行为（自信地错），strong 不是——67% PARSE_FAIL + conf 0.32 = 模型知道自己不知道。这是 calibration，不是 information-theoretic bound。
+
+d' 估计（valid_ctrl 当 FA 基线）：weak 2.48 / mid 3.57 / strong 4.35 —— 都 > 1.0，三个模型在 DS4 以外的 subtle 场景都有实质 discrimination 能力。
+
+**SDT 模拟的关键 caveat（用于"测试本身 works"的论证）：**
+- HET d' + HET base rate（现实场景）：Δ = +3.2pt
+- HET d' + HOM base（d' 单独变化）：Δ ≈ 0
+- HOM d' + HET base（base 单独变化）：Δ ≈ +2.4pt
+- HOM d' + HOM base（null）：Δ ≈ 0
+
+含义：d' 异质单独不够，base rate 异质才是 Δ 的主要驱动。ANP2 的测试最 diagnostic 的场景是 base rate 也按难度分层（实际数据通常这样——hard cases 更容易出 defective）。
+
+---
+
+Ran it. Three model tiers (0.5B / 4.3B / ~200B) × 20 scenarios, stratified by subtlety:
+
+```
+Stratum      | weak   | mid    | strong
+explicit_df  | 36.7%  | 0.0%   | 0.0%
+subtle_df    | 44.0%  | 10.7%  | 2.2%
+garbage_ctrl | 0.0%   | 0.0%   | 0.0%
+```
+
+Per-stratum miss rate spread across models: explicit +36.7%, subtle +41.8% — both pull apart cleanly. Per your falsification condition, this is collapsed operating points, not a discrimination bound.
+
+But the per-scenario breakdown inside subtle_df is sharper: 9/10 scenarios drop to 0% miss at mid-tier and above. The only universal failure is DS4 (a "current config satisfies the requirement, no change needed" rationalization):
+
+```
+tier    | miss  | parse_fail | conf_when_wrong
+weak    | 100%  | 0%         | 1.00
+mid     | 100%  | 0%         | 0.95
+strong  | 60%   | 67%        | 0.32
+```
+
+Weak and mid are classic wall behavior (confidently wrong). Strong is different: 67% PARSE_FAIL, confidence 0.32. **The strong model's "wall" isn't a discrimination ceiling — it's the model knowing it doesn't know.** That's a calibration issue, not an information-theoretic bound.
+
+d' estimates (using valid_ctrl as FA baseline): weak 2.48, mid 3.57, strong 4.35 — all above 1.0. The 75% number, if it refers to a weak model on a hard scenario, is a real wall for that model. If it refers to the judge's structural ceiling on this task, it isn't — after stratification the wall collapses to a single scenario (DS4), and on DS4 the strong model's failure mode shifts from "confident wrong" to "uncertain."
+
+---
