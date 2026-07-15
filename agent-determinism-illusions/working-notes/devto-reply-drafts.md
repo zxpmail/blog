@@ -628,3 +628,34 @@ Weak and mid are classic wall behavior (confidently wrong). Strong is different:
 d' estimates (using valid_ctrl as FA baseline): weak 2.48, mid 3.57, strong 4.35 — all above 1.0. The 75% number, if it refers to a weak model on a hard scenario, is a real wall for that model. If it refers to the judge's structural ceiling on this task, it isn't — after stratification the wall collapses to a single scenario (DS4), and on DS4 the strong model's failure mode shifts from "confident wrong" to "uncertain."
 
 ---
+
+## 回复二十四：@Dipankar Sarkar — refusing to let one line carry every dimension (round 4)
+
+**目标文章：** Part 5 评论区（延续回复五/十九）
+**主题：** Dipankar 第四轮收敛 —— "decompose the predicate, don't fuse"。三个 lever（rerun / multi-prompt vote / calibrate）都改 judge 不改问题结构，所以 wall 不动。fuse 一个 scalar 是 wall 的来源。三个独立观察（Part 4 / Max Quimby / Dipankar）收敛到同一个 framing：collapse onto deterministic ground truth。最 sharp 的洞察："the checks have to be frozen from the task intent before the run, not authored by the thing being judged"——他独立重新推导出 editable-surface 必要性。
+
+**Dipankar 原话（要回应的 proposal）：**
+
+> The reason none of your three levers moved the wall is that all three ask the reviewer the same question: is this output good. Rerun, multi-prompt vote, calibrate. Same scalar verdict, same bias direction, so the line stays put. You proved the boundary is stable under wording. Agreed.
+>
+> The move that does shift it is not a sharper judge. It is refusing to let one line carry every dimension. 'Is this valid work' collapses a conjunction of narrow checks into a single scalar, and the collapse is where the 75% lives.
+>
+> Decompose the predicate instead. Tests ran and the run is non-empty. Artifact parses. Required sections present. No placeholder or duck tokens. Each of those is near-100% on its own axis and most are mechanical, not model calls at all. The valid research brief that your reviewer rejects fails no individual check. It only fails the fused one.
+>
+> The catch that keeps this honest: the checks have to be frozen from the task intent before the run, not authored by the thing being judged. Otherwise the runner picks the bar it can clear and you are back to narration. You do not move the line. You stop asking one line to stand in for many.
+
+**关键 framing 捡取：** "refusing to let one line carry every dimension" 作为开场钩子，回应他 round 1 "4 split / 3 wrong"——从 vote axis 扩展到 question axis。
+
+**实现引用：** L0/L1/evidence/C1/C2 管线（来自 P-series + Part 4）是 Dipankar 抽象 framing 的具体落地。editable-surface.json readonly 是他"frozen from task intent"的实现。
+
+---
+
+"Refusing to let one line carry every dimension" — that's the framing I should have had. It's also the same observation you made in round one — "4 split / 3 wrong" — extended from the vote axis to the question axis. The judge wasn't uncertain about its verdict; it was certain and consistent. That's only explainable if the verdict itself collapses a conjunction, because a conjunction is what makes a wrong call feel safe: each clause looks fine, so the AND looks fine.
+
+The pipeline this lands on is L0 (file exists, non-empty) → L1 (regex per requirement) → evidence gate → C1 (per-requirement pattern match) → C2 (LLM reads each requirement atomically, not the whole output). Each layer is near-deterministic on its own axis. The LLM judge is retired from most cases; it only runs on the semantic residual that the mechanical layers can't resolve.
+
+On "frozen from task intent, not authored by the thing being judged" — that's the editable-surface constraint. Verify scripts, contract, and the requirement list itself live in a readonly section the agent cannot write to. If the agent could rewrite its own checks, it would pick the bar it can clear — your narration failure, exactly.
+
+The residual that decomposition doesn't close: "required sections present" works mechanically only when the section boundary is itself mechanical. "Artifact parses" works when the format is declared. After full decomposition the wall drops from 75% on the fused predicate to whatever fraction of requirements are genuinely semantic and unmechanizable. That fraction is smaller than I expected.
+
+---
