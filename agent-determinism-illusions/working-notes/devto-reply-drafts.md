@@ -538,3 +538,18 @@ Thanks — "N votes collapse to 1 vote with more confidence from a systematic bi
 On explicit acceptance criteria: the P-series tested this (P1→P4, 8→30 scenarios). The answer depends on which layer you're measuring. Explicit criteria moved the deterministic regex layer substantially — because the prompt provided the vocabulary. The LLM judge stayed at about the same accuracy in both conditions. The explicit criteria helped the *deterministic* floor, not the *judge* layer. Applied to the wall: it looked like it moved (v3 hit 100% on 8 scenarios), but that was test-set composition bias — expanded to 30, v3 and v2 returned identical verdicts on every valid call.
 
 On "collapse onto deterministic ground truth": I tested this against a corpus of requirements in the cache-invalidation domain. The majority collapse to a declared key space directly ("user:*", "session:*"); a significant portion resolve via dependency tracing (sessions by userId, decisions derived from role). The remainder are UX and freshness properties that shouldn't be in this pipeline at all. Your three signals ("did the test suite actually run, does the file exist, does the output parse") plus a fourth — "does the declared key space coverage pass" — define a deterministic floor that catches wrong-referent cases a single-key check misses. The collapse is almost always possible when the requirement belongs in the pipeline.
+
+---
+
+## 回复二十二：@Alex Shev — routing aid, not final authority (Part 4 endpoint 命名)
+
+**目标文章：** [I tested 3 models as AI agent quality inspectors](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7) 评论区（延续回复八/十三/十五）
+**主题：** Alex 第四轮收敛 —— "routing aid not final authority" 命名了 Part 4 endpoint；addressable 边界让 "deterministic handles obvious" 更精确。删:Mike cross-link（同形 runner-independence,Part 8 待发后展开）;删:finite-resource 段（Part 5 的 75% wall 主题）;不引 Part 5/8/9 编号（待发）,但用 "writing up next" / "upcoming post" 暗示后续会展开。
+
+---
+
+"Routing aid instead of final authority" — that's where Part 4 lands, and you've said it better than I did. The pipeline I was critiquing in Parts 1–3 had the LLM as a per-requirement judge — "does this output satisfy REQ-N?" Part 4 retires that. Deterministic code routes, diff reviews catch the questionable ones, humans sample what's left. The LLM ends up as a classifier, never the verdict. The 75% wall behind the retire-don't-reroute call from earlier rounds is what I'm writing up next.
+
+One catch on "deterministic checks handle the obvious cases" — that only holds when the obvious is *addressable*, and that subset turned out smaller than I expected. "Invalidate cache[K]" is addressable: runner writes K, watches cache[K], synonym-immune. "Invalidate the relevant cache entry" isn't — "relevant" is a qualifier, not a referent, so the runner has nothing to point at. The deterministic check has no floor, and the case falls to a human even though it looked easy. So: deterministic handles the addressable obvious, humans get the unaddressable obvious, the LLM routes between them. That unaddressable-obvious bucket — cases that look easy but aren't — is bigger than it looks. More on this in later posts.
+
+---
