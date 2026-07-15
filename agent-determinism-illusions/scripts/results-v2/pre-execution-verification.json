@@ -1,0 +1,362 @@
+{
+  "parameters": {
+    "stream_length": 2000,
+    "trials": 500,
+    "execution_rate_default": 0.7,
+    "signal_quality_configs": {
+      "low": [
+        {
+          "name": "state_change",
+          "tp": 0.75,
+          "fp": 0.12,
+          "falsifiability": "low"
+        },
+        {
+          "name": "tool_call_log",
+          "tp": 0.8,
+          "fp": 0.08,
+          "falsifiability": "low"
+        },
+        {
+          "name": "process_trace",
+          "tp": 0.7,
+          "fp": 0.2,
+          "falsifiability": "medium"
+        },
+        {
+          "name": "resource_usage",
+          "tp": 0.6,
+          "fp": 0.25,
+          "falsifiability": "medium"
+        },
+        {
+          "name": "time_elapsed",
+          "tp": 0.4,
+          "fp": 0.3,
+          "falsifiability": "high"
+        }
+      ],
+      "medium": [
+        {
+          "name": "state_change",
+          "tp": 0.9,
+          "fp": 0.05,
+          "falsifiability": "low"
+        },
+        {
+          "name": "tool_call_log",
+          "tp": 0.95,
+          "fp": 0.02,
+          "falsifiability": "low"
+        },
+        {
+          "name": "process_trace",
+          "tp": 0.85,
+          "fp": 0.1,
+          "falsifiability": "medium"
+        },
+        {
+          "name": "resource_usage",
+          "tp": 0.8,
+          "fp": 0.15,
+          "falsifiability": "medium"
+        },
+        {
+          "name": "time_elapsed",
+          "tp": 0.5,
+          "fp": 0.2,
+          "falsifiability": "high"
+        }
+      ],
+      "high": [
+        {
+          "name": "state_change",
+          "tp": 0.97,
+          "fp": 0.02,
+          "falsifiability": "low"
+        },
+        {
+          "name": "tool_call_log",
+          "tp": 0.98,
+          "fp": 0.01,
+          "falsifiability": "low"
+        },
+        {
+          "name": "process_trace",
+          "tp": 0.92,
+          "fp": 0.05,
+          "falsifiability": "medium"
+        },
+        {
+          "name": "resource_usage",
+          "tp": 0.9,
+          "fp": 0.08,
+          "falsifiability": "medium"
+        },
+        {
+          "name": "time_elapsed",
+          "tp": 0.6,
+          "fp": 0.15,
+          "falsifiability": "high"
+        }
+      ]
+    }
+  },
+  "claim1_detection_threshold": {
+    "threshold": 0.3,
+    "result": 0.9178382259894307,
+    "pass": true
+  },
+  "claim2_fp_threshold": {
+    "threshold": 0.15,
+    "result": 7.742538472782972e-05,
+    "pass": true
+  },
+  "results": [
+    {
+      "config": "medium",
+      "strategy": "baseline",
+      "detection_rate": 0.0,
+      "audit_rate": 0.0,
+      "fp_rate": 0.0
+    },
+    {
+      "config": "medium",
+      "strategy": "fixed_sample",
+      "detection_rate": 0.1002,
+      "audit_rate": 0.1,
+      "fp_rate": 0.0999
+    },
+    {
+      "config": "medium",
+      "strategy": "any_signal",
+      "detection_rate": 0.5701,
+      "audit_rate": 0.1712,
+      "fp_rate": 0.0001
+    },
+    {
+      "config": "medium",
+      "strategy": "two_plus",
+      "detection_rate": 0.9178,
+      "audit_rate": 0.2777,
+      "fp_rate": 0.003
+    },
+    {
+      "config": "medium",
+      "strategy": "tp_weighted",
+      "detection_rate": 0.8966,
+      "audit_rate": 0.4085,
+      "fp_rate": 0.1991
+    },
+    {
+      "config": "low",
+      "strategy": "baseline",
+      "detection_rate": 0.0,
+      "audit_rate": 0.0,
+      "fp_rate": 0.0
+    },
+    {
+      "config": "low",
+      "strategy": "fixed_sample",
+      "detection_rate": 0.0998,
+      "audit_rate": 0.1004,
+      "fp_rate": 0.1006
+    },
+    {
+      "config": "low",
+      "strategy": "any_signal",
+      "detection_rate": 0.338,
+      "audit_rate": 0.1038,
+      "fp_rate": 0.0037
+    },
+    {
+      "config": "low",
+      "strategy": "two_plus",
+      "detection_rate": 0.7602,
+      "audit_rate": 0.2593,
+      "fp_rate": 0.0451
+    },
+    {
+      "config": "low",
+      "strategy": "tp_weighted",
+      "detection_rate": 0.8092,
+      "audit_rate": 0.4879,
+      "fp_rate": 0.3505
+    },
+    {
+      "config": "medium",
+      "strategy": "baseline",
+      "detection_rate": 0.0,
+      "audit_rate": 0.0,
+      "fp_rate": 0.0
+    },
+    {
+      "config": "medium",
+      "strategy": "fixed_sample",
+      "detection_rate": 0.1003,
+      "audit_rate": 0.0998,
+      "fp_rate": 0.0997
+    },
+    {
+      "config": "medium",
+      "strategy": "any_signal",
+      "detection_rate": 0.5709,
+      "audit_rate": 0.1712,
+      "fp_rate": 0.0001
+    },
+    {
+      "config": "medium",
+      "strategy": "two_plus",
+      "detection_rate": 0.9181,
+      "audit_rate": 0.2773,
+      "fp_rate": 0.0029
+    },
+    {
+      "config": "medium",
+      "strategy": "tp_weighted",
+      "detection_rate": 0.8969,
+      "audit_rate": 0.4093,
+      "fp_rate": 0.2006
+    },
+    {
+      "config": "high",
+      "strategy": "baseline",
+      "detection_rate": 0.0,
+      "audit_rate": 0.0,
+      "fp_rate": 0.0
+    },
+    {
+      "config": "high",
+      "strategy": "fixed_sample",
+      "detection_rate": 0.101,
+      "audit_rate": 0.0998,
+      "fp_rate": 0.0992
+    },
+    {
+      "config": "high",
+      "strategy": "any_signal",
+      "detection_rate": 0.7205,
+      "audit_rate": 0.2165,
+      "fp_rate": 0.0
+    },
+    {
+      "config": "high",
+      "strategy": "two_plus",
+      "detection_rate": 0.9702,
+      "audit_rate": 0.2916,
+      "fp_rate": 0.0002
+    },
+    {
+      "config": "high",
+      "strategy": "tp_weighted",
+      "detection_rate": 0.9379,
+      "audit_rate": 0.3699,
+      "fp_rate": 0.1259
+    },
+    {
+      "config": "exec_0.5",
+      "strategy": "baseline",
+      "detection_rate": 0.0,
+      "audit_rate": 0.0,
+      "fp_rate": 0.0
+    },
+    {
+      "config": "exec_0.5",
+      "strategy": "fixed_sample",
+      "detection_rate": 0.0999,
+      "audit_rate": 0.0998,
+      "fp_rate": 0.0998
+    },
+    {
+      "config": "exec_0.5",
+      "strategy": "any_signal",
+      "detection_rate": 0.5698,
+      "audit_rate": 0.2847,
+      "fp_rate": 0.0001
+    },
+    {
+      "config": "exec_0.5",
+      "strategy": "two_plus",
+      "detection_rate": 0.9185,
+      "audit_rate": 0.4605,
+      "fp_rate": 0.0031
+    },
+    {
+      "config": "exec_0.5",
+      "strategy": "tp_weighted",
+      "detection_rate": 0.8968,
+      "audit_rate": 0.5477,
+      "fp_rate": 0.199
+    },
+    {
+      "config": "exec_0.7",
+      "strategy": "baseline",
+      "detection_rate": 0.0,
+      "audit_rate": 0.0,
+      "fp_rate": 0.0
+    },
+    {
+      "config": "exec_0.7",
+      "strategy": "fixed_sample",
+      "detection_rate": 0.0989,
+      "audit_rate": 0.0995,
+      "fp_rate": 0.0997
+    },
+    {
+      "config": "exec_0.7",
+      "strategy": "any_signal",
+      "detection_rate": 0.5697,
+      "audit_rate": 0.1708,
+      "fp_rate": 0.0001
+    },
+    {
+      "config": "exec_0.7",
+      "strategy": "two_plus",
+      "detection_rate": 0.9174,
+      "audit_rate": 0.2769,
+      "fp_rate": 0.0029
+    },
+    {
+      "config": "exec_0.7",
+      "strategy": "tp_weighted",
+      "detection_rate": 0.8963,
+      "audit_rate": 0.409,
+      "fp_rate": 0.2005
+    },
+    {
+      "config": "exec_0.9",
+      "strategy": "baseline",
+      "detection_rate": 0.0,
+      "audit_rate": 0.0,
+      "fp_rate": 0.0
+    },
+    {
+      "config": "exec_0.9",
+      "strategy": "fixed_sample",
+      "detection_rate": 0.0981,
+      "audit_rate": 0.1002,
+      "fp_rate": 0.1005
+    },
+    {
+      "config": "exec_0.9",
+      "strategy": "any_signal",
+      "detection_rate": 0.57,
+      "audit_rate": 0.0574,
+      "fp_rate": 0.0001
+    },
+    {
+      "config": "exec_0.9",
+      "strategy": "two_plus",
+      "detection_rate": 0.9175,
+      "audit_rate": 0.095,
+      "fp_rate": 0.003
+    },
+    {
+      "config": "exec_0.9",
+      "strategy": "tp_weighted",
+      "detection_rate": 0.8955,
+      "audit_rate": 0.2698,
+      "fp_rate": 0.1998
+    }
+  ]
+}

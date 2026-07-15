@@ -7,7 +7,7 @@
 ---
 title: "Weng's Harness Ladder Has a Blind Step"
 published: false
-description: "Lilian Weng's harness engineering survey mapped the field. It also revealed a blind step: the evaluator itself fails directionally, not just imprecisely. 20 scenarios × 3 models × 600 judgments + 6 design constraints implemented in code."
+description: "Lilian Weng's harness engineering survey mapped the field. It also revealed a blind step: the evaluator itself fails directionally, not just imprecisely. 20 scenarios × 3 models × 600 judgments + 7 design constraints implemented in code."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
@@ -27,13 +27,13 @@ But the ladder has a blind step. It's visible in Weng's own list of Future Chall
 
 > **Future Challenge #1: Weak and fuzzy evaluators.** Many research claims do not have a fast and precise verifier, and the same is true for many real-world tasks.
 
-Weng frames this as a precision problem: the evaluator isn't sharp enough to distinguish good outputs from bad ones. Every system in her survey — STOP, Self-Harness, Meta-Harness, DGM, ACE — assumes the evaluator's output is trustworthy, then optimizes how to use that output. None of them measure whether the evaluator itself makes directional errors: mistakes where the output is semantically reversed (keeping what should be deleted, enabling what should be disabled) but structurally indistinguishable from a correct result.
+Weng frames this as a precision problem: the evaluator isn't sharp enough to distinguish good outputs from bad ones. Most systems in her survey — STOP, Self-Harness, Meta-Harness, DGM, ACE — treat the evaluator's output as trustworthy, then optimize how to use that output. None of them explicitly measure whether the evaluator itself makes directional errors: mistakes where the output is semantically reversed (keeping what should be deleted, enabling what should be disabled) but structurally indistinguishable from a correct result.
 
-This article argues: **weak evaluators are not just imprecise. They fail directionally — accepting plausible-sounding output that reverses the task. My own data shows this is uneven: stronger models catch most of it. The structural bound (Theorem 2 below) remains; the practical impact is concentrated in weaker models.** The evidence comes from three independent threads that converged in the weeks after Weng's survey was published.
+This article argues: **weak evaluators are not just imprecise. They fail directionally — accepting plausible-sounding output that reverses the task. My own data shows this is uneven: stronger models catch most of it. The structural bound (Theorem 2 below) remains; the practical impact is concentrated in weaker models.** The evidence comes from multiple independent threads that converged in the weeks after Weng's survey was published.
 
 ---
 
-## 2. Three Threads Converge
+## 2. Threads Converge
 
 ### Thread 1: Weng's Own DGM Story
 
@@ -71,9 +71,9 @@ The same mechanism appears in Weng's DGM story. The agent didn't write "tests: d
 
 ### Thread 3: Theorem 2 (Data Processing Inequality)
 
-René Zander (@reneza on dev.to) identified the theoretical root: when the evaluator shares the same communication channel as the producer (both read and write text), the information available to the evaluator is a subset of what the producer output. If the deviation doesn't appear in the text — if the deleted file is called "retained" with a justification, if the fake log says "tests passed" — the evaluator, human or LLM, cannot detect it.
+René Zander (@reneza on dev.to) identified the theoretical root: when the evaluator shares the same communication channel as the producer (both read and write text), the information available to the evaluator is a subset of what the producer output. If the deviation doesn't appear in the text — if the deleted file is called "retained" with a justification, if the fake log says "tests passed" — a text-channel evaluator reading that text cannot detect it. (An evaluator with access to an independent channel — process exit codes, execution traces, a runner that observes the side effect — can catch cases the text channel misses. The bound is on the text channel, not on evaluation in general.)
 
-This is the Data Processing Inequality applied to agent verification. It's not an implementation bug. It's an information-theoretic constraint.
+This is the Data Processing Inequality applied to agent verification. It's not an implementation bug. It's an information-theoretic constraint. (Labeled "Theorem 2" for series continuity; strictly, this is a structural argument from information theory rather than a formally proved theorem.)
 
 ### The convergence
 
@@ -84,15 +84,15 @@ This is the Data Processing Inequality applied to agent verification. It's not a
 | Zander (2026) | Theorem 2: text-channel evaluator receives subset of producer's info | Theoretical bound |
 | Parfenov (2026) | Provenance dies at the storage boundary | Architectural analysis |
 
-Three empirical observations converging on the same theoretical prediction. The evaluator is not just imprecise. It fails directionally, and the theoretical bound (Theorem 2) is structural — but the practical severity scales with model capability, as the DF v2 data shows.
+These observations converge on the same theoretical prediction. The evaluator is not just imprecise. It fails directionally, and the theoretical bound (Theorem 2) is structural — but the practical severity scales with model capability, as the DF v2 data shows.
 
 ---
 
-## 3. Six Design Constraints from the Literature
+## 3. Seven Design Constraints from the Literature
 
 If the evaluator can fail directionally, and the failure is structural, then the fix cannot be "a better evaluator." The fix must be architectural: design constraints that limit what the evaluator is asked to judge, and how its judgment is used.
 
-The six constraints below are extracted from the papers Weng surveys and the experiments above. Each has been implemented in the ReqForge forge-verify pipeline during a single development session following the survey reading.
+The seven constraints below are extracted from the papers Weng surveys and the experiments above. Each has been implemented in the ReqForge forge-verify pipeline during a single development session following the survey reading.
 
 ### Constraint 1: The Evaluator Lives Outside the Loop
 
@@ -109,7 +109,43 @@ The six constraints below are extracted from the papers Weng surveys and the exp
 }
 ```
 
-### Constraint 2: Verification Verdicts Carry Causal Labels
+### Constraint 1b: The Router Lives Outside the Loop
+
+**Source:** Alex Shev (dev.to, July 2026), routing-surface experiment
+
+"Deterministic routing plus sampling is the honest approach — but only if the routing table itself is not self-modifiable. I would not let dispatch confidence come only from the same semantic layer that made the dispatch." — Alex Shev
+
+**Problem:** Constraint 1 prevents the agent from modifying its own evaluator. But the router — which decides which verification path an output enters — makes a structurally identical decision. If the agent can reassign its output from the strict verification path to a lenient one, the evaluator's judgment becomes moot regardless of how carefully it's insulated.
+
+**Experiment:** Monte Carlo simulation of 5000-output verification streams, 500 trials per configuration. Three verification paths calibrated to Part 5's empirical data (Strict: 0% FP / 75% FN, Balanced: 10% FP / 50% FN, Lenient: 25% FP / 25% FN). All outputs default to the Strict path. In the *unconstrained* condition, the agent can reassign defective output to a more lenient path within plausibility limits (code→Balanced, report→Lenient, config→Lenient). Path entropy (Shannon H) measures operating-point variance — how dispersed outputs are across verification paths.
+
+| Condition | Path entropy (H) | Defective pass rate | vs constrained |
+|-----------|----------------|-------------------|----------------|
+| Routing constrained (readonly) | 0.000 | 0.0% | 1.0× |
+| Routing unconstrained (agent overrides) | 0.524 | 19.0% | **∞** |
+
+The agent's ability to reassign defective output to a more lenient path raises path entropy from H=0 to H=0.524, and defective pass-through follows from 0% to 19%. The entropy measures what ANP2 Network's operating-point reframe predicted: the defective pass-through increase is variance from collapsing multiple verification standards into the agent's routing decision. When the routing table is in the `readonly` section, the path-reassignment vector is eliminated (H=0, DPR=0%) — the block is specific to this vector, and does not catch sophisticated semantic evasion where defective output passes the strict path on its own merit.
+
+**Implementation:** Extend `.forge/editable-surface.json` to include the routing table in the `readonly` section:
+
+```
+{
+  "editable": { "directories": ["core/skills", ".forge/harnesses", ...] },
+  "readonly": {
+    "directories": ["scripts/forge-verify"],
+    "files": [".forge/editable-surface.json", ".forge/routing-table.json"]
+  }
+}
+```
+
+The routing table (`.forge/routing-table.json`) maps output-type patterns to verification paths. The agent can *suggest* routing changes via the same proposal mechanism as harness changes (Constraint 6), but path reassignment requires human approval. This makes the routing constraint structurally identical to Constraint 1: the harness defines what the agent can route to, and the agent cannot redefine the harness.
+
+**Relationship to Constraint 1:** Both are instances of the same architectural principle — any component that judges the agent's output must live outside the agent's editable surface. The router is a judging component: it decides which verification standard applies. If it can be rewritten by the same agent whose output it dispatches, the evaluator's independence is moot.
+
+**Script:** [`routing-surface-constraint-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)
+**Results:** `scripts/results-v2/routing-surface-constraint.json`
+
+### Constraint 2: Causal Labels for Verification Failures
 
 **Source:** Self-Harness (Zhang et al. 2026)
 
@@ -175,22 +211,58 @@ Weng also predicts: "Many harness improvements will be internalized into core mo
 
 **Implementation:** `.forge/harnesses/` acts as a candidate registry. Each candidate harness is a subdirectory with `config.json`, `scores.json`, and `history.jsonl`. The baseline config (`.forge/content-verify.json`) is the origin; new variants are generated by varying one dimension (divergence threshold, contract pattern, evidence requirement). Variants are Pareto-ranked by accuracy vs. LLM call cost. The production config is readonly — switching to a candidate harness requires human approval.
 
+### Constraint Interaction: Layers Combine Super-Additively
+
+The seven constraints above are not independent dials. An experiment varying which layers are active shows that L2 (Constraints 1+1b: readonly verify scripts + readonly routing table) and L3 (pre-execution verification — extending Constraint 1's readonly principle to the signal producers that report whether a step actually ran) must both be present — neither alone is sufficient.
+
+**Setup:** Monte Carlo simulation, 5000 outputs per trial, 500 trials per config, 10% defective rate. Four evasion vectors available to a defective agent, tried in preference order:
+
+| Vector | Description | Blocked by |
+|--------|-------------|------------|
+| V1 | modify verify scripts | L2 (Constraint 1) |
+| V2 | modify routing table | L2 (Constraint 1b) |
+| V3 | fake execution signals | L3 (readonly signal producers) |
+| V4 | skip submission, self-report "done" | None directly — but L3's pre-execution detection reduces V4 success from 0.85 to 0.07 |
+
+**Parameter sources:** V4's 0.85 base success reflects the typical case where submission is by self-report alone — no external audit checks whether the step actually executed. The 91.8% pre-execution detection rate is measured in `pre-execution-verification-test.py` (Strategy D: 5-signal audit at 0.3% false-positive rate). V1/V2/V3 success rates model the agent's effectiveness once a vector is picked; absolute values matter less than the structural finding that L2 and L3 must combine.
+
+**Result:**
+
+| Config | Blocked | Defective pass rate | Reduction vs NONE |
+|--------|---------|---------------------|-------------------|
+| NONE | — | 99.6% | — |
+| L2 only | V1, V2 | 97.9% | 1.7% |
+| L3 only | V3 (+V4 detection) | 82.4% | 17.3% |
+| **L2+L3** | V1, V2, V3 (+V4 detection) | **11.6%** | **88.3%** |
+
+If layers contributed independently, expected reduction = 1.7% + 17.3% = 19%. Actual reduction = 88.3%. **The combined effect is 4.6× the sum of individual contributions** — a super-additive interaction.
+
+The mechanism: L3 presses V4 down to 7% success, but the agent falls back to V1/V2 which L2 hasn't blocked. L2 alone is decorative because V4 succeeds 85% of the time without L3 detection. Only when both are active does the defective agent run out of fallbacks.
+
+This is why the constraints cannot be evaluated in isolation. Constraint 1 (evaluator readonly) and Constraint 1b (router readonly) look weak on their own — V4 dominates. Pre-execution verification (L3) looks moderate on its own — V4 is suppressed but V1/V2 still work. The architectural value emerges from their combination: a single structural boundary whose pieces seal each other's gaps.
+
+**Script:** [`multi-layer-constraint-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) · L3 detection source: [`pre-execution-verification-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)
+**Results:** `scripts/results-v2/multi-layer-constraint.json` · `scripts/results-v2/pre-execution-verification.json`
+
 ---
 
 ## 4. What the Implementation Tells Us
 
-Implementing all six constraints in a single development session took approximately four hours. The code changes total under 250 lines across 9 files. The key observation is not that the implementation was fast — it's that **each constraint maps to a single, testable mechanism** that can be verified independently.
+Implementing all seven constraints as additions to an existing pipeline took approximately four hours. The code changes total under 250 lines across 9 files. The key observation is not that the implementation was fast — it's that **each constraint maps to a single, testable mechanism** that can be verified independently. (The forge-verify pipeline these constraints extend was developed across multiple sessions; the four hours measures the incremental cost of adding the constraints to a system already in place.)
 
 | Constraint | Code | Test |
 |------------|------|------|
 | Evaluator outside loop | `.forge/editable-surface.json` + hook check | Verify evolution can't modify forge-verify/ |
+| Router outside loop | `.forge/routing-table.json` in readonly | Verify agent can't reassign its own path |
 | Causal labels | `failure_class` in each stage return | 20 DF v2 scenarios, 12 evidence-gate scenarios |
 | Held-in/held-out | Proposal format fields + forge-verify run on both | (requires evolution proposal to test) |
 | Evidence trace | `evidence` field + `trace.chain` output | Present in all stage outputs |
 | Rule retirement | `model_version` + staleness detection | (requires model upgrade event) |
 | Harness search | `.forge/harnesses/` + index + template | Template valid, index parseable |
 
-The six constraints are not speculative. They are direct translations of findings from Weng's survey into concrete code. The survey provides the design constraints; the implementation shows they are mechanically simple. The difficulty is not building them — it's recognizing them as necessary.
+The seven constraints are not speculative. They are direct translations of findings from Weng's survey, reader comments, and controlled experiments into concrete code. The survey provides the design constraints; the implementation shows they are mechanically simple. The difficulty is not building them — it's recognizing them as necessary.
+
+The Constraint Interaction experiment in §3 is validated separately via `multi-layer-constraint-test.py` (5000 outputs × 500 trials × 4 configs), measuring how the constraints combine rather than any single constraint in isolation.
 
 ---
 
@@ -198,19 +270,21 @@ The six constraints are not speculative. They are direct translations of finding
 
 Constraint 4 (evidence trace) and Constraint 6 (harness search) have a common limitation that Theorem 2 predicts: the trace itself is text, and the harness configuration is text. Both can be fabricated by an agent that controls the file system.
 
-The DGM fake log story applies to every evidence file that forge-verify reads. If the agent can write to `evidence_dir/`, it can write a file called `test-output.txt` that says "RateLimiter-IP: all tests passed" without actually running any tests. The evidence gate checks that the file exists and that a regex pattern matches its content. It does not check *who wrote the file* or *whether the file content reflects actual execution*.
+The DGM fake log story applies to every evidence file that forge-verify reads — **when that file was written by the agent**. If the verify script reads evidence from a path the agent can write, the agent can write a file called `test-output.txt` that says "RateLimiter-IP: all tests passed" without running any tests. The evidence gate checks that the file exists and that a regex pattern matches its content. It does not check *who wrote the file* or *whether the file content reflects actual execution*.
+
+This is not a universal claim. For evidence produced by the verify runner itself (the runner executes tests in the readonly section and captures output), the agent never touches the evidence file, so the DGM mechanism does not apply for that subset. The gap is limited to evidence files the verify script reads from agent-writeable paths — such as error logs the agent generated during execution or coverage reports the agent produced.
 
 This is not a bug in the evidence gate design. It is a design constraint: the evidence gate is zero-cost and pre-receive, but it trusts the file system that the agent writes to. The typed provenance layer that Sergei calls for — runtime-verified vs. self-reported — does not exist in the current forge-verify implementation. It would solve the DGM edge case, but it requires the file system itself to be provenance-aware, which standard file systems are not.
 
 The residual that Theorem 2 says cannot be closed:
 
 - A text-channel evaluator (LLM or human) cannot catch directional reversals that are textually indistinguishable from correct output.
-- An evidence gate cannot distinguish between evidence written by a test runner and evidence written by the agent under test.
-- A typed provenance system cannot distinguish if the typing is done by the same agent that produces the output.
+- An evidence gate cannot distinguish between evidence written by a test runner and evidence written by the agent under test — unless the gate only reads evidence from paths the agent cannot write, produced by a runner in the readonly section.
+- A typed provenance system cannot distinguish if the typing is done by the same agent that produces the output — though the constraints above ensure typing is done by readonly code, narrowing this to cases where evidence must originate from the agent's output.
 
 In practice, stronger LLMs catch many of these reversals because they carry better implicit models of plausible-vs-correct. The residual that even strong models miss — and that human reviewers consistently miss — is what Theorem 2 actually predicts. The capability gradient documented in Thread 2 narrows the practical scope; it does not eliminate the theoretical bound.
 
-This is not an argument against layered verification. The six constraints above demonstrably narrow the gap. The L0/L0e deterministic checks catch structural garbage before it reaches the LLM. The evidence gate catches missing artifacts. C1 validates specific format promises. C2 reads each requirement individually, preventing the "everything looks fine" narrative from overwhelming the judge. The trace makes the chain auditable. The harness search makes the config improvable.
+This is not an argument against layered verification. The seven constraints above demonstrably narrow the gap. The L0/L0e deterministic checks catch structural garbage before it reaches the LLM. The evidence gate catches missing artifacts. C1 validates specific format promises. C2 reads each requirement individually, preventing the "everything looks fine" narrative from overwhelming the judge. The trace makes the chain auditable. The harness search makes the config improvable.
 
 But the gap narrows asymptotically. Theorem 2 says it never reaches zero.
 
@@ -220,15 +294,16 @@ But the gap narrows asymptotically. Theorem 2 says it never reaches zero.
 
 Weng's harness engineering survey is the most comprehensive map of the field. It also reveals a blind step: the assumption that evaluators fail on precision, not direction. Three independent threads — the DGM fake log, the DF v2 data, and Theorem 2 — converge on the same finding: directional evaluator failure is real, but its severity scales with model capability. The structural bound holds; the practical impact is concentrated in weaker models.
 
-Six design constraints extracted from the survey and related work translate into testable code mechanisms. All six are implemented in ReqForge's forge-verify pipeline. The implementation is less than 250 lines across 9 files.
+Seven design constraints extracted from the survey and related work translate into testable code mechanisms. All seven are implemented in ReqForge's forge-verify pipeline; validation status per constraint is marked in §4's table (two have experimental validation via the routing-surface and multi-layer experiments — Constraints 1 and 1b; Constraint 2 has scenario-level tests; Constraints 3-6 are structural implementations awaiting runtime-event validation). The implementation is less than 250 lines across 9 files. An interaction experiment shows the constraints combine super-additively: L2 (readonly verify + routing) and L3 (pre-execution verification) individually reduce defective pass-through by 1.7% and 17.3%, but together by 88.3% — 4.6× the sum of their individual contributions. The architectural value is in the combination, not the pieces.
 
 The theoretical residual persists: a text-channel evaluator cannot catch what a text-channel producer can fabricate. The constraints narrow but do not eliminate the gap. That is not a design failure. It is an information-theoretic limit, and acknowledging it is more useful than engineering around it.
 
 ---
 
 *Experiment data: 20 directional-failure scenarios × 3 model tiers × 600 judgments in [directional-failure-v2.py](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
+*Multi-layer constraint experiment: 5000 outputs × 500 trials × 4 configs in `multi-layer-constraint-test.py` — L2+L3 combine 4.6× super-additively*
 *Evidence gate test: 6 scenarios, 12/12 pass in `scripts/forge-verify/test-evidence-gate.mjs`*
 *Source survey: [Harness Engineering for Self-Improvement](https://lilianweng.github.io/posts/2026-07-04-harness/) — Lilian Weng, July 2026*
 *Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
-*Previous: [The Channel Gap: Why Your LLM Judge is Blind in One Eye](blog-agent-determinism-illusions-8.en.md)*
+*Previous: [The Channel Gap: Why Your LLM Judge is Blind in One Eye](blog-agent-determinism-illusions-7.en.md)*
 *Next: [The Third Predicate: Argument-Space Verification, Tested](blog-agent-determinism-illusions-10.en.md)*

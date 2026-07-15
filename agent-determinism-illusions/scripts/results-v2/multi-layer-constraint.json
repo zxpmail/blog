@@ -1,0 +1,98 @@
+{
+  "parameters": {
+    "n_outputs": 5000,
+    "n_trials": 500,
+    "defect_rate": 0.1,
+    "vector_success_rates": {
+      "V1_modify_verify": 0.6,
+      "V2_modify_routing": 0.5,
+      "V3_fake_signals": 0.85
+    },
+    "baseline_verify_fp": 0.05
+  },
+  "claim_reduction_threshold": {
+    "threshold": 0.6,
+    "result": 0.8820274356168482,
+    "pass": true
+  },
+  "results": [
+    {
+      "config": "NONE",
+      "defect_rate": 0.1,
+      "defective_pass_rate": 0.9958,
+      "valid_pass_rate": 0.95
+    },
+    {
+      "config": "L2",
+      "defect_rate": 0.1,
+      "defective_pass_rate": 0.979,
+      "valid_pass_rate": 0.9499
+    },
+    {
+      "config": "L3",
+      "defect_rate": 0.1,
+      "defective_pass_rate": 0.8239,
+      "valid_pass_rate": 0.9499
+    },
+    {
+      "config": "L2+L3",
+      "defect_rate": 0.1,
+      "defective_pass_rate": 0.1163,
+      "valid_pass_rate": 0.9499
+    },
+    {
+      "config": "ALL",
+      "defect_rate": 0.1,
+      "defective_pass_rate": 0.1169,
+      "valid_pass_rate": 0.9497
+    },
+    {
+      "config": "L2+L3@dr=0.05",
+      "defect_rate": 0.05,
+      "defective_pass_rate": 0.1169,
+      "valid_pass_rate": 0.95
+    },
+    {
+      "config": "L2+L3@dr=0.1",
+      "defect_rate": 0.1,
+      "defective_pass_rate": 0.1157,
+      "valid_pass_rate": 0.95
+    },
+    {
+      "config": "L2+L3@dr=0.2",
+      "defect_rate": 0.2,
+      "defective_pass_rate": 0.1171,
+      "valid_pass_rate": 0.9501
+    },
+    {
+      "config": "L2+L3@dr=0.3",
+      "defect_rate": 0.3,
+      "defective_pass_rate": 0.1164,
+      "valid_pass_rate": 0.9503
+    },
+    {
+      "config": "L2+L3_v4=0.5",
+      "defect_rate": 0.1,
+      "defective_pass_rate": 0.0895,
+      "valid_pass_rate": 0.9498
+    },
+    {
+      "config": "L2+L3_v4=0.7",
+      "defect_rate": 0.1,
+      "defective_pass_rate": 0.1046,
+      "valid_pass_rate": 0.9499
+    },
+    {
+      "config": "L2+L3_v4=0.85",
+      "defect_rate": 0.1,
+      "defective_pass_rate": 0.1176,
+      "valid_pass_rate": 0.9503
+    },
+    {
+      "config": "L2+L3_v4=0.95",
+      "defect_rate": 0.1,
+      "defective_pass_rate": 0.1239,
+      "valid_pass_rate": 0.9498
+    }
+  ]
+}

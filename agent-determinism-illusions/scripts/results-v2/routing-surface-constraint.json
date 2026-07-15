@@ -1,0 +1,368 @@
+{
+  "parameters": {
+    "n_outputs": 5000,
+    "n_trials": 500,
+    "verification_paths": {
+      "strict": {
+        "fp": 0.0,
+        "fn": 0.75
+      },
+      "balanced": {
+        "fp": 0.1,
+        "fn": 0.5
+      },
+      "lenient": {
+        "fp": 0.25,
+        "fn": 0.25
+      }
+    },
+    "default_routing": {
+      "code": "strict",
+      "report": "strict",
+      "config": "strict"
+    }
+  },
+  "claim": {
+    "threshold_x": 2.0,
+    "result_x": 0,
+    "pass": false
+  },
+  "results": [
+    {
+      "sweep": "sweep1",
+      "defect_rate": 0.05,
+      "unconstrained": false,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.0,
+      "valid_reject_rate": 0.7501,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.0,
+      "path_entropy_std": 0.0
+    },
+    {
+      "sweep": "sweep1",
+      "defect_rate": 0.05,
+      "unconstrained": true,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1912,
+      "valid_reject_rate": 0.7501,
+      "escalation_rate": 0.005,
+      "path_entropy_mean": 0.3093,
+      "path_entropy_std": 0.0157
+    },
+    {
+      "sweep": "sweep1",
+      "defect_rate": 0.1,
+      "unconstrained": false,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.0,
+      "valid_reject_rate": 0.7502,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.0,
+      "path_entropy_std": 0.0
+    },
+    {
+      "sweep": "sweep1",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.19,
+      "valid_reject_rate": 0.7499,
+      "escalation_rate": 0.01,
+      "path_entropy_mean": 0.5246,
+      "path_entropy_std": 0.0168
+    },
+    {
+      "sweep": "sweep1",
+      "defect_rate": 0.2,
+      "unconstrained": false,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.0,
+      "valid_reject_rate": 0.7505,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.0,
+      "path_entropy_std": 0.0
+    },
+    {
+      "sweep": "sweep1",
+      "defect_rate": 0.2,
+      "unconstrained": true,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1898,
+      "valid_reject_rate": 0.7498,
+      "escalation_rate": 0.0201,
+      "path_entropy_mean": 0.8549,
+      "path_entropy_std": 0.0176
+    },
+    {
+      "sweep": "sweep2",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.0,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1896,
+      "valid_reject_rate": 0.7499,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.5657,
+      "path_entropy_std": 0.0173
+    },
+    {
+      "sweep": "sweep2",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.05,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1903,
+      "valid_reject_rate": 0.7498,
+      "escalation_rate": 0.005,
+      "path_entropy_mean": 0.5452,
+      "path_entropy_std": 0.018
+    },
+    {
+      "sweep": "sweep2",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1899,
+      "valid_reject_rate": 0.7502,
+      "escalation_rate": 0.01,
+      "path_entropy_mean": 0.524,
+      "path_entropy_std": 0.0163
+    },
+    {
+      "sweep": "sweep2",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.2,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1889,
+      "valid_reject_rate": 0.7503,
+      "escalation_rate": 0.0198,
+      "path_entropy_mean": 0.4798,
+      "path_entropy_std": 0.0169
+    },
+    {
+      "sweep": "sweep2",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.5,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1896,
+      "valid_reject_rate": 0.7506,
+      "escalation_rate": 0.0499,
+      "path_entropy_mean": 0.3345,
+      "path_entropy_std": 0.0148
+    },
+    {
+      "sweep": "sweep3",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.1,
+      "gameability": 0.0,
+      "defective_pass_rate": 0.0,
+      "valid_reject_rate": 0.7502,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.0,
+      "path_entropy_std": 0.0
+    },
+    {
+      "sweep": "sweep3",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.1,
+      "gameability": 0.2,
+      "defective_pass_rate": 0.0341,
+      "valid_reject_rate": 0.7501,
+      "escalation_rate": 0.002,
+      "path_entropy_mean": 0.1468,
+      "path_entropy_std": 0.0132
+    },
+    {
+      "sweep": "sweep3",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.1,
+      "gameability": 0.5,
+      "defective_pass_rate": 0.0898,
+      "valid_reject_rate": 0.7499,
+      "escalation_rate": 0.005,
+      "path_entropy_mean": 0.3089,
+      "path_entropy_std": 0.0151
+    },
+    {
+      "sweep": "sweep3",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.1,
+      "gameability": 0.8,
+      "defective_pass_rate": 0.1491,
+      "valid_reject_rate": 0.7499,
+      "escalation_rate": 0.008,
+      "path_entropy_mean": 0.4432,
+      "path_entropy_std": 0.0173
+    },
+    {
+      "sweep": "sweep3",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1905,
+      "valid_reject_rate": 0.7496,
+      "escalation_rate": 0.0099,
+      "path_entropy_mean": 0.5245,
+      "path_entropy_std": 0.0184
+    },
+    {
+      "sweep": "sweep4_constrained",
+      "defect_rate": 0.05,
+      "unconstrained": false,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.0,
+      "valid_reject_rate": 0.7503,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.0,
+      "path_entropy_std": 0.0
+    },
+    {
+      "sweep": "sweep4_constrained",
+      "defect_rate": 0.1,
+      "unconstrained": false,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.0,
+      "valid_reject_rate": 0.75,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.0,
+      "path_entropy_std": 0.0
+    },
+    {
+      "sweep": "sweep4_constrained",
+      "defect_rate": 0.2,
+      "unconstrained": false,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.0,
+      "valid_reject_rate": 0.7499,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.0,
+      "path_entropy_std": 0.0
+    },
+    {
+      "sweep": "sweep5_entropy",
+      "defect_rate": 0.05,
+      "unconstrained": false,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.0,
+      "valid_reject_rate": 0.7497,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.0,
+      "path_entropy_std": 0.0
+    },
+    {
+      "sweep": "sweep5_entropy",
+      "defect_rate": 0.05,
+      "unconstrained": true,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1893,
+      "valid_reject_rate": 0.7499,
+      "escalation_rate": 0.0051,
+      "path_entropy_mean": 0.3088,
+      "path_entropy_std": 0.0165
+    },
+    {
+      "sweep": "sweep5_entropy",
+      "defect_rate": 0.05,
+      "unconstrained": true,
+      "detection_risk": 0.0,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1903,
+      "valid_reject_rate": 0.7501,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.3343,
+      "path_entropy_std": 0.0153
+    },
+    {
+      "sweep": "sweep5_entropy",
+      "defect_rate": 0.1,
+      "unconstrained": false,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.0,
+      "valid_reject_rate": 0.7495,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.0,
+      "path_entropy_std": 0.0
+    },
+    {
+      "sweep": "sweep5_entropy",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1898,
+      "valid_reject_rate": 0.7504,
+      "escalation_rate": 0.01,
+      "path_entropy_mean": 0.5241,
+      "path_entropy_std": 0.0169
+    },
+    {
+      "sweep": "sweep5_entropy",
+      "defect_rate": 0.1,
+      "unconstrained": true,
+      "detection_risk": 0.0,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1912,
+      "valid_reject_rate": 0.7501,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.5654,
+      "path_entropy_std": 0.0178
+    },
+    {
+      "sweep": "sweep5_entropy",
+      "defect_rate": 0.2,
+      "unconstrained": false,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.0,
+      "valid_reject_rate": 0.7502,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.0,
+      "path_entropy_std": 0.0
+    },
+    {
+      "sweep": "sweep5_entropy",
+      "defect_rate": 0.2,
+      "unconstrained": true,
+      "detection_risk": 0.1,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1902,
+      "valid_reject_rate": 0.7498,
+      "escalation_rate": 0.0201,
+      "path_entropy_mean": 0.8547,
+      "path_entropy_std": 0.0172
+    },
+    {
+      "sweep": "sweep5_entropy",
+      "defect_rate": 0.2,
+      "unconstrained": true,
+      "detection_risk": 0.0,
+      "gameability": 1.0,
+      "defective_pass_rate": 0.1901,
+      "valid_reject_rate": 0.7496,
+      "escalation_rate": 0.0,
+      "path_entropy_mean": 0.9154,
+      "path_entropy_std": 0.0175
+    }
+  ]
+}

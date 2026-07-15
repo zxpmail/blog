@@ -1,0 +1,362 @@
+{
+  "parameters": {
+    "n_requests": 2000,
+    "n_trials": 500,
+    "strata_configs": {
+      "HET+d'/BASE": {
+        "easy": {
+          "d_prime": 2.5,
+          "weight": 0.4,
+          "base_rate": 0.3
+        },
+        "medium": {
+          "d_prime": 1.0,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 0.3,
+          "weight": 0.2,
+          "base_rate": 0.7
+        }
+      },
+      "HET-d'/BASE": {
+        "easy": {
+          "d_prime": 2.5,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "medium": {
+          "d_prime": 1.0,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 0.3,
+          "weight": 0.2,
+          "base_rate": 0.5
+        }
+      },
+      "HOM+d'/BASE": {
+        "easy": {
+          "d_prime": 1.27,
+          "weight": 0.4,
+          "base_rate": 0.3
+        },
+        "medium": {
+          "d_prime": 1.27,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 1.27,
+          "weight": 0.2,
+          "base_rate": 0.7
+        }
+      },
+      "HOM-d'/BASE (null)": {
+        "easy": {
+          "d_prime": 1.27,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "medium": {
+          "d_prime": 1.27,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 1.27,
+          "weight": 0.2,
+          "base_rate": 0.5
+        }
+      }
+    }
+  },
+  "claim1_heterogeneous_threshold": {
+    "threshold": 0.05,
+    "result": 0.03220400000000001,
+    "pass": false
+  },
+  "claim2_null_threshold": {
+    "threshold": 0.01,
+    "result": 0.0009850000000000136,
+    "pass": true
+  },
+  "results": [
+    {
+      "config": "HET+d'/BASE",
+      "strata": {
+        "easy": {
+          "d_prime": 2.5,
+          "weight": 0.4,
+          "base_rate": 0.3
+        },
+        "medium": {
+          "d_prime": 1.0,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 0.3,
+          "weight": 0.2,
+          "base_rate": 0.7
+        }
+      },
+      "c_shared": -0.01,
+      "c_per_stratum": {
+        "easy": 0.34,
+        "medium": 0.0,
+        "hard": -2.82
+      },
+      "acc_shared_theoretical": 0.7462632721147326,
+      "acc_per_stratum_theoretical": 0.7791778551336659,
+      "delta_theoretical": 0.03291458301893324,
+      "acc_shared_mc": 0.746514,
+      "acc_shared_std": 0.009034824852770542,
+      "acc_per_stratum_mc": 0.778718,
+      "acc_per_stratum_std": 0.009382725994836921,
+      "delta_mc": 0.03220400000000001
+    },
+    {
+      "config": "HET-d'/BASE",
+      "strata": {
+        "easy": {
+          "d_prime": 2.5,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "medium": {
+          "d_prime": 1.0,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 0.3,
+          "weight": 0.2,
+          "base_rate": 0.5
+        }
+      },
+      "c_shared": 0.0,
+      "c_per_stratum": {
+        "easy": 0.0,
+        "medium": 0.0,
+        "hard": 0.0
+      },
+      "acc_shared_theoretical": 0.7462486135169116,
+      "acc_per_stratum_theoretical": 0.7462486135169116,
+      "delta_theoretical": 0.0,
+      "acc_shared_mc": 0.746748,
+      "acc_shared_std": 0.009559826177975518,
+      "acc_per_stratum_mc": 0.745749,
+      "acc_per_stratum_std": 0.009311816086976543,
+      "delta_mc": -0.0009989999999999721
+    },
+    {
+      "config": "HOM+d'/BASE",
+      "strata": {
+        "easy": {
+          "d_prime": 1.27,
+          "weight": 0.4,
+          "base_rate": 0.3
+        },
+        "medium": {
+          "d_prime": 1.27,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 1.27,
+          "weight": 0.2,
+          "base_rate": 0.7
+        }
+      },
+      "c_shared": 0.13,
+      "c_per_stratum": {
+        "easy": 0.67,
+        "medium": 0.0,
+        "hard": -0.67
+      },
+      "acc_shared_theoretical": 0.7389281506764706,
+      "acc_per_stratum_theoretical": 0.7621039956435884,
+      "delta_theoretical": 0.023175844967117887,
+      "acc_shared_mc": 0.739106,
+      "acc_shared_std": 0.009831789876943503,
+      "acc_per_stratum_mc": 0.762838,
+      "acc_per_stratum_std": 0.009330051216977475,
+      "delta_mc": 0.023731999999999975
+    },
+    {
+      "config": "HOM-d'/BASE (null)",
+      "strata": {
+        "easy": {
+          "d_prime": 1.27,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "medium": {
+          "d_prime": 1.27,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 1.27,
+          "weight": 0.2,
+          "base_rate": 0.5
+        }
+      },
+      "c_shared": 0.0,
+      "c_per_stratum": {
+        "easy": 0.0,
+        "medium": 0.0,
+        "hard": 0.0
+      },
+      "acc_shared_theoretical": 0.7372857925008991,
+      "acc_per_stratum_theoretical": 0.7372857925008991,
+      "delta_theoretical": 0.0,
+      "acc_shared_mc": 0.737575,
+      "acc_shared_std": 0.010208835175046295,
+      "acc_per_stratum_mc": 0.73659,
+      "acc_per_stratum_std": 0.009997640002081615,
+      "delta_mc": -0.0009850000000000136
+    },
+    {
+      "config": "sensitivity_d_easy=1.0",
+      "strata": {
+        "easy": {
+          "d_prime": 1.0,
+          "weight": 0.4,
+          "base_rate": 0.3
+        },
+        "medium": {
+          "d_prime": 1.0,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 1.5,
+          "weight": 0.2,
+          "base_rate": 0.7
+        }
+      },
+      "acc_shared_theoretical": 0.710628930392599,
+      "acc_per_stratum_theoretical": 0.7365900863588126,
+      "delta_theoretical": 0.025961155966213623
+    },
+    {
+      "config": "sensitivity_d_easy=1.5",
+      "strata": {
+        "easy": {
+          "d_prime": 1.5,
+          "weight": 0.4,
+          "base_rate": 0.3
+        },
+        "medium": {
+          "d_prime": 1.0,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 1.25,
+          "weight": 0.2,
+          "base_rate": 0.7
+        }
+      },
+      "acc_shared_theoretical": 0.7339304464130062,
+      "acc_per_stratum_theoretical": 0.754250674263786,
+      "delta_theoretical": 0.020320227850779804
+    },
+    {
+      "config": "sensitivity_d_easy=2.0",
+      "strata": {
+        "easy": {
+          "d_prime": 2.0,
+          "weight": 0.4,
+          "base_rate": 0.3
+        },
+        "medium": {
+          "d_prime": 1.0,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 1.0,
+          "weight": 0.2,
+          "base_rate": 0.7
+        }
+      },
+      "acc_shared_theoretical": 0.7516904355948685,
+      "acc_per_stratum_theoretical": 0.7704840742225711,
+      "delta_theoretical": 0.01879363862770267
+    },
+    {
+      "config": "sensitivity_d_easy=2.5",
+      "strata": {
+        "easy": {
+          "d_prime": 2.5,
+          "weight": 0.4,
+          "base_rate": 0.3
+        },
+        "medium": {
+          "d_prime": 1.0,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 0.75,
+          "weight": 0.2,
+          "base_rate": 0.7
+        }
+      },
+      "acc_shared_theoretical": 0.7635590283774079,
+      "acc_per_stratum_theoretical": 0.7834035453120993,
+      "delta_theoretical": 0.01984451693469147
+    },
+    {
+      "config": "sensitivity_d_easy=3.0",
+      "strata": {
+        "easy": {
+          "d_prime": 3.0,
+          "weight": 0.4,
+          "base_rate": 0.3
+        },
+        "medium": {
+          "d_prime": 1.0,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 0.5,
+          "weight": 0.2,
+          "base_rate": 0.7
+        }
+      },
+      "acc_shared_theoretical": 0.7699127758962596,
+      "acc_per_stratum_theoretical": 0.7935559011986766,
+      "delta_theoretical": 0.023643125302416967
+    },
+    {
+      "config": "sensitivity_d_easy=3.5",
+      "strata": {
+        "easy": {
+          "d_prime": 3.5,
+          "weight": 0.4,
+          "base_rate": 0.3
+        },
+        "medium": {
+          "d_prime": 1.0,
+          "weight": 0.4,
+          "base_rate": 0.5
+        },
+        "hard": {
+          "d_prime": 0.3,
+          "weight": 0.2,
+          "base_rate": 0.7
+        }
+      },
+      "acc_shared_theoretical": 0.7735732117948473,
+      "acc_per_stratum_theoretical": 0.8022187420054039,
+      "delta_theoretical": 0.028645530210556602
+    }
+  ]
+}

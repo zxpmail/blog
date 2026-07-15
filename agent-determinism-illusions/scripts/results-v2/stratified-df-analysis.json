@@ -1,0 +1,628 @@
+{
+  "parameters": {
+    "models": [
+      {
+        "name": "qwen3:0.5b",
+        "file": "qwen3-0-5b.jsonl",
+        "tier": "weak (0.5B)"
+      },
+      {
+        "name": "gemma3:latest",
+        "file": "gemma3-latest.jsonl",
+        "tier": "mid (4.3B)"
+      },
+      {
+        "name": "deepseek-v4-flash",
+        "file": "deepseek-v4-flash.jsonl",
+        "tier": "strong (~200B)"
+      }
+    ],
+    "strata": {
+      "explicit_df": {
+        "ids": [
+          "DF1",
+          "DF2",
+          "DF3",
+          "DF4",
+          "DF5",
+          "DF6"
+        ],
+        "kind": "defective"
+      },
+      "subtle_df": {
+        "ids": [
+          "DS1",
+          "DS2",
+          "DS3",
+          "DS4",
+          "DS5",
+          "DS6",
+          "DS7",
+          "DS8",
+          "DS9",
+          "DS10"
+        ],
+        "kind": "defective"
+      },
+      "valid_ctrl": {
+        "ids": [
+          "V1",
+          "V2"
+        ],
+        "kind": "valid"
+      },
+      "garbage_ctrl": {
+        "ids": [
+          "G1",
+          "G2"
+        ],
+        "kind": "defective"
+      }
+    }
+  },
+  "per_scenario": {
+    "qwen3:0.5b": {
+      "DF1": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.6,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 1.0,
+        "confidence_when_right": 0.0
+      },
+      "DF2": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.0
+      },
+      "DF3": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.0
+      },
+      "DF4": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.2,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 1.0,
+        "confidence_when_right": 0.0
+      },
+      "DF5": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.4,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 1.0,
+        "confidence_when_right": 0.0
+      },
+      "DF6": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 1.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 1.0,
+        "confidence_when_right": null
+      },
+      "V1": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": null,
+        "false_reject_rate": 0.0,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "V2": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": null,
+        "false_reject_rate": 0.0,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "G1": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.0
+      },
+      "G2": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.0
+      },
+      "DS1": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.2,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 1.0,
+        "confidence_when_right": 0.0
+      },
+      "DS2": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.0
+      },
+      "DS3": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.06666666666666667,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 0.0,
+        "confidence_when_right": 0.0
+      },
+      "DS4": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 1.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 1.0,
+        "confidence_when_right": null
+      },
+      "DS5": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.8666666666666667,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 1.0,
+        "confidence_when_right": 0.25
+      },
+      "DS6": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.5333333333333333,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 1.0,
+        "confidence_when_right": 0.0
+      },
+      "DS7": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.5333333333333333,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 0.99875,
+        "confidence_when_right": 0.0
+      },
+      "DS8": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.06666666666666667,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 1.0,
+        "confidence_when_right": 0.0
+      },
+      "DS9": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 1.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 0.9966,
+        "confidence_when_right": null
+      },
+      "DS10": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.13333333333333333,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 0.5,
+        "confidence_when_right": 0.0
+      }
+    },
+    "gemma3:latest": {
+      "DF1": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.6599999999999999
+      },
+      "DF2": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.85
+      },
+      "DF3": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.95
+      },
+      "DF4": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.6
+      },
+      "DF5": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.95
+      },
+      "DF6": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.8099999999999999
+      },
+      "V1": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": null,
+        "false_reject_rate": 0.0,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.9800000000000001
+      },
+      "V2": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": null,
+        "false_reject_rate": 0.0,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.95
+      },
+      "G1": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.14
+      },
+      "G2": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.2
+      },
+      "DS1": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.6
+      },
+      "DS2": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.5399999999999999
+      },
+      "DS3": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.95
+      },
+      "DS4": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 1.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 0.95,
+        "confidence_when_right": null
+      },
+      "DS5": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.6
+      },
+      "DS6": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.85
+      },
+      "DS7": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.6
+      },
+      "DS8": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.8
+      },
+      "DS9": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.76
+      },
+      "DS10": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.06666666666666667,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": 0.95,
+        "confidence_when_right": 0.6071428571428571
+      }
+    },
+    "deepseek-v4-flash": {
+      "DF1": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DF2": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DF3": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DF4": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DF5": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DF6": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "V1": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": null,
+        "false_reject_rate": 0.0,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "V2": {
+        "n": 5,
+        "n_judged": 4,
+        "miss_rate": null,
+        "false_reject_rate": 0.0,
+        "parse_fail_rate": 0.2,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.95
+      },
+      "G1": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "G2": {
+        "n": 5,
+        "n_judged": 5,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DS1": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DS2": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DS3": {
+        "n": 15,
+        "n_judged": 14,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.06666666666666667,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DS4": {
+        "n": 15,
+        "n_judged": 5,
+        "miss_rate": 0.6,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.6666666666666666,
+        "confidence_when_wrong": 0.31666666666666665,
+        "confidence_when_right": 0.925
+      },
+      "DS5": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.99
+      },
+      "DS6": {
+        "n": 15,
+        "n_judged": 14,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.06666666666666667,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DS7": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DS8": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DS9": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 1.0
+      },
+      "DS10": {
+        "n": 15,
+        "n_judged": 15,
+        "miss_rate": 0.0,
+        "false_reject_rate": null,
+        "parse_fail_rate": 0.0,
+        "confidence_when_wrong": null,
+        "confidence_when_right": 0.9933333333333334
+      }
+    }
+  },
+  "per_stratum": {
+    "qwen3:0.5b": {
+      "explicit_df": 0.36666666666666664,
+      "subtle_df": 0.44,
+      "garbage_ctrl": 0.0
+    },
+    "gemma3:latest": {
+      "explicit_df": 0.0,
+      "subtle_df": 0.10666666666666667,
+      "garbage_ctrl": 0.0
+    },
+    "deepseek-v4-flash": {
+      "explicit_df": 0.0,
+      "subtle_df": 0.021739130434782608,
+      "garbage_ctrl": 0.0
+    }
+  }
+}

@@ -1,0 +1,352 @@
+{
+  "parameters": {
+    "stream_length": 1500,
+    "trials": 1000,
+    "strategies": [
+      "fixed",
+      "p6",
+      "alex"
+    ],
+    "signal_quality_configs": {
+      "low": [
+        {
+          "name": "route_changed",
+          "tp": 0.15,
+          "fp": 0.08
+        },
+        {
+          "name": "classifier_disagree",
+          "tp": 0.3,
+          "fp": 0.18
+        },
+        {
+          "name": "input_unusual",
+          "tp": 0.1,
+          "fp": 0.06
+        },
+        {
+          "name": "barely_passed",
+          "tp": 0.2,
+          "fp": 0.12
+        }
+      ],
+      "medium": [
+        {
+          "name": "route_changed",
+          "tp": 0.25,
+          "fp": 0.05
+        },
+        {
+          "name": "classifier_disagree",
+          "tp": 0.5,
+          "fp": 0.12
+        },
+        {
+          "name": "input_unusual",
+          "tp": 0.2,
+          "fp": 0.04
+        },
+        {
+          "name": "barely_passed",
+          "tp": 0.35,
+          "fp": 0.08
+        }
+      ],
+      "high": [
+        {
+          "name": "route_changed",
+          "tp": 0.35,
+          "fp": 0.03
+        },
+        {
+          "name": "classifier_disagree",
+          "tp": 0.65,
+          "fp": 0.08
+        },
+        {
+          "name": "input_unusual",
+          "tp": 0.3,
+          "fp": 0.02
+        },
+        {
+          "name": "barely_passed",
+          "tp": 0.5,
+          "fp": 0.05
+        }
+      ]
+    }
+  },
+  "claim1": {
+    "threshold": 0.4,
+    "result": 0.4861978426943735,
+    "pass": true
+  },
+  "claim2": {
+    "threshold_x": 1.3,
+    "result_x": 1.7074320621282857,
+    "pass": true
+  },
+  "results": [
+    {
+      "error_rate": 0.1,
+      "error_distribution": "uniform",
+      "signal_quality": "medium",
+      "fixed": {
+        "audit_rate_mean": 0.0996,
+        "audit_rate_std": 0.008,
+        "catch_rate_mean": 0.0993,
+        "catch_rate_std": 0.024,
+        "efficiency_mean": 0.9967,
+        "efficiency_std": 0.2281
+      },
+      "p6": {
+        "audit_rate_mean": 0.1278,
+        "audit_rate_std": 0.0085,
+        "catch_rate_mean": 0.286,
+        "catch_rate_std": 0.0375,
+        "efficiency_mean": 2.2381,
+        "efficiency_std": 0.2636
+      },
+      "alex": {
+        "audit_rate_mean": 0.217,
+        "audit_rate_std": 0.0107,
+        "catch_rate_mean": 0.4886,
+        "catch_rate_std": 0.0399,
+        "efficiency_mean": 2.2539,
+        "efficiency_std": 0.1765
+      }
+    },
+    {
+      "error_rate": 0.1,
+      "error_distribution": "burst",
+      "signal_quality": "medium",
+      "fixed": {
+        "audit_rate_mean": 0.0999,
+        "audit_rate_std": 0.0074,
+        "catch_rate_mean": 0.1001,
+        "catch_rate_std": 0.0197,
+        "efficiency_mean": 1.0023,
+        "efficiency_std": 0.1846
+      },
+      "p6": {
+        "audit_rate_mean": 0.1377,
+        "audit_rate_std": 0.0091,
+        "catch_rate_mean": 0.2846,
+        "catch_rate_std": 0.0298,
+        "efficiency_mean": 2.0684,
+        "efficiency_std": 0.1815
+      },
+      "alex": {
+        "audit_rate_mean": 0.2348,
+        "audit_rate_std": 0.0114,
+        "catch_rate_mean": 0.4879,
+        "catch_rate_std": 0.0335,
+        "efficiency_mean": 2.0791,
+        "efficiency_std": 0.1264
+      }
+    },
+    {
+      "error_rate": 0.1,
+      "error_distribution": "mixed",
+      "signal_quality": "medium",
+      "fixed": {
+        "audit_rate_mean": 0.1001,
+        "audit_rate_std": 0.0076,
+        "catch_rate_mean": 0.0996,
+        "catch_rate_std": 0.0224,
+        "efficiency_mean": 0.9948,
+        "efficiency_std": 0.2109
+      },
+      "p6": {
+        "audit_rate_mean": 0.1326,
+        "audit_rate_std": 0.009,
+        "catch_rate_mean": 0.2848,
+        "catch_rate_std": 0.0321,
+        "efficiency_mean": 2.1489,
+        "efficiency_std": 0.2091
+      },
+      "alex": {
+        "audit_rate_mean": 0.2257,
+        "audit_rate_std": 0.0111,
+        "catch_rate_mean": 0.4862,
+        "catch_rate_std": 0.0361,
+        "efficiency_mean": 2.1561,
+        "efficiency_std": 0.1481
+      }
+    },
+    {
+      "error_rate": 0.05,
+      "error_distribution": "mixed",
+      "signal_quality": "medium",
+      "fixed": {
+        "audit_rate_mean": 0.0999,
+        "audit_rate_std": 0.0075,
+        "catch_rate_mean": 0.0994,
+        "catch_rate_std": 0.0316,
+        "efficiency_mean": 0.9952,
+        "efficiency_std": 0.3095
+      },
+      "p6": {
+        "audit_rate_mean": 0.12,
+        "audit_rate_std": 0.0081,
+        "catch_rate_mean": 0.286,
+        "catch_rate_std": 0.0488,
+        "efficiency_mean": 2.3847,
+        "efficiency_std": 0.3892
+      },
+      "alex": {
+        "audit_rate_mean": 0.2044,
+        "audit_rate_std": 0.0107,
+        "catch_rate_mean": 0.4852,
+        "catch_rate_std": 0.0539,
+        "efficiency_mean": 2.376,
+        "efficiency_std": 0.2558
+      }
+    },
+    {
+      "error_rate": 0.1,
+      "error_distribution": "mixed",
+      "signal_quality": "medium",
+      "fixed": {
+        "audit_rate_mean": 0.0999,
+        "audit_rate_std": 0.0078,
+        "catch_rate_mean": 0.1,
+        "catch_rate_std": 0.0218,
+        "efficiency_mean": 1.0006,
+        "efficiency_std": 0.2032
+      },
+      "p6": {
+        "audit_rate_mean": 0.1329,
+        "audit_rate_std": 0.0088,
+        "catch_rate_mean": 0.2848,
+        "catch_rate_std": 0.0333,
+        "efficiency_mean": 2.1448,
+        "efficiency_std": 0.2208
+      },
+      "alex": {
+        "audit_rate_mean": 0.2268,
+        "audit_rate_std": 0.0108,
+        "catch_rate_mean": 0.4888,
+        "catch_rate_std": 0.0344,
+        "efficiency_mean": 2.1577,
+        "efficiency_std": 0.1461
+      }
+    },
+    {
+      "error_rate": 0.2,
+      "error_distribution": "mixed",
+      "signal_quality": "medium",
+      "fixed": {
+        "audit_rate_mean": 0.0995,
+        "audit_rate_std": 0.0078,
+        "catch_rate_mean": 0.0997,
+        "catch_rate_std": 0.0142,
+        "efficiency_mean": 1.0019,
+        "efficiency_std": 0.1224
+      },
+      "p6": {
+        "audit_rate_mean": 0.1626,
+        "audit_rate_std": 0.0093,
+        "catch_rate_mean": 0.2854,
+        "catch_rate_std": 0.0211,
+        "efficiency_mean": 1.7565,
+        "efficiency_std": 0.0996
+      },
+      "alex": {
+        "audit_rate_mean": 0.2769,
+        "audit_rate_std": 0.0121,
+        "catch_rate_mean": 0.4865,
+        "catch_rate_std": 0.0225,
+        "efficiency_mean": 1.758,
+        "efficiency_std": 0.0694
+      }
+    },
+    {
+      "error_rate": 0.1,
+      "error_distribution": "mixed",
+      "signal_quality": "low",
+      "fixed": {
+        "audit_rate_mean": 0.0999,
+        "audit_rate_std": 0.0078,
+        "catch_rate_mean": 0.0999,
+        "catch_rate_std": 0.0213,
+        "efficiency_mean": 1.0005,
+        "efficiency_std": 0.2007
+      },
+      "p6": {
+        "audit_rate_mean": 0.133,
+        "audit_rate_std": 0.009,
+        "catch_rate_mean": 0.2857,
+        "catch_rate_std": 0.0336,
+        "efficiency_mean": 2.1504,
+        "efficiency_std": 0.2307
+      },
+      "alex": {
+        "audit_rate_mean": 0.244,
+        "audit_rate_std": 0.0109,
+        "catch_rate_mean": 0.3262,
+        "catch_rate_std": 0.0332,
+        "efficiency_mean": 1.3372,
+        "efficiency_std": 0.1231
+      }
+    },
+    {
+      "error_rate": 0.1,
+      "error_distribution": "mixed",
+      "signal_quality": "medium",
+      "fixed": {
+        "audit_rate_mean": 0.1003,
+        "audit_rate_std": 0.0078,
+        "catch_rate_mean": 0.0994,
+        "catch_rate_std": 0.0217,
+        "efficiency_mean": 0.9917,
+        "efficiency_std": 0.2052
+      },
+      "p6": {
+        "audit_rate_mean": 0.1332,
+        "audit_rate_std": 0.0091,
+        "catch_rate_mean": 0.2858,
+        "catch_rate_std": 0.0321,
+        "efficiency_mean": 2.1482,
+        "efficiency_std": 0.2199
+      },
+      "alex": {
+        "audit_rate_mean": 0.2266,
+        "audit_rate_std": 0.0111,
+        "catch_rate_mean": 0.4889,
+        "catch_rate_std": 0.0358,
+        "efficiency_mean": 2.1592,
+        "efficiency_std": 0.1476
+      }
+    },
+    {
+      "error_rate": 0.1,
+      "error_distribution": "mixed",
+      "signal_quality": "high",
+      "fixed": {
+        "audit_rate_mean": 0.1001,
+        "audit_rate_std": 0.0074,
+        "catch_rate_mean": 0.1004,
+        "catch_rate_std": 0.0222,
+        "efficiency_mean": 1.0036,
+        "efficiency_std": 0.2093
+      },
+      "p6": {
+        "audit_rate_mean": 0.1333,
+        "audit_rate_std": 0.009,
+        "catch_rate_mean": 0.2845,
+        "catch_rate_std": 0.0318,
+        "efficiency_mean": 2.1355,
+        "efficiency_std": 0.2068
+      },
+      "alex": {
+        "audit_rate_mean": 0.2155,
+        "audit_rate_std": 0.0113,
+        "catch_rate_mean": 0.6297,
+        "catch_rate_std": 0.0349,
+        "efficiency_mean": 2.9258,
+        "efficiency_std": 0.1683
+      }
+    }
+  ]
+}
