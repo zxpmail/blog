@@ -71,7 +71,11 @@ The illusion keeps moving because we keep chasing it. The work isn't to catch it
 
 ---
 
+<<<<<<< HEAD
 *Experiment code: [`phasegate-formalism-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts), [`adversarial-verify-p1.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts), [`consistency-test-p2.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts), [`multi-perspective-vote-p3.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts), [`prompt-calibration-p3b.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts), [`p4-expanded-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
+=======
+*Experiment code: `agent-determinism-illusions/scripts/phasegate-formalism-test.py`, `adversarial-verify-p1.py`, `consistency-test-p2.py`, `multi-perspective-vote-p3.py`, `prompt-calibration-p3b.py`, `p4-expanded-test.py`*
+>>>>>>> b9b7425 (docs(part-5): mark published, apply review edits; add reply 17 (Alex round 4))
 *Previous: [An alternative to LLM quality gates: deterministic routing + sampling](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf)*
 *Series start: [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)*
 *Full series: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions)*

@@ -344,7 +344,6 @@ So the honest, bounded claim: C3 is the synonym-immune floor *where the claim is
 
 ---
 
-
 ## 回复十七：@Mike Czerwinski — refuse entry vs fallback: 实验回答
 
 **目标文章：** 应续在 Part 4 他的 7/13 评论 thread 下。
@@ -539,4 +538,3 @@ Thanks — "N votes collapse to 1 vote with more confidence from a systematic bi
 On explicit acceptance criteria: the P-series tested this (P1→P4, 8→30 scenarios). The answer depends on which layer you're measuring. Explicit criteria moved the deterministic regex layer substantially — because the prompt provided the vocabulary. The LLM judge stayed at about the same accuracy in both conditions. The explicit criteria helped the *deterministic* floor, not the *judge* layer. Applied to the wall: it looked like it moved (v3 hit 100% on 8 scenarios), but that was test-set composition bias — expanded to 30, v3 and v2 returned identical verdicts on every valid call.
 
 On "collapse onto deterministic ground truth": I tested this against a corpus of requirements in the cache-invalidation domain. The majority collapse to a declared key space directly ("user:*", "session:*"); a significant portion resolve via dependency tracing (sessions by userId, decisions derived from role). The remainder are UX and freshness properties that shouldn't be in this pipeline at all. Your three signals ("did the test suite actually run, does the file exist, does the output parse") plus a fourth — "does the declared key space coverage pass" — define a deterministic floor that catches wrong-referent cases a single-key check misses. The collapse is almost always possible when the requirement belongs in the pipeline.
-
