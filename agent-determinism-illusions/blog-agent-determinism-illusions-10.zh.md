@@ -9,11 +9,11 @@ series: "Agent 确定性幻觉"
 
 # argument-space 验证的诚实边界——以及 Evidence Locker 补了什么
 
-**Agent 确定性幻觉（第 14 篇）**
+**Agent 确定性幻觉（第 10 篇）**
 
 *2026-07-14*
 
-第 13 篇用五个场景、三个评估器测试了 C3（argument-space runner）。结果：C3 得 5/5，同义词免疫，数据加工不等式（DPI）被具体化——可寻址 claim 上一个结构性的底。
+第 9 篇用五个场景、三个评估器测试了 C3（argument-space runner）。结果：C3 得 5/5，同义词免疫，数据加工不等式（DPI）被具体化——可寻址 claim 上一个结构性的底。
 
 那个底有一条裂缝。Mike Czerwinski 在 dev.to 的 Part 4 评论区找到了它。本文测试这条裂缝，测量它的深度，并说明为什么它不能被闭合——只能被界定。
 
@@ -23,7 +23,7 @@ series: "Agent 确定性幻觉"
 
 ## 1. 裂缝：referent 的可博弈性
 
-第 13 篇的 C3 通过执行 verify 命令来工作——跑一段代码，观察实际行为：写一个 key，看缓存条目是否消失。verify 命令不读需求文本——它运行代码。
+第 9 篇的 C3 通过执行 verify 命令来工作——跑一段代码，观察实际行为：写一个 key，看缓存条目是否消失。verify 命令不读需求文本——它运行代码。
 
 Mike Czerwinski 指出了这个设计里的一个缺口。一个知道门禁检查 referent-presence 的作者可以写：
 
@@ -165,5 +165,5 @@ Evidence Locker 模式增加了一个具体的工程构件：一个 **post-audit
 
 *结果：`results-v2/referent-mismatch.json`、`results-v2/evidence-feedback-loop-{A,B}.json`*
 
-*上一篇：[第三个谓词：argument-space 验证实测](blog-agent-determinism-illusions-13.zh.md)*
+*上一篇：[第三个谓词：argument-space 验证实测](blog-agent-determinism-illusions-9.zh.md)*
 *系列：[Agent 确定性幻觉系列](https://dev.to/zxpmail)*

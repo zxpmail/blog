@@ -9,11 +9,11 @@ series: "Agent Determinism Illusions"
 
 # The honest boundary of argument-space verification — and what the Evidence Locker adds
 
-**Agent Determinism Illusions (Part 14)**
+**Agent Determinism Illusions (Part 10)**
 
 *2026-07-14*
 
-Part 13 tested C3 (argument-space runner) against five scenarios and three evaluators. The result: C3 scored 5/5, synonym-immune, DPI-bound made concrete — a structural floor on addressable claims.
+Part 9 tested C3 (argument-space runner) against five scenarios and three evaluators. The result: C3 scored 5/5, synonym-immune, DPI-bound made concrete — a structural floor on addressable claims.
 
 That floor has a crack. Mike Czerwinski found it in the dev.to comments on Part 4. This article tests the crack, measures its depth, and shows why it can't be closed — only bounded.
 
@@ -23,7 +23,7 @@ Then it adds a second mechanism: an **evidence feedback loop** inspired by Pasca
 
 ## 1. The crack: referent gameability
 
-Part 13's C3 works by running a verify command that tests the actual behavior: write a key, observe whether the cache entry is gone. The verify command doesn't read the requirement text — it runs code.
+Part 9's C3 works by running a verify command that tests the actual behavior: write a key, observe whether the cache entry is gone. The verify command doesn't read the requirement text — it runs code.
 
 Mike Czerwinski pointed out a gap in this design. An author who knows the gate checks referent-presence can write:
 
@@ -165,5 +165,5 @@ This is not fixable by a smarter audit. It is a structural property of automated
 
 *Results: `results-v2/referent-mismatch.json`, `results-v2/evidence-feedback-loop-{A,B}.json`*
 
-*Previous: [The Third Predicate: Argument-Space Verification, Tested](blog-agent-determinism-illusions-13.en.md)*
+*Previous: [The Third Predicate: Argument-Space Verification, Tested](blog-agent-determinism-illusions-9.en.md)*
 *Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*

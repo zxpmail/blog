@@ -14,6 +14,8 @@ canonical_url: ""
 series: "Agent Determinism Illusions"
 ---
 
+> **Where this fits in the series:** This article sits between Part 5 (the layered verification pipeline L0→L1→L2→L3) and the later parts that expand the experiments. It asks the upstream question: *how does an agent loop know when to stop?* The "demand red line vs. format red line" distinction below maps onto the L1 (contract regex) vs. L0 (evidence gate) split formalized in the main series. The "no semantic-layer red line exists" claim is the same boundary later named the DPI bound.
+
 *The scope of this article is limited to tasks with objectively verifiable acceptance criteria (code, structured output, assertable results). For open-ended semantic tasks (writing copy, drafting analysis), the Red Line Principle does not apply.*
 
 > **Scope restated:** The conclusions in this article hold only under the following conditions — the task has an objective verification standard, and that standard can be predefined by a human (code output matching expectations, schema validation passing, all tests green). For open-ended semantic tasks (writing copy, drafting analysis, generating creative content), no known automatic convergence signal exists within the scope of these experiments; refer to Rules 3 and 4. All data below is within this scope.

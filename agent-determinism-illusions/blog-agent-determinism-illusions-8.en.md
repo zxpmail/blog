@@ -306,4 +306,4 @@ The theoretical residual persists: a text-channel evaluator cannot catch what a 
 *Source survey: [Harness Engineering for Self-Improvement](https://lilianweng.github.io/posts/2026-07-04-harness/) — Lilian Weng, July 2026*
 *Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
 *Previous: [The Channel Gap: Why Your LLM Judge is Blind in One Eye](blog-agent-determinism-illusions-7.en.md)*
-*Next: [The Third Predicate: Argument-Space Verification, Tested](blog-agent-determinism-illusions-10.en.md)*
+*Next: [The Third Predicate: Argument-Space Verification, Tested](blog-agent-determinism-illusions-9.en.md)*

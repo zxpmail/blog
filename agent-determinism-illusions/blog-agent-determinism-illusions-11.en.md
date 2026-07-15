@@ -9,11 +9,11 @@ series: "Agent Determinism Illusions"
 
 # Key-space C3: the Bloom filter that closes referent gameability — tested
 
-**Agent Determinism Illusions (Part 15)**
+**Agent Determinism Illusions (Part 11)**
 
 *2026-07-15*
 
-Part 14 identified a structural gap in C3: when a write-time-resolution produces a plausible-but-wrong key ("user:123" instead of "session:abc"), C3 verifies the chosen key and passes — the gate accepts a bad resolution because it verifies mechanically on the wrong target.
+Part 10 identified a structural gap in C3: when a write-time-resolution produces a plausible-but-wrong key ("user:123" instead of "session:abc"), C3 verifies the chosen key and passes — the gate accepts a bad resolution because it verifies mechanically on the wrong target.
 
 Mike Czerwinski argued this failure belongs to the gate, not upstream of it. The resolution step is the gate's own mechanism, and if the gate accepts a plausible-but-wrong key, the failure happened within the architecture's boundary.
 
@@ -48,6 +48,8 @@ Six requirements that intentionally defer scope. Each has a true intent (what sh
 | under-inv | 4 | 2 | 2 |
 | over-inv | 3 | 0 | 3 |
 | under-inv-empty | 1 | 1 | 0 |
+
+*Note: 6 "correct" resolutions (1 per scenario) are excluded — C3 verifies them correctly and they are not failure cases. The 6/12 denominator counts only the wrong resolutions.*
 
 **Mike's claim confirmed: 3 of 4 wrong-referent resolutions pass C3.** S1, S3, S5: the agent chose a key that happens to be the trigger key, C3 verifies it, passes. The gate accepted a bad resolution because the mechanically checked key happened to align with the write operation, not with the requirement's intent.
 
@@ -170,11 +172,11 @@ The 8 undeclarable + out-of-scope cases are not cache write-path requirements. T
 
 ### Automated classifier
 
-The classifier (deterministic pattern rules) achieves 66% exact agreement with human ground truth. The critical direction: **zero false undeclarables** — the classifier never said "can't declare" when a human said "can declare." It tends to be conservative (says "partial" for 8 cases the human called "declarable"), which is the safe direction for a gate: false partials slow things down, false undeclarables would silently reopen the gap.
+The classifier (deterministic pattern rules) achieves 66% exact agreement with human ground truth — not high enough to run unattended. It tends to be conservative (says "partial" for 8 cases the human called "declarable"), which slows things down without reopening the gap. The critical direction: **zero false undeclarables** — the classifier never said "can't declare" when a human said "can declare." There is 1 false-declarable in the other direction, so the classifier is a conservative first-pass that needs review before accepting a "declarable" verdict.
 
 ### What this means
 
-The undeclarable-space class that would reopen Part 14's under-inv gap is **effectively empty for requirements legitimately in C3's domain**. The cases that resist space declaration turn out to be requirements that shouldn't have entered the C3 pipeline — they are UX, freshness, or timing properties misrouted to an invalidation gate.
+The undeclarable-space class that would reopen Part 10's under-inv gap is **small and bounded for requirements legitimately in C3's domain**. Of the 35-requirement corpus, 5 (14%) are genuinely undeclarable even by a human — freshness, timing, and distribution properties that no key-space expression can capture. Another 3 (9%) are out-of-scope (UX/ops/data-integrity) and shouldn't have entered the C3 pipeline at all.
 
 The honest boundary shifts from "undeclarable space size" to **"routing accuracy into C3"** — a classification problem upstream of the gate. That's a different problem, addressable by the same sampling layer, but not a structural gap in key-space C3 itself.
 
@@ -184,16 +186,16 @@ The honest boundary shifts from "undeclarable space size" to **"routing accuracy
 
 | Mechanism | Gap it addresses | Catch rate | Remaining boundary |
 |-----------|-----------------|------------|-------------------|
-| Single-key C3 | DPI-bound fabrications | 5/5 (Part 13) | Referent gameability (0/5) |
+| Single-key C3 | DPI-bound fabrications | 5/5 (Part 9) | Referent gameability (0/5) |
 | **Key-space C3** | **Referent gameability** | **5/5** | **Routing into C3 (not space size)** |
 | Evidence feedback loop | Over-invalidation | Converges 2 rounds | Under-inv invisible |
 | Sampling | All residual gaps | — | Fixed cost, no adaptive signal |
 
 The move from single-key to key-space C3 is a structural improvement: it changes the question from "did this one key change?" to "is the declared space covered?" and in doing so closes the wrong-referent gap that Mike identified.
 
-The three mechanisms from Part 14 (C3, evidence feedback, L3 human review) now have a fourth: **key-space declaration**. It's not a new mechanism — it's a more precise contract field that constrains what C3 iterates over. The Bloom filter analogy holds: a membership test against a declared space is stronger than a point lookup, and declaring the space (rather than implying it) makes the contract's scope explicit.
+The three mechanisms from Part 10 (C3, evidence feedback, L3 human review) now have a fourth: **key-space declaration**. It's not a new mechanism — it's a more precise contract field that constrains what C3 iterates over. The Bloom filter analogy holds: a membership test against a declared space is stronger than a point lookup, and declaring the space (rather than implying it) makes the contract's scope explicit.
 
-The honest claim: **wrong-referent gameability is structurally closed for declarable spaces.** The 35-requirement corpus shows that for requirements legitimately in C3's domain, the undeclarable class is empty — the boundary is not space size but routing accuracy into the gated pipeline.
+The honest claim: **wrong-referent gameability is structurally closed for declarable spaces.** The 35-requirement corpus puts a number on the residual: 14% are genuinely undeclarable by a human, 9% are misrouted, and the remaining 77% are either declarable now (57%) or resolvable via dependency tracing (20%). The boundary is not space size but routing accuracy into the gated pipeline.
 
 ---
 
@@ -204,5 +206,5 @@ The honest claim: **wrong-referent gameability is structurally closed for declar
 
 *Results: `results-v2/write-time-resolution.json`, `results-v2/key-space-verify.json`, `results-v2/space-declarability.json`*
 
-*Previous: [The honest boundary of argument-space verification](blog-agent-determinism-illusions-14.en.md)*
+*Previous: [The honest boundary of argument-space verification](blog-agent-determinism-illusions-10.en.md)*
 *Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*

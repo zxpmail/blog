@@ -257,5 +257,6 @@ The ratchet turns the same way at every layer — every named evasion becomes a 
 *Results: `results-v2/argument-space.json` (full contract) + `argument-space-control.json` (simplified-desc control).*
 *Judge: glm-5.2 via Anthropic-compatible endpoint. N=5+1, directional — same caveat as the redline experiments.*
 
-*Previous: [Weng's Harness Ladder Has a Blind Step](blog-agent-determinism-illusions-9.en.md)*
+*Previous: [Weng's Harness Ladder Has a Blind Step](blog-agent-determinism-illusions-8.en.md)*
+*Next: [The honest boundary of argument-space verification](blog-agent-determinism-illusions-10.en.md)*
 *Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*

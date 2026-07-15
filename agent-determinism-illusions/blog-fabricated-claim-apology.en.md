@@ -14,6 +14,8 @@ canonical_url: ""
 series: "Agent Determinism Illusions"
 ---
 
+> **Where this fits in the series:** This is a series aside, not a numbered Part. It began as a public retraction of a fabricated claim I made in a comment under Part 3 ("Part 3 found that judges fail on directional failures" — false; Part 3 contained no directional-failure experiments). The retraction then became its own experiment, and the experiment overturned its own initial framing. The directional-failure v2 data (20 scenarios × 3 models × 600 judgments) is cited from Part 5 onward and stratified in Parts 10–11. A note on the nesting: this article contains a correction stack — the original comment was wrong, the first version of this apology was also wrong about one scenario (DS4), and the current numbers below are the corrected ones. Read carefully.
+
 Three weeks ago, in a dev.to comment reply, I wrote this:
 
 > "Part 3 found that judges fail on directional failures — outputs that were semantically reversed (delete → keep, stop → continue) but structurally pristine."
@@ -329,5 +331,5 @@ Part 6's original appendix argued: explicit DFs are easy, subtle DFs are hard, s
 *First version script: `directional-failure-test.py` — 10 scenarios, N=5/N=3*
 *All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
 *Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
-*Companion article: [Five Comments That Redesigned My LLM Verification Pipeline](blog-agent-determinism-illusions-10.en.md) — the parent article this apology was originally an appendix to.*
+*Companion article: [Five Comments That Redesigned My LLM Verification Pipeline](blog-agent-determinism-illusions-6.en.md) — the parent article this apology was originally an appendix to.*
 *Series start: [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](blog-agent-determinism-illusions.en.md)*
