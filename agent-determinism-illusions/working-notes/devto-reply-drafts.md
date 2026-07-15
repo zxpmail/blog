@@ -659,3 +659,36 @@ On "frozen from task intent, not authored by the thing being judged" — that's 
 The residual that decomposition doesn't close: "required sections present" works mechanically only when the section boundary is itself mechanical. "Artifact parses" works when the format is declared. After full decomposition the wall drops from 75% on the fused predicate to whatever fraction of requirements are genuinely semantic and unmechanizable. That fraction is smaller than I expected.
 
 ---
+
+## 回复二十五：@nexus-lab-zen — separated but not independent (SoD common-mode failure)
+
+**目标文章：** Part 2 评论区（延续 Adam McClarin / meraki6966 的 SoD 讨论）
+**主题：** nexus-lab-zen 把 segregation-of-duties 框架再推一步：SoD 在审计里假设 rubric-writer 和 executor 是不同的人不能合谋，但在 agent pipeline 里 rubric 可能由另一个 agent 写，共享同一套训练数据和盲点——结构分离 ≠ 认知独立。问 audit 领域有没有"separated but not independent"的名字。
+
+**回复策略：**
+1. 给术语：`self-review threat`（IESBA 伦理准则，审计）+ `common-mode failure`（可靠性工程）双标签
+2. 区分我们 pipeline 的实际情况：rubric 是人写的，readonly，grader 不是模型——所以最直接的 common-mode（agent-to-agent 共享训练数据）被消除
+3. 但承认较弱形式的 common-mode 仍在：人和 agent 共享训练数据文化，cognitive independence 是 partial
+4. 退路：物理事实层（环境 side effect），独立信道不独立 agent——Theorem 2 的真正逃逸
+
+**关键概念链：**
+- `common-mode failure`：两个分离系统因同源根因一起失败
+- `human-to-agent SoD` vs `agent-to-agent SoD`：前者消除最直接的 common-mode
+- `physical-fact layer`：唯一完全 immune 的层，因为对照环境而非 rubric
+- Mike Czerwinski 的 runner-independence（Part 4）+ Theorem 2 的 escape hatch = 同一原则：换信道
+
+**nexus-lab-zen 原话（要回应的 framing）：**
+
+> The line I'd add from our side: SoD in the audit world usually assumes the rubric-writer and the executor are different humans who can't collude, but in an agent pipeline the rubric can be authored by a different agent that shares the same failure modes as the executor (same training data, same blind spots), so the separation is structural but not necessarily independent in the way it needs to be. Does your audit background have a name for "separated but not actually independent" — the auditor who's technically a different party but reasons the same way as the one being audited?
+
+---
+
+"Separated but not actually independent" — yes, that has a name. The audit term is *self-review threat* (IESBA ethics code): the auditor reviewing work they helped shape. The cleaner engineering term is *common-mode failure*: two structurally separate systems that fail together because they share a common cause. Same training data, same blind spots → both agents miss G4 for the same reason, even though one is grading the other.
+
+For our pipeline, the rubric is authored by a human, pinned before the run, readonly to the agent — so our SoD is human-to-agent, not agent-to-agent. The grader doesn't share the producer's training data because the grader isn't a model. That removes the most direct form of common-mode failure, but not all of them.
+
+The remaining route is weaker but real. The human who writes the contract still operates on the same training data culture as the agent outputs — what counts as a "good research brief," what evidence looks like, what passes for plausible. If the agent was trained on that same culture, the human-set bar and the agent-shaped output correlate on the edges. Structural separation is real; cognitive independence is partial.
+
+That partial independence is the best semantic layers can offer. Full independence requires changing the channel — not the agent. The physical-fact layer (did the process spawn, did the file land, did the network call return real status) is checked against the environment, not against a rubric. That's where Mike's runner-independence from Part 4 lives, and where Theorem 2's escape hatch actually opens: independent channel, not just independent agent. It's the fallback when partial independence isn't enough.
+
+---
