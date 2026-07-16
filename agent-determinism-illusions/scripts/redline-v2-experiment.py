@@ -5,13 +5,25 @@
 去掉混杂变量——同样都是代码任务,只改变停止信号类型。
 
 条件 A(有红线): 编译+测试通过 = 停止
-条件 B(无红线): LLM 自判"完成了" = 停止(同时后台跑代码验证)
+条件 B(无红线): LLM 自判 YES/NO = 停止(同时后台跑代码验证)
 
 测量:
   1. 收敛率(代码实际通过的比例)
   2. 步数分布
   3. 条件B的假阳性率(自判YES但代码失败)
   4. 条件B的假阴性率(代码通过但自判NO)
+
+参数(与 blog-redline-principle 文章表格一致):
+  - 3 tasks × 3 trials/condition, 8-step cap
+  - Model: deepseek-v4-flash, temperature 0
+
+依赖: ANTHROPIC_AUTH_TOKEN (或 ANTHROPIC_API_KEY), API 端点含 anthropic
+
+运行:
+  python redline-v2-experiment.py
+  python redline-v2-experiment.py --task-file my_tasks.json
+
+预期: 有红线 9/9 收敛; 无红线方向性更低(文章 N=3 为指示性,非统计显著)。
 """
 import io, sys, json, urllib.request, subprocess, tempfile, os, re, time, random, argparse
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -85,8 +97,8 @@ if ARGS.task_file:
     TASKS = extra
     print(f"  [Loaded {len(TASKS)} custom tasks from {ARGS.task_file}]")
 
-MAX_STEPS = 10
-TRIALS = 5
+MAX_STEPS = 8
+TRIALS = 3
 
 def trial_redline(tid, desc, test_stmt, expected):
     """条件 A: 有红线(编译+测试通过=停)。返回 (收敛?, 步数)"""

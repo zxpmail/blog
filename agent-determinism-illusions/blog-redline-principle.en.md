@@ -14,7 +14,7 @@ canonical_url: ""
 series: "Agent Determinism Illusions"
 ---
 
-> **Where this fits in the series:** This article sits between Part 5 (the layered verification pipeline L0→L1→L2→L3) and the later parts that expand the experiments. It asks the upstream question: *how does an agent loop know when to stop?* The "demand red line vs. format red line" distinction below maps onto the L1 (contract regex) vs. L0 (evidence gate) split formalized in the main series. The "no semantic-layer red line exists" claim is the same boundary later named the DPI bound.
+> **Where this fits in the series:** This article sits between Part 5 (the 75% wall — design around it, don't fix it) and Part 6 (the layered L0→L1→L2→L3 pipeline built from community feedback). It asks the upstream question: *how does an agent loop know when to stop?* The "demand red line vs. format red line" distinction below anticipates the L0 (evidence gate) vs. L1 (contract regex) split formalized in Part 6. The "no semantic-layer red line" claim is the same boundary later named the DPI bound.
 
 *The scope of this article is limited to tasks with objectively verifiable acceptance criteria (code, structured output, assertable results). For open-ended semantic tasks (writing copy, drafting analysis), the Red Line Principle does not apply.*
 
@@ -22,7 +22,7 @@ series: "Agent Determinism Illusions"
 
 How do you make an agent loop converge reliably in production?
 
-I ran 3 core experiments that directly compare convergence with and without a red line, plus 8 auxiliary experiments (lexical overlap, temperature-0, phase gates, embedding separation, multi-model tradeoffs, SPC anomaly detection, cold-start drift, classification accuracy) covering adjacent dimensions. All scripts are open in the appendix.
+The core comparison is V2: three code tasks × two stop-signal types (with red line vs. self-judge only), plus a handoff-queue simulation (`handoff-protocol-sim.py`). Eight auxiliary experiments from earlier in the series cover adjacent dimensions (lexical overlap, temperature-0, phase gates, embedding separation, multi-model tradeoffs, SPC anomaly detection, cold-start drift, classification accuracy). All scripts are in `agent-determinism-illusions/scripts/`.
 
 ## Core experiment: same code task, with red line vs. without
 
@@ -35,7 +35,9 @@ Previous versions of this comparison had a confound: "with red line" used a code
 **Test cases:** human-written, covering normal input, boundary values, and edge cases. Injected into the agent context alongside the task definition. Test suite published at `scripts/test_cases/`.
 
 **Condition A (with red line):** compilation + test pass = stop. Objective signal: the code ran and the output is correct.
-**Condition B (without red line):** LLM self-judgment says "done" = stop. Same code, same test — the background verification still runs to record actual correctness.
+**Condition B (without red line):** LLM self-judgment (YES/NO) = stop. Same code, same test — the background verification still runs to record actual correctness.
+
+**Model:** deepseek-v4-flash (API, temperature 0). Reproducible via `redline-v2-experiment.py` (parameters below match the script defaults).
 
 Three tasks, 3 trials each, 8-step limit. N=3, showing distribution not effect size:
 
@@ -52,7 +54,7 @@ Three tasks, 3 trials each, 8-step limit. N=3, showing distribution not effect s
 
 **Self-judge failure mode:** 0 false positives (says YES when code is wrong) and at least 4 false negatives (code correct but self-judge says NO or never triggers). The model wrote correct code but didn't trust itself, kept iterating, and either degraded its own working code or hit the step limit.
 
-**Prompt bias note:** the self-judge prompt ("are you done?") is biased toward "not yet." A different prompt format (e.g., "output FINISH if code passes all tests") would likely change the self-judge convergence rate. This comparison describes "a specific self-judge prompt vs. a compilation signal," not a general "red line vs. no red line."
+**Prompt bias note:** the self-judge prompt asks "does this code satisfy the task requirements? — YES or NO only." Even with a direct question, the model may still hesitate or never trigger YES (false negatives in the table). A different prompt format (e.g., "output FINISH if code passes all tests") would likely change the self-judge convergence rate. This comparison describes "a specific self-judge prompt vs. a compilation signal," not a general "red line vs. no red line."
 
 ### On what "compile pass" actually verifies
 
@@ -88,7 +90,7 @@ Existing approaches (LLM-as-judge, multi-round debate, consistency checks) show 
 
 The V2 experiment used a demand red line, not a format red line. A format red line (syntax check only) would not produce the same convergence rate — code can compile and still be wrong.
 
-The rules below are based on this distinction. Only demand red lines can serve as convergence signals. Format red lines are insufficient. Semantic-layer red lines do not exist.
+The rules below are based on this distinction. Only demand red lines can serve as convergence signals. Format red lines are insufficient. Semantic-layer red lines have no known reliable method within the scope of these experiments.
 
 ## The Red Line Principle
 
@@ -96,7 +98,7 @@ The rules below are based on this distinction. Only demand red lines can serve a
 Code compilation, schema validation, test output matching expectations — these have verifiable outputs. The loop runs, the signal fires, the system stops.
 
 **Rule 2: tasks with incomplete signals → auto-converge + human sampling.**
-Many real tasks fall in the grey zone — 80% test coverage, schema-valid but business-unverified, diff-zeroed but semantically unchecked. Rules 1 and 4 are composable, not mutually exclusive: a task can auto-converge via its demand red line, then layer Rule 4's human sampling to cover the blind spots.
+Many real tasks fall in the grey zone — 80% test coverage, schema-valid but business-unverified, diff-zeroed but semantically unchecked. Rule 1 and calibrated human sampling (developed in [Part 4](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf)) are composable: a task can auto-converge via its demand red line, then layer sampling on the auto-passed subset to cover the blind spots.
 
 **Rule 3: tasks with no convergence signal → must have a hard cutoff; label "unverified," route to human queue.**
 Open-ended semantic tasks — writing copy, drafting analysis, writing reports — have no objective "complete" signal. Do not rely on LLM self-judgment to stop the loop. The output at cutoff cannot auto-enter the production flow.
@@ -107,7 +109,7 @@ The cutoff fired because budget ran out, not because the task was judged complet
 
 #### Backpressure
 
-Human review queue throughput is a hard constraint. When agent production rate persistently exceeds review rate, the system is unsustainable — the simulation confirmed this (5 items/min vs 3 items/min: 34% queue overflow). Backpressure mechanism:
+Human review queue throughput is a hard constraint. When agent production rate persistently exceeds review rate, the system is unsustainable — `handoff-protocol-sim.py` confirmed this (5 items/min vs 3 items/min: 34% queue overflow). Backpressure mechanism:
 
 - **Watermark:** queue depth > 80% of capacity triggers degradation. New tasks skip the fix loop entirely — output raw result, tag as "draft mode."
 - **Limit:** queue depth hits capacity → drop lowest-priority items (log to circuit-breaker log), prioritize high-value tasks.
@@ -117,7 +119,7 @@ Core observation: queue design doesn't dominate system stability — **the ratio
 
 #### Context preprocessing
 
-Raw cutoff output may contain multi-step execution traces and thinking-token leakage (as observed in Experiment C). Showing this directly to a reviewer slows decisions.
+Raw cutoff output may contain multi-step execution traces and thinking-token leakage (as in `redline-experiment.py` Experiment C — copywriting task with a hard step cutoff and no objective signal). Showing this directly to a reviewer slows decisions.
 
 Preprocessing rules:
 
@@ -172,8 +174,10 @@ The prerequisite for a production-grade agent isn't that it can do more. It's th
 
 ---
 
-All experiment scripts: `github.com/zxpmail/blog` → `agent-determinism-illusions/scripts`
+*Previous: [Six experiments on adversarial verification — and the 75% wall that didn't move](https://dev.to/zxpmail/six-experiments-on-adversarial-verification-and-the-75-wall-that-didnt-move-2d1m)*
 
-The core experiment (`redline-v2-experiment.py`) supports `--task-file` for custom task definitions (JSON format, see `test_cases/README.md`). Run the red line comparison on your own tasks.
+*Core experiment: `redline-v2-experiment.py` (supports `--task-file`, see `test_cases/README.md`) · Handoff simulation: `handoff-protocol-sim.py`*
+
+*All scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
 
 *The conclusion is "a red line leads to higher and more stable convergence rates," not "the red line solves everything." The former has experimental support. The latter doesn't.*
