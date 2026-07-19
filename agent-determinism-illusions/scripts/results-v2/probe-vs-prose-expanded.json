@@ -1,0 +1,1175 @@
+{
+  "meta": {
+    "experiment": "probe-vs-prose-expanded",
+    "claim": "Part 12: prose detection ability matches probe when info is full; gap is execution frequency",
+    "n_scenarios": 20,
+    "trials_per_scenario": 5,
+    "fairness": "prose given full info; tests text-channel structural limit",
+    "providers": [
+      "DeepSeek",
+      "Zhipu GLM"
+    ]
+  },
+  "runs": [
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "key-easy",
+      "gap": "key-miss",
+      "difficulty": "easy",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现只删除了被直接修改的 key (user:123)，但 user:456 属于同一命名空间且应受影响，却未被删除，违反了规则中“所有受影响的 user 命名空间缓存都必须失效”的要求。",
+        "VIOLATION\n规则要求修改 user:123 时，所有受影响的 user 命名空间缓存都必须失效，包括同命名空间的 user:456。但实现只删除了 user:123，保留了 user:456，违反了规则。",
+        "VIOLATION\n规则要求修改 user:123 时，同一命名空间下的所有受影响的缓存（包括 user:456）都必须失效，但实现只删除了 user:123，保留了 user:456，导致该缓存未失效，不符合规则。",
+        "VIOLATION\n规则要求修改 user:123 时，所有受影响的 user 命名空间缓存（包括 user:456）都必须失效，但实现中仅删除了 user:123，未处理 user:456，导致该缓存未失效。",
+        "VIOLATION\n实现只删除了直接修改的 key \"user:123\"，但规则要求所有受影响的 user 命名空间缓存（包括已知受影响的 user:456）都必须失效。user:456 未被删除，不符合规则。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "key-medium",
+      "gap": "key-miss",
+      "difficulty": "medium",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现仅删除了user:123，没有删除同命名空间的user:456，导致后者未被失效，不符合规则中“所有受影响的user命名空间缓存都必须失效”的要求。",
+        "VIOLATION\n实现只删除了user:123，而规则要求所有同一命名空间的缓存（包括user:456）都必须失效，但user:456未被删除。",
+        "VIOLATION\n实现只删除了指定的键 'user:123'，但根据规则，同命名空间的 'user:456' 也必须失效，而实际未删除，因此存在应失效但未失效的缓存。",
+        "VIOLATION\n实现仅删除了user:123，未删除user:456，而规则要求所有受影响的user命名空间缓存（包括user:456）都必须失效。",
+        "VIOLATION\n实现只删除了user:123，但未删除user:456，导致本应失效的缓存未被清除，违反了规则要求。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "key-hard",
+      "gap": "key-miss",
+      "difficulty": "hard",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n规则要求修改 user:123 时，所有受影响的缓存都必须失效。由于 user:123 和 user:456 同属 user 命名空间，从命名空间推理，修改一个用户可能影响同一命名空间下的其他缓存（例如，聚合查询或关联依",
+        "VIOLATION\n实现只删除了 `user:123`，但未失效同命名空间下的 `user:456`。根据命名空间推理，所有 `user:*` 缓存都可能受到 `user:123` 修改的影响（例如聚合查询、关联数据等），因此应全部失效，否",
+        "VIOLATION\n规则要求修改 user:123 时，所有受影响的缓存都必须失效，而通过命名空间推理，整个 user 命名空间下的缓存项（包括 user:456）都应视为受影响。实现仅删除了 user:123，未删除 user:456，违",
+        "COMPLIANT\n实现只删除被修改的键 user:123，而 user:456 与本次修改无关，不受影响，因此符合规则要求。无应失效但未失效的缓存。",
+        "我们分析规则：修改 user:123 时，所有受影响的缓存都必须失效。命名空间是 user，所以所有 user 开头的缓存都可能受影响。但规则说“所有受影响的缓存”，并未明确说明哪些是受影响的。通常，修改一个用户可能影响其他用户？但这里只有"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 0.6
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "key-control",
+      "gap": "key-miss",
+      "difficulty": "control",
+      "ground_truth": false,
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "prose_raws_per_trial": [
+        "COMPLIANT  \n实现清空了整个缓存，所有缓存条目（包括所有 user 命名空间下的缓存）均被失效，满足了规则要求。虽然清空范围超出了必要，但没有遗漏任何应失效的缓存。",
+        "我们分析规则：修改user:123时，所有受影响的user命名空间缓存都必须失效。已知user:456属于同一user命名空间，也受影响。实现中，write('user:123')清空整个缓存，列出了user:123和user:456都被删",
+        "COMPLIANT  \n实现清空了整个缓存，这意味着所有缓存条目（包括所有 user 命名空间的键）均已失效，完全满足了规则要求。虽然规则仅要求受影响的 user 命名空间失效，但额外清空其他缓存并不违反规定。",
+        "COMPLIANT  \n实现清空了整个缓存，包括所有user命名空间下的键，因此所有受影响的缓存（如user:123、user:456及其他可能的user键）都已失效，符合规则要求。",
+        "COMPLIANT\n实现清空了整个缓存，包括user:123和user:456，所有受影响的user命名空间缓存均已失效，没有遗漏。"
+      ],
+      "prose_majority_detected": false,
+      "prose_majority_correct": true,
+      "prose_rate": 0.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "prefix-easy",
+      "gap": "prefix-miss",
+      "difficulty": "easy",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n规则要求修改任何user:*缓存时，所有user:*都必须失效。实现中只删除了user:123和user:456，但保留了user:789，导致user:789应该失效而未被失效，因此不符合规则。",
+        "VIOLATION  \n规则要求修改任何 user:* 缓存时，所有 user:* 都必须失效。但实现中只删除了 user:123 和 user:456，而保留了 user:789，导致 user:789 未被失效，违反了规则。",
+        "VIOLATION\n修改了user:123后，所有user:*缓存（包括user:789）都必须失效，但实现仅删除了user:123和user:456，保留了user:789，导致应失效的缓存未被失效。",
+        "VIOLATION\n规则要求修改任何 user:* 缓存时，所有 user:* 都必须失效。但实现只删除了 user:123 和 user:456，保留了 user:789，导致 user:789 未失效，违反了规则。",
+        "VIOLATION\n规则要求所有 user:* 缓存都必须失效，但实现中保留了 user:789，未使其失效，因此不符合规则。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "prefix-medium",
+      "gap": "prefix-miss",
+      "difficulty": "medium",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现只删除了前两个user:*键，漏掉了user:789，导致该缓存没有被失效，不符合规则要求所有user:*都失效。",
+        "VIOLATION\n实现只删除了前两个user:*键，但user:789未被删除，违反了“所有user:*都必须失效”的规则。",
+        "VIOLATION\n规则要求对所有 user:* 缓存失效，但实现只删除了前两个键，遗漏了 user:789，导致该缓存仍然存在，违反了规则。",
+        "VIOLATION\n实现只删除了前两个user:*键，未删除user:789，导致该缓存未被失效，违反规则要求所有user:*都必须失效。",
+        "VIOLATION\n实现只删除了前两个键，而user:789未被删除，违反了规则中所有user:*必须失效的要求。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "prefix-hard",
+      "gap": "prefix-miss",
+      "difficulty": "hard",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现只删除了 user:123 和另一个键（此处为 user:456），但 user:789 未被删除。规则要求所有以 \"user:\" 为前缀的缓存都必须失效，而此处仍有遗留，故违规。",
+        "VIOLATION\n该实现只删除了指定的缓存和另一个随机缓存，未确保所有以 \"user:\" 为前缀的缓存（如 user:789）都被失效，违反规则要求。",
+        "VIOLATION\n实现中只删除了两个键，但存在三个user:*缓存，user:789未被删除，未使所有同前缀缓存失效，因此违反规则。",
+        "VIOLATION\n该实现只删除了指定键和一个随机键，未能使所有以\"user:\"为前缀的缓存失效，遗留了user:789，违反了规则要求。",
+        "VIOLATION\n实现中只删除了两个键，但同前缀的 \"user:789\" 未被删除，违反了“所有同前缀缓存都必须失效”的规则。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "prefix-control",
+      "gap": "prefix-miss",
+      "difficulty": "control",
+      "ground_truth": false,
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "prose_raws_per_trial": [
+        "COMPLIANT\n\n实现中，当写入 user:123 时，删除了所有 user:* 缓存（包括 user:123、user:456、user:789），符合规则要求。",
+        "COMPLIANT\n实现中写入user:123时，删除了所有user:*缓存，即user:123、456、789全部失效，符合规则要求。",
+        "COMPLIANT\n实现中，写入 user:123 后立即删除了所有 user:*（包括 123、456、789），所有相关缓存均被清除，没有遗漏。规则要求修改任意 user:* 时所有该模式缓存失效，该操作完全满足。",
+        "COMPLIANT\n实现中，写入 user:123 后立即删除了所有 user:* 缓存（包括 user:123/456/789），因此所有相关缓存均已失效，符合规则要求。",
+        "COMPLIANT\n该实现执行写操作 `user:123` 时，删除了所有 `user:*` 缓存，包括 `user:123`、`user:456`、`user:789`，没有遗漏任何需要失效的条目，完全符合规则要求。"
+      ],
+      "prose_majority_detected": false,
+      "prose_majority_correct": true,
+      "prose_rate": 0.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "tier-easy",
+      "gap": "tier-miss",
+      "difficulty": "easy",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现没有失效 user:123 的任何缓存，而是错误地操作了 user:456 的缓存，违反了规则要求。",
+        "VIOLATION\n规则要求修改 user:123 时，L1 和 L2 中 user:123 的缓存都必须失效，但实现未对 user:123 做任何操作，反而错误地处理了 user:456，且只删除了其 L1 而保留了 L2，完全偏离规则要",
+        "VIOLATION\n实现没有对user:123的缓存进行任何失效操作，反而错误地操作了user:456的缓存。规则要求修改user:123时其L1和L2缓存都必须失效，但此处完全未处理user:123的缓存，因此不符合规则。",
+        "VIOLATION\n规则要求修改 user:123 时，L1 和 L2 中 user:123 的缓存必须失效，但实现未处理 user:123 的任何缓存，反而错误地删除了 L1 中 user:456 的缓存，而 L2 中 user:456 ",
+        "VIOLATION\n实现并未使user:123的缓存失效，而是错误地操作了user:456的缓存，且只清除了L1而保留了L2，完全不符合规则要求。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "tier-medium",
+      "gap": "tier-miss",
+      "difficulty": "medium",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现中只删除了L1缓存，未对L2缓存进行失效操作。根据规则，修改任何数据时（如user:123）需要同时失效L1和L2，但当前代码仅处理L1，导致L2缓存残留，不符合要求。",
+        "VIOLATION\n实现中，修改键时仅删除了L1中的缓存，未删除L2中的缓存。若修改user:123，则L2中的缓存仍存在，未同时失效，违反规则要求。",
+        "VIOLATION\n实现只删除了L1中的缓存，没有处理L2。根据规则，修改user:123时L1和L2都必须失效，但L2未被删除，因此不符合要求。",
+        "VIOLATION\n实现中的write函数只删除了L1中的键，没有处理L2，因此当修改user:123时，L2的缓存未被失效，违反了规则。",
+        "我们分析规则：修改user:123时，L1和L2都必须失效。但这里修改的是user:456？实际上，规则中说\"user:456在两层都有\"，但规则是针对user:123的？题目描述有些混淆。重新读题：\n\n规则: 修改 user:123 时,"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 0.8
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "tier-hard",
+      "gap": "tier-miss",
+      "difficulty": "hard",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现只删除了L1中的缓存，未删除L2，违反了“所有缓存层都必须失效”的规则。即使规则针对user:123，但实现通用地未使所有层失效，对于任何键（包括user:123）均不满足要求。",
+        "VIOLATION\n实现中 write 函数只删除了 L1 层的缓存，未处理 L2 层。当修改 user:123 时，L2 层的对应缓存应被失效但未被删除，因此不符合规则要求所有缓存层都必须失效。",
+        "VIOLATION\n实现中 write 函数仅删除了 L1 缓存，未处理 L2 缓存。当修改 user:123 时，L2 中的 user:123 仍存在，未按要求失效所有缓存层，因此违规。",
+        "VIOLATION\n实现只删除了L1层的缓存，但规则要求修改任何用户时所有缓存层都必须失效。执行后，L2层的user:456未被删除，存在应该失效但未失效的缓存。",
+        "VIOLATION\n该实现只删除了l1中的键，未对l2等缓存层进行失效处理。当修改user:123时，l2中的对应缓存仍然存在，违反了“所有缓存层都必须失效”的规则。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "tier-control",
+      "gap": "tier-miss",
+      "difficulty": "control",
+      "ground_truth": false,
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现错误地删除了 user:456 的缓存，而没有对 user:123 的缓存进行失效操作，违反了规则中“修改 user:123 时，L1 和 L2 都必须失效”的要求。",
+        "VIOLATION\n实现只删除了 user:456 的缓存，但没有失效被修改的 user:123 本身的缓存。规则要求修改 user:123 时必须使 L1 和 L2 中 user:123 的缓存失效，而实现中并未处理，因此不符合规则。",
+        "VIOLATION\n实现错误地将user:456的缓存删除了，而应该失效的是user:123的缓存。规则要求修改user:123时失效其对应的L1和L2缓存，但实现中并未对user:123进行任何失效操作，因此不符合规则。",
+        "VIOLATION\n规则要求修改user:123时失效其缓存，但实现中删除了user:456的缓存，未对user:123进行任何失效操作。",
+        "VIOLATION\n实现中写操作针对的是user:123，但实际失效的却是user:456的缓存，而应当失效的user:123的L1和L2缓存未被处理，违反了规则。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": false,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "casc-easy",
+      "gap": "cascade-miss",
+      "difficulty": "easy",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n修改 user:123 时，所有派生缓存必须失效，但 session:abc 作为派生项未被删除，违反了规则。",
+        "VIOLATION\n规则要求修改 user:123 时所有派生缓存必须失效，但实现中保留了派生项 session:abc，未使其失效，违反了规则。",
+        "VIOLATION\n规则要求修改 user:123 时所有派生缓存必须失效，但实现保留了派生项 session:abc，未使其失效。",
+        "VIOLATION\n规则要求修改 user:123 时所有派生缓存必须失效，而 session:abc 是派生项，但实现中保留了它，违反了规则。",
+        "VIOLATION\n规则明确要求修改 user:123 时所有派生缓存必须失效，而 session:abc 作为派生项被保留，导致未失效，违反规则。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "casc-medium",
+      "gap": "cascade-miss",
+      "difficulty": "medium",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n规则要求修改user:123时所有派生缓存必须失效，但实现只删除了指定的键（user:123），未删除其派生键session:abc，导致派生缓存仍然存在，违反了规则。",
+        "VIOLATION\n实现中的write函数仅删除了传入的键，未处理派生缓存的失效。当修改user:123时，派生缓存session:abc应被一同删除，但该实现未执行此操作，导致session:abc仍然存在，违反了规则。",
+        "VIOLATION\n规则要求修改user:123时，所有派生缓存（包括session:abc）必须失效，但实现只删除了指定的key（user:123），未删除派生的session:abc，因此违反了规则。",
+        "VIOLATION\n规则要求修改user:123时必须使所有派生缓存（包括session:abc）失效，但实现只删除了user:123本身，未删除session:abc，导致派生缓存仍然存在，违反了规则。",
+        "VIOLATION\n实现只删除了传入的键（user:123），但规则要求所有派生缓存（包括session:abc）失效，而session:abc未被删除，因此不符合规则。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "casc-hard",
+      "gap": "cascade-miss",
+      "difficulty": "hard",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n该实现只删除了指定的键（user:123），但未处理依赖该用户的缓存（如session:abc和decision:xyz），导致这些派生缓存仍然存在，违反了“所有依赖该用户的缓存必须失效”的规则。",
+        "VIOLATION\n规则要求修改 user:123 时，所有依赖该用户的缓存必须失效，但实现只删除了 user:123 本身，而派生自它的 session:abc 和 decision:xyz 未被删除，导致它们仍然存在，违反了规则。",
+        "VIOLATION\n实现仅删除了user:123本身，但未删除派生自它的session:abc和decision:xyz，导致这些依赖缓存仍然存在，违反了规则中“所有依赖该用户的缓存必须失效”的要求。",
+        "VIOLATION\n实现仅删除了user:123本身，而未删除派生自它的session:abc和decision:xyz，违反了“所有依赖该用户的缓存必须失效”的规则。",
+        "VIOLATION\n规则要求修改user:123时，所有依赖它的缓存必须失效。但实现仅删除了user:123，而派生自它的session:abc和decision:xyz仍然存在，未失效，违反了规则。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "casc-control",
+      "gap": "cascade-miss",
+      "difficulty": "control",
+      "ground_truth": false,
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "prose_raws_per_trial": [
+        "COMPLIANT\n实现中明确删除 user:123 和其派生缓存 session:abc，符合规则要求。",
+        "COMPLIANT  \n实现明确删除了 user:123 及其派生缓存 session:abc，覆盖了规则要求的全部派生关系，无遗漏。",
+        "COMPLIANT\n根据规则，修改 user:123 时所有派生缓存必须失效。已知 session:abc 派生自 user:123，实现中已删除 user:123 和 session:abc，未遗漏其他已知派生，因此符合规则。",
+        "COMPLIANT\n实现明确删除了 user:123 及其派生缓存 session:abc，符合规则要求。规则中仅提到 session:abc 派生自 user:123，没有其他未处理的派生缓存。",
+        "COMPLIANT  \n实现明确删除了 user:123 及其直接派生 session:abc，符合规则要求。题目未指出其他派生缓存，故无遗漏。"
+      ],
+      "prose_majority_detected": false,
+      "prose_majority_correct": true,
+      "prose_rate": 0.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "ref-easy",
+      "gap": "referent-wrong",
+      "difficulty": "easy",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现中，修改user:123后，本应使所有user:123相关缓存失效，但实际误删了session:123，而user:123缓存仍然存在，导致应该失效的缓存未失效，违反了规则。",
+        "VIOLATION\n规则要求修改 user:123 时，所有 user:123 相关缓存失效，但实现中 user:123 缓存仍然存在，未失效，违反了规则。同时误删了无关的 session:123 缓存。",
+        "VIOLATION\n规则要求修改user:123时失效所有user:123相关缓存，但实现中未失效user:123本身，反而误删了session:123，导致应失效的缓存未失效，因此不符合规则。",
+        "VIOLATION\n规则要求修改 user:123 时，所有 user:123 相关的缓存失效，但实现未使 user:123 失效，反而误删了无关的 session:123，导致应该失效的缓存仍然存在。",
+        "VIOLATION\n实现未使 user:123 相关缓存失效，而误删了不相关的 session:123，违反了规则要求。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "ref-medium",
+      "gap": "referent-wrong",
+      "difficulty": "medium",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n规则要求修改 user:123 时所有相关缓存失效，但实现仅删除了 session:123，未删除 user:123 本身的缓存，导致该缓存应失效却未失效。",
+        "VIOLATION\n规则要求修改 user:123 时所有与其相关的缓存失效，包括 user:123 本身。但实现中只删除了 session:123，而 user:123 未被删除，因此存在未失效的缓存。",
+        "VIOLATION\n规则要求修改 user:123 时所有与 user:123 相关的缓存失效，但实现只删除了 session:123，没有删除 user:123 本身，导致该缓存未被清除。",
+        "VIOLATION\n实现仅删除了session:123，而未删除user:123本身，导致该缓存仍然存在，违反了“所有相关缓存失效”的规则。",
+        "VIOLATION\n实现只删除了 session:123，但未删除 user:123 本身，违反了规则中“所有 user:123 相关缓存失效”的要求。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "ref-hard",
+      "gap": "referent-wrong",
+      "difficulty": "hard",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现只删除了session:123，但未删除user:123本身的缓存，导致修改后该缓存仍然存在且可能为过时数据，违反了“相关缓存失效”的规则。",
+        "VIOLATION\n实现中当修改 user:123 时，只删除了 session:123 的缓存，但未删除 user:123 本身的缓存，导致用户数据缓存仍然存在，违反了规则中“相关缓存失效”的要求。",
+        "VIOLATION\n规则要求修改user:123时，相关缓存失效。该实现只删除了session:123，但未删除user:123本身，导致user:123作为脏数据仍存在，违反了规则中“相关缓存”应覆盖用户数据缓存的原则。",
+        "VIOLATION\n实现只删除了session:123，但未失效user:123自身的缓存，违反了“修改user:123时，相关缓存失效”的规则。",
+        "VIOLATION\n规则要求修改 user:123 时相关缓存失效，但实现仅删除了 session:123，未删除 user:123 本身，导致用户缓存仍然存在，违反了完全失效的要求。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "ref-control",
+      "gap": "referent-wrong",
+      "difficulty": "control",
+      "ground_truth": false,
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION  \n实现只删除了精确的键 user:123，但规则要求“user:123 相关缓存”失效，可能包括如 user:123:profile、user:123:friends 等关联缓存。未删除这些相关缓存，导致不符合规则。",
+        "VIOLATION\n实现只删除了键为\"user:123\"的缓存，但规则要求使所有与user:123相关的缓存失效，例如可能存在的user:123的衍生键、关联键或复合键缓存（如\"user:123:friends\"、\"user:123:pos",
+        "VIOLATION\n实现仅删除了键 'user:123'，未处理其他可能包含用户数据的相关缓存（如 user:123:profile、user:123:friends 或列表缓存等），不符合“相关缓存失效”的要求。",
+        "VIOLATION\n实现只删除了主键为user:123的缓存，但规则要求所有与user:123相关的缓存失效，例如可能存在的用户列表缓存、关联数据缓存等未失效，存在遗漏。",
+        "VIOLATION\n实现只删除了精确缓存键 'user:123'，但规则要求使所有与 user:123 相关的缓存失效（例如 user:123:profile、user:123:orders 等），未覆盖其他关联键。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": false,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "key-easy",
+      "gap": "key-miss",
+      "difficulty": "easy",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n规则要求所有受影响的 user 命名空间缓存都失效，已知 user:456 属于同一 user 命名空间且受影响；但实现仅删除了 user:123，user:456 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION\n规则要求所有受影响的 user 命名空间缓存都失效，已知 user:456 属于同一 user 命名空间且受影响；但实现只删除了 user:123，user:456 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION\n规则要求修改 user:123 时所有受影响的 user 命名空间缓存都失效，且已知 user:456 也受影响；但实现只删除了 user:123，user:456 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION\n规则要求所有受影响的 user 命名空间缓存都失效，且已知 user:456 属于同一 user 命名空间并受影响。实现只删除了 user:123，而 user:456 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION\n规则要求所有受影响的 user 命名空间缓存都失效，已知 user:456 属于同一 user 命名空间且受影响；但实现只删除了 user:123，user:456 仍然存在，属于应失效但未失效的缓存。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "key-medium",
+      "gap": "key-miss",
+      "difficulty": "medium",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n规则要求修改 user:123 时所有受影响的 user 命名空间缓存都失效，已知 user:456 也受影响；但实现只删除了 user:123，user:456 仍然存在，因此有应失效但未失效的缓存。",
+        "VIOLATION\n规则要求修改 user:123 时所有受影响的 user 命名空间缓存都失效，已知 user:456 也受影响；但实现只删除了 user:123，user:456 仍然存在，因此有应失效但未失效的缓存。",
+        "VIOLATION\n规则要求修改 user:123 时所有受影响的 user 命名空间缓存都失效，已知 user:456 也受影响；但实现只删除了 user:123，user:456 仍然存在，因此有应失效但未失效的缓存。",
+        "VIOLATION\n执行 write('user:123') 只删除了 user:123，但规则要求所有受影响的 user 命名空间缓存都失效；已知 user:456 也受影响，却仍然存在，因此不符合规则。",
+        "VIOLATION\n规则要求修改 user:123 时所有受影响的 user 命名空间缓存都失效，已知 user:456 也受影响；但实现只删除了 user:123，user:456 仍然存在，因此有应失效但未失效的缓存。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "key-hard",
+      "gap": "key-miss",
+      "difficulty": "hard",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "prose_raws_per_trial": [
+        "COMPLIANT\n\n规则要求修改 `user:123` 时所有受影响的缓存失效。由于规则未显式列出其他受影响项，只能从命名空间推理；`user:456` 虽同属 `user` 命名空间，但它是独立键，不是因修改 `user:123` 而必",
+        "COMPLIANT\n规则要求修改 user:123 时所有受影响的缓存失效。基于命名空间推理，受影响项是键本身 user:123；同属 user 命名空间的 user:456 不是因修改 user:123 而受影响的缓存。实现已删除 use",
+        "COMPLIANT\n\n规则要求修改 `user:123` 时所有受影响的缓存失效。由于规则未显式列出其他受影响项，只能从命名空间推理；`user:456` 虽同属 `user` 命名空间，但它是独立键，未因修改 `user:123` 而受影",
+        "COMPLIANT\n规则要求修改 user:123 时所有受影响的缓存失效。基于命名空间推理，受影响项是键本身 user:123；同属 user 命名空间的 user:456 不是因修改 user:123 而受影响的缓存。实现已删除 use",
+        "COMPLIANT\n规则要求修改 user:123 时所有受影响的缓存失效。基于命名空间推理，受影响项是键本身 user:123；同属 user 命名空间的 user:456 并不因 user:123 被修改而受影响。实现已删除 user:"
+      ],
+      "prose_majority_detected": false,
+      "prose_majority_correct": false,
+      "prose_rate": 0.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "key-control",
+      "gap": "key-miss",
+      "difficulty": "control",
+      "ground_truth": false,
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "prose_raws_per_trial": [
+        "COMPLIANT\n实现清空了整个缓存，确保 user:123 和同一 user 命名空间下的 user:456 都已失效，因此没有应失效但未失效的缓存。",
+        "COMPLIANT\n实现清空了整个缓存，确保 user:123 和同一 user 命名空间下的 user:456 都已失效，因此没有应失效但未失效的缓存。",
+        "COMPLIANT\n\n实现清空了整个缓存，`user:123` 和已知受影响的 `user:456` 都已删除，因此没有应该失效但未失效的缓存。虽然可能属于过度失效，但不违反该规则。",
+        "COMPLIANT\n实现清空了整个缓存，确保 user:123 和同一 user 命名空间下的 user:456 都已失效，没有应失效但未失效的缓存。",
+        "COMPLIANT\n实现清空了整个缓存，确保 user:123 和同一 user 命名空间下的 user:456 都已失效，因此没有应失效但未失效的缓存。"
+      ],
+      "prose_majority_detected": false,
+      "prose_majority_correct": true,
+      "prose_rate": 0.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "prefix-easy",
+      "gap": "prefix-miss",
+      "difficulty": "easy",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n修改 user:123 时规则要求所有 user:* 缓存都失效，但 user:789 仍然存在，属于应失效却未失效的缓存。",
+        "VIOLATION\n修改 user:123 时,规则要求所有 user:* 失效,包括 user:789;实现保留了 user:789,属于应失效但未失效。",
+        "VIOLATION\n修改 user:123 时,规则要求所有 user:* 失效,包括 user:789;实现保留了 user:789,属于应失效但未失效。",
+        "VIOLATION\n修改 user:123 时,规则要求所有 user:* 缓存都失效。已知 user:789 也是 user:* 缓存,但它被保留,属于应失效但未失效的缓存。",
+        "VIOLATION\n修改 user:123 时，规则要求所有 user:* 缓存都失效；但 user:789 仍然存在，属于应失效却未失效的缓存。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "prefix-medium",
+      "gap": "prefix-miss",
+      "difficulty": "medium",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现仅删除了前两个键，导致 user:789 仍然存在；规则要求修改任何 user:* 缓存时所有 user:* 都必须失效，因此存在应失效但未失效的缓存。",
+        "VIOLATION\n实现只删除了前两个键，导致 user:789 仍然存在；规则要求修改任何 user:* 时所有 user:* 都失效，因此存在应失效但未失效的缓存。",
+        "VIOLATION\n实现只删除了前两个键，导致 user:789 仍然存在；规则要求修改任何 user:* 缓存时所有 user:* 都必须失效，因此存在应失效但未失效的缓存。",
+        "VIOLATION\n实现只删除了前两个键，导致 user:789 仍然存在；规则要求修改任何 user:* 缓存时所有 user:* 都必须失效，因此存在应失效但未失效的缓存。",
+        "VIOLATION\n实现只删除了前两个键，导致 user:789 仍然存在；规则要求修改任何 user:* 缓存时所有 user:* 都必须失效，因此存在应失效但未失效的缓存。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "prefix-hard",
+      "gap": "prefix-miss",
+      "difficulty": "hard",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n执行后 user:789 仍然存在，但它属于 user:* 前缀，按规则在修改 user:123 时也应失效，因此未完全失效所有同前缀缓存。",
+        "VIOLATION\n执行后 user:789 仍然存在，但它属于 user:* 前缀缓存，按规则在修改 user:123 时也应失效。实现只删除了任意一个额外缓存，未能使所有同前缀缓存失效。",
+        "VIOLATION\n执行后 user:789 仍然存在，但它属于 user:* 前缀，按规则在修改 user:123 时也应失效，因此未完全失效所有同前缀缓存。",
+        "VIOLATION\n执行后 user:789 仍然存在，但它属于 user:* 前缀，按规则在修改 user:123 时也应失效，因此未完全失效所有同前缀缓存。",
+        "VIOLATION\n执行后 user:789 仍然存在，但它属于 user:* 前缀，按规则在修改 user:123 时也应失效，因此未完全失效所有同前缀缓存。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "prefix-control",
+      "gap": "prefix-miss",
+      "difficulty": "control",
+      "ground_truth": false,
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "prose_raws_per_trial": [
+        "COMPLIANT\n修改了 user:123，并删除了所有 user:*（user:123/456/789），没有遗漏应失效的缓存。",
+        "COMPLIANT\n修改了 user:123，且所有 user:*（user:123/456/789）均已删除，没有应失效但未失效的缓存。",
+        "COMPLIANT\n修改了 user:123，并删除了所有 user:*（user:123/456/789），没有遗漏应失效的缓存。",
+        "COMPLIANT\n修改了 user:123，且所有 user:*（123/456/789）均已删除，没有应失效但未失效的缓存。",
+        "COMPLIANT\n修改了 user:123，并删除了所有 user:*（user:123/456/789），没有遗漏应失效的缓存。"
+      ],
+      "prose_majority_detected": false,
+      "prose_majority_correct": true,
+      "prose_rate": 0.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "tier-easy",
+      "gap": "tier-miss",
+      "difficulty": "easy",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n修改 user:123 时，规则要求 L1 和 L2 两层缓存都必须失效，但实现只删除了 L1，L2 仍然保留，因此存在应失效但未失效的缓存。",
+        "VIOLATION\n修改 user:123 时，规则要求 L1 和 L2 两层缓存都必须失效；实现只删除了 L1[user:456]，L2[user:456] 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION\n修改 user:123 时，规则要求 L1 和 L2 两层缓存都必须失效；实现只删除了 L1[user:456]，L2[user:456] 仍保留，属于应失效但未失效。",
+        "VIOLATION\n修改 user:123 时，规则要求 L1 和 L2 两层缓存都必须失效；但实现只删除了 L1[user:456]，L2[user:456] 仍然存在，未失效。",
+        "VIOLATION\n修改 user:123 时，规则要求 L1 和 L2 两层缓存都必须失效，但实现只删除了 L1，L2 仍然保留，因此存在应失效但未失效的缓存。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "tier-medium",
+      "gap": "tier-miss",
+      "difficulty": "medium",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\nwrite 只删除了 L1，未删除 L2；因此 user:456 在 L2 仍然存在，属于应失效但未失效的缓存，违反“L1 和 L2 两层缓存都必须失效”的规则。",
+        "VIOLATION\n规则要求修改时 L1 和 L2 两层缓存都必须失效，但实现只删除了 L1，未删除 L2。执行后 L2 user:456 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION\n实现只删除了 L1，未对 L2 做失效处理，导致 L2 user:456 仍然存在，违反了“L1 和 L2 两层缓存都必须失效”的规则。",
+        "VIOLATION\n实现只删除了 L1，未对 L2 做失效处理，导致 L2 user:456 仍然存在，违反了“L1 和 L2 两层缓存都必须失效”的规则。",
+        "VIOLATION\n实现只删除了 L1，未对 L2 做失效处理，导致 L2 user:456 仍然存在，违反了“L1 和 L2 两层缓存都必须失效”的规则。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "tier-hard",
+      "gap": "tier-miss",
+      "difficulty": "hard",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\nwrite 仅删除了 L1，未对 L2 执行失效；因此存在应该失效但未失效的缓存层。",
+        "VIOLATION\nwrite 仅删除 l1，未使 l2 失效；因此存在应该失效但未失效的缓存层。",
+        "VIOLATION\nwrite 仅删除 l1 中的键，未使 l2 失效；因此 user:456 在 L2 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION\nwrite 函数只删除了 L1，未删除 L2，导致 L2 中仍存在应失效的缓存。",
+        "VIOLATION\nwrite 仅删除了 L1，未对 L2 执行失效；因此存在应该失效但未失效的缓存层。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "tier-control",
+      "gap": "tier-miss",
+      "difficulty": "control",
+      "ground_truth": false,
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n规则要求修改 user:123 时失效 user:123 在 L1 和 L2 的缓存；实现只删除了 user:456，未删除 user:123，因此不完全符合规则。",
+        "VIOLATION\n规则要求修改 user:123 时失效 user:123 在 L1 和 L2 的缓存；实现只删除了 user:456，未删除 user:123。",
+        "VIOLATION\n规则要求修改 user:123 时失效 user:123 在 L1 和 L2 的缓存；实现只删除了 user:456，未删除 user:123。",
+        "VIOLATION\n规则要求修改 user:123 时失效 user:123 在 L1 和 L2 的缓存；实现只清了 user:456，未清 user:123，因此有应该失效但没失效的缓存。",
+        "VIOLATION\n规则要求修改 user:123 时失效 user:123 在 L1 和 L2 的缓存；实现只清了 user:456，未清 user:123，因此有应该失效但没失效的缓存。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": false,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "casc-easy",
+      "gap": "cascade-miss",
+      "difficulty": "easy",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\nsession:abc 是 user:123 的派生缓存，修改 user:123 时必须失效；实现保留了它，因此不符合规则。",
+        "VIOLATION\nsession:abc 是 user:123 的派生缓存，修改 user:123 时必须失效，但实现保留了它。",
+        "VIOLATION\nsession:abc 是 user:123 的派生缓存，修改 user:123 时必须失效；实现保留了 session:abc，因此不符合规则。",
+        "VIOLATION\nsession:abc 是 user:123 的派生缓存，修改 user:123 时必须失效；实现保留了它，因此不符合规则。",
+        "VIOLATION\nsession:abc 是 user:123 的派生缓存，修改 user:123 时必须失效；实现保留了它，因此不符合规则。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "casc-medium",
+      "gap": "cascade-miss",
+      "difficulty": "medium",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\nsession:abc 是由 user:123 派生的缓存，修改 user:123 时应一并失效；实现只删除了 user:123，未使 session:abc 失效。",
+        "VIOLATION\nsession:abc 是由 user:123 派生的缓存,修改 user:123 时应失效,但执行后仍存在。",
+        "VIOLATION\nsession:abc 是由 user:123 派生的缓存，修改 user:123 时应失效，但执行后仍存在。",
+        "VIOLATION\nsession:abc 是由 user:123 派生的缓存，修改 user:123 时应失效，但实现后仍存在。",
+        "VIOLATION\nsession:abc 是由 user:123 派生的缓存，修改 user:123 时应一并失效；实现只删除了 user:123，未使 session:abc 失效。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "casc-hard",
+      "gap": "cascade-miss",
+      "difficulty": "hard",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现仅删除了 user:123 本身，但 session:abc 和 decision:xyz 都派生自该用户，属于依赖该用户的缓存，按规则也必须失效；执行后它们仍然存在，因此不完全符合规则。",
+        "VIOLATION\n实现仅删除了 user:123 本身，但 session:abc 和 decision:xyz 都派生自该用户，属于依赖该用户的缓存，按规则也必须失效；执行后它们仍然存在，因此不完全符合规则。",
+        "VIOLATION\n实现仅删除了 user:123 本身，但 session:abc 和 decision:xyz 都派生自 user:123，属于依赖该用户的缓存，修改后也应失效；它们仍然存在，因此不完全符合规则。",
+        "VIOLATION\n实现仅删除了 user:123，但派生自该用户的 session:abc 和 decision:xyz 仍然存在，属于应失效但未失效的依赖缓存。",
+        "VIOLATION\n实现仅删除了 user:123 本身，但 session:abc 和 decision:xyz 都派生自 user:123，按规则也必须失效；执行后它们仍然存在，因此不完全符合规则。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "casc-control",
+      "gap": "cascade-miss",
+      "difficulty": "control",
+      "ground_truth": false,
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "prose_raws_per_trial": [
+        "COMPLIANT\n实现已删除 user:123 及其派生缓存 session:abc，满足规则要求。",
+        "COMPLIANT\n实现已删除 user:123 及其派生缓存 session:abc，满足规则要求。",
+        "COMPLIANT\n实现已删除 user:123 及其派生缓存 session:abc，满足规则要求。",
+        "COMPLIANT\n规则要求修改 user:123 时所有派生缓存失效，而 session:abc 派生自 user:123；实现已删除 user:123 和 session:abc，因此没有应失效但未失效的缓存。",
+        "COMPLIANT\n实现已删除 user:123 及其派生缓存 session:abc，满足规则要求。"
+      ],
+      "prose_majority_detected": false,
+      "prose_majority_correct": true,
+      "prose_rate": 0.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "ref-easy",
+      "gap": "referent-wrong",
+      "difficulty": "easy",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n实现未使 user:123 相关缓存失效，违反“修改 user:123 时所有相关缓存失效”的要求；同时误删了 session:123，属于错误命名空间操作。",
+        "VIOLATION\n实现未使 user:123 相关缓存失效，导致应失效的 user:123 缓存仍然存在；同时误删了 session:123，属于错误命名空间操作。",
+        "VIOLATION\n实现未使 `user:123` 相关缓存失效，违反了修改时必须失效 `user` 命名空间缓存的规则；同时误删了 `session:123`。",
+        "VIOLATION\n实现未使 `user:123` 相关缓存失效，违反了修改时必须失效对应 user 命名空间缓存的规则；同时误删了 `session:123`，属于错误命名空间操作。",
+        "VIOLATION\n实现未使 user:123 相关缓存失效，违反“修改 user:123 时所有相关缓存失效”的规则；同时误删了 session:123，属于错误命名空间操作。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "ref-medium",
+      "gap": "referent-wrong",
+      "difficulty": "medium",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n规则要求修改 user:123 时所有相关缓存失效,但实现只删除了 session:123,而 user:123 仍然存在,属于应失效但未失效的缓存。",
+        "VIOLATION\n规则要求修改 user:123 时所有相关缓存失效,但实现只删除了 session:123,而 user:123 仍然存在,属于应失效但未失效的缓存。",
+        "VIOLATION\n规则要求修改 user:123 时所有相关缓存失效，但实现只删除了 session:123，而 user:123 本身仍然存在，属于应当失效但未失效的缓存。",
+        "VIOLATION\n规则要求修改 user:123 时让所有 user:123 相关缓存失效；实现只删除了 session:123，而 user:123 仍然存在，属于应失效但未失效。",
+        "VIOLATION\n规则要求修改 user:123 时所有相关缓存失效,但实现只删除了 session:123,而 user:123 仍然存在,属于应失效但未失效的缓存。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "ref-hard",
+      "gap": "referent-wrong",
+      "difficulty": "hard",
+      "ground_truth": true,
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n修改 user:123 时应使相关缓存失效，但执行后 user:123 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION\n修改 user:123 时应使相关缓存失效，但执行后 user:123 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION\n规则要求修改 user:123 时相关缓存失效，但实现只删除了 session:123，而 user:123 本身仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION\n修改 user:123 时应使相关缓存失效，但执行后 user:123 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION\n修改 user:123 时应使相关缓存失效，但执行后 user:123 仍然存在，属于应失效但未失效的缓存。"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": true,
+      "prose_rate": 1.0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "ref-control",
+      "gap": "referent-wrong",
+      "difficulty": "control",
+      "ground_truth": false,
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_detections_per_trial": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "prose_raws_per_trial": [
+        "VIOLATION\n说明：规则要求“user:123 相关缓存”失效，而实现仅删除了键 user:123。若存在以 user:123 为参数或依赖该数据的派生缓存（如 user:123:profile、列表项、查询结果等），这些也应失效，但",
+        "VIOLATION\n规则要求“user:123 相关缓存”失效，但实现只删除了键 user:123。如果存在其他缓存键包含或依赖 user:123 的数据（例如 user:123:profile、user:123:settings、列表/索",
+        "VIOLATION\n说明：规则要求“user:123 相关缓存”失效，而实现仅删除了键 user:123。若存在以 user:123 为参数或依赖的其他缓存（如 user:123:profile、user:123:settings、列表/索",
+        "VIOLATION\n规则要求“user:123 相关缓存”失效，但实现只删除了键 user:123。如果存在其他缓存键包含或依赖 user:123 的数据（例如 user:123:profile、user:123:settings、列表/索",
+        "VIOLATION\n规则要求“user:123 相关缓存”失效，但实现只删除了键 user:123。如果存在其他缓存键包含或依赖 user:123 的数据（例如 user:123:profile、user:123:settings、列表/索"
+      ],
+      "prose_majority_detected": true,
+      "prose_majority_correct": false,
+      "prose_rate": 1.0
+    }
+  ],
+  "summary": {
+    "by_provider": {
+      "DeepSeek": {
+        "violation_n": 15,
+        "probe_correct_on_violations": 15,
+        "prose_majority_correct_on_violations": 15,
+        "control_n": 5,
+        "probe_correct_on_control": 5,
+        "prose_majority_correct_on_control": 3,
+        "by_difficulty": {
+          "easy": {
+            "n": 5,
+            "probe_correct": 5,
+            "prose_majority_correct": 5,
+            "prose_missed": []
+          },
+          "medium": {
+            "n": 5,
+            "probe_correct": 5,
+            "prose_majority_correct": 5,
+            "prose_missed": []
+          },
+          "hard": {
+            "n": 5,
+            "probe_correct": 5,
+            "prose_majority_correct": 5,
+            "prose_missed": []
+          },
+          "control": {
+            "n": 5,
+            "probe_correct": 5,
+            "prose_majority_correct": 3,
+            "prose_missed": [
+              "tier-control",
+              "ref-control"
+            ]
+          }
+        }
+      },
+      "Zhipu GLM": {
+        "violation_n": 15,
+        "probe_correct_on_violations": 15,
+        "prose_majority_correct_on_violations": 14,
+        "control_n": 5,
+        "probe_correct_on_control": 5,
+        "prose_majority_correct_on_control": 3,
+        "by_difficulty": {
+          "easy": {
+            "n": 5,
+            "probe_correct": 5,
+            "prose_majority_correct": 5,
+            "prose_missed": []
+          },
+          "medium": {
+            "n": 5,
+            "probe_correct": 5,
+            "prose_majority_correct": 5,
+            "prose_missed": []
+          },
+          "hard": {
+            "n": 5,
+            "probe_correct": 5,
+            "prose_majority_correct": 4,
+            "prose_missed": [
+              "key-hard"
+            ]
+          },
+          "control": {
+            "n": 5,
+            "probe_correct": 5,
+            "prose_majority_correct": 3,
+            "prose_missed": [
+              "tier-control",
+              "ref-control"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

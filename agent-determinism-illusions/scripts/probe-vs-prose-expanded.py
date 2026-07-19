@@ -206,12 +206,15 @@ def probe_check(scenario):
     return has_leftover, ("probe 检测到应失效项仍存在" if has_leftover else "probe 确认全部已失效")
 
 
-V_KEYWORDS = ["VIOLATION", "违规", "不合规", "不符合", "不满足", "存在缺口", "未失效", "遗漏", "漏"]
-C_KEYWORDS = ["COMPLIANT", "合规", "符合规则", "完全符合", "满足规则"]
+V_KEYWORDS = ["VIOLATION", "违规", "不合规"]
+C_KEYWORDS = ["COMPLIANT", "合规"]
 
 
 def prose_judge(prov, scenario):
-    """PROSE: LLM judge, 给充分信息。5 次试验取多数? 不, 这里返回单次, main 里循环 5 次。"""
+    """PROSE: LLM judge, 给充分信息。返回 (detected, raw_text)。
+    判定: 只看第一行是否是 VIOLATION/违规 系 —— 避免正文里"没有遗漏"等否定表达误命中。
+    v2: 落盘 raw_text 以便复现 (探针版未存, 导致 bug 无法离线重判)。
+    """
     prompt = f"""你是缓存失效合规审查员。判断以下实现是否符合规则。
 
 {scenario['rule']}
@@ -219,13 +222,11 @@ def prose_judge(prov, scenario):
 {scenario['impl']}
 
 问题: 这个实现是否完全符合规则? (注意检查是否有应该失效但没失效的缓存)
-先用一句话给出结论: VIOLATION (违规) 或 COMPLIANT (合规), 再简要说明。"""
+格式要求: 第一行只写一个词 —— VIOLATION 或 COMPLIANT, 不要其他内容。从第二行起简要说明。"""
     resp = call_llm(prov, prompt)
-    r = resp.upper()
-    has_v = any(k.upper() in r for k in V_KEYWORDS)
-    has_c = any(k.upper() in r for k in C_KEYWORDS)
-    # 明确说 violation 才判违规; 否则合规 (conservative, 防 false positive 污染数据)
-    detected = has_v and not (has_c and not has_v)
+    first_line = resp.strip().split("\n", 1)[0].upper()
+    # 第一行判定: 严格只看是否以 VIOLATION 系开头
+    detected = any(first_line.startswith(k) for k in V_KEYWORDS)
     return detected, resp
 
 
@@ -246,9 +247,11 @@ def main():
         for sc in SCENARIOS:
             p_det, _ = probe_check(sc)
             prose_dets = []
+            prose_raws = []
             for t in range(TRIALS):
                 s_det, s_raw = prose_judge(prov, sc)
                 prose_dets.append(int(s_det))
+                prose_raws.append(s_raw[:120])  # 落盘前120字, 便于复现/审计
             prose_caught = sum(prose_dets)
             p_correct = (p_det == sc["violated"])
             s_rate = prose_caught / TRIALS
@@ -265,6 +268,7 @@ def main():
                 "ground_truth": sc["violated"],
                 "probe_detected": p_det, "probe_correct": p_correct,
                 "prose_detections_per_trial": prose_dets,
+                "prose_raws_per_trial": prose_raws,
                 "prose_majority_detected": s_majority,
                 "prose_majority_correct": s_correct,
                 "prose_rate": s_rate,
