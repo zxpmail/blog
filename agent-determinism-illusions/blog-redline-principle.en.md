@@ -82,6 +82,8 @@ It verifies "the output satisfies the requirement." The V2 experiment uses this 
 Existing approaches (LLM-as-judge, multi-round debate, consistency checks) show high false-positive rates or irreproducibility in limited testing.
 **This is an open problem.** Not in-principle unsolvable — but no known engineering mechanism can reliably judge completion for open-ended semantic tasks under the current stack.
 
+**Why "no method" is a measured claim, not a guess.** The natural challenge — "have you tried LLM judges, debate, self-consistency?" — is answered by two independent threads elsewhere in this series. First, the directional-failure dataset: 20 scenarios × 3 model tiers × 600 judgments, where the "output" reads as plausible compliance but reverses the task semantically (e.g. "current config already satisfies the requirement, no change needed" when a change was required). The subtle-reversal miss rate — the fraction of times the LLM judge accepts plausible-but-reversed output — was **44% on the 0.5B model, 11% on the 4.3B model, 2% on the ~200B model** (`scripts/results-v2/*_summary.json`, `subtle_df` group). The strongest model still misses 2% of reversals that a deterministic red line would catch by construction. Second, Theorem 2 (the Data Processing Inequality applied to agent verification): when the reasoning and the verifier share the same text channel, the verifier's information is a strict subset of the producer's. If the rationalization is textually indistinguishable from the real cause, no text-channel reader — LLM judge, debate panel, or human — can detect it. LLM-as-judge is not untried; it is a weaker channel than a demand red line by a provable bound, and empirically it leaks even on the strongest model. That is why the table marks semantic-layer red lines as an open problem rather than a tunable parameter.
+
 | Red line type | Example | What it verifies | Cost | Usable as convergence signal? |
 |-------------|---------|-----------------|------|------------------------------|
 | Format red line | exit 0 / file exists / syntax pass | Well-formed output | Trivial | No (Phase Gate: 50% false positives) |
@@ -190,6 +192,18 @@ The prerequisite for a production-grade agent isn't that it can do more. It's th
 | Open-ended semantic | **None exists** | Cutoff + human (no auto-fix) |
 
 *Note: structured editing (diff to zero) was not tested in the experiments presented here and is omitted from this table.*
+
+## Limitations — what this article does and does not establish
+
+Stated plainly, because these are the points a careful reader (or critic) will press:
+
+1. **N=3 on the core V2 table.** The 9/9 vs 2/9 comparison is directional, not statistically significant, and the article says so repeatedly. It cannot exclude "the result reverses on a different model or task set." What the later stuck-loop experiment (`scripts/stuck-loop-budget-test.py`) adds is independent corroboration on a different sample: 7 tasks × 2 models, where the deterministic claims — repairable tasks converge in 1–2 steps with 0% false-stops, conceptual tasks never converge — held on both models without exception. That does not upgrade N=3 to statistical significance, but it means the direction is not a single-sample artifact.
+
+2. **The demand red line is TDD.** Pre-writing a complete acceptance test is labor shifting — moving verification cost from runtime to design time, as the article states. For fast-changing requirements the pre-written test can itself be incomplete or stale. This is a real limitation and it is not solved here; the demand red line is a task classification ("this task is verifiable"), not a claim that verification is free.
+
+3. **The repair boundary was untested at first publication; it is now tested.** The original version flagged "if the error is conceptual, can the fix loop recover?" as an open question. The boundary-of-loops section above now answers it: conceptual tasks (where the test contradicts the requirement's literal meaning) do not converge — they run the full step cap on the model that respects the requirement literally. The boundary is real and lines up with the syntax-vs-logic split.
+
+4. **The prompt-bias caveat is now measured, not just hedged.** The article notes a different self-judge prompt format "would likely change the self-judge convergence rate." I ran it (`scripts/selfjudge-prompt-reframe-test.py`): the original "YES/NO" prompt vs a reframed "output FINISH / NEEDS_WORK" prompt, same tasks, same models. The result cuts against the easy fix. On deepseek-v4-flash the false-negative rate was 100% under both prompts — reframe changed nothing. On glm-5.2 it went from 0% (YES/NO) to 50% (FINISH) — reframe made it *worse*, introducing new false negatives on a task the original prompt handled cleanly. Prompt format does change the numbers, but not in the direction that helps: the false negative is a structural property of self-judgment, not a knob prompt engineering turns down.
 
 ---
 
