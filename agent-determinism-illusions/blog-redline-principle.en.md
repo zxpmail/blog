@@ -159,6 +159,25 @@ With the red line, the medium task averaged 3.3 steps while the complex task ave
 
 A worthwhile independent direction: construct two task classes (syntax errors vs. logic errors) and compare fix-loop success rates — the former expected to be high, the latter low and non-improving with iteration.
 
+### Update: the boundary is detectable — but the detector is model-dependent
+
+A reader (Reid Marlow) proposed the natural brake: a *stuck-loop budget* — if the same red-line failure repeats N times unchanged, stop and surface the evidence, instead of spending the full step budget sampling. I ran it (`scripts/stuck-loop-budget-test.py`). Two model tiers (deepseek-v4-flash, glm-5.2) × two task classes under a red line: 3 repairable tasks (the ones above) and 4 *conceptual* tasks where the test expectation contradicts the requirement's literal meaning (e.g. `to_bin(8)` expects `"100"` not `"1000"`; a length function that must return 4 for a 5-character string). The conceptual class is the non-improving case the paragraph above predicts: the model honors the requirement, the red line keeps failing, and iteration cannot fix it because the "error" is that the model did what was asked.
+
+The two task classes behaved exactly as the hypothesis predicted. Repairable tasks converged in 1–2 steps on both models. Conceptual tasks on deepseek-v4-flash never converged — all four ran the full 8-step cap. On glm-5.2, one conceptual task ran the full cap; the other three converged in 2–4 steps (the model stumbled onto the test's hidden intent for those). **The boundary is real on the model that respects the requirement literally, and it lines up with the syntax-vs-logic split.**
+
+The detector's effectiveness, however, split by model — averaged across all four conceptual tasks, N=3 budget:
+
+| Model | Conceptual: failure signature | N=3 budget avg stop step | Steps saved vs step-cap | Repairable false-stops |
+|-------|------------------------------|--------------------------|-------------------------|------------------------|
+| glm-5.2 | stable (single repeated signature) | **2.5** | **1.5** | 0% |
+| deepseek-v4-flash | oscillating (two signatures alternating) | 7.75 | 0.25 | 0% |
+
+On glm-5.2, the one task that genuinely stuck (`C-bin`, `to_bin(8)`→`1000` vs expected `100`) emitted a single stereotyped wrong answer every step; the budget fired at step 3 and saved five steps of pointless sampling. On deepseek-v4-flash, the same conceptual tasks oscillated between a wrong answer and a `NameError` — each rewrite introduced a new syntax error, so no single signature ever repeated three times consecutively, and the budget never fired. It degraded gracefully back to the step-cap, which is the honest fallback.
+
+**The narrower conclusion:** the stuck-loop budget works *when the model's stuck behavior is stereotyped*, and silently no-ops when the model oscillates. That is worth knowing operationally — it tells you when the cheap mechanism pays for itself (stable-stuck models) and when you are paying for it without benefit (oscillating models, where the step-cap remains the backstop). The 0% false-stop rate on repairable tasks across both models is the reassuring half: when a task is genuinely fixable, the model converges fast enough that the budget never triggers, so it does not kill work that would have succeeded.
+
+The open question is the oscillation case. A signature that matches "same failure *class*" rather than "same literal output" might catch it, but that is the calibration knob this experiment did not tune. N=3 is also a guess, not a fitted value — the data shows N=2 catches more but risks firing on legitimately-progressing near-misses, while N=4 is safer but catches less.
+
 ## The deeper claim
 
 The Red Line Principle isn't about "how to make agents do more." It's about defining when not to let the agent continue.

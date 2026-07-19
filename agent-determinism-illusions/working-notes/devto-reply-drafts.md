@@ -737,10 +737,10 @@ The headline result: **the budget works, but only where the failure signature is
 
 | Model | Repairable tasks | Conceptual: avg stop step (N=3) | Conceptual: steps saved vs step-cap |
 |-------|-----------------|--------------------------------|-------------------------------------|
-| glm-5.2 | 0% false-stops | **3.0** | **5.0** |
-| deepseek-v4-flash | 0% false-stops | 7.8 | 0.2 |
+| glm-5.2 | 0% false-stops | **2.5** | **1.5** |
+| deepseek-v4-flash | 0% false-stops | 7.75 | 0.25 |
 
-On glm-5.2, the conceptual tasks produced a single, stable failure signature every step (it kept emitting the same wrong answer verbatim). The budget fired at step 3 and saved 5 steps of pointless sampling — exactly your "stop and surface the evidence." On deepseek-v4-flash, the same conceptual tasks *oscillated* between two failure signatures (a wrong answer, then a `NameError` from rewriting, then the wrong answer again) — so no single signature repeated three times consecutively, and the budget never fired. It degraded gracefully back to the step-cap, which is the honest fallback.
+On glm-5.2, the one conceptual task that genuinely stuck produced a single, stable failure signature every step (it kept emitting the same wrong answer verbatim). The budget fired at step 3 and saved 5 steps of pointless sampling on that task — exactly your "stop and surface the evidence." (The other three conceptual tasks on glm-5.2 converged in 2–4 steps — the model stumbled onto the test's hidden intent for those — which is why the per-model average saved is only 1.5.) On deepseek-v4-flash, all four conceptual tasks *oscillated* between two failure signatures (a wrong answer, then a `NameError` from rewriting, then the wrong answer again) — so no single signature repeated three times consecutively, and the budget never fired. It degraded gracefully back to the step-cap, which is the honest fallback.
 
 The repairable side was the cleanest result: 0% false-stops on both models. When a task is genuinely fixable, the model converges in 1–2 steps and the budget never triggers — so it doesn't kill work that would have succeeded.
 
