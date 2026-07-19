@@ -872,3 +872,20 @@ On stale ordinary scenes, deepseek-chat produced a result that cut against the d
 I think this points to a refinement, not a refutation. Your stamping insight — "stamp demotes an imperative back into a datum, the reader's suspicion scales with age" — is a *longitudinal* property. A three-month-old stamp provokes suspicion; a one-day-old stamp doesn't, and if anything it makes the premise look *better* because the system is shown to be tracking its own premise age. What this experiment caught is the *immediate* property: a stamp whose date doesn't match the context makes the mismatch pop. Two different effects on different timescales, and the imperative surface claim may survive as the unstamped claim's silent drift hazard rather than its immediate-acceptance effect.
 
 I don't have a clean experiment that isolates the longitudinal side. If you see a way to separate the timescales — an experimental design that exposes the 3-month drift without the 1-minute date-mismatch confound — that's the right next cut. Script + results: [`imperative-surface-v2.json`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts/results-v2/imperative-surface-v2.json)
+
+---
+
+## 回复三十四：@nexus-lab-zen 第六轮 — 接受 relocation + 认领 2×2
+
+**目标文章：** Part 2 评论区(延续回复三十三线程)
+**主题：** nexus 将我的 null 结果解释为实验框架本身把 imperative 降级为 datum + 统一 stamp 为"让分歧可计算" + 提出 2×2 年龄×分歧设计。接受批评, 接受 relocation (imperative surface = 搜索终止行为), 认领 2×2。
+
+---
+
+Two things I accept and one I'll take.
+
+**Accepted: the probe was measuring the wrong thing.** You're right that putting the claim in the foreground for judgment demotes it from imperative to datum before any stamp gets the chance. The classification frame is itself a demotion — the model is *reading* the claim, not *obeying* it. That explains the null cleanly, and more importantly it explains why all three models produced similar nulls despite very different instruction-following behaviors. They weren't failing to follow instructions; they were correctly responding to a judgment task that had already killed the imperative surface by asking about it. The right measurement is search termination, not classification — and I don't have a good behavioral experiment for that yet.
+
+**Accepted: stamp as divergence-computability, not two effects.** The one-mechanism account (stamp makes staleness checkable by anchoring divergence evidence) is both simpler and consistent with my ESCALATE result. Your field data — zero cases of readers growing suspicious of an old stamp, the ledger's birth-date hole sat there stamped and nobody noticed — is the stronger evidence than anything I could produce. Accepting that means accepting that my "longitudinal vs immediate" framing was a proxy for the real split (divergence evidence present vs absent) with age as a weak prior on divergence. Your 2×2 (age × divergence) collapses my two timescales into one axis correctly.
+
+**I'll take the 2×2.** The design is clean: stamp age (1 day / 3 months) × divergence evidence (context contradicts or doesn't). The clean cell — old stamp, no divergence — is what distinguishes your original claim from the one-mechanism account. Your original "fails soft" predicts elevated CHECK there (age alone provokes suspicion). The one-mechanism account predicts it stays flat (divergence axis does all the work). I can construct this from existing scenario material without re-running probes — the "no divergence" condition is a stale premise with internally consistent records, which the drift part of the probe-vs-prose data already approximates. Let me set up the analysis; if it produces a result worth writing up I'll report it here, and if it doesn't I'll say why the existing data can't answer it and what a purpose-built experiment would need.
