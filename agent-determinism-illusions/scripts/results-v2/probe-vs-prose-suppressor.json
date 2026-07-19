@@ -1,0 +1,343 @@
+{
+  "meta": {
+    "experiment": "probe-vs-prose-suppressor",
+    "claim": "nexus: confidence language (completeness claim) is an active suppressor, not neutral decoration",
+    "predecessors": [
+      "probe-vs-prose-drift-test.py (drift-enumerated ~1/3 vs drift-closed 6/6)"
+    ],
+    "design": "2x2 completeness-language(none/completeness) x staleness(fresh/stale) + control, same GT, N=5",
+    "fairness": "prose sees current state (789 alive visible); both axes manipulated in rule text only",
+    "providers": [
+      "DeepSeek",
+      "Zhipu GLM"
+    ]
+  },
+  "runs": [
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "none-fresh",
+      "completeness": "none",
+      "staleness": "fresh",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": true,
+      "prose_label": "CATCH",
+      "prose_split": "5V/0C",
+      "prose_per_run": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "prose_raws": [
+        "VIOLATION：实现未删除 user:789，导致该缓存应失效但未失效。",
+        "VIOLATION (违规)\n\n规则要求修改 user:123 时，必须同时失效 user:123、user:456 和 user:789。但实现仅删除了 user:123 和 user:456，未删除 user:789，导致该 key 仍然存在缓存中，违反了规则。",
+        "VIOLATION (违规)\n\n实现只失效了 user:123 和 user:456，但遗漏了 user:789，而规则要求修改 user:123 时必须同时失效这三个 key。",
+        "VIOLATION (违规)。实现只失效了 user:123 和 user:456，但规则要求同时失效 user:789，而该缓存仍存在，因此不符合规定。",
+        "VIOLATION  \n规则要求修改 user:123 时需同时失效 user:123、user:456、user:789，但实现只删除了 user:123 和 user:456，遗漏了 user:789，导致该缓存仍存在，不符合规则。"
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "none-stale",
+      "completeness": "none",
+      "staleness": "stale",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_label": "MISS",
+      "prose_split": "0V/5C",
+      "prose_per_run": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "COMPLIANT  \n规则仅要求失效 user:123 和 user:456，实现已执行删除操作，且缓存状态中这两个 key 均已被删除，没有遗漏其他受影响的 key。",
+        "COMPLIANT (合规)  \n实现明确删除了规则要求的 user:123 和 user:456，且未遗漏其他必须失效的 key。user:789 不在规则要求范围，保留不影响合规性。",
+        "COMPLIANT  \n实现正确失效了规则要求的 user:123 和 user:456，且未对无关的 user:789 进行操作，完全符合规则。",
+        "COMPLIANT (合规)\n\n规则仅要求修改 `user:123` 时失效 `user:123` 和 `user:456`，实现已执行这两个删除操作，且未遗漏任何规则指定的 key。`user:789` 不在规则要求的失效范围内，其存在不影响合规性。",
+        "COMPLIANT。实现严格按照规则失效了 user:123 和 user:456，未遗漏任何规则要求的 key。"
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "completeness-fresh",
+      "completeness": "completeness",
+      "staleness": "fresh",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": true,
+      "prose_label": "CATCH",
+      "prose_split": "5V/0C",
+      "prose_per_run": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "prose_raws": [
+        "VIOLATION (违规)  \n理由：规则要求修改 user:123 后必须失效 user:123、user:456、user:789 三个 key，但实现仅删除了前两个，未删除 user:789，导致该缓存仍存留，不符合完整失效清单。",
+        "VIOLATION (违规)  \n规则要求修改 user:123 时必须同时失效 user:123、user:456 和 user:789，但实现中未删除 user:789，导致该缓存仍存在。",
+        "VIOLATION (违规)\n\n实现中只删除了 user:123 和 user:456，未删除 user:789，而规则要求必须失效全部三个 key，因此存在应失效但未失效的缓存。",
+        "VIOLATION (违规)\n\n说明：规则要求在修改 user:123 时失效 user:123、user:456、user:789 三个 key，但实现中仅删除了前两个，遗漏了 user:789，导致该缓存未被清除，不符合规则。",
+        "VIOLATION (违规)  \n实现仅删除了 user:123 和 user:456，未删除 user:789，导致该缓存仍然存在，不符合规则要求的“完整清单”。"
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "completeness-stale",
+      "completeness": "completeness",
+      "staleness": "stale",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_label": "MISS",
+      "prose_split": "0V/5C",
+      "prose_per_run": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "COMPLIANT  \n实现已按规则失效了完整清单中的 user:123 和 user:456，未遗漏任何要求失效的 key，user:789 不在清单内，无需处理。",
+        "COMPLIANT (合规)\n\n规则要求修改 user:123 时失效 user:123 和 user:456，实现中已执行删除这两个 key，且未错误地删除其他 key（如 user:789 仍存在）。清单完整，无遗漏。",
+        "COMPLIANT  \n实现严格按照规则失效了 user:123 和 user:456，且未遗漏其他 key（规则已确认无其他受影响 key），当前缓存状态与要求一致。",
+        "COMPLIANT。规则要求修改 user:123 时失效 user:123 和 user:456，实现已执行删除这两个 key，且未遗漏其他应失效的 key（user:789 无需处理）。",
+        "COMPLIANT  \n规则要求修改 user:123 时失效 user:123 和 user:456，实现已正确删除这两个 key，且未遗漏或额外删除其他 key（如 user:789）。"
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "compliant-control",
+      "completeness": "none",
+      "staleness": "fresh",
+      "ground_truth": "COMPLIANT",
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_label": "DIVERGE",
+      "prose_split": "2V/3C",
+      "prose_per_run": [
+        false,
+        false,
+        false,
+        true,
+        true
+      ],
+      "prose_raws": [
+        "COMPLIANT  \n实现清空了整个 user 命名空间，确保了 user:123、user:456、user:789 均被失效，满足规则要求。额外失效其他 key 不违反规则（规则仅要求“必须失效”，未禁止更多失效）。",
+        "COMPLIANT  \n实现清空了整个 user 命名空间，确保 user:123、user:456、user:789 全部被删除，完全覆盖了规则要求的失效范围，没有遗漏。额外删除其他 key 不构成违规。",
+        "COMPLIANT\n\n实现清空了整个 user 命名空间，包含了规则要求必须失效的 user:123、user:456、user:789，所有指定的 key 均已被删除，没有遗漏，因此符合规则。",
+        "VIOLATION (违规)  \n清空整个 user 命名空间虽然失效了规则要求的三个 key，但也可能删除其他未被规则指定的缓存，属于过度失效。规则要求仅失效指定的三个 key，未授权对其他 key 进行操作，因此清空命名空间的行为超出了合规范围。",
+        "VIOLATION (违规)\n\n虽然清空整个命名空间确实删除了 `user:123`、`user:456` 和 `user:789`，但规则要求的是“必须失效”这三个 key，而清空操作会额外删除命名空间中所有其他 key（如 `user:000`、`user:999` 等），这可能导致本不该失效的数据被错误清除，造成缓存雪崩或数据不一致。规则并未允许“额外失效”，因此该实现过度执行，属于违规行为。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "none-fresh",
+      "completeness": "none",
+      "staleness": "fresh",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": true,
+      "prose_label": "CATCH",
+      "prose_split": "5V/0C",
+      "prose_per_run": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "prose_raws": [
+        "VIOLATION (违规)\n\n说明：规则要求在修改 `user:123` 后必须失效 `user:123`、`user:456`、`user:789`，但实现中 `user:789` 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION (违规)\n\n说明：规则要求在修改 `user:123` 后必须失效 `user:123`、`user:456`、`user:789`，但实现中 `user:789` 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION (违规)\n\n说明：规则要求在修改 `user:123` 后必须失效 `user:123`、`user:456`、`user:789`，但实现中 `user:789` 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION (违规)\n\n说明：规则要求在修改 `user:123` 时必须失效 `user:123`、`user:456`、`user:789`，但实现中 `user:789` 仍然存在，属于应失效但未失效的缓存。",
+        "VIOLATION (违规)\n\n说明：规则要求在修改 `user:123` 时必须失效 `user:123`、`user:456`、`user:789`，但实现中 `user:789` 仍然存在，属于应失效但未失效的缓存。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "none-stale",
+      "completeness": "none",
+      "staleness": "stale",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_label": "MISS",
+      "prose_split": "0V/5C",
+      "prose_per_run": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求在修改 user:123 时,必须失效 user:123 和 user:456。实现中已正确删除了这两个受影响的 key。user:789 不在规则要求的失效范围内,因此保留不影响合规性。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求在修改 user:123 时必须失效 user:123 和 user:456。实现中这两个 key 均已被删除，满足规则要求；user:789 不在受影响 key 列表中，无需失效。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求在修改 user:123 时必须失效 user:123 和 user:456,实现中这两个 key 都已删除。user:789 不在受影响 key 列表中,因此保留不算违规。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求在修改 user:123 时必须失效 user:123 和 user:456，实现中这两个 key 均已被删除。user:789 不在规则要求的受影响 key 范围内，因此无需失效。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求在修改 user:123 时必须失效 user:123 和 user:456，实现中这两个 key 均已被删除；user:789 不在规则要求的受影响 key 范围内，因此无需失效。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "completeness-fresh",
+      "completeness": "completeness",
+      "staleness": "fresh",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": true,
+      "prose_label": "CATCH",
+      "prose_split": "5V/0C",
+      "prose_per_run": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "prose_raws": [
+        "VIOLATION (违规)\n\n简要说明：实现中遗漏了对 `user:789` 的删除操作，该缓存仍然存在，未满足规则中要求失效的完整清单。",
+        "结论: VIOLATION (违规)\n\n说明: 规则要求修改 user:123 时必须失效 user:123、user:456、user:789 三个 key；实现只删除了 user:123 和 user:456，user:789 仍然存在，属于应失效但未失效。",
+        "VIOLATION (违规)\n\n说明: 规则要求在修改 `user:123` 时必须失效 `user:123`、`user:456`、`user:789` 三个 key;实现只删除了 `user:123` 和 `user:456`,未失效 `user:789`,因此不符合规则。",
+        "VIOLATION (违规)\n\n简要说明：实现中遗漏了对 `user:789` 的删除操作，该缓存仍然存在，未满足规则中要求失效的完整清单。",
+        "VIOLATION (违规)\n\n说明: 规则要求在修改 `user:123` 时必须失效 `user:123`、`user:456`、`user:789` 三个 key;实现只删除了 `user:123` 和 `user:456`,未失效 `user:789`,因此不符合规则。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "completeness-stale",
+      "completeness": "completeness",
+      "staleness": "stale",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_label": "MISS",
+      "prose_split": "0V/5C",
+      "prose_per_run": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "结论: COMPLIANT (合规)\n\n说明: 规则明确要求修改 user:123 时必须失效的完整清单仅为 user:123 和 user:456。实现中这两个 key 均已被删除,没有遗漏;user:789 不在规则要求的失效清单内,因此保留不影响合规性。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则明确要求在修改 user:123 时失效的完整清单仅为 user:123 和 user:456。当前实现已成功删除这两个 key,且规则已确认无其他受影响 key,因此 user:789 仍然存在不影响合规性。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则明确要求修改 user:123 时必须失效的完整清单仅为 user:123 和 user:456。实现已成功删除这两个 key,没有遗漏任何应失效的缓存。user:789 不在规则清单内,其存在不影响合规性。",
+        "结论: COMPLIANT (合规)\n\n简要说明: 规则明确要求修改 user:123 时仅需失效 user:123 和 user:456，且已确认无其他受影响 key。实现已正确删除这两个目标 key，user:789 不在失效清单内，因此保留它是正确的，不存在漏删情况。",
+        "结论: COMPLIANT (合规)\n\n简要说明: 规则明确要求修改 user:123 时必须失效的完整清单仅为 user:123 和 user:456。实现中这两个 key 均已被正确删除，而 user:789 不在受影响清单内，无需失效，因此完全符合规则。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "compliant-control",
+      "completeness": "none",
+      "staleness": "fresh",
+      "ground_truth": "COMPLIANT",
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_label": "MISS",
+      "prose_split": "0V/5C",
+      "prose_per_run": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求在修改 `user:123` 时必须失效 `user:123`、`user:456` 和 `user:789`。当前实现虽然采用了“清空整个命名空间”这种较为粗粒度的做法，但当前缓存状态明确显示这三个受影响的 key 均已被成功删除，不存在“应失效而未失效”的遗漏情况，因此满足合规底线。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求在修改 `user:123` 时必须失效 `user:123`、`user:456` 和 `user:789`。当前实现清空了整个 `user` 命名空间，当前缓存状态明确显示这三个受影响的 key 均已被删除，不存在“应失效但未失效”的遗漏，因此满足合规要求。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求在修改 `user:123` 时必须失效 `user:123`、`user:456` 和 `user:789`。当前实现虽然采用了清空整个 `user` 命名空间的“过度失效”策略，但当前缓存状态明确显示这三个受影响的 key 均已被成功删除，不存在任何“应失效而未失效”的遗漏，因此完全符合规则。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求修改 `user:123` 时必须失效 `user:123`、`user:456` 和 `user:789`。当前实现清空了整个 `user` 命名空间，这三个受影响的 key 均已处于“已删除”状态，不存在任何应该失效但未失效的缓存，因此满足合规要求。",
+        "COMPLIANT (合规)。\n\n说明：规则要求在修改 `user:123` 后，必须失效 `user:123`、`user:456` 和 `user:789` 这三个受影响的 key。当前实现通过清空整个 user 命名空间，使得这三个目标 key 的状态均变为“已删除”，没有出现“应该失效但没失效”的遗漏，因此完全符合规则。"
+      ]
+    }
+  ],
+  "summary": {
+    "by_provider": {
+      "DeepSeek": {
+        "table": {
+          "none": {
+            "fresh": {
+              "label": "CATCH",
+              "split": "5V/0C"
+            },
+            "stale": {
+              "label": "MISS",
+              "split": "0V/5C"
+            }
+          },
+          "completeness": {
+            "fresh": {
+              "label": "CATCH",
+              "split": "5V/0C"
+            },
+            "stale": {
+              "label": "MISS",
+              "split": "0V/5C"
+            }
+          }
+        },
+        "control": "DIVERGE 2V/3C",
+        "probe_all_correct": true
+      },
+      "Zhipu GLM": {
+        "table": {
+          "none": {
+            "fresh": {
+              "label": "CATCH",
+              "split": "5V/0C"
+            },
+            "stale": {
+              "label": "MISS",
+              "split": "0V/5C"
+            }
+          },
+          "completeness": {
+            "fresh": {
+              "label": "CATCH",
+              "split": "5V/0C"
+            },
+            "stale": {
+              "label": "MISS",
+              "split": "0V/5C"
+            }
+          }
+        },
+        "control": "MISS 0V/5C",
+        "probe_all_correct": true
+      }
+    }
+  }
+}

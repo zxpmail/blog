@@ -8,7 +8,7 @@
 ---
 title: "Probe vs Prose: what the verifier-sharing-your-text-channel really costs"
 published: false
-description: "nexus-lab-zen's probe-vs-prose, tested across two axes — clarity (20 scenarios × 5 trials) and drift (controlled fresh-vs-stale, cross-model, two runs). On clarity, prose diverges on vague rules. On drift, prose misses cleanly when a precise rule has gone stale — so detection IS the gap there. Probe's edge has two mechanisms: forced disambiguation (clarity) and drift-immune re-execution (drift)."
+description: "nexus-lab-zen's probe-vs-prose, tested across two axes — clarity (20 scenarios × 5 trials) and drift (controlled fresh-vs-stale, cross-model, two runs). On clarity, prose diverges on vague rules. On drift, prose misses cleanly when a precise rule has gone stale — so detection IS the gap there; the suppressor is staleness itself, not the rule's confidence language (a controlled test of the completeness-claim hypothesis did not hold). Probe's edge has two mechanisms: forced disambiguation (clarity) and drift-immune re-execution (drift)."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
@@ -105,6 +105,8 @@ So I ran a second experiment with one variable changed: whether the rule's enume
 
 This is the half the clarity axis couldn't see. On a precise rule that has drifted, prose *is* the weaker detector — it misses what probe catches, cleanly and reproducibly, both models. The prose judge reads the rule's enumeration; the enumeration is stale; a reader of a stale-but-precise description has no way to know it's stale. It reasons correctly *given the description*, and the description is wrong about the present. The probe re-derives the affected set from the live namespace and checks it — re-execution against current state is drift-immune by construction; reading a description is not.
 
+A natural next question is what *in* the stale rule text produces the miss — whether the rule's confidence language ("complete, no others") is itself an active suppressor of the generalization that might otherwise catch the gap, or just inert. I'd guessed suppressor, from the drift-closed scenario's clean 6/6 miss, and the guess was wrong. The controlled isolation (stale enumeration with vs. without the completeness claim, everything else identical) gave 5/5 miss in both cells, both models — the completeness claim added no measurable suppression. The ~⅓ catch I'd seen in an earlier variant turned out to come from a *temporal* cue ("the namespace *at the time* contained…"), which hints the world may have changed and prompts some generalization; remove that cue and the catch goes to zero regardless of completeness. So the suppressor in drift is staleness itself, not the confidence assertion about it. That sharpens, rather than weakens, the drift-axis claim: a rule drifts into miss at the enumeration level, however it describes its own confidence. (Experiment: `probe-vs-prose-suppressor-test.py`; results `results-v2/probe-vs-prose-suppressor.json`.)
+
 One honest boundary, because a careful reader will press on it: I tried to cross drift onto *vague* rules (a four-cell design, clarity × drift), and the vague-stale cell caught *more* than vague-fresh — backwards. Signaling "this rule is stale" to a vague rule needs a sentence ("may not reflect subsequent changes"), and that sentence is itself a suspicion cue that makes the model check harder. You cannot cleanly manipulate drift on a rule that never pinned a set, because the only way to tell the reader it's stale is prose, and that prose changes the verdict. The clean drift signal is on the precise row; the vague row stays in §3. That's a limitation, and a small instance of the principle: the moment you describe drift in prose, the prose participates in the result.
 
 ## 5. The refinement: two axes, two mechanisms
@@ -135,7 +137,7 @@ So the honest scope of probe-vs-prose, after both experiments: **for any rule wh
 
 *Clarity-axis experiment:* [`probe-vs-prose-expanded.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 20 scenarios × 5 trials × 2 models, fairness design (prose given full rule + impl + cache state). Results: `results-v2/probe-vs-prose-expanded.json`.
 
-*Drift-axis experiments:* `probe-vs-prose-drift-test.py`, `probe-vs-prose-synthesis-test.py` — N=5, cross-model, run twice. Results: `results-v2/probe-vs-prose-drift.json`, `results-v2/probe-vs-prose-synthesis.json` (`.run1.json` = first of two runs, for reproducibility).
+*Drift-axis experiments:* `probe-vs-prose-drift-test.py`, `probe-vs-prose-synthesis-test.py`, `probe-vs-prose-suppressor-test.py` — N=5, cross-model (synthesis run twice). Results: `results-v2/probe-vs-prose-drift.json`, `results-v2/probe-vs-prose-synthesis.json` (`.run1.json` = first of two runs, for reproducibility), `results-v2/probe-vs-prose-suppressor.json`.
 
 *Previous: [Key-space C3: the Bloom filter that closes referent gameability](blog-agent-determinism-illusions-11.en.md)*
 *Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
