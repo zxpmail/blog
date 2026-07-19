@@ -74,4 +74,4 @@ vibecoding 把这个合体拆开了。code 廉价了——任何人都能让 AI 
 
 ---
 
-*姊妹篇：[判的疲惫——从验证 AI，到验证自己](blog-essay-judging-fatigue.zh.md) · [镜子照不到思想](blog-essay-mirror-no-thought.zh.md)*
+*姊妹篇：[判的疲惫——从验证 AI，到验证自己](blog-essay-judging-fatigue.zh.md) · [镜子照不到思想](blog-essay-mirror-no-thought.zh.md) · [Harness 的边界](blog-essay-harness-border.zh.md)*

@@ -176,4 +176,4 @@ AI 执笔，但思想是人给的。文章指纹少不是因为"像人写的"—
 
 ---
 
-*姊妹篇：[判的疲惫——从验证 AI，到验证自己](blog-essay-judging-fatigue.zh.md) · [从 "show me your code" 到 "show me your idea"](blog-essay-show-idea.zh.md)*
+*姊妹篇：[判的疲惫——从验证 AI，到验证自己](blog-essay-judging-fatigue.zh.md) · [从 "show me your code" 到 "show me your idea"](blog-essay-show-idea.zh.md) · [Harness 的边界](blog-essay-harness-border.zh.md)*

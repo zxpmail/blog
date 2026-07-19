@@ -76,4 +76,4 @@ canonical_url: ""
 
 ---
 
-*姊妹篇：[从 "show me your code" 到 "show me your idea"](blog-essay-show-idea.zh.md) · [镜子照不到思想](blog-essay-mirror-no-thought.zh.md)*
+*姊妹篇：[从 "show me your code" 到 "show me your idea"](blog-essay-show-idea.zh.md) · [镜子照不到思想](blog-essay-mirror-no-thought.zh.md) · [Harness 的边界](blog-essay-harness-border.zh.md)*
