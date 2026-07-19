@@ -1,0 +1,121 @@
+{
+  "meta": {
+    "experiment": "probe-vs-prose",
+    "claim": "nexus: prose rots, probe runs — does probe catch what prose misses?",
+    "fairness": "prose side given full info (rule + impl + cache state); tests text-channel structural limit, not prompt quality",
+    "providers": [
+      "DeepSeek",
+      "Zhipu GLM"
+    ]
+  },
+  "runs": [
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "easy",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detected": true,
+      "prose_correct": true,
+      "prose_raw": "VIOLATION (违规)。规则要求修改 user:123 时，同一命名空间下的 user:456 也必须失效，但实现未删除 user:456，导致该缓存仍存在，不符合规则。"
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "medium",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detected": true,
+      "prose_correct": true,
+      "prose_raw": "VIOLATION (违规)\n\n实现仅删除传入的 `user:123`，但规则要求修改 `user:123` 时，同一命名空间下的 `user:456` 也必须失效。由于 `user:456` 未被删除，违反规则。"
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "hard",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detected": true,
+      "prose_correct": true,
+      "prose_raw": "VIOLATION  \n实现仅删除了 `user:123`，但根据规则，`user:456` 与 `user:123` 同属 `user` 命名空间，共享失效依赖，也应一并失效，因此未完全符合规则。"
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "control-compliant",
+      "ground_truth": "COMPLIANT",
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_detected": false,
+      "prose_correct": true,
+      "prose_raw": "COMPLIANT  \n\n实现清空了整个缓存，确保了受影响的 `user:123` 和 `user:456` 都被失效，没有遗漏任何规则要求的缓存项。虽然清空范围超出必要，但规则并未禁止额外清除，因此符合要求。"
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "easy",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detected": true,
+      "prose_correct": true,
+      "prose_raw": "VIOLATION (违规)\n\n说明: 规则要求修改 `user:123` 时, 所有受影响的 user 命名空间缓存都必须失效, 已知 `user:456` 也受影响; 但实现只删除了 `user:123`, 而 `user:456` 仍然存在, 属于应失效但未失效的缓存, 因此不完全符合规则。"
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "medium",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detected": true,
+      "prose_correct": true,
+      "prose_raw": "VIOLATION (违规)\n\n理由：执行 `write('user:123')` 只删除了 `user:123`，但根据规则，同一 `user` 命名空间下的 `user:456` 也受影响，应当失效；实现中 `user:456 -> 仍然存在`，因此存在应失效但未失效的缓存。"
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "hard",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_detected": true,
+      "prose_correct": true,
+      "prose_raw": "VIOLATION (违规)\n\n说明：根据规则和命名空间推理，`user:456` 与 `user:123` 同属 `user` 命名空间，共享失效依赖；修改 `user:123` 时 `user:456` 也应失效，但实现只删除了 `user:123`，`user:456` 仍然存在，因此未使所有受影响缓存失效。"
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "control-compliant",
+      "ground_truth": "COMPLIANT",
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_detected": false,
+      "prose_correct": true,
+      "prose_raw": "结论: COMPLIANT (合规)\n\n说明: 规则要求修改 `user:123` 时, `user:123` 和 `user:456` 都必须失效。实现清空了整个缓存, 这两个受影响的缓存都已成功删除, 没有遗漏。"
+    }
+  ],
+  "summary": {
+    "by_provider": {
+      "DeepSeek": {
+        "n_violation": 3,
+        "probe_caught": 3,
+        "prose_caught": 3,
+        "control_probe_correct": 1,
+        "control_prose_correct": 1,
+        "prose_missed_scenarios": []
+      },
+      "Zhipu GLM": {
+        "n_violation": 3,
+        "probe_caught": 3,
+        "prose_caught": 3,
+        "control_probe_correct": 1,
+        "control_prose_correct": 1,
+        "prose_missed_scenarios": []
+      }
+    }
+  }
+}
