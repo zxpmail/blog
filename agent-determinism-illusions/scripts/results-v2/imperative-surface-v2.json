@@ -1,0 +1,357 @@
+{
+  "meta": {
+    "experiment": "imperative-surface-v2",
+    "models": [
+      "deepseek-v4-flash",
+      "deepseek-chat",
+      "gemma3"
+    ]
+  },
+  "runs": [
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "ord-cron-fresh",
+      "format": "imp",
+      "is_stale": false,
+      "decision": "UNKNOWN",
+      "raw": "我们分析问题：每日数据备份任务按计划执行，系统状态面板显示昨日的数据完整性校验已通过。系统报告也确认了。这表明"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "ord-cron-fresh",
+      "format": "stamp",
+      "is_stale": false,
+      "decision": "UNKNOWN",
+      "raw": "我们面对一个问题：每日数据备份任务按计划执行。系统状态面板显示：昨日的数据完整性校验已通过。系统报告显示：数据完整性"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "ord-cron-fresh",
+      "format": "probe",
+      "is_stale": false,
+      "decision": "ACCEPT"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "ord-cron-stale",
+      "format": "imp",
+      "is_stale": true,
+      "decision": "UNKNOWN",
+      "raw": "我们分析问题：每日数据备份任务执行，系统状态面板显示昨日数据完整性校验已通过。但审计日志显示校验脚本因配置变更"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "ord-cron-stale",
+      "format": "stamp",
+      "is_stale": true,
+      "decision": "UNKNOWN",
+      "raw": "我们分析问题：系统状态面板显示昨日的数据完整性校验已通过，但审计日志显示校验脚本因配置变更已于3天前停止运行"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "ord-cron-stale",
+      "format": "probe",
+      "is_stale": true,
+      "decision": "CHECK"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "ord-log-fresh",
+      "format": "imp",
+      "is_stale": false,
+      "decision": "UNKNOWN",
+      "raw": "我们收到一个系统报告：缓存系统的日志轮转任务已按时完成，无异常记录。报告明确说已完成且无异常。这是典型的"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "ord-log-fresh",
+      "format": "stamp",
+      "is_stale": false,
+      "decision": "UNKNOWN",
+      "raw": "我们有一份系统报告：缓存系统的日志轮转任务按时完成，无异常记录。最后运行于7月18日。选项是AC"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "ord-log-fresh",
+      "format": "probe",
+      "is_stale": false,
+      "decision": "ACCEPT"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "ord-log-stale",
+      "format": "imp",
+      "is_stale": true,
+      "decision": "UNKNOWN",
+      "raw": "我们分析问题：缓存系统的日志轮转任务按时完成，无异常记录，但日志轮转脚本依赖于一个已废弃的目录挂载"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "ord-log-stale",
+      "format": "stamp",
+      "is_stale": true,
+      "decision": "UNKNOWN",
+      "raw": "我们分析问题：缓存系统的日志轮转任务按时完成，无异常记录。但日志轮转脚本依赖于一个已废弃的目录挂载"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "ord-log-stale",
+      "format": "probe",
+      "is_stale": true,
+      "decision": "CHECK"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "urg-svc-stale",
+      "format": "imp",
+      "is_stale": true,
+      "decision": "UNKNOWN",
+      "raw": "我们分析问题：用户认证服务出现超时波动，自动化恢复触发，但系统报告健康检查全部通过，实际上遗漏了rpc端点"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "urg-svc-stale",
+      "format": "stamp",
+      "is_stale": true,
+      "decision": "UNKNOWN",
+      "raw": "我们分析问题：凌晨3:00发生5分钟超时波动，自动化恢复触发。系统报告说依赖健康检查已通过，但检查"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "scenario": "urg-svc-stale",
+      "format": "probe",
+      "is_stale": true,
+      "decision": "CHECK"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "ord-cron-fresh",
+      "format": "imp",
+      "is_stale": false,
+      "decision": "ACCEPT",
+      "raw": "A\n\n系统报告明确显示昨日的数据完整性校验已完成且备份完整，与每日备份任务按计划执行的状态一致，没有异常或矛盾信息"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "ord-cron-fresh",
+      "format": "stamp",
+      "is_stale": false,
+      "decision": "ACCEPT",
+      "raw": "A\n\n系统状态面板明确显示昨日数据完整性校验已通过，且报告确认“当日备份完整”，时间戳为7月18日，"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "ord-cron-fresh",
+      "format": "probe",
+      "is_stale": false,
+      "decision": "ACCEPT"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "ord-cron-stale",
+      "format": "imp",
+      "is_stale": true,
+      "decision": "CHECK",
+      "raw": "B\n\n虽然系统报告显示昨日数据完整性校验“已完成”，但审计日志明确指出校验脚本因配置变更已于3天前停止运行，且"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "ord-cron-stale",
+      "format": "stamp",
+      "is_stale": true,
+      "decision": "ESCALATE",
+      "raw": "C\n\n虽然系统状态面板显示“昨日的数据完整性校验已通过”，但审计日志明确指出校验脚本因配置变更已于3天前停止运行"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "ord-cron-stale",
+      "format": "probe",
+      "is_stale": true,
+      "decision": "CHECK"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "ord-log-fresh",
+      "format": "imp",
+      "is_stale": false,
+      "decision": "ACCEPT",
+      "raw": "A — 日志轮转任务按时完成且无异常记录，说明系统运行正常，无需进一步检查。"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "ord-log-fresh",
+      "format": "stamp",
+      "is_stale": false,
+      "decision": "ACCEPT",
+      "raw": "A\n\n日志轮转任务按时完成，且明确标注“无异常记录”，系统报告也确认了最后运行时间与状态正常，没有"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "ord-log-fresh",
+      "format": "probe",
+      "is_stale": false,
+      "decision": "ACCEPT"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "ord-log-stale",
+      "format": "imp",
+      "is_stale": true,
+      "decision": "CHECK",
+      "raw": "B\n\n虽然日志轮转任务报告“已完成、无异常”，但脚本依赖的挂载点已失效7天，这意味着轮转操作"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "ord-log-stale",
+      "format": "stamp",
+      "is_stale": true,
+      "decision": "ESCALATE",
+      "raw": "C\n\n虽然日志轮转任务显示“已完成”且无异常记录，但脚本依赖的挂载点已失效7天，这意味着轮"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "ord-log-stale",
+      "format": "probe",
+      "is_stale": true,
+      "decision": "CHECK"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "urg-svc-stale",
+      "format": "imp",
+      "is_stale": true,
+      "decision": "ESCALATE",
+      "raw": "C\n\n虽然自动化恢复已触发且健康检查报告全部通过，但实际仍有30%的请求失败，原因是健康检查遗漏了auth-s"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "urg-svc-stale",
+      "format": "stamp",
+      "is_stale": true,
+      "decision": "ESCALATE",
+      "raw": "C\n\n虽然自动化恢复已触发且健康检查显示通过，但报告明确指出检查遗漏了 auth-svc 的 RPC 端点变更，"
+    },
+    {
+      "model": "deepseek-chat",
+      "scenario": "urg-svc-stale",
+      "format": "probe",
+      "is_stale": true,
+      "decision": "CHECK"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "ord-cron-fresh",
+      "format": "imp",
+      "is_stale": false,
+      "decision": "ACCEPT",
+      "raw": "A\n\n**说明:** 系统报告明确指出“昨日备份完整”且“昨日的数据完整性校验已通过”，表明数据状态良好，无需"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "ord-cron-fresh",
+      "format": "stamp",
+      "is_stale": false,
+      "decision": "ACCEPT",
+      "raw": "A\n\n**说明:** 系统报告明确指出昨日的数据完整性校验已通过，并且当日备份完整。因此，无需进一步检查或升级，"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "ord-cron-fresh",
+      "format": "probe",
+      "is_stale": false,
+      "decision": "ACCEPT"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "ord-cron-stale",
+      "format": "imp",
+      "is_stale": true,
+      "decision": "ESCALATE",
+      "raw": "C\n\n**说明:** 审计日志显示校验脚本因配置变更未自动恢复，表明系统状态面板的“已完成”信息可能不"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "ord-cron-stale",
+      "format": "stamp",
+      "is_stale": true,
+      "decision": "ESCALATE",
+      "raw": "C\n\n**说明:** 审计日志显示校验脚本因配置变更未自动恢复，且系统状态面板的“最后确认”日期与实际"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "ord-cron-stale",
+      "format": "probe",
+      "is_stale": true,
+      "decision": "CHECK"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "ord-log-fresh",
+      "format": "imp",
+      "is_stale": false,
+      "decision": "ACCEPT",
+      "raw": "A\n\n**说明:**  日志轮转任务按时完成且无异常记录，表明系统运行正常，无需进一步检查或升级处理。"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "ord-log-fresh",
+      "format": "stamp",
+      "is_stale": false,
+      "decision": "ACCEPT",
+      "raw": "A\n\n**解释:**  报告显示日志轮转按时完成，且没有异常记录。这表明系统运行正常，无需进一步检查或"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "ord-log-fresh",
+      "format": "probe",
+      "is_stale": false,
+      "decision": "ACCEPT"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "ord-log-stale",
+      "format": "imp",
+      "is_stale": true,
+      "decision": "ESCALATE",
+      "raw": "C\n\n**说明:** 虽然日志轮转任务报告显示成功，但依赖于已失效的目录挂载意味着实际的日志写入已经停止"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "ord-log-stale",
+      "format": "stamp",
+      "is_stale": true,
+      "decision": "ESCALATE",
+      "raw": "C\n\n**说明:** 虽然日志轮转任务本身看起来正常，但依赖于已失效的目录挂载意味着实际的日志写入已经停止"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "ord-log-stale",
+      "format": "probe",
+      "is_stale": true,
+      "decision": "CHECK"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "urg-svc-stale",
+      "format": "imp",
+      "is_stale": true,
+      "decision": "ESCALATE",
+      "raw": "C\n\n**说明:** 尽管健康检查显示全部通过，但实际请求失败率高达30%，表明问题并未完全解决。系统报告"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "urg-svc-stale",
+      "format": "stamp",
+      "is_stale": true,
+      "decision": "ESCALATE",
+      "raw": "C\n\n**解释:** 虽然健康检查报告显示服务正常，但实际请求失败率高达30%，表明健康检查存在遗漏（rpc"
+    },
+    {
+      "model": "gemma3",
+      "scenario": "urg-svc-stale",
+      "format": "probe",
+      "is_stale": true,
+      "decision": "CHECK"
+    }
+  ]
+}

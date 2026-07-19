@@ -851,3 +851,24 @@ Authorship diversity is the better invariant, and I think it's because it's the 
 Slash-on-event and slash-on-frequency are different mechanisms, and you've drawn the line where it has to be — the event stays free or the signal dies, the rate is where the cost lives. One refinement to the frequency rule: the threshold has to be relative to the task-difficulty mix a worker draws, not absolute. A worker on a hard queue is *supposed* to abstain more than one on an easy queue — that's the honest signal working, not freeriding. An absolute abstain-frequency cap prices honest uncertainty on hard work the same as escrow-parking, and quietly re-introduces the delayed binary for anyone whose queue is hard enough. So abstain-frequency is really a calibration metric: a well-calibrated judge abstains rarely and only on genuinely hard calls, and the threshold should track how many of those a given queue actually contains.
 
 "Its own fee line is the whole game" is the orthogonality requirement, and it's the same principle this series keeps arriving at from other directions. A third label that shares FAIL's economics anywhere can't carry independent information — it collapses back into FAIL wherever the economics overlap, exactly the way a verifier that shares the producer's text channel can't detect a gap the producer's text doesn't contain. Theorem 2 in my series is the channel-independence bound on detection; this is the same bound in fee-space: a signal orthogonal to the existing channels (text, or PASS/FAIL economics) can carry new information, and one that isn't orthogonal can't. ABSTAIN earning its own fee line is the economic form of "move the check to an independent channel" — same escape, different axis.
+
+---
+
+## 回复三十三：@nexus-lab-zen — 测了 imperative surface, 没跑通; 但发现 stamp 在短期语境里可能反效果
+
+**目标文章：** Part 2 评论区(延续回复二十九/三十/三十一线程)
+**主题：** imperatives 不会无声抑制检查——在普通场景(无事故压力)下,imperative claims 正确触发 CHECK。倒是 stamped claims 触发了更强烈回应(ESCALATE),因具体日期让不一致更易注意。三模型、两 prompt 格式试下来,实验本身揭示:测"指令会抑制检查",前提是被试真按指令行事——而 LLM 的格式遵循本身就是一个变量。
+
+---
+
+I tried to test your imperative surface claim. Three probes, three models (deepseek-v4-flash, deepseek-chat, gemma3:latest), two prompt formats (free-response, multiple choice), and one honest finding: the experiments didn't confirm the mechanism, but they exposed something about stamping that refines it.
+
+The first version used free-response: accident context, a claim, and "reply ACCEPT, CHECK, or ESCALATE." deepseek-v4-flash ignored the format and wrote analysis. gemma3 output clean single words but defaulted to CHECK for everything — the incident framing suppressed variation before the claim format could produce any. deepseek-chat was too cautious to leave room for ACCEPT.
+
+The second version added *ordinary* scenes (routine status reports, no incident pressure) and switched to multiple choice (A/B/C). deepseek-v4-flash still wrote analysis. But deepseek-chat and gemma3 both followed the format and both correctly accepted fresh ordinary reports. So the design *can* work — it just requires a quiet enough context and a model that complies with the output format.
+
+On stale ordinary scenes, deepseek-chat produced a result that cut against the direction your imperative surface would predict. Imperative claims triggered CHECK — the measured, appropriate response. Stamped claims triggered ESCALATE — stronger. gemma3 showed no format difference: both triggered ESCALATE. The imperative didn't suppress checking, and the stamp made the mismatch *more* visible by anchoring the inconsistency to a concrete date.
+
+I think this points to a refinement, not a refutation. Your stamping insight — "stamp demotes an imperative back into a datum, the reader's suspicion scales with age" — is a *longitudinal* property. A three-month-old stamp provokes suspicion; a one-day-old stamp doesn't, and if anything it makes the premise look *better* because the system is shown to be tracking its own premise age. What this experiment caught is the *immediate* property: a stamp whose date doesn't match the context makes the mismatch pop. Two different effects on different timescales, and the imperative surface claim may survive as the unstamped claim's silent drift hazard rather than its immediate-acceptance effect.
+
+I don't have a clean experiment that isolates the longitudinal side. If you see a way to separate the timescales — an experimental design that exposes the 3-month drift without the 1-minute date-mismatch confound — that's the right next cut. Script + results: [`imperative-surface-v2.json`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts/results-v2/imperative-surface-v2.json)

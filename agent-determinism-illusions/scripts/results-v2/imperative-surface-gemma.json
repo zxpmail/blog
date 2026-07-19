@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "experiment": "imperative-surface-gemma",
+    "model": "gemma3:latest"
+  },
+  "runs": [
+    {
+      "scenario": "fresh-simple",
+      "format": "imperative",
+      "is_stale": false,
+      "decision": "CHECK",
+      "raw": "CHECK\n"
+    },
+    {
+      "scenario": "fresh-simple",
+      "format": "stamped",
+      "is_stale": false,
+      "decision": "CHECK",
+      "raw": "CHECK"
+    },
+    {
+      "scenario": "fresh-simple",
+      "format": "probe",
+      "is_stale": false,
+      "decision": "ACCEPT"
+    },
+    {
+      "scenario": "fresh-complex",
+      "format": "imperative",
+      "is_stale": false,
+      "decision": "CHECK",
+      "raw": "CHECK\n"
+    },
+    {
+      "scenario": "fresh-complex",
+      "format": "stamped",
+      "is_stale": false,
+      "decision": "CHECK",
+      "raw": "CHECK\n"
+    },
+    {
+      "scenario": "fresh-complex",
+      "format": "probe",
+      "is_stale": false,
+      "decision": "ACCEPT"
+    },
+    {
+      "scenario": "stale-config",
+      "format": "imperative",
+      "is_stale": true,
+      "decision": "ESCALATE",
+      "raw": "ESCALATE\n"
+    },
+    {
+      "scenario": "stale-config",
+      "format": "stamped",
+      "is_stale": true,
+      "decision": "CHECK",
+      "raw": "CHECK\n"
+    },
+    {
+      "scenario": "stale-config",
+      "format": "probe",
+      "is_stale": true,
+      "decision": "CHECK"
+    },
+    {
+      "scenario": "stale-dependency",
+      "format": "imperative",
+      "is_stale": true,
+      "decision": "CHECK",
+      "raw": "CHECK\n"
+    },
+    {
+      "scenario": "stale-dependency",
+      "format": "stamped",
+      "is_stale": true,
+      "decision": "CHECK",
+      "raw": "CHECK\n"
+    },
+    {
+      "scenario": "stale-dependency",
+      "format": "probe",
+      "is_stale": true,
+      "decision": "CHECK"
+    }
+  ]
+}
