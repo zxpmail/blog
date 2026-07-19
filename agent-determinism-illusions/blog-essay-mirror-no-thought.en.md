@@ -176,4 +176,4 @@ The boundary is drawn. The mirror sits here. It can catch inertia, but it can't 
 
 ---
 
-*Companion essays: [Judging Fatigue — From Verifying AI to Verifying Myself](blog-essay-judging-fatigue.en.md) · [From "show me your code" to "show me your idea"](blog-essay-show-idea.en.md)*
+*Companion essays: [Judging Fatigue — From Verifying AI to Verifying Myself](blog-essay-judging-fatigue.en.md) · [From "show me your code" to "show me your idea"](blog-essay-show-idea.en.md) · [The Boundary of the Harness](blog-essay-harness-border.en.md)*

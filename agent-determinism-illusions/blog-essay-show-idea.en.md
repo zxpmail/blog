@@ -74,4 +74,4 @@ So this article doesn't declare any truth. It's just one person standing in the 
 
 ---
 
-*Companion essays: [Judging Fatigue — From Verifying AI to Verifying Myself](blog-essay-judging-fatigue.en.md) · [The Mirror Cannot Reflect Thought](blog-essay-mirror-no-thought.en.md)*
+*Companion essays: [Judging Fatigue — From Verifying AI to Verifying Myself](blog-essay-judging-fatigue.en.md) · [The Mirror Cannot Reflect Thought](blog-essay-mirror-no-thought.en.md) · [The Boundary of the Harness](blog-essay-harness-border.en.md)*

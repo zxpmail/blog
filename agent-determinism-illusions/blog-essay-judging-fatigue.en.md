@@ -76,4 +76,4 @@ So this article doesn't declare any truth. It's just one person trying to transl
 
 ---
 
-*Companion essays: [From "show me your code" to "show me your idea"](blog-essay-show-idea.en.md) · [The Mirror Cannot Reflect Thought](blog-essay-mirror-no-thought.en.md)*
+*Companion essays: [From "show me your code" to "show me your idea"](blog-essay-show-idea.en.md) · [The Mirror Cannot Reflect Thought](blog-essay-mirror-no-thought.en.md) · [The Boundary of the Harness](blog-essay-harness-border.en.md)*
