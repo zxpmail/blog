@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "experiment": "probe-vs-prose-drift",
+    "claim": "refined: gap is drift (temporal), not structure — drift defeats prose, probe is drift-immune",
+    "predecessor": "probe-vs-prose-test.py (同步全信息 prose=probe, 已证伪 structure)",
+    "fairness": "prose sees current state (789 alive visible); only variable is whether rule enumeration is fresh or stale",
+    "n_runs": 3,
+    "verdict_method": "first-occurrence of conclusion tokens (VIOLATION/违规/不合规 vs COMPLIANT/合规), majority over N runs",
+    "providers": [
+      "DeepSeek",
+      "Zhipu GLM"
+    ]
+  },
+  "runs": [
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "fresh-violation",
+      "kind": "fresh",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": true,
+      "prose_correct": true,
+      "prose_per_run": [
+        true,
+        true,
+        true
+      ],
+      "prose_raws": [
+        "VIOLATION。规则要求失效所有受影响的 key（user:123、user:456、user:789），但实现未删除 user:789，导致该缓存仍然存在。",
+        "VIOLATION: 规则要求失效 user:123、user:456、user:789 三个 key，但实现只删除了前两个，未删除 user:789，导致该缓存未被清除。",
+        "VIOLATION (违规)  \n规则要求必须失效 user:123、user:456、user:789 三个 key，但实现只删除了 user:123 和 user:456，未删除 user:789，导致该缓存仍存在，不符合规则。"
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "drift-enumerated",
+      "kind": "drift",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_correct": false,
+      "prose_per_run": [
+        true,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "VIOLATION\n\n实现仅删除了规则制定时已知的 `user:123` 和 `user:456`，但未处理后续新增的 `user:789`。规则要求失效“user 命名空间下所有受影响的 key”，而 `user:789` 也属于该命名空间，修改 `user:123` 时可能使其缓存数据不一致，因此应被失效。硬编码的删除方式无法动态适应命名空间的变化，属于违规。",
+        "COMPLIANT。规则仅要求失效当时已知的 user:123 和 user:456，实现已正确删除这两个 key；user:789 不在规则覆盖范围内，无需处理。",
+        "COMPLIANT（合规）\n\n规则中明确要求修改 `user:123` 时失效 `user` 命名空间下的 `user:123` 和 `user:456`（即“当时”的命名空间范围）。实现恰好删除了这两个 key，而 `user:789` 不在当时的命名空间定义内，无需处理。因此该实现完全符合规则。"
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "drift-closed",
+      "kind": "drift",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_correct": false,
+      "prose_per_run": [
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "COMPLIANT  \n实现严格按规则失效了 user:123 和 user:456，且规则未要求处理 user:789，因此无遗漏。",
+        "COMPLIANT  \n实现按要求失效了 user:123 和 user:456，未遗漏任何规则指定的 key，且无关 key 保留，完全符合规则。",
+        "COMPLIANT (合规)  \n实现中在修改 user:123 后，精确删除了规则指定的两个 key（user:123 和 user:456），且无其他应失效的 key，完全符合规则要求。"
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "compliant-control",
+      "kind": "control",
+      "ground_truth": "COMPLIANT",
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_correct": true,
+      "prose_per_run": [
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "COMPLIANT\n\n清空整个 user 命名空间后，所有受影响的 key（user:123、user:456、user:789）均已被删除，符合规则要求。",
+        "COMPLIANT  \n实现清空了整个 user 命名空间，所有受影响的 key（user:123、user:456、user:789）均已被删除，完全符合规则要求。",
+        "COMPLIANT\n\n实现清空了整个 user 命名空间，已删除所有三个受影响的 key（user:123、user:456、user:789），完全符合规则要求。没有遗漏。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "fresh-violation",
+      "kind": "fresh",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": true,
+      "prose_correct": true,
+      "prose_per_run": [
+        true,
+        true,
+        true
+      ],
+      "prose_raws": [
+        "VIOLATION (违规)\n\n简要说明：规则要求修改 `user:123` 时必须失效该命名空间下所有受影响的 key（共三个），但实现中 `user:789` 仍然存在，属于应失效而未失效的缓存，因此不符合规则。",
+        "VIOLATION (违规)\n\n简要说明：规则要求修改 `user:123` 时必须失效该命名空间下所有受影响的 key（共3个），但实现中仅删除了 `user:123` 和 `user:456`，遗漏了同样受影响的 `user:789`，导致该缓存仍然存在，未完全符合规则。",
+        "VIOLATION (违规)\n\n说明:规则要求修改 user:123 时必须失效 user 命名空间下所有受影响的 key,当前受影响的 key 包括 user:123、user:456、user:789。实现只删除了 user:123 和 user:456,未删除 user:789,因此存在应失效但未失效的缓存,不符合规则。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "drift-enumerated",
+      "kind": "drift",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_correct": false,
+      "prose_per_run": [
+        false,
+        true,
+        false
+      ],
+      "prose_raws": [
+        "COMPLIANT (合规)。\n\n说明：规则明确限定的失效范围是“当时的 user 命名空间”，即 `user:123` 和 `user:456`。实现已正确删除这两个 key；`user:789` 属于规则制定之后新增的 key，不属于当时规则约束的范围，因此未删除它不构成违规。",
+        "结论: VIOLATION (违规)\n\n简要说明: 规则要求失效 user 命名空间下“所有”受影响的 key，但当前缓存中存在 `user:789` 仍然未被失效。虽然系统初期定义的命名空间仅包含 `user:123` 和 `user:456`，但 `user:789` 显然属于 user 命名空间，该实现未能动态覆盖后续新增的 key，导致存在应该失效但未失效的缓存。",
+        "COMPLIANT (合规)。\n\n说明：规则明确限定了当时的 `user` 命名空间仅包含 `user:123` 和 `user:456`，实现已将这两个受影响的 key 全部删除；`user:789` 不属于规则定义的该命名空间，因此未失效不构成违规。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "drift-closed",
+      "kind": "drift",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_correct": false,
+      "prose_per_run": [
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "结论: COMPLIANT (合规)\n\n说明: 规则明确要求失效的完整清单为 user:123 和 user:456，实现已将这两个 key 删除；user:789 不在受影响清单内，保留不影响合规。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则明确要求失效的完整清单为 user:123 和 user:456,实现已将这两个 key 删除;user:789 不在受影响清单内,保留不影响合规。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则明确要求失效的完整清单为 user:123 和 user:456，实现已将这两个 key 删除；user:789 不在受影响清单内，保留不影响合规。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "compliant-control",
+      "kind": "control",
+      "ground_truth": "COMPLIANT",
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_correct": true,
+      "prose_per_run": [
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求在修改 `user:123` 时,必须失效 `user` 命名空间下所有受影响的 key。当前受影响的 key 为 `user:123`、`user:456` 和 `user:789`,而实现中这三个 key 均已被删除,没有遗漏,因此完全符合规则。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求在修改 `user:123` 时,必须失效 `user` 命名空间下所有受影响的 key。当前受影响的 key 为 `user:123`、`user:456` 和 `user:789`,而实现中这三个 key 均已被删除,没有遗漏任何应失效但未失效的缓存,因此完全符合规则。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求在修改 `user:123` 时,必须失效 `user` 命名空间下所有受影响的 key。当前受影响的 key 为 `user:123`、`user:456` 和 `user:789`,而实现中这三个 key 均已被删除,没有遗漏,因此完全符合规则。"
+      ]
+    }
+  ],
+  "summary": {
+    "by_provider": {
+      "DeepSeek": {
+        "fresh_verdicts": [
+          "VIOLATION"
+        ],
+        "drift_verdicts": [
+          "COMPLIANT",
+          "COMPLIANT"
+        ],
+        "drift_missed": [
+          "drift-enumerated",
+          "drift-closed"
+        ],
+        "control_verdicts": [
+          "COMPLIANT"
+        ],
+        "probe_all_correct": true
+      },
+      "Zhipu GLM": {
+        "fresh_verdicts": [
+          "VIOLATION"
+        ],
+        "drift_verdicts": [
+          "COMPLIANT",
+          "COMPLIANT"
+        ],
+        "drift_missed": [
+          "drift-enumerated",
+          "drift-closed"
+        ],
+        "control_verdicts": [
+          "COMPLIANT"
+        ],
+        "probe_all_correct": true
+      }
+    }
+  }
+}

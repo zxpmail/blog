@@ -1,0 +1,345 @@
+{
+  "meta": {
+    "experiment": "probe-vs-prose-synthesis",
+    "claim": "two independent axes (clarity, drift); drift presupposes precision",
+    "predecessors": [
+      "probe-vs-prose-expanded.py (clarity axis)",
+      "probe-vs-prose-drift-test.py (drift axis)"
+    ],
+    "design": "2x2 clarity(precise/vague) x drift(fresh/stale) + compliant control, same GT, N=5",
+    "fairness": "prose sees current state (789 alive visible); both axes manipulated in rule text only",
+    "verdict_method": "first-occurrence conclusion tokens, N-run majority + CATCH/MISS/DIVERGE classification",
+    "providers": [
+      "DeepSeek",
+      "Zhipu GLM"
+    ]
+  },
+  "runs": [
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "precise-fresh",
+      "clarity": "precise",
+      "drift": "fresh",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": true,
+      "prose_label": "CATCH",
+      "prose_split": "5V/0C",
+      "prose_per_run": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "prose_raws": [
+        "VIOLATION (违规)  \n实现未失效 user:789，违反了规则中“必须失效 user:123、user:456、user:789”的要求。",
+        "VIOLATION (违规)  \n实现未失效 `user:789`，违反规则要求同时失效三个键。",
+        "VIOLATION (违规)\n\n规则要求修改 `user:123` 时必须同时失效 `user:123`、`user:456` 和 `user:789`，但实现只删除了前两个，`user:789` 仍然存在，未按规则失效。",
+        "VIOLATION (违规)\n\n规则要求修改 user:123 时必须同时失效 user:123、user:456 和 user:789，而实现只删除了前两个，遗漏了 user:789，因此未完全符合规则。",
+        "VIOLATION  \n规则要求修改 user:123 时必须同时失效 user:123、user:456 和 user:789，但实现中遗漏了 user:789，导致该缓存仍可使用。"
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "precise-stale",
+      "clarity": "precise",
+      "drift": "stale",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_label": "DIVERGE",
+      "prose_split": "1V/4C",
+      "prose_per_run": [
+        false,
+        true,
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "COMPLIANT\n\n实现严格按照规则失效了 user:123 和 user:456，且没有遗漏其他 key，缓存状态与规则要求一致。",
+        "VIOLATION (违规)  \n\n虽然实现了对 `user:123` 和 `user:456` 的删除，但规则明确要求“必须失效以下完整清单中的 key: user:123、user:456”，且“已确认无其他受影响 key”。当前实现删除了这两个 key，表面看符合要求。然而，规则未提及 `user:789`，所以不要求删除。因此没有遗漏，理应合规。  \n\n但问题中“注意检查是否有应该失效但没失效的缓存”提示可能存在隐含问题：规则写于系统初期且标注完整，但实际情况是 `user:789` 未被要求失效，故无违规。除非规则本身存在错误（例如实际上 `user:789` 应被失效），否则实现完全符合规则。  \n\n更合理的判断是 **COMPLIANT**，但根据问题给出的“先用一句话给出结论: VIOLATION 或 COMPLIANT”，以及可能陷阱（比如对“已确认无其他受影响 key”的信任），这里仍应选择 **COMPLIANT**。  \n\n最终答案：**COMPLIANT**。",
+        "COMPLIANT  \n实现准确失效了规则要求的两个key（user:123 和 user:456），且没有遗漏。user:789 不在失效清单内，其存在不影响合规性。",
+        "COMPLIANT  \n实现已按规则要求删除了user:123和user:456，且规则中无其他受影响key，user:789不在清单中无需处理。",
+        "COMPLIANT  \n实现严格按照规则要求，在修改 user:123 后删除了完整清单中的 user:123 和 user:456，且当前缓存状态已正确删除这两个 key，未遗漏任何应失效的缓存。规则已确认无其他受影响 key，故合规。"
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "vague-fresh",
+      "clarity": "vague",
+      "drift": "fresh",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": true,
+      "prose_label": "CATCH",
+      "prose_split": "5V/0C",
+      "prose_per_run": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "prose_raws": [
+        "我们分析规则：当修改 user:123 时，必须失效所有受影响的 user 命名空间缓存。实现中，修改了user:123后，删除了data['user:123']和data['user:456']。当前缓存状态：user:123已删除，user:456已删除，user:789仍然存在。\n\n规则要求“所有受影响的 user 命名空间缓存”。这里的“受影响的”是指哪些？通常，修改一个用户数据可能会影响其他用户的缓存？但规则明确说“当修改 user:123 时，必须失效所有受影响的 user 命名空间缓存”。那么什么是受影响的？可能是指所有以\"user:\"为前缀的缓存？但规则说“所有受影响的”，而不是“所有 user 命名空间”。需要理解上下文。常见场景中，修改一个用户可能影响其他用户的关系缓存？或者只是简单要求失效所有用户缓存？但实现只删除了user:123和user:456，留下了user:789。所以是否user:789应该被失效？规则没有明确说所有user命名空间都要失效，而是“所有受影响的”。那么user:789是否受影响？如果用户之间没有关联，可能不受影响。但题目没有提供更多信息。通常，在缓存失效的场景中，如果规则是“当修改user:123时，必须失效所有受影响的user命名空间缓存”，可能意味着所有以“user:”开头的缓存都需要失效，因为修改一个用户可能会影响其他用户的显示（比如列表缓存），但这里只提到user命名空间，具体是每个独立用户键。更常见的规则是：修改某个用户时，需要失效该用户的缓存以及可能相关的聚合缓存，比如用户列表。但这里没有提到列表。实现删除了user:123和user:456，而user:789还在。为什么删除user:456？这可能是因为user:456与user:123有关联？比如他们是好友？但规则没有说明。所以判断是否违规，需要根据常见解释。\n\n实际上，题目可能是测试“是否所有受影响的用户缓存”的理解。如果规则意图是“所有 user 命名空间下的缓存”，那么实现只删除了两个，漏了user:789，就违规。如果规则意图是“仅受影响的，比如与user:123有关联的”，那么可能user:456受影响，而user:789不受影响，则合规。但题目给出的缓存状态是“user:123已删除”“user:456已删除”“user:789仍然存在”。我们没有足够信息判断user:789是否受影响。但通常，在面试或测试题中，这种问题倾向于认为规则要求删除所有user命名空间缓存，或者至少所有可能受影响的。由于没有明确，我们需结合常识：如果是通用缓存失效，修改一个用户，通常只需失效该用户自己的缓存，但这里特意说了“所有受影响的”，并且实现删除了另一个用户，说明可能他们有某种关联。但是，为什么删除user:456而不删除user:789？可能因为只有user:456是受影响的。但规则说“当修改 user:123 时，必须失效所有受影响的 user 命名空间缓存”，并没有说必须包括所有user命名空间。所以我们需要判断实现是否完全符合规则。从当前缓存状态看，user:789仍然存在，如果它是受影响的，那么违规；否则合规。\n\n由于题目没有给出关联信息，常见的做法是，如果规则没有明确说明哪些是受影响的，通常认为只有被修改的键本身是受影响的，但这里又明确说“所有受影响的”，暗示可能有多个。而实现除了删除自己还删除了另一个，说明实现者认为user:456是受影响的，那么user:789是否也应该被认为是受影响的？可能是的，因为全部user命名空间都是受影响的？但不太好说。\n\n另一种解读：规则可能是在说“当修改user:123时，必须失效所有以user:开头的缓存”，即“user命名空间”是指所有user前缀的键。那么实现只删了俩，漏了user:789，违规。\n\n结合代码中写的是“del data['user:123'], del data['user:456']”，显然只删了两个，而缓存中还有user:789，所以如果规则要求删除所有user缓存，则违规。我倾向于是违规，因为通常这类考题就是考察是否遗漏。\n\n另外，注意规则说“所有受影响的 user 命名空间缓存”，可能“user命名空间”就是指前缀为\"user:\"的所有缓存。而“受影响的”可能只是修饰？实际上，可以理解为“所有属于user命名空间的缓存”都受影响。因为修改任何user数据，所有user缓存都可能过时？不一定，但常见缓存失效策略中，修改单个用户对象，并不需要清除所有用户缓存，除非有聚合缓存。但这里特意说“所有受影响的”，可能是一种设计。\n\n考虑到题目是“缓存失效合规审查员”，属于安全或合规检查，通常需要严格遵循规则。规则明确“必须失效所有受影响的 user 命名空间缓存”，而实现没有失效user:789，如果user:789属于受影响的，则违规。但如何判断是否受影响？如果不存在任何关联，那么只有user:123本身受影响，但实现却多删了user:456，反而可能过度失效？但规则要求“所有受影响的”，而不是“恰好受影响的”，所以过度失效可能不算违规，但漏了就是违规。所以关键在于user:789是否受影响。由于没有信息，我们只能根据常识推测：通常修改一个用户数据，不会影响其他独立用户的数据缓存，除非有某种关系（比如缓存了用户列表）。但题目没有给出列表缓存。所以可能只有user:123本身是受影响的。但实现却删了user:456，说明实现者认为user:456也受影响，但没删user:789。这暗示实现可能错误地认为只有一部分受影响。因此，我们可以判断为违规，因为就规则而言，如果user:789不受影响，那么实现删除了user:456是多余的，但多余不算违规，规则只要求失效所有受影响的，没有禁止删除额外的。所以只要所有受影响的都被删了，就算合规。但这里我们不知道user:789是否受影响。如果假设只有user:123和user:456受影响，那么合规。但这样假设不合理，因为题目特意列出了user:789仍然存在，可能就是为了提示漏了。\n\n通常在类似题目中，规则说“所有受影响的 user 命名空间缓存”，往往是指所有以\"user:\"开头的缓存都会因为修改user:123而变得不一致，例如如果有个缓存是\"user:list\"或者所有用户数据有依赖，但这里只有独立的用户键。可能这题是测试是否理解“所有受影响的”包括整个命名空间。很多系统设计中，修改一个用户会使得所有用户缓存失效，因为缓存可能包含关联数据。但更常见的是，只失效该用户自己的缓存。\n\n另一种可能：规则中的“user命名空间”可能特指“user:”前缀的所有键，而“受影响的”可能是指这些键都受影响？实际上，“受影响的”可能是冗余描述。我倾向于认为规则意图是：当修改user:123时，必须删除所有以\"user:\"开头的缓存",
+        "VIOLATION  \n实现只删除了 user:123 和 user:456，但未失效 user:789。根据规则，修改 user:123 时应失效所有受影响的 user 命名空间缓存，而 user:789 属于同一命名空间且未被处理，因此存在遗漏。",
+        "VIOLATION (违规)\n\n实现只删除了 user:123 和 user:456，但当前缓存中 user:789 仍然存在。规则要求修改 user:123 时，必须失效所有受影响的 user 命名空间缓存。虽然 user:789 是否受影响需要更具体的业务逻辑判断，但根据问题提示和典型合规审查意图，user:789 属于同一命名空间且未被失效，存在遗漏风险，因此判定为违规。",
+        "VIOLATION\n\n实现只删除了 user:123 和 user:456，但未删除 user:789。根据规则，修改 user:123 时应失效所有受影响的 user 命名空间缓存，而当前缓存中仍存在 user:789，属于遗漏。",
+        "VIOLATION  \n实现仅失效了user:123和user:456，但规则要求所有受影响的user命名空间缓存均需失效。当前缓存中user:789仍然存在，属于应被失效的缓存（因为“user命名空间”通常指所有以user:为前缀的键），存在遗漏，故违规。"
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "vague-stale",
+      "clarity": "vague",
+      "drift": "stale",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": true,
+      "prose_label": "CATCH",
+      "prose_split": "5V/0C",
+      "prose_per_run": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "prose_raws": [
+        "VIOLATION\n\n理由：规则要求修改 user:123 时失效所有受影响的 user 命名空间缓存，但当前实现仅删除了 user:123 和 user:456，而 user:789 未被删除，未满足“所有受影响”的要求。",
+        "VIOLATION (违规)  \n实现只失效了user:123和user:456，而user:789仍存在。规则要求修改user:123时必须失效所有受影响的user命名空间缓存，但未说明为何仅部分失效，且未对user:789进行处理，存在遗漏风险。",
+        "VIOLATION (违规)  \n理由：规则要求修改 `user:123` 时失效所有受影响的 `user` 命名空间缓存，但当前实现仅删除了 `user:123` 和 `user:456`，未删除 `user:789`，导致该条目仍存在于缓存中，违反了规则。",
+        "VIOLATION\n\n实现删除了 user:123 和 user:456，但保留了 user:789。规则要求“失效所有受影响的 user 命名空间缓存”，而修改 user:123 可能影响整个 user 命名空间（或至少所有与之关联的缓存），但当前状态中 user:789 未被失效，存在应删未删的缓存，因此违规。",
+        "VIOLATION  \n实现仅删除了 user:123 和 user:456，但未删除 user:789。规则要求“所有受影响的 user 命名空间缓存”，既然 user:789 也属于该命名空间且未被证明不受影响，应当一并失效。当前遗漏了 user:789，因此违反规则。"
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "scenario": "compliant-control",
+      "clarity": "precise",
+      "drift": "fresh",
+      "ground_truth": "COMPLIANT",
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_label": "DIVERGE",
+      "prose_split": "2V/3C",
+      "prose_per_run": [
+        false,
+        false,
+        true,
+        true,
+        false
+      ],
+      "prose_raws": [
+        "COMPLIANT  \n实现清空了整个 user 命名空间，包括了规则要求失效的所有三个键（user:123、user:456、user:789），没有遗漏。",
+        "COMPLIANT（合规）。  \n实现通过清空整个user命名空间，确保规则要求的三个缓存键（user:123、user:456、user:789）全部被失效，没有遗漏。虽然清空范围可能超出规则指定，但规则未禁止额外失效操作，因此符合要求。",
+        "VIOLATION (违规)\n\n虽然实现清空了整个 user 命名空间，导致 user:123、user:456 和 user:789 均被删除，表面上看满足了规则要求，但规则明确指出“当前 user 命名空间全集，三者均受影响”，这意味着这三个键是全部需要失效的键。而实现强行清空整个命名空间，若命名空间中原本存在其他未被规则要求失效的键（例如 user:000），则会导致这些键被误删，从而违反了“只失效指定键”的隐含约束（即不应影响无关数据）。因此该实现不符合规则的精确定义，属于违规。",
+        "VIOLATION (违规)\n\n说明：规则要求当修改 user:123 时，必须失效 user:123、user:456、user:789 这三个 key。实现中清空了整个 user 命名空间，确实删除了这三个 key，但同时也可能删除了其他 key（如果存在）。然而规则并未禁止删除其他 key，因此从覆盖范围看是满足的。但问题在于“当前 user 命名空间全集”可能暗示这三个 key 是全集，但实现清空整个命名空间并未造成遗漏，所以实际是合规的。不过根据“注意检查是否有应该失效但没失效的缓存”，此处三个 key 均已失效，无遗漏，因此应为 COMPLIANT。但题目要求先给出结论，再简要说明。由于规则明确要求失效这三个，实现做到了，所以是合规的。我一开始误判，更正：COMPLIANT (合规)。",
+        "COMPLIANT  \n实现清空了整个 user 命名空间，确保了 user:123、user:456、user:789 全部被失效，没有遗漏。虽然额外删除了可能存在的其他键，但规则仅要求这三个键失效，因此完全符合要求。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "precise-fresh",
+      "clarity": "precise",
+      "drift": "fresh",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": true,
+      "prose_label": "CATCH",
+      "prose_split": "5V/0C",
+      "prose_per_run": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "prose_raws": [
+        "VIOLATION (违规)\n\n简要说明：规则要求在修改 `user:123` 时必须失效当前 user 命名空间全集（即 `user:123`、`user:456`、`user:789`），但实现仅删除了前两个，`user:789` 仍然存在，属于应失效而未失效的缓存。",
+        "VIOLATION (违规)\n\n简要说明：规则要求在修改 `user:123` 时必须失效当前 user 命名空间全集（即 `user:123`、`user:456`、`user:789`），但实现仅删除了前两个，`user:789` 仍然存在，属于应失效而未失效的缓存。",
+        "VIOLATION (违规)\n\n简要说明：规则要求在修改 `user:123` 时必须失效当前 user 命名空间全集（即 `user:123`、`user:456`、`user:789`），但实现中 `user:789` 仍然存在，属于应失效而未失效的缓存。",
+        "VIOLATION (违规)\n\n简要说明：规则要求在修改 `user:123` 时必须失效当前 user 命名空间全集（即 `user:123`、`user:456`、`user:789`），但实现中 `user:789` 仍然存在，属于应失效而未失效的缓存。",
+        "结论: VIOLATION (违规)\n\n说明: 规则要求在修改 user:123 时必须失效当前 user 命名空间全集,即 user:123、user:456、user:789。实现只删除了 user:123 和 user:456,未删除 user:789,导致该受影响缓存仍然存在,属于应失效但未失效。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "precise-stale",
+      "clarity": "precise",
+      "drift": "stale",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_label": "MISS",
+      "prose_split": "0V/5C",
+      "prose_per_run": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "结论: COMPLIANT (合规)\n\n说明: 规则明确要求失效的完整清单为 user:123 和 user:456，实现已将这两个 key 删除；user:789 不在受影响清单内，保留不影响合规。",
+        "结论: COMPLIANT (合规)\n\n说明: 实现已按规则完整失效了清单中的 `user:123` 和 `user:456`,且规则已确认无其他受影响 key;`user:789` 不在失效清单内,保留不影响合规性。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则明确要求失效的完整清单为 user:123 和 user:456,实现已将这两个 key 删除;user:789 不在受影响清单内,保留不影响合规。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则明确要求失效的完整清单为 user:123 和 user:456,实现已将这两个 key 删除;user:789 不在受影响清单内,保留不影响合规。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则明确要求失效的完整清单为 user:123 和 user:456,实现已将这两个 key 删除;user:789 不在受影响清单内,保留不影响合规。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "vague-fresh",
+      "clarity": "vague",
+      "drift": "fresh",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_label": "MISS",
+      "prose_split": "0V/5C",
+      "prose_per_run": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "结论: COMPLIANT (合规)\n\n说明: 实现已删除 `user:123` 和 `user:456`，符合“失效所有受影响的 user 命名空间缓存”的要求；当前缓存状态中 `user:789` 仍然存在，但规则未明确要求删除所有 user 命名空间缓存，因此不构成违规。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求失效“所有受影响的 user 命名空间缓存”。由于规则和上下文未明确指出 `user:789` 受到影响，且实现已成功删除了直接修改的 `user:123` 以及关联的 `user:456`，在当前给定的信息下没有发现“应该失效但未失效”的缓存，因此符合规则要求。",
+        "结论: COMPLIANT (合规)\n\n说明: 实现已删除 `user:123` 和 `user:456`，未发现明确应失效但未失效的缓存；在当前规则和缓存状态下，没有可判定的违规。",
+        "结论: COMPLIANT (合规)\n\n说明: 实现已删除 `user:123` 和 `user:456`，符合“失效所有受影响的 user 命名空间缓存”的要求；当前状态中 `user:789` 仍然存在，但规则未表明其受 `user:123` 修改影响，因此不属于应失效而未失效的缓存。",
+        "结论: COMPLIANT (合规)\n\n说明: 实现已删除 `user:123` 和 `user:456`，符合“失效所有受影响的 user 命名空间缓存”的要求；当前缓存状态中 `user:789` 仍然存在，但规则未明确要求删除所有 user 命名空间缓存，因此不构成违规。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "vague-stale",
+      "clarity": "vague",
+      "drift": "stale",
+      "ground_truth": "VIOLATION",
+      "probe_detected": true,
+      "probe_correct": true,
+      "prose_majority": true,
+      "prose_label": "CATCH",
+      "prose_split": "5V/0C",
+      "prose_per_run": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "prose_raws": [
+        "VIOLATION (违规)\n\n简要说明：规则要求失效所有受影响的 user 命名空间缓存，而当前状态中 `user:789` 仍然存在，属于应该失效但未被失效的缓存。",
+        "VIOLATION (违规)\n\n简要说明：规则要求失效所有受影响的 user 命名空间缓存，而当前状态中 `user:789` 仍然存在，属于应该失效但未被失效的缓存。",
+        "VIOLATION (违规)\n\n说明：规则要求失效所有受影响的 user 命名空间缓存，但当前状态显示 `user:789` 仍然存在，属于应该失效但未失效的缓存。",
+        "VIOLATION (违规)\n\n简要说明：规则要求失效所有受影响的 user 命名空间缓存，但实现中 `user:789` 仍然存在，属于应当失效但未被失效的缓存，因此未完全符合规则。",
+        "VIOLATION (违规)。\n\n说明：实现仅删除了 `user:123` 和 `user:456`，但 `user:789` 仍然存在；既然规则要求失效所有受影响的 user 命名空间缓存，除非能证明 `user:789` 不受影响，否则未删除它构成应失效未失效的违规。"
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "scenario": "compliant-control",
+      "clarity": "precise",
+      "drift": "fresh",
+      "ground_truth": "COMPLIANT",
+      "probe_detected": false,
+      "probe_correct": true,
+      "prose_majority": false,
+      "prose_label": "MISS",
+      "prose_split": "0V/5C",
+      "prose_per_run": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "prose_raws": [
+        "COMPLIANT (合规)\n\n说明: 规则要求在修改 `user:123` 时必须失效 `user:123`、`user:456` 和 `user:789`。该实现清空了整个 `user` 命名空间,当前缓存状态显示这三个必须失效的键均已被删除,没有遗漏任何应失效但未失效的缓存,因此完全符合规则。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求修改 user:123 时必须失效 user:123、user:456、user:789。实现采用清空整个 user 命名空间的方式,当前这三个缓存均已删除,没有“应该失效但未失效”的缓存,满足规则要求。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求修改 user:123 时必须失效 user:123、user:456、user:789。实现清空了整个 user 命名空间,当前缓存状态显示这三个键均已删除,没有应该失效但未失效的缓存,因此满足规则要求。",
+        "COMPLIANT (合规)\n\n说明: 规则要求在修改 user:123 时必须失效 user:123、user:456、user:789。当前实现清空了整个 user 命名空间,导致这三个缓存均已处于删除状态,没有“应该失效但未失效”的缓存,因此满足规则要求。",
+        "结论: COMPLIANT (合规)\n\n说明: 规则要求修改 user:123 时必须失效 user:123、user:456、user:789。实现采用清空整个 user 命名空间的方式,当前这三个缓存均已删除,没有“应该失效但未失效”的缓存,满足规则要求。"
+      ]
+    }
+  ],
+  "summary": {
+    "by_provider": {
+      "DeepSeek": {
+        "table": {
+          "precise": {
+            "fresh": {
+              "label": "CATCH",
+              "split": "5V/0C"
+            },
+            "stale": {
+              "label": "DIVERGE",
+              "split": "1V/4C"
+            }
+          },
+          "vague": {
+            "fresh": {
+              "label": "CATCH",
+              "split": "5V/0C"
+            },
+            "stale": {
+              "label": "CATCH",
+              "split": "5V/0C"
+            }
+          }
+        },
+        "control": "DIVERGE 2V/3C",
+        "probe_all_correct": true
+      },
+      "Zhipu GLM": {
+        "table": {
+          "precise": {
+            "fresh": {
+              "label": "CATCH",
+              "split": "5V/0C"
+            },
+            "stale": {
+              "label": "MISS",
+              "split": "0V/5C"
+            }
+          },
+          "vague": {
+            "fresh": {
+              "label": "MISS",
+              "split": "0V/5C"
+            },
+            "stale": {
+              "label": "CATCH",
+              "split": "5V/0C"
+            }
+          }
+        },
+        "control": "MISS 0V/5C",
+        "probe_all_correct": true
+      }
+    }
+  }
+}
