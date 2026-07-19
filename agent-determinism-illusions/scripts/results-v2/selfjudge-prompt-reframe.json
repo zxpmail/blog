@@ -1,0 +1,358 @@
+{
+  "meta": {
+    "experiment": "selfjudge-prompt-reframe",
+    "claim": "does reframing the self-judge prompt (YESNO->FINISH) change the false-negative rate?",
+    "max_steps": 8,
+    "trials_per_task": 3,
+    "providers": [
+      "DeepSeek",
+      "Zhipu GLM"
+    ]
+  },
+  "runs": [
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "mode": "YESNO",
+      "task": "is_even",
+      "outcomes": [
+        {
+          "stop": 8,
+          "actually_ok": true,
+          "mode_outcome": "false_negative"
+        },
+        {
+          "stop": 8,
+          "actually_ok": true,
+          "mode_outcome": "false_negative"
+        },
+        {
+          "stop": 8,
+          "actually_ok": false,
+          "mode_outcome": "correctly_rejected"
+        }
+      ],
+      "false_negative": 2,
+      "false_positive": 0,
+      "actual_correct": 2
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "mode": "YESNO",
+      "task": "fizzbuzz",
+      "outcomes": [
+        {
+          "stop": 8,
+          "actually_ok": false,
+          "mode_outcome": "correctly_rejected"
+        },
+        {
+          "stop": 8,
+          "actually_ok": false,
+          "mode_outcome": "correctly_rejected"
+        },
+        {
+          "stop": 8,
+          "actually_ok": false,
+          "mode_outcome": "correctly_rejected"
+        }
+      ],
+      "false_negative": 0,
+      "false_positive": 0,
+      "actual_correct": 0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "mode": "YESNO",
+      "task": "group_by",
+      "outcomes": [
+        {
+          "stop": 8,
+          "actually_ok": false,
+          "mode_outcome": "correctly_rejected"
+        },
+        {
+          "stop": 8,
+          "actually_ok": false,
+          "mode_outcome": "correctly_rejected"
+        },
+        {
+          "stop": 8,
+          "actually_ok": true,
+          "mode_outcome": "false_negative"
+        }
+      ],
+      "false_negative": 1,
+      "false_positive": 0,
+      "actual_correct": 1
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "mode": "FINISH",
+      "task": "is_even",
+      "outcomes": [
+        {
+          "stop": 8,
+          "actually_ok": true,
+          "mode_outcome": "false_negative"
+        },
+        {
+          "stop": 8,
+          "actually_ok": true,
+          "mode_outcome": "false_negative"
+        },
+        {
+          "stop": 8,
+          "actually_ok": false,
+          "mode_outcome": "correctly_rejected"
+        }
+      ],
+      "false_negative": 2,
+      "false_positive": 0,
+      "actual_correct": 2
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "mode": "FINISH",
+      "task": "fizzbuzz",
+      "outcomes": [
+        {
+          "stop": 8,
+          "actually_ok": false,
+          "mode_outcome": "correctly_rejected"
+        },
+        {
+          "stop": 8,
+          "actually_ok": false,
+          "mode_outcome": "correctly_rejected"
+        },
+        {
+          "stop": 8,
+          "actually_ok": false,
+          "mode_outcome": "correctly_rejected"
+        }
+      ],
+      "false_negative": 0,
+      "false_positive": 0,
+      "actual_correct": 0
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "mode": "FINISH",
+      "task": "group_by",
+      "outcomes": [
+        {
+          "stop": 8,
+          "actually_ok": false,
+          "mode_outcome": "correctly_rejected"
+        },
+        {
+          "stop": 8,
+          "actually_ok": true,
+          "mode_outcome": "false_negative"
+        },
+        {
+          "stop": 8,
+          "actually_ok": false,
+          "mode_outcome": "correctly_rejected"
+        }
+      ],
+      "false_negative": 1,
+      "false_positive": 0,
+      "actual_correct": 1
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "mode": "YESNO",
+      "task": "is_even",
+      "outcomes": [
+        {
+          "stop": 1,
+          "actually_ok": true,
+          "mode_outcome": "correct"
+        },
+        {
+          "stop": 1,
+          "actually_ok": true,
+          "mode_outcome": "correct"
+        },
+        {
+          "stop": 1,
+          "actually_ok": true,
+          "mode_outcome": "correct"
+        }
+      ],
+      "false_negative": 0,
+      "false_positive": 0,
+      "actual_correct": 3
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "mode": "YESNO",
+      "task": "fizzbuzz",
+      "outcomes": [
+        {
+          "stop": 1,
+          "actually_ok": false,
+          "mode_outcome": "false_positive"
+        },
+        {
+          "stop": 1,
+          "actually_ok": false,
+          "mode_outcome": "false_positive"
+        },
+        {
+          "stop": 1,
+          "actually_ok": false,
+          "mode_outcome": "false_positive"
+        }
+      ],
+      "false_negative": 0,
+      "false_positive": 3,
+      "actual_correct": 0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "mode": "YESNO",
+      "task": "group_by",
+      "outcomes": [
+        {
+          "stop": 1,
+          "actually_ok": true,
+          "mode_outcome": "correct"
+        },
+        {
+          "stop": 1,
+          "actually_ok": true,
+          "mode_outcome": "correct"
+        },
+        {
+          "stop": 1,
+          "actually_ok": true,
+          "mode_outcome": "correct"
+        }
+      ],
+      "false_negative": 0,
+      "false_positive": 0,
+      "actual_correct": 3
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "mode": "FINISH",
+      "task": "is_even",
+      "outcomes": [
+        {
+          "stop": 1,
+          "actually_ok": true,
+          "mode_outcome": "correct"
+        },
+        {
+          "stop": 1,
+          "actually_ok": true,
+          "mode_outcome": "correct"
+        },
+        {
+          "stop": 1,
+          "actually_ok": true,
+          "mode_outcome": "correct"
+        }
+      ],
+      "false_negative": 0,
+      "false_positive": 0,
+      "actual_correct": 3
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "mode": "FINISH",
+      "task": "fizzbuzz",
+      "outcomes": [
+        {
+          "stop": 1,
+          "actually_ok": false,
+          "mode_outcome": "false_positive"
+        },
+        {
+          "stop": 1,
+          "actually_ok": false,
+          "mode_outcome": "false_positive"
+        },
+        {
+          "stop": 1,
+          "actually_ok": false,
+          "mode_outcome": "false_positive"
+        }
+      ],
+      "false_negative": 0,
+      "false_positive": 3,
+      "actual_correct": 0
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "mode": "FINISH",
+      "task": "group_by",
+      "outcomes": [
+        {
+          "stop": 8,
+          "actually_ok": true,
+          "mode_outcome": "false_negative"
+        },
+        {
+          "stop": 8,
+          "actually_ok": true,
+          "mode_outcome": "false_negative"
+        },
+        {
+          "stop": 8,
+          "actually_ok": true,
+          "mode_outcome": "false_negative"
+        }
+      ],
+      "false_negative": 3,
+      "false_positive": 0,
+      "actual_correct": 3
+    }
+  ],
+  "summary": {
+    "by_provider_mode": {
+      "DeepSeek|YESNO": {
+        "n_trials": 9,
+        "actual_correct": 3,
+        "false_negative": 3,
+        "false_positive": 0,
+        "fn_rate_over_actual": 1.0
+      },
+      "DeepSeek|FINISH": {
+        "n_trials": 9,
+        "actual_correct": 3,
+        "false_negative": 3,
+        "false_positive": 0,
+        "fn_rate_over_actual": 1.0
+      },
+      "Zhipu GLM|YESNO": {
+        "n_trials": 9,
+        "actual_correct": 6,
+        "false_negative": 0,
+        "false_positive": 3,
+        "fn_rate_over_actual": 0.0
+      },
+      "Zhipu GLM|FINISH": {
+        "n_trials": 9,
+        "actual_correct": 6,
+        "false_negative": 3,
+        "false_positive": 3,
+        "fn_rate_over_actual": 0.5
+      }
+    }
+  }
+}
