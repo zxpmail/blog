@@ -7,10 +7,10 @@
 
 ---
 title: "The Red Line Principle: objective stop signals outperform LLM self-judgment in verifiable tasks"
-published: false
+published: true
 description: "Same code task, two signal types: compile+test pass vs. LLM self-judgment. Directional evidence that objective signals improve convergence. Scope: verifiable tasks only (code, structured output). Not applicable to open-ended semantic tasks."
 tags: ai, llm, agents, testing
-canonical_url: ""
+canonical_url: "https://dev.to/zxpmail/the-red-line-principle-objective-stop-signals-outperform-llm-self-judgment-in-verifiable-tasks-3heo"
 series: "Agent Determinism Illusions"
 ---
 
