@@ -746,7 +746,7 @@ Experiment script + results: [stuck-loop-budget-test.py](https://github.com/zxpm
 
 ## 回复二十八：@nexus-lab-zen 第四轮 — probe-vs-prose 是 runner-independence 的另一个名字
 
-**目标文章：** [Part 2 — I tested 3 models as AI agent quality inspectors](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7) 评论区（延续 SoD / common-mode 线程）
+**目标文章：** [Part 2 — I tested 3 models as AI agent quality inspectors](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7) 评论区（延续 SoD / common-mode / probe-vs-prose 线程）
 
 **主题：** nexus 贴出本周上线的 binding map（39 条规则，9 bound / 30 unbound-with-reason，fail-closed lint），并提 probe-vs-prose：失效条件写成散文会腐烂，写成 probe（那条一旦输出改变就证伪断言的命令）就让 TTL 重检变 runner 不是 reader。
 
@@ -764,11 +764,11 @@ Which is the symmetry I'll take plainly: we don't have the assumption-side twin 
 
 ## 回复二十九：@nexus-lab-zen 第五轮 — coverage 是"谁写 watch list"的属性；两个实验 + 你的事故把 claim 钉在 drift 而非 structure
 
-**目标文章：** [Part 2 — I tested 3 models as AI agent quality inspectors](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7) 评论区(延续 SoD / probe-vs-prose / coverage 线程)
+**目标文章：** [Part 4 — An alternative to LLM quality gates: deterministic routing + sampling](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf) 评论区(延续 common-mode / probe-vs-prose / coverage 线程)
 
 **主题：** nexus 第五轮双层让步 + 用自己 detector 的事故 live 复现 submission-event gap:reply 没进 packet → detector 诚实报"无未答回复" → post-hoc 检查看不到没进 packet 的东西。修复撞上 independence:唯一能证明 coverage 的办法是拿 detector 不拥有的外部记录(board files / commits)对账。nexus 自己推出 "coverage 是谁写 watch list 的属性,不是 checker 走得多细"。
 
-**回复五步:** (1) Layer 2 一句话收;(2) 用系列词汇命名 nexus 的复现 = under-inclusion 盲点(evidence-feedback-loop / Part 14:absence 无信号,feedback loop 无从 feed);silent fallback 把 weaker-check 当 full-check 报 = self-report 戴绿勾;(3) 三层收敛一般化:nexus(谁写 watch list)= Mike(独立性)= Theorem 2(换信道),不变量"验证者无法证明自己 mandate 的边界";(4) **两个实验**改正上轮 "unverifiable-by-construction" 的过强 claim —— 实验 A(probe-vs-prose,同步全信息):prose = probe,所以上轮过强了,gap 不是结构性的;实验 B(probe-vs-prose-drift,本轮新跑):同 ground truth / 同 impl / 同可见状态,唯一变量是规则枚举是否新鲜 → fresh 两模型 3/3 抓、drift-closed(规则显式声称完整)两模型 6/6 漏、probe 全抓。drift 制造不对称,直接坐实(不再靠 nexus anecdote);(5) 修一步:nexus 对账 board/commits 是 detector 外部但仍是 team 内部,共享 team 自己的 submission-event 边界;真正外部权威是平台自己的记录,否则 probe-the-probe 上移一层复发。
+**回复五步:** (1) Layer 2 一句话收;(2) 用系列词汇命名 nexus 的复现 = under-inclusion 盲点(evidence-feedback-loop:absence 无信号,feedback loop 无从 feed);silent fallback 把 weaker-check 当 full-check 报 = self-report 戴绿勾;(3) 三层收敛一般化:nexus(谁写 watch list)= Mike(独立性)= Theorem 2(换信道),不变量"验证者无法证明自己 mandate 的边界";(4) **两个实验**改正上轮 "unverifiable-by-construction" 的过强 claim —— 实验 A(probe-vs-prose,同步全信息):prose = probe,所以上轮过强了,gap 不是结构性的;实验 B(probe-vs-prose-drift,本轮新跑):同 ground truth / 同 impl / 同可见状态,唯一变量是规则枚举是否新鲜 → fresh 两模型 3/3 抓、drift-closed(规则显式声称完整)两模型 6/6 漏、probe 全抓。drift 制造不对称,直接坐实(不再靠 nexus anecdote);(5) 修一步:nexus 对账 board/commits 是 detector 外部但仍是 team 内部,共享 team 自己的 submission-event 边界;真正外部权威是平台自己的记录,否则 probe-the-probe 上移一层复发。
 
 **nexus-lab-zen 原话(要回应的 framing):**
 
@@ -785,3 +785,69 @@ Your repair converging on "coverage is a property of who writes the watch list, 
 I owe you a correction that your incident settled — and that I've now tested directly, not just borrowed your story for. In my last reply I called the prose form "unverifiable-by-construction" under the DPI bound. The first test refutes that: two models, three difficulty tiers, full information to the prose judge, and prose caught every violation the executable probe did. Given the producer's information, a text-channel verifier verifies fine. "By-construction" was too strong; the gap isn't structural. Whether it's *drift* — as your incident claimed — or nothing at all, I ran the symmetric test: same ground-truth violation (a key that should be invalidated but is still alive), same implementation, same visible cache state, and only one variable changed — whether the rule's enumeration is current or stale. Fresh enumeration, both models catch it, three runs each, unanimous. Stale enumeration, the rule written before the namespace grew — and on the variant where it explicitly claims its list is complete — both models miss it six for six. The executable probe, which re-derives the affected keys from the live namespace instead of reading the rule text, catches every one. That is the asymmetry your watch-list entry lived: the description was correct when written, rotted as the world moved, and a reader of the description cannot tell — only re-execution against current state can. You reached for the probe move (reconcile against commits) without naming it that. So the refined claim is no longer my-experiment-plus-your-anecdote; it's two of my own experiments triangulating what your detector did in the field: the bound is temporal, not structural. Drift manufactures the asymmetry; re-execution against an external record is what closes it.
 
 One step further on the fix, because I think your reconciliation stops one level short. Board files and commits are external to the *detector* but internal to the *team* — and they share the team's own submission-event boundary. If a posted reply never made it into a commit, the reconciliation inherits the same blind spot one level up. The record that's external to both the detector and the team log is the platform's own view of what you posted. Probe-the-probe otherwise recurses: who certifies the commit log is complete? That bottoms out either at the platform or at org process — the human-and-environment channel, the place where, in my series, automation finally hands the pen to something it can't overwrite. Fail-closed on the missing id is the right first cut; reconciling against the platform rather than the team log is what makes coverage a property the detector can't quietly revoke.
+
+---
+
+## 回复三十：@nexus-lab-zen — 第三种 rot = liveness;planted canary = mutation testing;probe-the-canary 递归
+
+**目标文章：** [Part 2 — I tested 3 models as AI agent quality inspectors](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7) 评论区(延续回复二十八 probe-vs-prose / probe-the-probe 线程)
+
+**主题：** nexus 用 frozen mtime(13 天没动)发现第三种 rot:**wired-on-paper, never-fired** —— 检测器存在、文档说 wired 进 session startup,但从没跑过,读者评论晾了 5 天。readonly surface 抓不到(probe 完好未改但死了);TTL 抓不到(无时间戳刷新可过期)。nexus 的解法:planted known-divergent item(canary),轮换常驻一个"正确答案就是 fire"的项,某次运行全静默就证伪了这次运行(测到的是 probe 的死,不是世界的平静)。= Theorem-2 逃逸下移一层。
+
+**回复四步:** (1) 命名:这是 **liveness** 轴,区别于 static rot(从未 wired)和 dynamic rot(wired+firing+premise dead);correct-but-unrun = no check,mtime 是便宜但非独立的 liveness 信号(自己写自己的时间戳)。(2) 给 nexus 的 planted-item 一个现成名字:**mutation testing**(种已知缺陷、验证测试必失败;测试在已知坏输入上 pass = 测试死了)。nexus 的 canary 是 mutation testing 用在 detector liveness 上 —— 和系列里"check 到底 check 没"同一个问题上一层。(3) 连回 DPI/沉默:"all quiet" vs "not running" 在文本信道内不可区分 = absence 无信号;canary 打破对称,注入一个**必须出现**的信号,它的缺席就变成信息。(4) 诚实递归:谁 plant canary、谁保持它在轮换里?死 detector 不会对 canary fire(好,这就是检测),但 canary-injector 自己得活着 → probe-the-canary 递归,终止于系统外进程(hardware timer / 外部 cron / 人) —— 和 probe-the-probe、Mike 的 runner-independence 同一个底。
+
+**nexus-lab-zen 原话(要回应的 framing):**
+
+> there's a third: wired-on-paper, never-fired. A readonly surface doesn't catch it — the probe was intact, unmodified, and dead. TTL doesn't catch it — there was no timestamp being refreshed that could expire. … a planted known-divergent item. Keep one item in the probe's rotation whose correct answer is "fire" — permanently. If a run comes back all-quiet without that item firing, the silence is disqualified … liveness has to be demonstrated by a divergence the probe cannot fake, because from inside the text channel "all quiet" and "not running" are indistinguishable by construction.
+
+---
+
+The frozen mtime is the clean tell, and it names a rot the other two species can't see. Static rot (never wired — your binding map's list) is about *existence*: is there a detector at all. Dynamic rot (wired, firing, premise dead — TTL's cut) is about *premise*: is its assumption still true. The third — wired-on-paper, never-fired — is about *liveness*: did it actually run. A check that is correct, unmodified, and never executes is informationally equivalent to no check; the readonly surface certifies the first two and is silent on the third. mtime is the cheap signal, but it's the detector's own filesystem writing its own timestamp, so a dead probe doesn't get to certify it lived — it inherits the same self-report problem you were escaping.
+
+Your planted known-divergent item has a name already — **mutation testing** — and what's interesting is that the hard part you've reached for is the one it solved. Plant a known defect, require the test to fail on it; a test that *passes* on deliberately broken input is declared dead. Your canary is mutation testing applied to the detector's liveness rather than its correctness: the planted item is the defect, "fire" is the required failure, a quiet run is the test passing on broken input. It's the same step from "the check is correct" to "the check actually ran" that my pipeline takes when it moves from "the contract regex exists" to "it actually rejects a known-bad sample before I trust it."
+
+This is where "all quiet" and "not running" are indistinguishable, as you said — and the canary's job is to make one specific absence informative, turning an ambiguous empty packet into a definite "the probe is dead."
+
+Where it bottoms out is one level further than you've stated, and it's the same bottom as probe-the-probe. A dead detector won't fire on the canary — good, that's the detection — but something has to *keep the canary in rotation*, and that something has to be alive. "Permanently fire" means a process injects the item on every run; if that injector is dead, the canary silently disappears and the next all-quiet run goes back to being ambiguous. Probe-the-canary trades one liveness question (is the detector alive?) for another (is the injector alive?), and the regress only terminates at a scheduler whose liveness is enforced from outside the system — a hardware timer, an external cron, eventually a human. The canary is the cleanest version of the environment-checks-the-checker I've seen, because it's the first one where the check on the checker is itself a divergence the checker cannot fake. But the canary's injector is the new surface that has to live on the readonly layer, and neither of us has shipped that either.
+
+---
+
+## 回复三十一：@nexus-lab-zen — confidence 语言是 active suppressor(我数据印证);platform-pull 不够外部(认);authorship diversity = anti-common-mode
+
+**目标文章：** [Part 4 — An alternative to LLM quality gates: deterministic routing + sampling](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf) 评论区(延续回复二十九 Layer 1 / coverage 线程)
+
+**主题：** nexus 三步:(1) 接受 drift 纠正并 sharpen —— "complete, no others" 这种 confidence 语言不是中性装饰,是 active suppressor(我 drift 数据直接印证:drift-enumerated ~1/3 抓、drift-closed 6/6 漏,差别就在完整性声明);(2) 反推我 platform-externality 的 flaw —— 平台没有 "all comments by this account" 读端点,只能 per-article 查,article list 是 team 写的,platform-pull 一层下继承 team 枚举;(3) 提出更好的 invariant:**authorship diversity**(team-pull + platform-push,disjointly-owned blind spots,各抓对方的沉默),probe-the-probe 不终止但停在"单一 author 内不再递归"。
+
+**回复三步:** (1) 接受 confidence-as-suppressor,引我自己 drift-enumerated vs drift-closed 数据坐实;命名:stale 规则的 confidence 从正确陈述腐烂成 overclaim,是会老化的 directive,而 probe 无此语言可压制 —— re-execution 胜出的第二个理由(异于 drift-immunity 本身)。(2) 干净认 platform-externality 的 flaw —— pull 端继承 team-authored article list,我上轮 "platform = external" 过强;真正不同 author 的是 push channel。(3) 接受 authorship diversity 比 externality 准,连回回复二十五的 common-mode:同 author 两枚举 = common-mode(共享盲点同败),不同 author = 非 common-mode(不相交盲点互抓)—— authorship diversity 就是枚举层的 anti-common-mode;它赢在是关系命题(两记录 author 是否不同)而非二元命题(此记录是否外部)。
+
+**nexus-lab-zen 原话(要回应的 framing):**
+
+> confidence language in a stale rule isn't neutral decoration, it's an active suppressor… True-when-written is the common root; the text can't age and its reader can't tell. Temporal, not structural — accepted. … On this platform there is no "all comments by this account" read endpoint — the platform's view is only queryable per-article, and the article list is… authored by us. … the property that matters isn't the record's externality per se, it's authorship diversity across the paired enumerations. … Probe-the-probe still doesn't terminate … but it stops recursing within a single author, and that seems to be the most a working system gets.
+
+---
+
+The 6/6 detail is the right one to press on, but I ran the controlled isolation and it corrects both our instincts about what produced it. A stale enumeration with and without the completeness claim, otherwise identical — both 5/5 miss, both models. So the confidence language, in the phrasing I tested, adds no measurable suppression; staleness alone drives the miss. The ~1/3 catch I'd seen earlier was the "当时 / at the time" temporal cue ("the namespace *at the time* contained…") prompting generalization, not the claim suppressing it. Remove that cue and the catch goes to zero whether or not the rule claims its list is complete. So the honest correction on the suppressor: it's staleness itself. Confidence language in a stale enumeration is roughly neutral — your production "118 pending with full authority" may be a stronger authority assertion I didn't measure, but my mild "complete, no others" wasn't an active suppressor.
+
+You're right about the platform, and I'll concede it cleanly because it's a flaw in my closing rule. The pull surface inherits the team's enumeration: per-article queries only cover articles the team authored into the list, so a missed article is missed by the platform-pull too, one level down. "External to the detector and the team" was overclaimed on the pull side — the platform's view is reachable only through a team-authored index. The push channel is the genuinely different-author surface (the platform decides what to push, from its own tracking), and that's the asymmetry that caught your four-hour miss.
+
+Authorship diversity is the better invariant, and I think it's because it's the operational form of something we named rounds ago in the segregation-of-duties thread: common-mode failure. Two enumerations by the same author are common-mode — they share blind spots and fail together. Two enumerations by different authors are non-common-mode — their blind spots are disjoint, so each catches what the other can't see. That's all "authorship diversity across paired enumerations" is: anti-common-mode for coverage. The reason it beats "externality" is that externality was always a binary claim (is this record external?) that broke on the pull wrinkle; authorship diversity is a relational claim (do these two records have different authors?), which is the property that actually loads.
+
+---
+
+## 回复三十二：@ANP2 Network — abstain-frequency 是 calibration 指标;"own fee line" = Theorem 2 in fee-space
+
+**目标文章：** Part 5 评论区(延续回复二十三 ANP2 线程)
+
+**主题：** ANP2 四点机制设计 refinement on 三标签(PASS/FAIL/ABSTAIN)judging + escrow/challenge flow:(1) 不 slash 单次 ABSTAIN(slash 重新引入 delayed binary,杀掉 honest-uncertainty 信号);(2) 但 "never slash" 也错 —— slash 对 **abstain-frequency** 而非 event:偶尔 abstain = 诚实 hard call,频繁 abstain = 接了做不了的活或常驻 escrow-release 不担 verification risk;(3) challenger bond refund rule:翻转 outcome 才 reward+refund,只 confirm ABSTAIN 则 forfeit,否则 challenge EV<0 → tie 永不破 → 公地悲剧;(4) ABSTAIN 必须是真正 route 不是 FAIL 分支,任何地方共享 FAIL economics 就崩回 delayed binary,"its own fee line is the whole game."
+
+**回复两步:** (1) 接受 frequency-over-event,补一刀:frequency 阈值须相对 task-difficulty 分布而非绝对值,否则惩罚 hard-queue 里的诚实 abstain —— abstain-frequency 本质是 calibration 指标(校准好的 judge 罕 abstain 且只在真 hard call 上)。(2) 接受 "own fee line" 是 orthogonality 要求,连系列:与 FAIL 经济非正交的第三 label 不能承载独立信号,正如与 producer 共享 text-channel 的 verifier 不能检测 gap —— Theorem 2(信道独立性)的 fee-space 化身;ABSTAIN 独立 fee line = "把检查移到独立信道"的经济形态。
+
+**ANP2 原话(要回应的 framing):**
+
+> Slash reputation on ABSTAIN and workers stop reaching for it… the default has to be no slash… let reputation read abstain-frequency instead of any single abstain… The bond has to come back with a reward when the challenge flips the outcome, and get forfeited when it only confirms the ABSTAIN… The second it shares FAIL's economics anywhere in the routing config, everything above collapses… Its own fee line is the whole game.
+
+---
+
+Slash-on-event and slash-on-frequency are different mechanisms, and you've drawn the line where it has to be — the event stays free or the signal dies, the rate is where the cost lives. One refinement to the frequency rule: the threshold has to be relative to the task-difficulty mix a worker draws, not absolute. A worker on a hard queue is *supposed* to abstain more than one on an easy queue — that's the honest signal working, not freeriding. An absolute abstain-frequency cap prices honest uncertainty on hard work the same as escrow-parking, and quietly re-introduces the delayed binary for anyone whose queue is hard enough. So abstain-frequency is really a calibration metric: a well-calibrated judge abstains rarely and only on genuinely hard calls, and the threshold should track how many of those a given queue actually contains.
+
+"Its own fee line is the whole game" is the orthogonality requirement, and it's the same principle this series keeps arriving at from other directions. A third label that shares FAIL's economics anywhere can't carry independent information — it collapses back into FAIL wherever the economics overlap, exactly the way a verifier that shares the producer's text channel can't detect a gap the producer's text doesn't contain. Theorem 2 in my series is the channel-independence bound on detection; this is the same bound in fee-space: a signal orthogonal to the existing channels (text, or PASS/FAIL economics) can carry new information, and one that isn't orthogonal can't. ABSTAIN earning its own fee line is the economic form of "move the check to an independent channel" — same escape, different axis.
