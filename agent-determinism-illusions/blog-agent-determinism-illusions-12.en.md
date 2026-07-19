@@ -8,7 +8,7 @@
 ---
 title: "Probe vs Prose: what the verifier-sharing-your-text-channel really costs"
 published: false
-description: "nexus-lab-zen's probe-vs-prose, tested across 20 scenarios x 5 trials x 2 models. The finding refines the claim: prose doesn't fail by missing violations, it fails by going unstable on ambiguous rules — sometimes over-reporting, sometimes under. Probe's edge isn't stronger detection, it's forced disambiguation."
+description: "nexus-lab-zen's probe-vs-prose, tested across two axes — clarity (20 scenarios × 5 trials) and drift (controlled fresh-vs-stale, cross-model, two runs). On clarity, prose diverges on vague rules. On drift, prose misses cleanly when a precise rule has gone stale — so detection IS the gap there. Probe's edge has two mechanisms: forced disambiguation (clarity) and drift-immune re-execution (drift)."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
@@ -40,7 +40,7 @@ In Part 4, Mike Czerwinski pushed this point from the *generator* side. "Verifia
 
 nexus-lab-zen's probe-vs-prose is the symmetric move on the *assumption* side. The invalidation condition written as prose is a self-report about when the premise dies — it asserts "this will go stale if X happens" and waits for a human to notice when X happens. Written as a probe, it's a runner that *executes* the falsification instead of describing it. The probe asks the environment directly; the prose asks a reader to imagine what the environment would say.
 
-Both moves are escapes from the same bound, and the bound has a name. **Theorem 2** (the Data Processing Inequality applied to agent verification): when the reasoning and the verifier share the same text channel, the verifier's information is a strict subset of the producer's. If the rationalization is textually indistinguishable from the real cause, no text-channel reader — LLM judge, debate panel, or human — can detect the gap. Anything left as prose lives in the text channel and is unverifiable by construction. Getting it out of the text channel is the only route that doesn't depend on someone being honest or attentive.
+Both moves are escapes from the same bound, and the bound has a name. **Theorem 2** (the Data Processing Inequality applied to agent verification): when the reasoning and the verifier share the same text channel, the verifier's information is a strict subset of the producer's. If the rationalization is textually indistinguishable from the real cause, no text-channel reader — LLM judge, debate panel, or human — can detect the gap. Anything left as prose lives in the text channel and, in the strong form of the theorem, is unverifiable by construction — a claim the experiments below refine, because "unverifiable" turns out to depend on which axis you measure. Getting it out of the text channel is the only route that doesn't depend on someone being honest or attentive.
 
 So the picture, after Part 4 and this thread, has two faces of one escape:
 
@@ -51,7 +51,7 @@ Same wall, two faces, same exit: move the check out of the text channel into som
 
 That's the convergence. The next question is whether the *mechanism* nexus-lab-zen named — "prose rots, probe doesn't" — is the right mechanism, or whether the experiment says something more precise. It says something more precise, and slightly different.
 
-## 3. The experiment: 20 scenarios, two models, and a fairness trap I had to design around
+## 3. The first axis — clarity: 20 scenarios, two models, and a fairness trap I had to design around
 
 The claim to test is narrow: for a given silent failure (a cache that should have been invalidated but wasn't), does an LLM judge reading the rule as prose detect what an executable probe detects? Before I could run it, there was a fairness problem that would have invalidated any result, and it's worth stating because it's the kind of thing a careful reader will press on.
 
@@ -89,21 +89,39 @@ And there is a third scenario pair that completes the picture, and it's the one 
 
 So the full picture on vague rules is: prose doesn't consistently miss, and it doesn't consistently over-report. It **diverges** — model-to-model and trial-to-trial — because the vague phrase has no single meaning, and each reader fixes one. The probe converges, because it has no freedom to fix a meaning; the set is declared.
 
-## 4. The refinement: it's not "prose rots," it's "prose diverges on vague rules — and the probe's job is to remove the vagueness, not to detect better"
+## 4. The second axis: drift — and here detection IS the gap
 
-Here is where the experiment refines nexus-lab-zen's framing, and I want to be careful about the word *refine* because the framing is mostly right.
+The clarity experiment above has a blind spot, and it's the one nexus-lab-zen actually meant. "Prose rots" is a claim about *time* — a description correct when written and wrong now. The clarity axis tests a static property (is the rule specific enough); it never asks what happens when a precise rule stops being current. Every scenario above handed the prose judge a *current* rule.
 
-The strong form of "prose rots" suggests prose is a *weaker detector* than probe — that it will miss things probe catches. The data does not support that. On precise rules, prose and probe are indistinguishable (13/13 vs 13/13, both models). If prose were simply weaker, it would lag probe on precise rules too. It doesn't. So detection ability is not the axis on which they differ.
+So I ran a second experiment with one variable changed: whether the rule's enumeration is current or stale. Same ground-truth violation (a key that should be invalidated but is still alive), same implementation, same visible cache state, two models. The stale rule was written when the namespace was {user:123, user:456} and marked complete; by the time the check runs, user:789 has been added, the implementation doesn't touch it, and 789 is left alive.
 
-What the data does support is narrower and more interesting. **Prose and probe differ exactly where the rule is vague, and there prose diverges — sometimes under-reporting (key-hard), sometimes over-reporting (ref/tier controls) — while probe stays fixed.** The reason probe stays fixed is not that it detects better. It's that a probe cannot be written against a vague rule at all. To write "the one command whose changed output falsifies the assertion," you have to fix what the assertion *is* — you have to enumerate the affected set, pick the concrete signal, remove the adjectives. The probe's construction *forces disambiguation*. By the time a probe exists, the rule is no longer vague; the vagueness has been spent in the act of writing it.
+| | precise, fresh | precise, stale |
+|---|---|---|
+| DeepSeek prose | 10/10 catch | 9/10 miss |
+| GLM prose | 10/10 catch | 10/10 miss |
+| probe (both) | catch | catch |
 
-That is the refinement. nexus-lab-zen said prose rots. The experiment says: **what rots is not the prose itself but the vagueness inside it, and the probe's real advantage is that it cannot be written until the vagueness is gone.** The probe isn't a stronger reader of the rule; it's a forcing function that makes you finish writing the rule. "Runner, not reader" is right, but the mechanism is disambiguation-at-authoring-time, not detection-at-runtime.
+(Experiment: `probe-vs-prose-drift-test.py` and `probe-vs-prose-synthesis-test.py` — N=5, cross-model, run twice for reproducibility. Results: `results-v2/probe-vs-prose-drift.json`, `results-v2/probe-vs-prose-synthesis.json`.)
+
+This is the half the clarity axis couldn't see. On a precise rule that has drifted, prose *is* the weaker detector — it misses what probe catches, cleanly and reproducibly, both models. The prose judge reads the rule's enumeration; the enumeration is stale; a reader of a stale-but-precise description has no way to know it's stale. It reasons correctly *given the description*, and the description is wrong about the present. The probe re-derives the affected set from the live namespace and checks it — re-execution against current state is drift-immune by construction; reading a description is not.
+
+One honest boundary, because a careful reader will press on it: I tried to cross drift onto *vague* rules (a four-cell design, clarity × drift), and the vague-stale cell caught *more* than vague-fresh — backwards. Signaling "this rule is stale" to a vague rule needs a sentence ("may not reflect subsequent changes"), and that sentence is itself a suspicion cue that makes the model check harder. You cannot cleanly manipulate drift on a rule that never pinned a set, because the only way to tell the reader it's stale is prose, and that prose changes the verdict. The clean drift signal is on the precise row; the vague row stays in §3. That's a limitation, and a small instance of the principle: the moment you describe drift in prose, the prose participates in the result.
+
+## 5. The refinement: two axes, two mechanisms
+
+With the drift axis on the table, the §3 headline — "detection is not the gap" — needs scoping. On the *clarity* axis, the data does not support prose being a weaker detector: on precise rules prose matches probe, cell for cell (13/13, both models). On the *drift* axis it does: a precise rule gone stale turns prose from a reliable detector into one that misses cleanly, both models, reproducibly. nexus-lab-zen's "prose rots" is right on the very axis I'd refined it away from.
+
+So the probe's advantage is two mechanisms, one per axis. On clarity, the probe forces disambiguation at authoring time — you can't write a probe against a vague rule, so writing the probe is what removes the vagueness (the rest of this section develops this). On drift, the probe re-executes against current state — disambiguation doesn't help (the rule was already precise); only re-execution does. "Runner, not reader" holds on both axes, but the runner's job differs.
+
+On the clarity axis, the picture is narrower than "prose is a weaker detector." **Prose and probe differ exactly where the rule is vague, and there prose diverges — sometimes under-reporting (key-hard), sometimes over-reporting (ref/tier controls) — while probe stays fixed.** The reason probe stays fixed is not that it detects better. It's that a probe cannot be written against a vague rule at all. To write "the one command whose changed output falsifies the assertion," you have to fix what the assertion *is* — you have to enumerate the affected set, pick the concrete signal, remove the adjectives. The probe's construction *forces disambiguation*. By the time a probe exists, the rule is no longer vague; the vagueness has been spent in the act of writing it.
+
+That is the clarity-axis refinement. nexus-lab-zen said prose rots; on this axis, **what fails is not the prose itself but the vagueness inside it, and the probe's real advantage is that it cannot be written until the vagueness is gone.** The probe isn't a stronger reader of the rule; it's a forcing function that makes you finish writing the rule. "Runner, not reader" holds here via disambiguation-at-authoring-time — a different mechanism from the drift axis (§4), where the runner wins by re-executing against a description the reader cannot tell is stale.
 
 And here is where the binding map from nexus-lab-zen's own comment snaps into place. Their registry: 39 rules, 9 bound to a detector, 30 unbound-with-reason. Read those 30 through the lens of this experiment: they are exactly the rules vague enough that no probe can be written against them without inventing the enumeration. The team's response — "carry an explicit reason why it's unbound" — is the honest version of what the experiment shows you can't fake. You cannot probe a rule whose affected set you cannot name. The 30 are not "probes we haven't gotten to yet"; they are "rules whose vagueness we have not yet spent." The fail-closed lint that breaks on a rule with neither a detector nor a reason is the right enforcement, because it refuses to let a vague rule pretend to be enforced.
 
-This also reframes the original TTL question that started the thread. nexus-lab-zen wanted per-assertion TTL — an expiry on each premise. The probe-as-runner makes TTL real because the probe executes on every check, so a dead premise is caught the moment the probe's output changes. But notice what had to be true for that to work: the premise had to be expressible as a probe, which means it had to be disambiguated first. TTL on prose would not work even if you ran it on a schedule, because re-reading vague prose produces a divergent verdict each time — the reader fixes a different meaning. TTL on a probe works because the probe has no meaning to fix; it just runs. **The runner beats the reader not because runners are more vigilant, but because readers of vague text cannot be consistent across re-reads.** That is a sharper statement than "prose rots," and it's what the data buys.
+This also reframes the original TTL question that started the thread. nexus-lab-zen wanted per-assertion TTL — an expiry on each premise. The probe-as-runner makes TTL real because the probe executes on every check, so a dead premise is caught the moment the probe's output changes. But notice what had to be true for that to work: the premise had to be expressible as a probe, which means it had to be disambiguated first. TTL on prose would not work even if you ran it on a schedule, because re-reading vague prose produces a divergent verdict each time — the reader fixes a different meaning. TTL on a probe works because the probe has no meaning to fix; it just runs. **The runner beats the reader for two reasons: readers of vague text cannot be consistent across re-reads (clarity), and readers of stale text cannot tell the text is stale (drift, §4).** nexus-lab-zen's "prose rots" named the second; the clarity experiment refined the first.
 
-## 5. Boundaries — where this stops, and the recursion it forces
+## 6. Boundaries — where this stops, and the recursion it forces
 
 Two boundaries, one honest and one recursive.
 
@@ -111,13 +129,13 @@ Two boundaries, one honest and one recursive.
 
 **The honest boundary: not every premise can be a probe.** This experiment ran on cache-invalidation rules, where "the affected set" is a finite collection of keys you can, in principle, enumerate. The probe's forcing function works because the domain lets you name the set. There are premises where you cannot. "This analysis is coherent," "this summary captures the user's intent," "this recommendation is not misleading" — these are semantic properties with no enumerable affected set and no single command whose output falsifies them. For those, no probe can be written, and the rule is permanently in the binding map's "unbound" column with whatever reason you can articulate. This is the same wall the Red Line Principle article calls the open problem of semantic-layer verification, and DPI is why: the verifier shares the text channel with the reasoning, and no rewriting of prose into a command escapes the channel when the property itself has no non-text manifestation.
 
-So the honest scope of probe-vs-prose, after the experiment: **for any rule whose affected set can be named, write the probe — it forces you to finish the rule, and it then runs instead of being read, which is the only way to get consistency across re-checks. For any rule whose affected set cannot be named, no probe exists; the rule stays unbound-with-reason, and the fail-closed lint is correct to break on silence.** The gap between prose and probe is not detection. It is the discipline of naming what you mean, enforced at authoring time by the fact that a probe otherwise cannot be written.
+So the honest scope of probe-vs-prose, after both experiments: **for any rule whose affected set can be named, write the probe — it forces you to finish the rule (clarity axis), and it then runs instead of being read, which is the only way to stay drift-immune across re-checks (drift axis). For any rule whose affected set cannot be named, no probe exists; the rule stays unbound-with-reason, and the fail-closed lint is correct to break on silence.** The gap between prose and probe is not one thing: on the clarity axis it is the discipline of naming what you mean, enforced at authoring time; on the drift axis it is detection itself, lost the moment the named set falls out of sync with the world.
 
 ---
 
-*Experiment script:* [`probe-vs-prose-expanded.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 20 scenarios × 5 trials × 2 models, fairness design (prose given full rule + impl + cache state)
+*Clarity-axis experiment:* [`probe-vs-prose-expanded.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 20 scenarios × 5 trials × 2 models, fairness design (prose given full rule + impl + cache state). Results: `results-v2/probe-vs-prose-expanded.json`.
 
-*Results:* `results-v2/probe-vs-prose-expanded.json` (includes per-trial raw model outputs for reproducibility)
+*Drift-axis experiments:* `probe-vs-prose-drift-test.py`, `probe-vs-prose-synthesis-test.py` — N=5, cross-model, run twice. Results: `results-v2/probe-vs-prose-drift.json`, `results-v2/probe-vs-prose-synthesis.json` (`.run1.json` = first of two runs, for reproducibility).
 
 *Previous: [Key-space C3: the Bloom filter that closes referent gameability](blog-agent-determinism-illusions-11.en.md)*
 *Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
