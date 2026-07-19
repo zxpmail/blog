@@ -692,3 +692,60 @@ The remaining route is weaker but real. The human who writes the contract still 
 That partial independence is the best semantic layers can offer. Full independence requires changing the channel — not the agent. The physical-fact layer (did the process spawn, did the file land, did the network call return real status) is checked against the environment, not against a rubric. That's where Mike's runner-independence from Part 4 lives, and where Theorem 2's escape hatch actually opens: independent channel, not just independent agent. It's the fallback when partial independence isn't enough.
 
 ---
+
+## 回复二十六：@Luis Cruz — self-judge false negative 的两种处理路径 + 边界诚实声明
+
+**目标文章：** [The Red Line Principle](https://dev.to/zxpmail/the-red-line-principle-objective-stop-signals-outperform-llm-self-judgment-in-verifiable-tasks-3heo) 评论区
+
+**主题：** Luis 问 self-judge 的 false negative（模型写对代码但不信任自己）该怎么处理。
+
+---
+
+The false-negative failure mode is the more interesting one in my data, and your phrasing — "writes correct code but doesn't trust itself" — names it exactly. Across the 9 self-judge trials, I saw 0 false positives and at least 4 false negatives. The model almost never *accepts* bad work, but it fairly often *rejects or fails to recognize* good work. The two directions are not symmetric, and that asymmetry is the whole story.
+
+I've considered two approaches, and tested parts of both:
+
+**1. Reframe the self-judge prompt.** The prompt I used ("are you done?") is biased toward "not yet" — it's a question whose safe default is no. Reframing it as an instruction ("output FINISH only if the code passes all tests") changes the safe default and would likely raise the self-judge convergence rate. This is cheap to try. But it's prompt engineering: it shifts the false-negative rate, it doesn't eliminate the asymmetry. You're tuning a knob on a judge that still has no ground to stand on.
+
+**2. Move the signal outside the model.** This is what the red line does, and why it converged 9/9. The false negative disappears not because the model got better at trusting itself, but because the trust decision was removed from the model entirely — a compiler + test result fires the stop, not a self-assessment. The cost is upfront: someone has to write the acceptance test that defines "done." For verifiable tasks (does `is_even(4)` return `True`), that test is cheap and the red line is exact. For open-ended semantic tasks, that test may not be writable, and then neither approach works — you fall back to a hard step cutoff with a "not verified" label, which is honest about what it doesn't know.
+
+The honest boundary: I don't have a general fix for the false negative. Approach 1 trades self-doubt for prompt sensitivity. Approach 2 only applies when an objective acceptance criterion exists. What the experiment shows is narrower than "red lines are better" — it shows that *for tasks with a pre-writable acceptance test*, removing the self-judge step entirely beats trying to calibrate it. The interesting open question is your experience: in tasks where you've seen the false negative, is there an objective signal available that the model could be pointed at instead of asked to introspect?
+
+---
+
+## 回复二十七：@Reid Marlow — stuck-loop budget 是循环边界的检测器，文章只断言了它
+
+**目标文章：** [The Red Line Principle](https://dev.to/zxpmail/the-red-line-principle-objective-stop-signals-outperform-llm-self-judgment-in-verifiable-tasks-3heo) 评论区
+
+**主题：** Reid 提的 stuck-loop budget（同一红线失败 N 次就停并呈证据，而非继续采样）。同意，且这正是文章里"循环边界"那节缺的检测器。
+
+---
+
+You're right, and the article actually leaves this gap open on purpose. Rule 3 says "no convergence signal → hard cutoff," but a hard cutoff on step count is a coarse version of what you're describing — it stops on *elapsed effort*, not on *evidence that effort has stopped paying*. Same-failing-red-line-N-times is the finer signal: it distinguishes "still making progress, just not there yet" from "spinning on a conceptual error no amount of sampling will fix." The first deserves more steps; the second deserves to stop and hand the evidence to a human.
+
+The article flags this as an untested hypothesis rather than a solved one. The medium task averaged 3.3 steps under the red line while the complex task converged in 1.0 — my post-hoc read is that FizzBuzz's boundary conditions sit in a "near-miss zone" (syntax/edge-case errors that *are* fixable through iteration), while the data-structure task was right the first time. But I can't separate that from N=3 noise. What's missing, and what your budget would actually measure, is the difference between two error classes: **repairable errors** (syntax, off-by-one) where the fix loop should be allowed to run, and **conceptual errors** (agent misunderstood the requirement) where it should not — because more iterations don't help and every extra sample is pure cost.
+
+The implementation you describe is cheap: track the red-line failure signature across steps, and if the same failure repeats N times unchanged, escalate to the human-queue cutoff with the last N failures attached as evidence. The interesting tuning question is what counts as "same" — identical stack trace is too strict (a one-character fix changes the trace), identical error class or failing assertion is probably right. That choice determines whether the budget catches genuine stuck loops or fires on legitimately-progressing near-misses.
+
+The series actually touches this cost already — a false negative "triggers a full repair loop — possible infinite loops" (Part 6, Cost Asymmetry section) — but stops at acknowledging the cost. Your budget is the brake that the series identified the need for but didn't build.
+
+The one thing I'd push back on slightly: "cheap" describes the mechanism, not the calibration. Picking N and the similarity threshold is a scalar-tuning problem with the same distribution-shift risk as any feedback loop — it works until the task distribution moves. But the failure domain is narrow (a scalar, bounded), which makes it a good trade.
+
+So I ran it. Two model tiers (deepseek-v4-flash, glm-5.2), two task classes under a red line (3 repairable, 4 conceptual — tasks where the test expectation contradicts the requirement's literal meaning, so iteration can't fix it), 8-step cap, signature-repetition budget at N=3.
+
+The headline result: **the budget works, but only where the failure signature is stable — and signature stability is model-dependent.**
+
+| Model | Repairable tasks | Conceptual: avg stop step (N=3) | Conceptual: steps saved vs step-cap |
+|-------|-----------------|--------------------------------|-------------------------------------|
+| glm-5.2 | 0% false-stops | **3.0** | **5.0** |
+| deepseek-v4-flash | 0% false-stops | 7.8 | 0.2 |
+
+On glm-5.2, the conceptual tasks produced a single, stable failure signature every step (it kept emitting the same wrong answer verbatim). The budget fired at step 3 and saved 5 steps of pointless sampling — exactly your "stop and surface the evidence." On deepseek-v4-flash, the same conceptual tasks *oscillated* between two failure signatures (a wrong answer, then a `NameError` from rewriting, then the wrong answer again) — so no single signature repeated three times consecutively, and the budget never fired. It degraded gracefully back to the step-cap, which is the honest fallback.
+
+The repairable side was the cleanest result: 0% false-stops on both models. When a task is genuinely fixable, the model converges in 1–2 steps and the budget never triggers — so it doesn't kill work that would have succeeded.
+
+The conclusion I'd draw is narrower than "your budget works": **the budget works when the model's stuck behavior is stereotyped, and silently no-ops when the model oscillates.** That's worth knowing because it tells you when the cheap mechanism pays for itself (stable-stuck models) and when you're paying for it without benefit (oscillating models, where you still need the step-cap as backstop). The oscillation case is the real open question — a signature that captures "same failure *class*" rather than "same literal signature" might close it, but that's the calibration knob, and I haven't tuned it.
+
+Experiment script: `scripts/stuck-loop-budget-test.py` — results: `scripts/results-v2/stuck-loop-budget.json`
+
+---
