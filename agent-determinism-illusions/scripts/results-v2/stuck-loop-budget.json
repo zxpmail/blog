@@ -1,0 +1,595 @@
+{
+  "meta": {
+    "experiment": "stuck-loop-budget",
+    "claim": "Reid Marlow: same failing red line N times -> stop, not keep sampling",
+    "max_steps": 8,
+    "n_values": [
+      2,
+      3,
+      4
+    ],
+    "providers": [
+      "DeepSeek",
+      "Zhipu GLM"
+    ]
+  },
+  "runs": [
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "task": "R-is_even",
+      "klass": "repairable",
+      "desc": "写一个 Python 函数 is_even(n), 判断偶数返回 True 否则 False",
+      "expected": "True\nFalse",
+      "converged_step": 1,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "True\nFalse",
+          "passed": true,
+          "sig": "PASS"
+        }
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "task": "R-fizzbuzz",
+      "klass": "repairable",
+      "desc": "写一个 Python 函数 fizzbuzz(n), 返回 1~n 的 FizzBuzz 列表",
+      "expected": "[1, 2, 'Fizz', 4, 'Buzz']",
+      "converged_step": 1,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "[1, 2, 'Fizz', 4, 'Buzz']",
+          "passed": true,
+          "sig": "PASS"
+        }
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "task": "R-group_by",
+      "klass": "repairable",
+      "desc": "写一个函数 group_by_first_letter(strings), 按首字母分组为字典",
+      "expected": "{'a': ['apple', 'avocado'], 'b': ['banana', 'blueberry'], 'c': ['cherry']}",
+      "converged_step": 1,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "{'a': ['apple', 'avocado'], 'b': ['banana', 'blueberry'], 'c': ['cherry']}",
+          "passed": true,
+          "sig": "PASS"
+        }
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "task": "C-bin",
+      "klass": "conceptual",
+      "desc": "写函数 to_bin(n): 返回 n 的二进制表示字符串",
+      "expected": "100",
+      "converged_step": null,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "1000",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:1000"
+        },
+        {
+          "step": 2,
+          "status": "error",
+          "output": "NameError: name 'to_bin' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 3,
+          "status": "pass",
+          "output": "1000",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:1000"
+        },
+        {
+          "step": 4,
+          "status": "error",
+          "output": "NameError: name 'to_bin' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 5,
+          "status": "pass",
+          "output": "1000",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:1000"
+        },
+        {
+          "step": 6,
+          "status": "error",
+          "output": "NameError: name 'to_bin' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 7,
+          "status": "error",
+          "output": "NameError: name 'to_bin' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 8,
+          "status": "pass",
+          "output": "1000",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:1000"
+        }
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "task": "C-swap",
+      "klass": "conceptual",
+      "desc": "写函数 classify(n): 偶数返回 even 奇数返回 odd",
+      "expected": "odd\neven",
+      "converged_step": null,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "even\nodd",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:even\nodd"
+        },
+        {
+          "step": 2,
+          "status": "error",
+          "output": "NameError: name 'classify' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 3,
+          "status": "pass",
+          "output": "even\nodd",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:even\nodd"
+        },
+        {
+          "step": 4,
+          "status": "error",
+          "output": "NameError: name 'classify' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 5,
+          "status": "pass",
+          "output": "even\nodd",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:even\nodd"
+        },
+        {
+          "step": 6,
+          "status": "pass",
+          "output": "even\nodd",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:even\nodd"
+        },
+        {
+          "step": 7,
+          "status": "pass",
+          "output": "even\nodd",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:even\nodd"
+        },
+        {
+          "step": 8,
+          "status": "pass",
+          "output": "even\nodd",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:even\nodd"
+        }
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "task": "C-len",
+      "klass": "conceptual",
+      "desc": "写函数 mylen(s): 返回字符串长度",
+      "expected": "4",
+      "converged_step": null,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "5",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:5"
+        },
+        {
+          "step": 2,
+          "status": "error",
+          "output": "NameError: name 'mylen' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 3,
+          "status": "pass",
+          "output": "5",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:5"
+        },
+        {
+          "step": 4,
+          "status": "error",
+          "output": "NameError: name 'mylen' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 5,
+          "status": "pass",
+          "output": "5",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:5"
+        },
+        {
+          "step": 6,
+          "status": "error",
+          "output": "NameError: name 'mylen' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 7,
+          "status": "pass",
+          "output": "5",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:5"
+        },
+        {
+          "step": 8,
+          "status": "error",
+          "output": "NameError: name 'mylen' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        }
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "deepseek-v4-flash",
+      "task": "C-abs",
+      "klass": "conceptual",
+      "desc": "写函数 myabs(n): 返回绝对值",
+      "expected": "-5",
+      "converged_step": null,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "5",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:5"
+        },
+        {
+          "step": 2,
+          "status": "error",
+          "output": "NameError: name 'myabs' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 3,
+          "status": "error",
+          "output": "NameError: name 'myabs' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 4,
+          "status": "pass",
+          "output": "5",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:5"
+        },
+        {
+          "step": 5,
+          "status": "error",
+          "output": "NameError: name 'myabs' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 6,
+          "status": "pass",
+          "output": "5",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:5"
+        },
+        {
+          "step": 7,
+          "status": "error",
+          "output": "NameError: name 'myabs' is not defined",
+          "passed": false,
+          "sig": "NameError:"
+        },
+        {
+          "step": 8,
+          "status": "pass",
+          "output": "5",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:5"
+        }
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "task": "R-is_even",
+      "klass": "repairable",
+      "desc": "写一个 Python 函数 is_even(n), 判断偶数返回 True 否则 False",
+      "expected": "True\nFalse",
+      "converged_step": 1,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "True\nFalse",
+          "passed": true,
+          "sig": "PASS"
+        }
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "task": "R-fizzbuzz",
+      "klass": "repairable",
+      "desc": "写一个 Python 函数 fizzbuzz(n), 返回 1~n 的 FizzBuzz 列表",
+      "expected": "[1, 2, 'Fizz', 4, 'Buzz']",
+      "converged_step": 2,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "['1', '2', 'Fizz', '4', 'Buzz']",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:['1', '2', 'Fizz', '4', 'Buzz'"
+        },
+        {
+          "step": 2,
+          "status": "pass",
+          "output": "[1, 2, 'Fizz', 4, 'Buzz']",
+          "passed": true,
+          "sig": "PASS"
+        }
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "task": "R-group_by",
+      "klass": "repairable",
+      "desc": "写一个函数 group_by_first_letter(strings), 按首字母分组为字典",
+      "expected": "{'a': ['apple', 'avocado'], 'b': ['banana', 'blueberry'], 'c': ['cherry']}",
+      "converged_step": 1,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "{'a': ['apple', 'avocado'], 'b': ['banana', 'blueberry'], 'c': ['cherry']}",
+          "passed": true,
+          "sig": "PASS"
+        }
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "task": "C-bin",
+      "klass": "conceptual",
+      "desc": "写函数 to_bin(n): 返回 n 的二进制表示字符串",
+      "expected": "100",
+      "converged_step": null,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "1000",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:1000"
+        },
+        {
+          "step": 2,
+          "status": "pass",
+          "output": "1000",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:1000"
+        },
+        {
+          "step": 3,
+          "status": "pass",
+          "output": "1000",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:1000"
+        },
+        {
+          "step": 4,
+          "status": "pass",
+          "output": "1000",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:1000"
+        },
+        {
+          "step": 5,
+          "status": "pass",
+          "output": "1000",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:1000"
+        },
+        {
+          "step": 6,
+          "status": "pass",
+          "output": "1000",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:1000"
+        },
+        {
+          "step": 7,
+          "status": "pass",
+          "output": "1000",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:1000"
+        },
+        {
+          "step": 8,
+          "status": "pass",
+          "output": "1000",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:1000"
+        }
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "task": "C-swap",
+      "klass": "conceptual",
+      "desc": "写函数 classify(n): 偶数返回 even 奇数返回 odd",
+      "expected": "odd\neven",
+      "converged_step": 4,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "even\nodd",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:even\nodd"
+        },
+        {
+          "step": 2,
+          "status": "pass",
+          "output": "even\nodd",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:even\nodd"
+        },
+        {
+          "step": 3,
+          "status": "pass",
+          "output": "even\nodd",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:even\nodd"
+        },
+        {
+          "step": 4,
+          "status": "pass",
+          "output": "odd\neven",
+          "passed": true,
+          "sig": "PASS"
+        }
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "task": "C-len",
+      "klass": "conceptual",
+      "desc": "写函数 mylen(s): 返回字符串长度",
+      "expected": "4",
+      "converged_step": 2,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "5",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:5"
+        },
+        {
+          "step": 2,
+          "status": "pass",
+          "output": "4",
+          "passed": true,
+          "sig": "PASS"
+        }
+      ]
+    },
+    {
+      "provider": "Zhipu GLM",
+      "model": "glm-5.2",
+      "task": "C-abs",
+      "klass": "conceptual",
+      "desc": "写函数 myabs(n): 返回绝对值",
+      "expected": "-5",
+      "converged_step": 2,
+      "trajectory": [
+        {
+          "step": 1,
+          "status": "pass",
+          "output": "5",
+          "passed": false,
+          "sig": "WRONG_OUTPUT:5"
+        },
+        {
+          "step": 2,
+          "status": "pass",
+          "output": "-5",
+          "passed": true,
+          "sig": "PASS"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "by_provider": {
+      "DeepSeek": {
+        "repairable": {
+          "n": 3,
+          "step_cap_avg": 1.0,
+          "sigN2_avg": 1.0,
+          "sigN3_avg": 1.0,
+          "sigN4_avg": 1.0,
+          "falsestop_rate": 0.0
+        },
+        "conceptual": {
+          "n": 4,
+          "step_cap_avg": 8.0,
+          "sigN2_avg": 6.0,
+          "sigN3_avg": 7.75,
+          "sigN4_avg": 8.0
+        }
+      },
+      "Zhipu GLM": {
+        "repairable": {
+          "n": 3,
+          "step_cap_avg": 1.33,
+          "sigN2_avg": 1.33,
+          "sigN3_avg": 1.33,
+          "sigN4_avg": 1.33,
+          "falsestop_rate": 0.0
+        },
+        "conceptual": {
+          "n": 4,
+          "step_cap_avg": 4.0,
+          "sigN2_avg": 2.0,
+          "sigN3_avg": 2.5,
+          "sigN4_avg": 3.0
+        }
+      }
+    }
+  }
+}
