@@ -721,17 +721,9 @@ The honest boundary: I don't have a general fix for the false negative. Approach
 
 ---
 
-You're right, and the article actually leaves this gap open on purpose. Rule 3 says "no convergence signal → hard cutoff," but a hard cutoff on step count is a coarse version of what you're describing — it stops on *elapsed effort*, not on *evidence that effort has stopped paying*. Same-failing-red-line-N-times is the finer signal: it distinguishes "still making progress, just not there yet" from "spinning on a conceptual error no amount of sampling will fix." The first deserves more steps; the second deserves to stop and hand the evidence to a human.
+You're right, and the article flagged exactly this gap — the "boundary of loops" section marked it as an untested hypothesis rather than a solved one. Your budget is the finer signal that distinguishes "still making progress, just not there yet" from "spinning on a conceptual error no amount of sampling will fix." The first deserves more steps; the second deserves to stop and hand the evidence to a human. Rule 3's hard cutoff stops on *elapsed effort*; same-failing-red-line-N-times stops on *evidence that effort has stopped paying*.
 
-The article flags this as an untested hypothesis rather than a solved one. The medium task averaged 3.3 steps under the red line while the complex task converged in 1.0 — my post-hoc read is that FizzBuzz's boundary conditions sit in a "near-miss zone" (syntax/edge-case errors that *are* fixable through iteration), while the data-structure task was right the first time. But I can't separate that from N=3 noise. What's missing, and what your budget would actually measure, is the difference between two error classes: **repairable errors** (syntax, off-by-one) where the fix loop should be allowed to run, and **conceptual errors** (agent misunderstood the requirement) where it should not — because more iterations don't help and every extra sample is pure cost.
-
-The implementation you describe is cheap: track the red-line failure signature across steps, and if the same failure repeats N times unchanged, escalate to the human-queue cutoff with the last N failures attached as evidence. The interesting tuning question is what counts as "same" — identical stack trace is too strict (a one-character fix changes the trace), identical error class or failing assertion is probably right. That choice determines whether the budget catches genuine stuck loops or fires on legitimately-progressing near-misses.
-
-The series actually touches this cost already — a false negative "triggers a full repair loop — possible infinite loops" (Part 6, Cost Asymmetry section) — but stops at acknowledging the cost. Your budget is the brake that the series identified the need for but didn't build.
-
-The one thing I'd push back on slightly: "cheap" describes the mechanism, not the calibration. Picking N and the similarity threshold is a scalar-tuning problem with the same distribution-shift risk as any feedback loop — it works until the task distribution moves. But the failure domain is narrow (a scalar, bounded), which makes it a good trade.
-
-So I ran it. Two model tiers (deepseek-v4-flash, glm-5.2), two task classes under a red line (3 repairable, 4 conceptual — tasks where the test expectation contradicts the requirement's literal meaning, so iteration can't fix it), 8-step cap, signature-repetition budget at N=3.
+So I ran it. Two model tiers (deepseek-v4-flash, glm-5.2), two task classes under a red line — 3 repairable tasks, and 4 *conceptual* tasks where the test expectation contradicts the requirement's literal meaning, so iteration can't fix it. 8-step cap, signature-repetition budget at N=3.
 
 The headline result: **the budget works, but only where the failure signature is stable — and signature stability is model-dependent.**
 
@@ -746,6 +738,8 @@ The repairable side was the cleanest result: 0% false-stops on both models. When
 
 The conclusion I'd draw is narrower than "your budget works": **the budget works when the model's stuck behavior is stereotyped, and silently no-ops when the model oscillates.** That's worth knowing because it tells you when the cheap mechanism pays for itself (stable-stuck models) and when you're paying for it without benefit (oscillating models, where you still need the step-cap as backstop). The oscillation case is the real open question — a signature that captures "same failure *class*" rather than "same literal signature" might close it, but that's the calibration knob, and I haven't tuned it.
 
-Experiment script: `scripts/stuck-loop-budget-test.py` — results: `scripts/results-v2/stuck-loop-budget.json`
+The one thing I'd push back on slightly: "cheap" describes the mechanism, not the calibration. Picking N and the similarity threshold is a scalar-tuning problem with the same distribution-shift risk as any feedback loop. But the failure domain is narrow (a scalar, bounded), which makes it a good trade.
+
+Experiment script + results: [stuck-loop-budget-test.py](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts/stuck-loop-budget-test.py) — I also updated the article's boundary-of-loops section with this data.
 
 ---
