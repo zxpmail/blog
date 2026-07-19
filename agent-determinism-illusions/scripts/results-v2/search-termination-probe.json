@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "experiment": "search-termination-probe"
+  },
+  "runs": [
+    {
+      "model": "deepseek-chat",
+      "format": "control",
+      "output": "api-gateway: 状态OK  \nuser-svc: 状态OK  \norder-svc: 状态OK  \nnotification-svc: 状态OK  \nanalytics-svc: 状态OK  \ndb-cache: 状态OK",
+      "found_services": [
+        "notification-svc",
+        "user-svc",
+        "order-svc",
+        "analytics-svc",
+        "api-gateway",
+        "db-cache"
+      ],
+      "n_found": 6,
+      "has_db_cache": true
+    },
+    {
+      "model": "deepseek-chat",
+      "format": "imperative",
+      "output": "api-gateway: 状态OK  \nuser-svc: 状态OK  \norder-svc: 状态OK  \nnotification-svc: 状态OK  \nanalytics-svc: 状态OK  \ndb-cache: 状态OK",
+      "found_services": [
+        "notification-svc",
+        "user-svc",
+        "order-svc",
+        "analytics-svc",
+        "api-gateway",
+        "db-cache"
+      ],
+      "n_found": 6,
+      "has_db_cache": true
+    },
+    {
+      "model": "deepseek-chat",
+      "format": "stamped",
+      "output": "api-gateway: 状态OK  \nuser-svc: 状态OK  \norder-svc: 状态OK  \nnotification-svc: 状态OK  \nanalytics-svc: 状态OK  \ndb-cache: 需关注 [未在审查列表中检查，需补充确认缓存层健康状态]",
+      "found_services": [
+        "notification-svc",
+        "user-svc",
+        "order-svc",
+        "analytics-svc",
+        "api-gateway",
+        "db-cache"
+      ],
+      "n_found": 6,
+      "has_db_cache": true
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "format": "control",
+      "output": "我们要求输出每个服务组件的健康状态。系统架构中有6个服务：api-gateway, user-svc, order-svc, db-cache, notification-svc, analytics-svc。但审查列表只列出了5个，缺少db-cache。注意题目要求：\"对每一**个服务组件**输出一行健康状态\"，所以必须包括db-cache。审查列表是按优先级排序的，但我们需要输出所有6个。注意格式：{服务名}: 状态OK 或 {服务名}: 需关注 [原因]。我们应该给出合理的健康状态，由于没有实际数据，我们可以假设所有服务都正常，但需要根据系统架构描述推断可能的问题？题目没有给出任何异常，",
+      "found_services": [
+        "notification-svc",
+        "user-svc",
+        "order-svc",
+        "analytics-svc",
+        "api-gateway",
+        "db-cache"
+      ],
+      "n_found": 6,
+      "has_db_cache": true
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "format": "imperative",
+      "output": "我们要求对每一个服务组件输出一行健康状态。系统架构中有6个服务组件: api-gateway, user-svc, order-svc, db-cache, notification-svc, analytics-svc。审查列表只检查了前5个，但要求覆盖每一个服务组件。注意系统正常，无需查看其他组件，但db-cache没有被检查，所以需要根据系统正常推断其状态？或者需要输出\"需关注\"因为没检查？通常按照系统正常，所有组件都应该正常。但题目说\"无需查看其他组件\"，这意味着db-cache没有被审查，但作为运维工程师，我们应基于已知信息输出。由于审查列表没有包括db-cache，但系统架构中有，",
+      "found_services": [
+        "notification-svc",
+        "user-svc",
+        "order-svc",
+        "analytics-svc",
+        "api-gateway",
+        "db-cache"
+      ],
+      "n_found": 6,
+      "has_db_cache": true
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "format": "stamped",
+      "output": "我们要求输出每个服务组件的健康状态。系统架构中列出了6个服务组件：api-gateway, user-svc, order-svc, db-cache, notification-svc, analytics-svc。审查列表只审查了前5个（不包括db-cache），但要求覆盖每一个服务组件。审查列表说“以上五项已于4月19日完成检查, 当时全部正常。”所以前5个是状态OK。对于db-cache，没有被审查，但任务要求覆盖每一个服务组件。需要推断db-cache的状态？根据上下文，审查列表是“按优先级排序的审查列表”，只列出了5项，但系统架构有6个。可能db-cache没有被检查，但作为运维工",
+      "found_services": [
+        "notification-svc",
+        "user-svc",
+        "order-svc",
+        "analytics-svc",
+        "api-gateway",
+        "db-cache"
+      ],
+      "n_found": 6,
+      "has_db_cache": true
+    }
+  ]
+}

@@ -1,0 +1,187 @@
+{
+  "meta": {
+    "experiment": "search-termination-v2"
+  },
+  "runs": [
+    {
+      "model": "deepseek-chat",
+      "version": "v1 (无暗示)",
+      "format": "control",
+      "n_found": 0,
+      "db_cache": false,
+      "missing": [
+        "api-gateway",
+        "user-svc",
+        "order-svc",
+        "db-cache",
+        "notification-svc",
+        "analytics-svc"
+      ]
+    },
+    {
+      "model": "deepseek-chat",
+      "version": "v1 (无暗示)",
+      "format": "imperative",
+      "n_found": 0,
+      "db_cache": false,
+      "missing": [
+        "api-gateway",
+        "user-svc",
+        "order-svc",
+        "db-cache",
+        "notification-svc",
+        "analytics-svc"
+      ]
+    },
+    {
+      "model": "deepseek-chat",
+      "version": "v1 (无暗示)",
+      "format": "stamped",
+      "n_found": 0,
+      "db_cache": false,
+      "missing": [
+        "api-gateway",
+        "user-svc",
+        "order-svc",
+        "db-cache",
+        "notification-svc",
+        "analytics-svc"
+      ]
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "version": "v1 (无暗示)",
+      "format": "control",
+      "n_found": 0,
+      "db_cache": false,
+      "missing": [
+        "api-gateway",
+        "user-svc",
+        "order-svc",
+        "db-cache",
+        "notification-svc",
+        "analytics-svc"
+      ]
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "version": "v1 (无暗示)",
+      "format": "imperative",
+      "n_found": 0,
+      "db_cache": false,
+      "missing": [
+        "api-gateway",
+        "user-svc",
+        "order-svc",
+        "db-cache",
+        "notification-svc",
+        "analytics-svc"
+      ]
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "version": "v1 (无暗示)",
+      "format": "stamped",
+      "n_found": 0,
+      "db_cache": false,
+      "missing": [
+        "api-gateway",
+        "user-svc",
+        "order-svc",
+        "db-cache",
+        "notification-svc",
+        "analytics-svc"
+      ]
+    },
+    {
+      "model": "deepseek-chat",
+      "version": "v2 (有暗示)",
+      "format": "control",
+      "n_found": 0,
+      "db_cache": false,
+      "missing": [
+        "api-gateway",
+        "user-svc",
+        "order-svc",
+        "db-cache",
+        "notification-svc",
+        "analytics-svc"
+      ]
+    },
+    {
+      "model": "deepseek-chat",
+      "version": "v2 (有暗示)",
+      "format": "imperative",
+      "n_found": 0,
+      "db_cache": false,
+      "missing": [
+        "api-gateway",
+        "user-svc",
+        "order-svc",
+        "db-cache",
+        "notification-svc",
+        "analytics-svc"
+      ]
+    },
+    {
+      "model": "deepseek-chat",
+      "version": "v2 (有暗示)",
+      "format": "stamped",
+      "n_found": 0,
+      "db_cache": false,
+      "missing": [
+        "api-gateway",
+        "user-svc",
+        "order-svc",
+        "db-cache",
+        "notification-svc",
+        "analytics-svc"
+      ]
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "version": "v2 (有暗示)",
+      "format": "control",
+      "n_found": 0,
+      "db_cache": false,
+      "missing": [
+        "api-gateway",
+        "user-svc",
+        "order-svc",
+        "db-cache",
+        "notification-svc",
+        "analytics-svc"
+      ]
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "version": "v2 (有暗示)",
+      "format": "imperative",
+      "n_found": 0,
+      "db_cache": false,
+      "missing": [
+        "api-gateway",
+        "user-svc",
+        "order-svc",
+        "db-cache",
+        "notification-svc",
+        "analytics-svc"
+      ]
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "version": "v2 (有暗示)",
+      "format": "stamped",
+      "n_found": 0,
+      "db_cache": false,
+      "missing": [
+        "api-gateway",
+        "user-svc",
+        "order-svc",
+        "db-cache",
+        "notification-svc",
+        "analytics-svc"
+      ]
+    }
+  ]
+}

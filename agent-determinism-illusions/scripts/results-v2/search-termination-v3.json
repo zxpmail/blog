@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "experiment": "search-termination-v3"
+  },
+  "runs": [
+    {
+      "model": "deepseek-chat",
+      "format": "control",
+      "n_found": 5,
+      "db_cache": false,
+      "flags": "✓✓✓·✓✓",
+      "raw": "api-gateway: 状态OK  \nuser-svc: 状态OK  \norder-svc: 状态OK  \nnotification-svc: 状态OK  \nanalytics-svc: 状态OK"
+    },
+    {
+      "model": "deepseek-chat",
+      "format": "imperative",
+      "n_found": 5,
+      "db_cache": false,
+      "flags": "✓✓✓·✓✓",
+      "raw": "api-gateway: 状态OK  \nuser-svc: 状态OK  \norder-svc: 状态OK  \nnotification-svc: 状态OK  \nanalytics-svc: 状态OK"
+    },
+    {
+      "model": "deepseek-chat",
+      "format": "stamped",
+      "n_found": 5,
+      "db_cache": false,
+      "flags": "✓✓✓·✓✓",
+      "raw": "api-gateway: 状态OK  \nuser-svc: 状态OK  \norder-svc: 状态OK  \nnotification-svc: 状态OK  \nanalytics-svc: 状态OK"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "format": "control",
+      "n_found": 0,
+      "db_cache": false,
+      "flags": "······",
+      "raw": ""
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "format": "imperative",
+      "n_found": 5,
+      "db_cache": false,
+      "flags": "✓✓✓·✓✓",
+      "raw": "api-gateway: 状态OK  \nuser-svc: 状态OK  \norder-svc: 状态OK  \nnotification-svc: 状态OK  \nanalytics-svc: 状态OK"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "format": "stamped",
+      "n_found": 5,
+      "db_cache": false,
+      "flags": "✓✓✓·✓✓",
+      "raw": "api-gateway: 状态OK  \nuser-svc: 状态OK  \norder-svc: 状态OK  \nnotification-svc: 状态OK  \nanalytics-svc: 状态OK"
+    }
+  ]
+}

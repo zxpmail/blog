@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "experiment": "imperative-surface-2x2",
+    "model": "deepseek-chat"
+  },
+  "runs": [
+    {
+      "cell": "new_nodiv",
+      "label": "新+无分歧",
+      "format": "imp",
+      "decision": "ACCEPT",
+      "raw": "A\n\n该报告显示归档服务正常运行，最近一次执行成功，存档完整性校验通过，且过去7天无错误日志。所有信息一致"
+    },
+    {
+      "cell": "new_nodiv",
+      "label": "新+无分歧",
+      "format": "old_stamp",
+      "decision": "ESCALATE",
+      "raw": "C\n\n虽然系统状态报告显示“存档完整性校验: 通过”，但下方【系统报告】明确指出最近一次完整性校验是在4月19"
+    },
+    {
+      "cell": "new_nodiv",
+      "label": "新+无分歧",
+      "format": "new_stamp",
+      "decision": "ACCEPT",
+      "raw": "A\n\n报告显示归档服务运行正常，最近一次执行成功，存档完整性校验通过，且过去7天无错误日志。信息一致且"
+    },
+    {
+      "cell": "new_nodiv",
+      "label": "新+无分歧",
+      "format": "probe",
+      "decision": "CHECK"
+    },
+    {
+      "cell": "new_div",
+      "label": "新+有分歧",
+      "format": "imp",
+      "decision": "ACCEPT",
+      "raw": "A\n\n报告显示归档服务运行正常，存档完整性校验通过，且过去7天无错误日志。虽然存档脚本日志中出现了“表"
+    },
+    {
+      "cell": "new_div",
+      "label": "新+有分歧",
+      "format": "old_stamp",
+      "decision": "ESCALATE",
+      "raw": "C\n\n该报告存在明显矛盾：系统状态显示“存档完整性校验: 通过”，但下方系统报告却指出最近一次完整性校验是在"
+    },
+    {
+      "cell": "new_div",
+      "label": "新+有分歧",
+      "format": "new_stamp",
+      "decision": "CHECK",
+      "raw": "B\n\n虽然存档完整性校验显示通过，但存档脚本日志中出现了“表 archive_2024 不存在，跳过”的警告，且"
+    },
+    {
+      "cell": "new_div",
+      "label": "新+有分歧",
+      "format": "probe",
+      "decision": "CHECK"
+    },
+    {
+      "cell": "old_nodiv",
+      "label": "旧+无分歧",
+      "format": "imp",
+      "decision": "CHECK",
+      "raw": "[B] CHECK\n\n**简要说明**：系统状态报告显示归档服务运行正常，但“存档完整性校验”的最近一次确认时间是4"
+    },
+    {
+      "cell": "old_nodiv",
+      "label": "旧+无分歧",
+      "format": "old_stamp",
+      "decision": "CHECK",
+      "raw": "B\n\n虽然报告显示归档服务运行正常、错误日志为零，但存档完整性校验最近一次确认是在4月19日，距今已约"
+    },
+    {
+      "cell": "old_nodiv",
+      "label": "旧+无分歧",
+      "format": "new_stamp",
+      "decision": "ACCEPT",
+      "raw": "A\n\n报告中的“存档完整性校验”状态存在明显矛盾：系统状态报告显示最近一次确认是4月19日，而系统报告"
+    },
+    {
+      "cell": "old_nodiv",
+      "label": "旧+无分歧",
+      "format": "probe",
+      "decision": "CHECK"
+    },
+    {
+      "cell": "old_div",
+      "label": "旧+有分歧",
+      "format": "imp",
+      "decision": "ESCALATE",
+      "raw": "C\n\n虽然系统状态报告显示归档服务运行正常、错误日志为零，但存在两个值得警惕的矛盾点：  \n1. 存档完整性"
+    },
+    {
+      "cell": "old_div",
+      "label": "旧+有分歧",
+      "format": "old_stamp",
+      "decision": "ESCALATE",
+      "raw": "C\n\n尽管归档服务当前显示运行正常，且错误日志为零，但存在两个值得警惕的问题：一是存档完整性校验最近一次确认是在"
+    },
+    {
+      "cell": "old_div",
+      "label": "旧+有分歧",
+      "format": "new_stamp",
+      "decision": "CHECK",
+      "raw": "B\n\n虽然系统状态报告显示归档服务运行正常、错误日志为零，但存在两个值得注意的矛盾点：  \n1. 存档完整性"
+    },
+    {
+      "cell": "old_div",
+      "label": "旧+有分歧",
+      "format": "probe",
+      "decision": "CHECK"
+    }
+  ]
+}
