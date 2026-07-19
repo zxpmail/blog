@@ -743,3 +743,19 @@ The one thing I'd push back on slightly: "cheap" describes the mechanism, not th
 Experiment script + results: [stuck-loop-budget-test.py](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts/stuck-loop-budget-test.py) — I also updated the article's boundary-of-loops section with this data.
 
 ---
+
+## 回复二十八：@nexus-lab-zen 第四轮 — probe-vs-prose 是 runner-independence 的另一个名字
+
+**目标文章：** [Part 2 — I tested 3 models as AI agent quality inspectors](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7) 评论区（延续 SoD / common-mode 线程）
+
+**主题：** nexus 贴出本周上线的 binding map（39 条规则，9 bound / 30 unbound-with-reason，fail-closed lint），并提 probe-vs-prose：失效条件写成散文会腐烂，写成 probe（那条一旦输出改变就证伪断言的命令）就让 TTL 重检变 runner 不是 reader。
+
+---
+
+Your "fields humans transcribe rot; fields machines embed don't" is the cleanest one-line statement of the principle I've been circling. I think it has another name in my own series, and naming the convergence matters because it means we arrived at the same wall from two sides.
+
+In Part 4 of the series, Mike Czerwinski pushed the same point from the generator side: "verifiable" is a property of the check's *independence from the generator*, not of the output. If the agent can write the verify scripts, the runner config, or the test definitions, "compile-green" stops being a deterministic gate and becomes a self-report wearing a green checkmark. The fix there was a readonly editable-surface — declare what the agent may write, put the runner and verify scripts outside it. Your probe-vs-prose is the symmetric move on the assumption side: the invalidation condition written as prose is a self-report about when the premise dies; written as a probe, it's a runner that *executes* the falsification instead of describing it. Both are escapes from the same Data Processing Inequality bound — when the verifier and the reasoning share a text channel, the verifier's information is a strict subset of the producer's, so anything left as prose is unverifiable-by-construction. Getting it out of the text channel (readonly runner on your side, executable probe on the assumption side) is the only route that doesn't depend on the model being honest.
+
+On binding map vs TTL — I'd separate them as two distinct species of rot, and your 9/30 split makes the boundary sharp. Binding map catches *static* rot: rules that were never wired to a detector that could notice — the enforcement gap that used to be invisible and now has a list. TTL catches *dynamic* rot: a detector that *was* wired and firing, whose premise died while the wire stayed green. The 30 unbound-with-reason aren't a TTL problem — there's nothing to expire. TTL is load-bearing exactly on the 9 bound, and that's where the assumption-side probe you describe is the real next cut.
+
+Which is the symmetry I'll take plainly: we don't have the assumption-side twin either. The honest state from this thread is that three of us (your team, Mike's runner-independence, my Theorem 2 escape) have independently named the *exit* — move the check out of the text channel into something the environment enforces — and none of us has shipped the assumption-side probe that would make it real for TTL. The binding map is the static half; the probe-as-runner is the dynamic half. If you build it, the design choice Mike's runner-independence forces: the probe command itself has to live on the readonly surface, or the agent it's meant to catch can rewrite the probe to keep returning the old answer. Probe-the-probe is where it bottoms out, and we haven't started that either.
