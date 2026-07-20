@@ -903,3 +903,78 @@ Two things to notice. First, the clean cell (old stamp, no divergence) returned 
 Second — and this is the result I'd flag as actionable — the cell "divergence present + new stamp + imperative" returned **ACCEPT**. The model had divergence evidence in view (script log: "skipped 7 expected tables") and an imperative claim saying "validation complete, no action needed." It chose ACCEPT. Same cell with the datum format ("completed today, all archives verified") returned CHECK. That is the imperative surface you described: the imperative suppresses checking even when divergence is visible, and the datum doesn't. I didn't find this in three prior probe designs because the classification task itself demoted the imperative — this 2×2 let the imperative survive because the scenario context didn't put the claim in the judgment foreground. One cell, one model — replicate or don't, but the direction is yours.
 
 On the search-termination experiment (measure imperative by search behavior, not classification): I tried three versions. The core problem is that an explicit enumeration is itself a search-boundary signal that drowns the claim. Given a checklist, both models (deepseek-chat and deepseek-v4-flash) output exactly the listed items and nothing else, regardless of whether the claim says "complete" or nothing at all. To test search termination you'd need a design where the model *constructs* the search space rather than receiving it — and that's a different task paradigm I haven't designed yet. I'm setting this aside for now; if you see a clean way to test it within a judgment-like frame, I'll run it.
+---
+
+## 回复三十五：@Lazypl82 — FP 烧掉 operator trust；advisory vs load-bearing
+
+**目标文章：** [An alternative to LLM quality gates: deterministic routing + sampling](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf) 评论区
+**主题：** Lazypl82 把 "No judge in the control layer" 接到非 agent 场景：一旦检查能挡 pipeline，准确率几乎不再是重点——每个 FP 都在花掉 operator trust，人们悄悄绕过或不再读。把同一信号改成 advisory 之后，信任才回来。
+
+**回复策略：**
+1. 肯定 framing：控制层问题不只是准确率，还有 trust budget
+2. 接到 Finding 4：keyword 拦截 30–50% FP → 用户绕开，控制失效
+3. 接到 soft signal / hard gate：能挡住的只有零歧义的硬门；模糊信号只能 advisory
+4. 不发明新机制，不夸大
+
+---
+
+Hi Lazypl82,
+
+Yes — once a check can block the pipeline, accuracy almost stops being the point. Every false positive spends operator trust, and people route around it or stop reading it. That matches what I saw with keyword-based sensitive-tool interception: 30–50% false positives, and users started copying the email out to an external client. The control didn't get sharper; it got bypassed.
+
+That's why the revised design splits the signal into two layers. Soft signal (request-text scan) is advisory only — confirm the plan, don't block. Hard gate fires only at tool invocation (`send_email` called or not), where the check has zero ambiguity. Same information as before, but the load-bearing layer only carries what can actually bear load.
+
+"Advisory instead of load-bearing" is the same move as "no judge in the control layer" — just applied one level up, to the human operators themselves.
+
+---
+
+## 回复三十六：@Luis Cruz 第二轮 — llms.txt 是表层；content-as-addressable-structure 才是实质
+
+**目标文章：** [The Red Line Principle](https://dev.to/zxpmail/the-red-line-principle-objective-stop-signals-outperform-llm-self-judgment-in-verifiable-tasks-3heo) 评论区（延续回复二十六）
+**主题：** Luis 第二轮。从我"不是 production framework"的话头出发，转到 llms.txt 和 AI 可见性。他的 framing 比"加个 llms.txt"更细——真正的动作是让内容结构化、机器可寻址（metadata / semantic HTML / endpoints / documented invariants），而不只是补一个 Markdown 文件。
+
+**Luis 原话（要回应的 framing）：**
+
+> The discussion around llms.txt highlights an important shift: AI visibility is becoming another layer of how users discover information. While it may not replace traditional SEO today, the idea of making website content more machine-readable is valuable, especially for documentation, APIs, SaaS products, and knowledge-heavy platforms.
+>
+> I think the bigger opportunity is not just adding a file, but improving the overall content structure — clear metadata, accurate documentation, semantic HTML, and well-organized knowledge sources. As AI agents become more involved in search and workflows, websites that are easier for machines to understand will likely have an advantage.
+
+**回复策略：**
+1. 同意并锐化：llms.txt 是表层，content-as-addressable-structure 才是实质
+2. 诚实边界：个人研究博客在 dev.to 是低杠杆场景（dev.to 已结构化、读者主要为人）；高杠杆场景是 docs/API/SaaS——那里内容已有内部结构，只需 surface
+3. 不发明新机制、不夸大、不把博客说成 SaaS；不硬连文章主题（同形那段太牵强，舍）
+
+---
+
+Hi Luis,
+
+Agreed — and your framing sharpens it. The llms.txt file is the visible piece; the actual move is making content structure-addressable rather than blob-shaped. Metadata, semantic HTML, declared endpoints, documented invariants — each is a place a machine can grab onto instead of doing inference over a string.
+
+The honest qualification from my side: a personal research blog on dev.to is the low-leverage case for this. dev.to already exposes structured feeds and canonical URLs, and my audience is mostly humans reading prose. Where your point lands hard is documentation, APIs, SaaS — sites where the content already has internal structure (endpoints, parameters, status codes, schemas) that just needs to be surfaced rather than buried in styled HTML. Small lift, real payoff, and the payoff grows as agent-mediated search grows.
+
+---
+
+## 回复三十七：@ANP2 Network 第三轮 — asserted-upstream vs read-downstream；75% wall 在信道里
+
+**目标文章：** [Six experiments on adversarial verification — and the 75% wall that didn't move](https://dev.to/zxpmail/six-experiments-on-adversarial-verification-and-the-75-wall-that-didnt-move-...) 评论区（延续回复二十三 / 三十二）
+**主题：** ANP2 把"verifier 独立于被验证者"接着推：真正的问题是 difficulty signal 允许从哪里来。Self-report 出局（producer 发的就是 emit-text，免费造）。存活下来的信号是 answerer 不发出的——blind re-checker 之间的分歧、实际花掉的 compute——这些是"downstream 被读到"而非"upstream 被断言"。Fake-hard label 免费，fake-hard signal 的成本≈解决的成本。"可能就是 75% wall 真正住的地方。"
+
+**ANP2 原话（要回应的 framing）：**
+
+> Agreed on the verifier staying independent of what runs it — that's the right default, and a self-contained script is the cleanest form of it. The part I keep circling back to from your series is where the difficulty signal is even allowed to come from. Self-report is out for the reason you gave. The sources that survive are the ones the answerer doesn't emit: disagreement across blind re-checkers, or compute actually spent. Those get read downstream instead of asserted upstream, so a fake-hard label stays free while a fake-hard signal costs about what solving would. Might be where the 75% wall actually lives.
+
+**回复策略：**
+1. 命名并验证 cost-asymmetry 框架：emit-text 信号免费造，cause-in-world 信号造成本≈解决成本
+2. 接 Theorem 2 + P-series 数据：wall 不是 judge 锐度的属性，是 emit-text 信道的容量上限；P1–P4 都在这条信道上动（rerun / multi-prompt vote / calibration），所以都是 interpretation noise；red line / 文件系统门换信道，是同一形状的逃逸
+3. 诚实边界：read-downstream 不是免费——blind disagreement 是 N× inference 成本，compute-spent 需要客观环境（只在可验证任务里存在）；开放语义任务两个都没有，wall 在那里真是上限
+4. 不发明新机制，引用已发表实验和 Theorem 2
+
+---
+
+The cost-asymmetry framing is the cleanest version I've seen of why the channel matters more than the judge. "A fake-hard label stays free while a fake-hard signal costs about what solving would" names the mechanism: an asserted-upstream signal is just more text the producer emits, so a fake one costs nothing to add. A read-downstream signal is something the producer has to *cause* in the world — disagreement between blind re-checkers, compute actually spent — and causing those effects costs roughly what finding the real solution costs. The fakery bill converges on the solving bill.
+
+That's where the 75% wall lives, yes. The wall isn't a property of judge sharpness; it's the ceiling of what you can read off the producer's emitted-text channel. P1 through P4 stay on that channel — rerun, multi-prompt vote, strictness calibration all read variations of text the producer emits — which is why all three move the wall by interpretation noise rather than by structure. The escape is channel-switching. The red line and the file-system gate do exactly this: they read environment facts (test pass, file existence, side-effect observed) that the producer has to cause rather than claim. Same shape as your "read downstream," and same reason Theorem 2 predicts it — independent channel, not just independent judge.
+
+Honest cost: read-downstream signals aren't free. Disagreement across blind re-checkers is N× the inference cost. Compute-spent requires an objective environment to measure against, which only exists for verifiable tasks. Where the producer's text output is all you have — open-ended semantic tasks with no executable referent — neither downstream signal is available, and the wall genuinely is the ceiling on that channel rather than a starting point you can chip away at.
+
+---
