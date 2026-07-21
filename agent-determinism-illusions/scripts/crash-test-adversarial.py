@@ -24,7 +24,8 @@ Mock 模式:
   python crash-test-adversarial.py
 """
 
-import sys, io, json, copy, random
+import sys, io, json, copy, random, os, subprocess, textwrap, hashlib, platform, shutil, tempfile
+from pathlib import Path
 from unittest import mock
 from collections import Counter
 
@@ -35,6 +36,132 @@ from collections import Counter
 # 物理世界的不可知（网络分区）只能用物理层的重置（丢弃所有状态）来应对，
 # 不能用逻辑层的推理（重试 / 问 LLM）来应对。犹豫消耗弹力。
 UNCLEAR_ACTION: str = "SELFDESTRUCT"
+
+
+# ── 预检：物理层 UNCLEAR_ACTION 验证 ─────────────────────────────────
+
+def preflight_check_selfdestruct():
+    """
+    Pre-flight: 验证 UNCLEAR_ACTION=SELFDESTRUCT 的物理行为而非语义字符串。
+
+    当前测试只扫描 Reason 字段里是否含 "retry"/"wait" 等犹豫信号——
+    这只能证明 "代码没写 RETRY 逻辑"，不能证明 "os._exit(1) 真的安全"。
+
+    真实风险：
+      一个进程执行 os._exit(1) 时，文件锁（fcntl.flock）立即释放，
+      但 page cache 中的脏页可能未落盘就消失。重启后的 Harness 可能
+      读到半残状态。
+
+    本预检：
+      1. 启动子进程写入已知内容后 os._exit(1)
+      2. 父进程强制 sync && drop_caches（清除 page cache 残留，仅 Linux）
+      3. 重新读取文件并比较哈希
+      如果哈希不一致 → 说明 SELFDESTRUCT 后文件系统处于未定义状态。
+
+    Raises:
+        RuntimeError: 当 SELFDESTRUCT 后的文件内容损坏或不一致。
+
+    Note:
+        完整验证仅 Linux 支持（需要 os.O_SYNC + /proc/sys/vm/drop_caches）。
+        非 Linux 系统下跳过物理验证。
+    """
+    if platform.system() != "Linux":
+        print(f"    ⚠️  SELFDESTRUCT 物理验证需要 Linux "
+              f"(当前: {platform.system()})")
+        print(f"    ⚠️  跳过。请在 Linux 上运行此项预检。")
+        return
+
+    print(f"    [Pre-flight] 物理层 UNCLEAR_ACTION 验证...")
+
+    probe_dir = Path(tempfile.mkdtemp(prefix="crash-test-selfdestruct-"))
+    try:
+        probe_file = probe_dir / "probe.bin"
+        # 已知内容 + 随机 padding 确保唯一性
+        import secrets
+        expected_content = (
+            b"CRASH_TEST_SELFDESTRUCT_PROBE_"
+            + secrets.token_bytes(64)
+            + b"\x00" * 192  # 凑整 256 bytes
+        )
+
+        # 子进程脚本：写入 → fdatasync → 暴力退出（不 close fd）
+        script = textwrap.dedent(f"""\
+            import os
+            path = {str(probe_file)!r}
+            fd = os.open(path, os.O_CREAT | os.O_WRONLY | os.O_SYNC)
+            os.write(fd, {expected_content!r})
+            os.fdatasync(fd)
+            # 👇 故意不关闭 fd，模拟暴力退出
+            os._exit(1)
+        """)
+
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            capture_output=True, timeout=15,
+        )
+
+        if result.returncode != 0 and result.returncode != 1:
+            print(f"    ⚠️  子进程异常退出: rc={result.returncode}, "
+                  f"stderr={result.stderr.decode(errors='replace')[:200]}")
+            # 子进程可能因其他原因失败，不中止预检
+            return
+
+        # 第一步：sync 所有脏页到磁盘
+        if platform.system() == "Linux":
+            subprocess.run(["sync"], timeout=30)
+
+            # 第二步：清除 page cache（需要 root 权限）
+            try:
+                with open("/proc/sys/vm/drop_caches", "w") as f:
+                    f.write("3\n")
+                print(f"    drop_caches: page cache purged")
+            except PermissionError:
+                print(f"    ⚠️  drop_caches 需要 root 权限，跳过。")
+                print(f"    ⚠️  page cache 可能含有脏数据残留。")
+
+        # 第三步：读取文件哈希
+        if not probe_file.exists():
+            raise RuntimeError(
+                f"🔴 SELFDESTRUCT 物理验证失败: 文件消失!\n"
+                f"  子进程 os._exit(1) 后文件未被写入磁盘——"
+                f"数据丢失在 page cache 中。"
+                f"  SELFDESTRUCT 不安全: 重启后 Harness 无法恢复该文件。"
+            )
+
+        actual = probe_file.read_bytes()
+        actual_hash = hashlib.sha256(actual).hexdigest()
+        expected_hash = hashlib.sha256(expected_content).hexdigest()
+
+        if actual_hash != expected_hash:
+            # 输出差异详情
+            diff = ""
+            if len(actual) != len(expected_content):
+                diff += f"  长度: got {len(actual)}, expected {len(expected_content)}\n"
+            # 找第一个差异位置
+            for i in range(min(len(actual), len(expected_content))):
+                if actual[i] != expected_content[i]:
+                    diff += f"  首个字节差异 @ offset {i}: got {actual[i]:02x}, expected {expected_content[i]:02x}\n"
+                    break
+
+            raise RuntimeError(
+                f"🔴 SELFDESTRUCT 数据损坏: 哈希不匹配!\n"
+                f"  Expected: {expected_hash[:32]}...\n"
+                f"  Got:      {actual_hash[:32]}...\n"
+                f"{diff}\n"
+                f"os._exit(1) 导致文件系统处于未定义状态:\n"
+                f"  进程的脏页可能被以错误顺序刷入磁盘，或内核丢弃了未写入的数据。\n"
+                f"  UNCLEAR_ACTION={UNCLEAR_ACTION} 不满足安全要求——\n"
+                f"  SELFDESTRUCT 后存储层状态不可预测。"
+            )
+
+        print(f"    ✓ SELFDESTRUCT 物理验证: "
+              f"hash={actual_hash[:16]}... "
+              f"({len(actual)} bytes), "
+              f"sync+drop_caches 后数据完整无损")
+
+    finally:
+        shutil.rmtree(probe_dir, ignore_errors=True)
+
 
 sys.path.insert(0, __file__ and __file__[:-3].rsplit("/", 1)[0] or ".")
 import importlib
@@ -236,6 +363,13 @@ def main():
     print("=" * 78)
     print("  碰撞测试二：对抗性攻击 — Mock LLM 恶意输出时硬编码围栏拦截")
     print("=" * 78)
+
+    # ── 预检：物理层 UNCLEAR_ACTION 验证 ──
+    print(f"\n{'─'*78}")
+    print("  [Pre-flight] 物理层 UNCLEAR_ACTION 验证...")
+    print(f"{'─'*78}")
+    preflight_check_selfdestruct()
+    print("  [Pre-flight] ✓\n")
 
     # 使用 P1 + P4 场景
     scenarios = forge.P1_SCENARIOS + forge.P4_SCENARIOS

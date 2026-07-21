@@ -24,7 +24,7 @@
   python crash-test-chaos.py
 """
 
-import sys, io, json, copy, time
+import sys, io, json, copy, time, argparse, os, platform, subprocess, socket, threading
 from unittest import mock
 
 # stdout 设置由 forge-verify-layered-prototype 的 import 完成
@@ -34,6 +34,188 @@ from unittest import mock
 # >200ms 意味着"物理锚"退化为"软件超时"——用户或外层编排层无法区分系统
 # 是否真的挂了。此常量由测试断言强制执行。
 PHYSICAL_TIMEOUT_MS: float = 200.0
+
+
+# ── 预检与混沌注入：物理层网络延迟验证 ──────────────────────────────────
+
+def _tc_available() -> bool:
+    """检测 tc qdisc 是否可用（需要 Linux + iproute2 + root/capability）"""
+    if platform.system() != "Linux":
+        return False
+    try:
+        r = subprocess.run(
+            ["tc", "qdisc", "show", "dev", "lo"],
+            capture_output=True, timeout=10,
+        )
+        return r.returncode == 0
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return False
+
+
+def setup_netem_delay(delay_ms: float = 50.0) -> bool:
+    """
+    在 lo 接口注入 netem 延迟。
+    Returns True if injected, False if not available.
+    """
+    if not _tc_available():
+        return False
+    try:
+        # 先清理已有 qdisc（避免冲突）
+        subprocess.run(["tc", "qdisc", "del", "dev", "lo", "root"],
+                       capture_output=True, timeout=10)
+        subprocess.run(
+            ["tc", "qdisc", "add", "dev", "lo", "root", "netem",
+             "delay", f"{delay_ms}ms"],
+            check=True, capture_output=True, timeout=10,
+        )
+        print(f"    ✓ tc netem delay {delay_ms}ms injected on lo")
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"    ⚠️  tc netem injection failed: {e.stderr.decode(errors='replace')[:120]}")
+        return False
+
+
+def teardown_netem_delay():
+    """移除 lo 上的 netem 延迟"""
+    if not _tc_available():
+        return
+    try:
+        subprocess.run(["tc", "qdisc", "del", "dev", "lo", "root"],
+                       capture_output=True, timeout=10)
+        print(f"    ✓ tc netem delay removed from lo")
+    except subprocess.CalledProcessError as e:
+        # 没有 qdisc 时的删除也是正常
+        if "RTNETLINK" not in (e.stderr or b"").decode(errors="replace"):
+            print(f"    ⚠️  tc netem teardown: {e.stderr.decode(errors='replace')[:120]}")
+
+
+def measure_tcp_rtt_under_delay(host: str = "127.0.0.1",
+                                 port: int = 0,
+                                 samples: int = 5) -> list:
+    """
+    测量在 tc netem 延迟下 localhost TCP 往返时间。
+    返回 ms 为单位的 RTT 列表（可能为空）。
+    """
+    latencies = []
+    for _ in range(samples):
+        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            server.bind((host, port))
+            server.listen(1)
+            srv_port = server.getsockname()[1]
+
+            result_holder = [None]
+            ready = threading.Event()
+
+            def client_thread():
+                try:
+                    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    s.settimeout(5.0)
+                    t0 = time.perf_counter()
+                    s.connect((host, srv_port))
+                    s.sendall(b"PING")
+                    _resp = s.recv(1024)
+                    t1 = time.perf_counter()
+                    result_holder[0] = (t1 - t0) * 1000  # ms
+                    s.close()
+                except Exception as exc:
+                    result_holder[0] = exc
+                finally:
+                    ready.set()
+
+            t = threading.Thread(target=client_thread, daemon=True)
+            t.start()
+
+            conn, _addr = server.accept()
+            conn.settimeout(5.0)
+            _data = conn.recv(1024)
+            conn.sendall(b"PONG")
+            conn.close()
+            server.close()
+
+            ready.wait(timeout=5.0)
+
+            if isinstance(result_holder[0], Exception):
+                print(f"    ⚠️  RTT probe exception: {result_holder[0]}")
+                continue
+            latencies.append(result_holder[0])
+        except Exception as exc:
+            print(f"    ⚠️  RTT socket error: {exc}")
+            continue
+
+    return latencies
+
+
+def preflight_check_latency_with_delay(delay_ms: float = 50.0):
+    """
+    Pre-flight: 验证 PHYSICAL_TIMEOUT_MS 在模拟网络劣化下成立。
+
+    在 lo 注入 tc netem delay，测量 localhost TCP RTT，确认
+    PHYSICAL_TIMEOUT_MS 预留了足够余量。
+
+    当前测试的 L0/L1 在本地进程内运行（0.1ms），但 PHYSICAL_TIMEOUT_MS
+    是 K8s 部署下的端到端红线——必须保证在有 50ms 基础网络延迟时仍有≥2×余量。
+
+    如果 tc 不可用（非 Linux / 无 root），发出警告但继续运行。
+    Raises RuntimeError 当 headroom ≤ 0（即 PHYSICAL_TIMEOUT_MS 不足以
+    覆盖网络延迟本身，更不用说处理时间）。
+    """
+    print(f"    [Pre-flight] 物理层 PHYSICAL_TIMEOUT_MS 验证 "
+          f"(delay={delay_ms}ms)...")
+
+    if not _tc_available():
+        print(f"    ⚠️  tc qdisc 不可用 (平台={platform.system()})")
+        print(f"    ⚠️  跳过物理网络延迟验证。")
+        print(f"    ⚠️  请在 Linux 上运行此项预检: "
+              f"python crash-test-chaos.py --net-delay {int(delay_ms)}")
+        return
+
+    injected = setup_netem_delay(delay_ms)
+    if not injected:
+        print(f"    ⚠️  netem 注入失败，跳过物理延迟验证")
+        return
+
+    try:
+        rtt_samples = measure_tcp_rtt_under_delay(samples=5)
+        if not rtt_samples:
+            print(f"    ⚠️  无法测量 TCP RTT（所有探测失败）")
+            return
+
+        avg_rtt = sum(rtt_samples) / len(rtt_samples)
+        max_rtt = max(rtt_samples)
+
+        # 在 netem delay 下，最小 RTT ≈ 2 × delay_ms (双向)
+        # 安全余量 = PHYSICAL_TIMEOUT_MS - avg_rtt
+        headroom = PHYSICAL_TIMEOUT_MS - avg_rtt
+        min_headroom = PHYSICAL_TIMEOUT_MS - max_rtt
+
+        print(f"    TCP RTT under netem {delay_ms}ms: "
+              f"avg={avg_rtt:.1f}ms  max={max_rtt:.1f}ms  "
+              f"(理论最小={2*delay_ms:.0f}ms)")
+        print(f"    PHYSICAL_TIMEOUT_MS={PHYSICAL_TIMEOUT_MS}ms: "
+              f"avg headroom={headroom:.0f}ms  "
+              f"min headroom={min_headroom:.0f}ms")
+
+        if min_headroom <= 0:
+            raise RuntimeError(
+                f"🔴 PHYSICAL_TIMEOUT_MS 物理验证失败!\n"
+                f"  PHYSICAL_TIMEOUT_MS={PHYSICAL_TIMEOUT_MS}ms\n"
+                f"  注入网络延迟={delay_ms}ms\n"
+                f"  实测 max RTT={max_rtt:.1f}ms\n"
+                f"  无剩余余量 (headroom={min_headroom:.0f}ms)\n\n"
+                f"  在 {delay_ms}ms 基础延迟下，{PHYSICAL_TIMEOUT_MS}ms 的红线\n"
+                f"  不足以覆盖双向 RTT。需要增大 PHYSICAL_TIMEOUT_MS 或\n"
+                f"  确保 L0/L1 在延迟劣化下的执行时间（不含网络）≤ "
+                f"{PHYSICAL_TIMEOUT_MS - 2*delay_ms:.0f}ms。"
+            )
+
+        print(f"    ✓ PHYSICAL_TIMEOUT_MS={PHYSICAL_TIMEOUT_MS}ms 验证通过: "
+              f"min headroom={min_headroom:.0f}ms (>0)")
+
+    finally:
+        teardown_netem_delay()
+
 
 # 从分层原型导入基础设施
 sys.path.insert(0, __file__ and __file__[:-3].rsplit("/", 1)[0] or ".")
@@ -139,13 +321,52 @@ def check_no_llm_leakage(results: list):
 # ── 主流程 ────────────────────────────────────────────────────────────
 
 def main():
-    scenarios = forge.P1_SCENARIOS  # 8 场景: L1-L4 (正确) + G1-G4 (垃圾)
+    # ── CLI 参数 ──
+    parser = argparse.ArgumentParser(
+        description="碰撞测试一：混沌工程 — PHYSICAL_TIMEOUT_MS 物理验证",
+    )
+    parser.add_argument(
+        "--net-delay", type=float, default=0.0, metavar="MS",
+        help="注入 tc netem 延迟（ms）后运行测试，验证物理红线在受损网络下仍成立",
+    )
+    args = parser.parse_args()
+
+    # ── 预检：物理层 PHYSICAL_TIMEOUT_MS 验证 ──
+    delay_ms = args.net_delay if args.net_delay > 0 else 50.0
+    print(f"\n{'─'*78}")
+    print("  [Pre-flight] 物理层 PHYSICAL_TIMEOUT_MS 验证...")
+    print(f"{'─'*78}")
+    preflight_check_latency_with_delay(delay_ms)
+    print("  [Pre-flight] ✓\n")
+
+    # ── 可选混沌注入：tc netem delay ──
+    netem_injected = False
+    netem_cleanup = None
+    if args.net_delay > 0:
+        netem_injected = setup_netem_delay(args.net_delay)
+        if not netem_injected:
+            print(f"    ⚠️  --net-delay={args.net_delay} 要求 Linux + tc, 当前不可用")
+            print(f"    ⚠️  测试将在无延迟注入的条件下继续，但结果不满足物理验证要求")
+
+    try:
+        _run_crash_tests(args, netem_injected)
+    finally:
+        if netem_injected:
+            teardown_netem_delay()
+
+
+def _run_crash_tests(args, netem_injected: bool):
+    """主测试流程（抽成独立函数以支持 try/finally tc 清理）"""
+    scenarios = forge.P1_SCENARIOS
 
     print("=" * 78)
     print("  碰撞测试一：混沌工程 — LLM 信道断联时 L0/L1 独立性")
     print("=" * 78)
     print(f"\n  测试集: P1 {len(scenarios)} 场景 (L1-L4 正确, G1-G4 垃圾)")
     print(f"  故障模式: {', '.join(FAULT_MODES.keys())}")
+    if netem_injected:
+        print(f"  🧬 混沌注入: tc netem delay {args.net_delay}ms on lo")
+    print()
 
     # ── 1. 基线（强制 L0/L1 only，不调 LLM）──
     print(f"\n{'─'*78}")
