@@ -1,0 +1,38 @@
+{
+  "test": "crash-test-adversarial",
+  "scenarios": 38,
+  "mock_modes": [
+    "always_true",
+    "always_false",
+    "harmful",
+    "random"
+  ],
+  "overall_pass": true,
+  "baseline": {
+    "l0_caught": 6,
+    "l1_caught": 8,
+    "l2_reach": 24
+  },
+  "per_mode": {
+    "always_true": {
+      "errors": 0,
+      "fire_signals": 0,
+      "strikes": 6
+    },
+    "always_false": {
+      "errors": 0,
+      "fire_signals": 0,
+      "strikes": 18
+    },
+    "harmful": {
+      "errors": 0,
+      "fire_signals": 0,
+      "strikes": 24
+    },
+    "random": {
+      "errors": 0,
+      "fire_signals": 0,
+      "strikes": 21
+    }
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "test": "crash-test-chaos",
+  "scenarios": 8,
+  "fault_modes": [
+    "timeout",
+    "http_500",
+    "noise",
+    "empty",
+    "hang"
+  ],
+  "all_pass": true,
+  "baseline": [
+    {
+      "id": "L1",
+      "final_verdict": "UNCLEAR",
+      "layer": "L2",
+      "L0": {
+        "verdict": "PASS",
+        "reason": "Layer 0 通过",
+        "check": "L0_pass"
+      },
+      "L1": {
+        "verdict": "UNCLEAR",
+        "reason": "长度不足: 97 < 100",
+        "check": "L1_unclear"
+      }
+    },
+    {
+      "id": "L2",
+      "final_verdict": "UNCLEAR",
+      "layer": "L2",
+      "L0": {
+        "verdict": "PASS",
+        "reason": "Layer 0 通过",
+        "check": "L0_pass"
+      },
+      "L1": {
+        "verdict": "UNCLEAR",
+        "reason": "长度不足: 49 < 200",
+        "check": "L1_unclear"
+      }
+    },
+    {
+      "id": "L3",
+      "final_verdict": "UNCLEAR",
+      "layer": "L2",
+      "L0": {
+        "verdict": "PASS",
+        "reason": "Layer 0 通过",
+        "check": "L0_pass"
+      },
+      "L1": {
+        "verdict": "UNCLEAR",
+        "reason": "长度不足: 18 < 50",
+        "check": "L1_unclear"
+      }
+    },
+    {
+      "id": "L4",
+      "final_verdict": "UNCLEAR",
+      "layer": "L2",
+      "L0": {
+        "verdict": "PASS",
+        "reason": "Layer 0 通过",
+        "check": "L0_pass"
+      },
+      "L1": {
+        "verdict": "PASS",
+        "reason": "Layer 1 合约匹配通过",
+        "check": "L1_pass"
+      }
+    },
+    {
+      "id": "G1",
+      "final_verdict": "REJECT",
+      "layer": "L1",
+      "L0": {
+        "verdict": "PASS",
+        "reason": "Layer 0 通过",
+        "check": "L0_pass"
+      },
+      "L1": {
+        "verdict": "REJECT",
+        "reason": "长度不足: 12 < 100; 关键词匹配不足: 命中 0/6, 需 ≥2; 缺少标题/主题行",
+        "check": "L1_reject"
+      }
+    },
+    {
+      "id": "G2",
+      "final_verdict": "REJECT",
+      "layer": "L0",
+      "L0": {
+        "verdict": "REJECT",
+        "reason": "内容极短(1字符), 无法构成有效输出",
+        "check": "L0_min_length"
+      },
+      "L1": null
+    },
+    {
+      "id": "G3",
+      "final_verdict": "REJECT",
+      "layer": "L0",
+      "L0": {
+        "verdict": "REJECT",
+        "reason": "内容极短(4字符), 无法构成有效输出",
+        "check": "L0_min_length"
+      },
+      "L1": null
+    },
+    {
+      "id": "G4",
+      "final_verdict": "REJECT",
+      "layer": "L0",
+      "L0": {
+        "verdict": "REJECT",
+        "reason": "测试结果: 0 passed, no tests collected — 零用例通过",
+        "check": "L0_zero_tests"
+      },
+      "L1": null
+    }
+  ]
+}

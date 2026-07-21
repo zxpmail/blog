@@ -1,0 +1,43 @@
+{
+  "test": "crash-test-reset",
+  "conditions": 4,
+  "overall_pass": true,
+  "details": [
+    {
+      "condition": "轻量工作 (plan.md + artifacts)",
+      "pass": true,
+      "baseline_hash": "b92cb8a2b84b77dd",
+      "after_hash": "b92cb8a2b84b77dd",
+      "files_before": 2,
+      "files_after": 2,
+      "reflog_cleared": null
+    },
+    {
+      "condition": "中量工作 (+ 修改原始 prompt)",
+      "pass": true,
+      "baseline_hash": "b92cb8a2b84b77dd",
+      "after_hash": "b92cb8a2b84b77dd",
+      "files_before": 2,
+      "files_after": 2,
+      "reflog_cleared": false
+    },
+    {
+      "condition": "大量工作 (+ 10 个 scratch 文件)",
+      "pass": true,
+      "baseline_hash": "b92cb8a2b84b77dd",
+      "after_hash": "b92cb8a2b84b77dd",
+      "files_before": 2,
+      "files_after": 2,
+      "reflog_cleared": false
+    },
+    {
+      "condition": "大量工作 + 完全擦除 (reflog expire + gc)",
+      "pass": true,
+      "baseline_hash": "b92cb8a2b84b77dd",
+      "after_hash": "b92cb8a2b84b77dd",
+      "files_before": 2,
+      "files_after": 2,
+      "reflog_cleared": false
+    }
+  ]
+}
