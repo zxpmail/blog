@@ -261,9 +261,185 @@ def print_table(rows, headers):
     print()
 
 
+def run_mike_ablation(error_dist: str = "burst", signal_quality: str = "medium",
+                      trials: int = TRIALS):
+    """
+    Mike ablation (dev.to follow-up): each signal alone, then all pairs,
+    on the same long-tail-burst fixture. Answers whether classifier_disagree
+    earns the cross-layer credit or a cheaper signal does the lifting.
+    """
+    from itertools import combinations
+
+    configs = SIGNAL_QUALITY[signal_quality]
+    names = [sc.name for sc in configs]
+    by_name = {sc.name: sc for sc in configs}
+
+    print("\n" + "=" * 72)
+    print(f"MIKE ABLATION: singles + pairs — dist={error_dist}, quality={signal_quality}")
+    print("=" * 72)
+
+    # Baselines
+    full = run_experiment(0.10, error_dist, configs, trials=trials)
+    p6_cr = full["p6"]["catch_rate_mean"]
+    fixed_cr = full["fixed"]["catch_rate_mean"]
+    full_cr = full["alex"]["catch_rate_mean"]
+    full_ar = full["alex"]["audit_rate_mean"]
+
+    print(f"Baselines: Fixed CR={fixed_cr:.1%}  P6 CR={p6_cr:.1%}  "
+          f"Full-4 CR={full_cr:.1%} AR={full_ar:.1%}")
+    print(f"Lift target: Full-4 − P6 = {full_cr - p6_cr:+.1%}\n")
+
+    singles = []
+    rows = []
+    for name in names:
+        s = run_experiment(0.10, error_dist, [by_name[name]], trials=trials)
+        cr = s["alex"]["catch_rate_mean"]
+        ar = s["alex"]["audit_rate_mean"]
+        row = {
+            "signals": [name],
+            "catch_rate": cr,
+            "audit_rate": ar,
+            "vs_p6": cr / p6_cr if p6_cr else None,
+            "share_of_full_lift": (
+                (cr - p6_cr) / (full_cr - p6_cr) if (full_cr - p6_cr) else None
+            ),
+        }
+        singles.append(row)
+        rows.append([
+            name,
+            f"{ar:.3f}", f"{cr:.3f}",
+            f"{cr/p6_cr:.2f}x" if p6_cr else "-",
+            f"{100*row['share_of_full_lift']:.0f}%" if row["share_of_full_lift"] is not None else "-",
+        ])
+    print_table(rows, ["Alone", "AR", "CR", "vs P6", "% of full lift"])
+
+    pairs = []
+    rows_p = []
+    for a, b in combinations(names, 2):
+        s = run_experiment(0.10, error_dist, [by_name[a], by_name[b]], trials=trials)
+        cr = s["alex"]["catch_rate_mean"]
+        ar = s["alex"]["audit_rate_mean"]
+        row = {
+            "signals": [a, b],
+            "catch_rate": cr,
+            "audit_rate": ar,
+            "vs_p6": cr / p6_cr if p6_cr else None,
+            "share_of_full_lift": (
+                (cr - p6_cr) / (full_cr - p6_cr) if (full_cr - p6_cr) else None
+            ),
+        }
+        pairs.append(row)
+        rows_p.append([
+            f"{a}+{b}",
+            f"{ar:.3f}", f"{cr:.3f}",
+            f"{cr/p6_cr:.2f}x" if p6_cr else "-",
+            f"{100*row['share_of_full_lift']:.0f}%" if row["share_of_full_lift"] is not None else "-",
+        ])
+    print_table(rows_p, ["Pair", "AR", "CR", "vs P6", "% of full lift"])
+
+    # Verdict helpers
+    alone_cd = next(r for r in singles if r["signals"] == ["classifier_disagree"])
+    alone_ranked = sorted(singles, key=lambda r: -r["catch_rate"])
+    best_alone = alone_ranked[0]
+    cd_rank = next(
+        i for i, r in enumerate(alone_ranked) if r["signals"][0] == "classifier_disagree"
+    ) + 1
+    best_pair = max(pairs, key=lambda r: r["catch_rate"])
+    pairs_with_cd = [r for r in pairs if "classifier_disagree" in r["signals"]]
+    pairs_without_cd = [r for r in pairs if "classifier_disagree" not in r["signals"]]
+    best_with_cd = max(pairs_with_cd, key=lambda r: r["catch_rate"])
+    best_without_cd = max(pairs_without_cd, key=lambda r: r["catch_rate"])
+
+    interpretation = []
+    # Mike's exact question: alone CD most of the way from P6→full?
+    gap = full_cr - p6_cr
+    alone_progress = (alone_cd["catch_rate"] - p6_cr) / gap if gap else None
+    if alone_cd["catch_rate"] >= p6_cr + 0.6 * gap:
+        interpretation.append(
+            "SUPPORT cross-layer story: classifier_disagree alone recovers ≥60% "
+            f"of the Full-4−P6 gap ({alone_cd['catch_rate']:.1%} vs P6 {p6_cr:.1%} → Full {full_cr:.1%})."
+        )
+    elif alone_cd["catch_rate"] < p6_cr:
+        interpretation.append(
+            f"REJECT 'CD alone earns the 1.7×': classifier_disagree alone "
+            f"CR={alone_cd['catch_rate']:.1%} is *below* P6 {p6_cr:.1%}. "
+            f"It is still the best single signal (rank {cd_rank}/4), but the published "
+            f"lift to {full_cr:.1%} requires bundling."
+        )
+    else:
+        interpretation.append(
+            f"PARTIAL: CD alone {alone_cd['catch_rate']:.1%} > P6 but only "
+            f"{100*(alone_progress or 0):.0f}% of the way to Full-4."
+        )
+
+    interpretation.append(
+        f"Best pair: {'+'.join(best_pair['signals'])} CR={best_pair['catch_rate']:.1%} "
+        f"({best_pair['vs_p6']:.2f}× P6). "
+        f"Best with CD: {'+'.join(best_with_cd['signals'])}={best_with_cd['catch_rate']:.1%}; "
+        f"best without CD: {'+'.join(best_without_cd['signals'])}={best_without_cd['catch_rate']:.1%}."
+    )
+    if best_with_cd["catch_rate"] - best_without_cd["catch_rate"] >= 0.04:
+        interpretation.append(
+            "CD is necessary in the pair set: every top pair includes it; "
+            "dropping CD collapses pair catch back near P6."
+        )
+    if "barely_passed" in best_with_cd["signals"]:
+        interpretation.append(
+            "CAUTION on credit: strongest partner is barely_passed (cheaper than L0/L1-vs-L2). "
+            "Cross-layer is not a solo oracle; it co-drives with a margin signal."
+        )
+
+    for line in interpretation:
+        print(line)
+
+    out = {
+        "fixture": {
+            "error_rate": 0.10,
+            "error_distribution": error_dist,
+            "signal_quality": signal_quality,
+            "trials": trials,
+            "stream_length": STREAM_LENGTH,
+            "baseline_floor": ALEX_BASELINE,
+            "escalation_per_signal": ALEX_ESCALATION_PER_SIGNAL,
+        },
+        "baselines": {
+            "fixed_catch_rate": fixed_cr,
+            "p6_catch_rate": p6_cr,
+            "full4_catch_rate": full_cr,
+            "full4_audit_rate": full_ar,
+            "full4_vs_p6": full_cr / p6_cr if p6_cr else None,
+        },
+        "singles": singles,
+        "pairs": pairs,
+        "classifier_disagree_alone": alone_cd,
+        "best_alone": best_alone,
+        "best_pair": best_pair,
+        "best_pair_with_cd": best_with_cd,
+        "best_pair_without_cd": best_without_cd,
+        "interpretation": interpretation,
+    }
+    out_path = Path(__file__).parent / "results-v2" / "external-signal-ablation.json"
+    out_path.write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")
+    print(f"\nAblation written to: {out_path}")
+    return out
+
+
 # ─── Main ────────────────────────────────────────────────────────────────────
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--ablation-only", action="store_true",
+        help="Only run Mike singles+pairs ablation on long-tail burst fixture",
+    )
+    parser.add_argument("--trials", type=int, default=TRIALS)
+    args = parser.parse_args()
+
+    if args.ablation_only:
+        run_mike_ablation(error_dist="burst", signal_quality="medium", trials=args.trials)
+        return
+
     print("=" * 72)
     print("Experiment: External Signals for Adaptive Sampling")
     print(f"Stream length: {STREAM_LENGTH}, Trials per config: {TRIALS}")
@@ -413,6 +589,9 @@ def main():
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(out, f, indent=2, ensure_ascii=False)
     print(f"\nResults written to: {out_path}")
+
+    # Always append Mike ablation on burst (the published fixture)
+    run_mike_ablation(error_dist="burst", signal_quality="medium", trials=args.trials)
 
 
 if __name__ == "__main__":

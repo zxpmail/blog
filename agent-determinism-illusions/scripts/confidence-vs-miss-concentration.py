@@ -93,7 +93,6 @@ def main():
         print(f"{model:<22} {n:>11} {n_high:>10} {100*n_high/n:>12.1f}% {avg:>10.3f}")
 
     print()
-    # Per-scenario breakdown for the worst case
     by_scenario = defaultdict(list)
     for model, sid, conf in miss:
         by_scenario[sid].append((model, conf))
@@ -107,8 +106,50 @@ def main():
         pct = 100 * n_high / n if n else 0
         print(f"{sid:<10} {n:>7} {n_high:>10} {pct:>12.1f}%")
 
-    # Overall
+    print()
+    # Concentration: is 95.8% a general shape or one model/scenario?
     total = len(miss)
+    print("Concentration check (Mike follow-up: stable across models/scenarios?)")
+    print("-" * 70)
+    model_counts = {m: len(by_model[m]) for m in MODELS}
+    for m in MODELS:
+        n = model_counts[m]
+        share = 100 * n / total if total else 0
+        print(f"  {m:<22} {n:>3}/{total} MISS = {share:5.1f}% of all MISS")
+    max_model = max(MODELS, key=lambda m: model_counts[m])
+    max_model_share = model_counts[max_model] / total if total else 0
+    print(f"  → max model share: {max_model} = {100*max_model_share:.1f}%")
+
+    scen_counts = {sid: len(runs) for sid, runs in by_scenario.items()}
+    top_scen = sorted(scen_counts.items(), key=lambda kv: -kv[1])[:3]
+    print(f"  Top scenarios: " + ", ".join(f"{s}={n} ({100*n/total:.1f}%)" for s, n in top_scen))
+    max_scen_share = top_scen[0][1] / total if total and top_scen else 0
+
+    # Conditional: among models that MISS, is high-conf still the shape?
+    print()
+    print("Conditional high-conf rate (given model has MISS):")
+    for model in MODELS:
+        runs = by_model[model]
+        if not runs:
+            continue
+        n = len(runs)
+        n_high = sum(1 for _, c in runs if c is not None and c >= HIGH_CONF_THRESHOLD)
+        print(f"  {model:<22} {n_high}/{n} = {100*n_high/n:.1f}% at conf≥0.9")
+
+    # Model × scenario top cells
+    by_cell = defaultdict(int)
+    by_cell_high = defaultdict(int)
+    for model, sid, conf in miss:
+        by_cell[(model, sid)] += 1
+        if conf is not None and conf >= HIGH_CONF_THRESHOLD:
+            by_cell_high[(model, sid)] += 1
+    print()
+    print("Top model×scenario cells:")
+    for (model, sid), n in sorted(by_cell.items(), key=lambda kv: -kv[1])[:8]:
+        h = by_cell_high[(model, sid)]
+        print(f"  {model}/{sid}: {n} MISS ({100*n/total:.1f}%), {h} high-conf")
+
+    # Overall
     total_high = sum(1 for _, _, c in miss if c is not None and c >= HIGH_CONF_THRESHOLD)
     confs = [c for _, _, c in miss if c is not None]
     avg = sum(confs) / len(confs) if confs else float("nan")
@@ -120,15 +161,48 @@ def main():
     if total and total_high / total >= 0.7:
         print(f"  >=70% of misses sit at self-confidence >= {HIGH_CONF_THRESHOLD}.")
         print("  Self-confidence weighting (audit_rate ~ 1/confidence^k) samples this region least.")
-        print("  Cross-prompt divergence is also likely to collapse here, because P2 showed")
-        print("  LLM judgments on identical input are highly consistent (0 divergence, N=10).")
-        print("  => Mike's claim is empirically supported by DF v2 data.")
+        if max_model_share >= 0.6:
+            print(f"  CAUTION (Mike): {100*max_model_share:.0f}% of MISS mass is one model ({max_model}).")
+            print("  The 95.8% headline is partly a property of that model's miss volume,")
+            print("  not a balanced 3×20 panel. Still: conditional high-conf holds on")
+            print("  every model that produces non-trivial MISS (see above).")
+        else:
+            print("  MISS mass is reasonably spread across models.")
+        if max_scen_share >= 0.3:
+            print(f"  Scenario concentration: top scenario = {100*max_scen_share:.0f}% of MISS.")
+        print("  => Shape claim (dangerous tail = high-conf) supported; population claim")
+        print("     (general across models) needs the caveat above.")
     elif total and total_high / total >= 0.4:
         print(f"  40-70% of misses sit at self-confidence >= {HIGH_CONF_THRESHOLD}.")
         print("  Mike's claim is partially supported.")
     else:
         print(f"  <40% of misses sit at self-confidence >= {HIGH_CONF_THRESHOLD}.")
         print("  Mike's claim is not strongly supported by this data.")
+
+    out = {
+        "total_miss": total,
+        "high_conf_miss": total_high,
+        "high_conf_pct": total_high / total if total else None,
+        "avg_conf": avg,
+        "per_model": {
+            m: {
+                "n": len(by_model[m]),
+                "share_of_all_miss": len(by_model[m]) / total if total else 0,
+                "high_conf_n": sum(1 for _, c in by_model[m] if c is not None and c >= HIGH_CONF_THRESHOLD),
+                "high_conf_pct_given_miss": (
+                    sum(1 for _, c in by_model[m] if c is not None and c >= HIGH_CONF_THRESHOLD)
+                    / len(by_model[m]) if by_model[m] else None
+                ),
+            }
+            for m in MODELS
+        },
+        "max_model": max_model,
+        "max_model_share": max_model_share,
+        "top_scenarios": [{"id": s, "n": n, "share": n / total if total else 0} for s, n in top_scen],
+    }
+    out_path = RESULTS / "confidence-vs-miss-concentration.json"
+    out_path.write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")
+    print(f"\nWrote {out_path}")
 
 
 if __name__ == "__main__":

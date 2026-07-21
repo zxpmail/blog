@@ -147,13 +147,32 @@ Mike's Part 6 Update attacked the same tail from the **audit-sampling** side (do
 - T1 needs a maintained class list (DF/DS-style). Cold-start classes without history fall back to D — and inherit D's blind spot until the class is labeled.
 - forge-verify's `content-verify.mjs` today still implements divergence→UNCLEAR majority logic. These tripwires are **design + blog evidence**, not yet productized in this write-up.
 
+### Update (2026-07-22): two arms — recurrence vs novelty (Mike)
+
+Mike Czerwinski, on the inverted trigger:
+
+> It only fires on classes you've already caught being wrong. "Historically reversal-prone" is built from history, so a reversal-prone class you haven't seen yet… produces unanimous high confidence and no tripwire… That's not an argument against the trigger… It's an argument for treating it as one arm of a two-arm design… The known-reversal tripwire catches recurrence. What catches the first occurrence of a new systematic bias is closer to… a genuinely independent second read [that] doesn't need history to disagree… Unanimous-high-confidence-on-known-reversal-classes is the right addition. It's not the fix for confidently-wrong-and-never-caught-before.
+
+That second population now has a name in this thread: **confidently-wrong-and-never-caught-before** (novelty systematic bias). T1/T2 are the **recurrence arm** — cheap, history-conditioned, necessary. They are not the novelty arm.
+
+What Mike hoped might fill the novelty arm is `classifier_disagree` carrying signal *alone* (an independent second read that doesn't share the model's priors). We ran that ablation on the Part 6 sampling fixture (`external-signal-ablation.json`): **`classifier_disagree` alone catch 24.9% < Part 6's 28.4%** — best single external signal, still not enough to be the novelty catcher by itself. Bundled with `barely_passed` it lifts; solo it does not clear the bar. So the novelty arm is **not** “drop CD alone into the tripwire and call first-occurrence solved.”
+
+The fork this series keeps landing on:
+
+| Arm | Signal shape | Catches | Cost |
+|-----|--------------|---------|------|
+| **Recurrence** | T1 / T2 — failure history, known-reversal classes | Repeats of burned modes | Cheap |
+| **Novelty** | Source that does **not** share the judge's priors (out-of-channel probe, independent modality — see Part 12 probe-vs-prose; not another prompt in the same text channel) | First occurrence of a new systematic bias | Expensive |
+
+You want both. The mistake is expecting the cheap arm to cover the expensive arm's job. D+T2 stays the right addition to Part 6's diagram. It does not close confidently-wrong-and-never-caught-before.
+
 ---
 
 ## Closing
 
-Part 6 was right to stop majority-voting splits into a false consensus. It was wrong to treat the complement — unanimity — as safe auto-execute for the failure mode DF v2 already measured. Alexey named the population mismatch; the DF multi-perspective rerun puts numbers on it.
+Part 6 was right to stop majority-voting splits into a false consensus. It was wrong to treat the complement — unanimity — as safe auto-execute for the failure mode DF v2 already measured. Alexey named the population mismatch; the DF multi-perspective rerun puts numbers on it. Mike named the residual population the recurrence arm cannot see.
 
-**Divergence stays. It is no longer the only tripwire.**
+**Divergence stays. T1/T2 join it. None of them is the novelty arm.**
 
 ---
 
@@ -161,8 +180,12 @@ Part 6 was right to stop majority-voting splits into a false consensus. It was w
 
 > You're right — and the DF multi-perspective rerun agrees. On qwen3:0.5b, 4/6 dangerous accepts were unanimous_pass; divergence-only would have auto-passed them. D+T2 (split ∪ reversal-class∩unanimous_pass) caught 6/6. Wrote it up as Part 13 of the series; Part 6 only gets a pointer Update so the published post doesn't pretend the old diagram is complete.
 
+**Comment reply (for Mike, on the inverted trigger):**
+
+> Agreed — two arms, not one fix. T1/T2 are the recurrence arm (cheap, history-built). The unnamed population is confidently-wrong-and-never-caught-before; that needs a source that doesn't share the judge's priors. Ablation already showed classifier_disagree alone is not that arm (24.9% < P6 28.4% on the sampling fixture). Wrote the fork into Part 13 §5 Update; Part 12 is the closest existing thread on out-of-channel checks.
+
 ---
 
 **Series:** Agent Determinism Illusions · Scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
 **Previous thread:** [Part 6 — Five comments…](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
-**Not this thread:** Part 12 probe-vs-prose
+**Related:** Part 12 probe-vs-prose (novelty / out-of-channel); Part 6 §4 (sampling ablation)

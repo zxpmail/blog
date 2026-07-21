@@ -309,7 +309,7 @@ Mike Czerwinski pushed on §4 in the comments: confidence-weighting concentrates
 
 Three checks after Mike's comment:
 
-**1. Where do the misses actually sit?** Counted MISS runs (passes=true on a directional reversal) across DF v2's 3 models × 20 scenarios — 96 misses total, **92 of them (95.8%) at self-reported confidence ≥ 0.9**, avg confidence 0.969. The dangerous tail is overwhelmingly high-confidence. Script: `confidence-vs-miss-concentration.py`; raw data in `results-v2/*_summary.json` + matching `.jsonl`.
+**1. Where do the misses actually sit?** Counted MISS runs (passes=true on a directional reversal) across DF v2's 3 models × 20 scenarios — 96 misses total, **92 of them (95.8%) at self-reported confidence ≥ 0.9**, avg confidence 0.969. The dangerous tail is overwhelmingly high-confidence. Script: `confidence-vs-miss-concentration.py`; raw data in `results-v2/*_summary.json` + matching `.jsonl`. *(Concentration caveat — Mike's follow-up — in the Update below: 80% of that miss mass is one model.)*
 
 **2. Does the cross-prompt dodge work?** The Production caveat above reframes "confidence" as cross-prompt divergence rather than self-confidence. Doesn't change the point. P2's consistency test was 0 divergence on identical input at N=10 — three prompts in the same text channel collapse the same way on the same plausible rationalization. Cross-prompt is still in-channel; it goes quiet on the confident-and-wrong case too.
 
@@ -321,13 +321,34 @@ Three checks after Mike's comment:
 | Part 6 cross-prompt adaptive | 13.8% | 28.5% |
 | **External signals (incl. cross-layer) + 10% floor** | **23.5%** | **48.8%** |
 
-1.7× over Part 6's cross-prompt arm at the same audit-rate class, with the non-zero floor Mike asked for already built in as the 10% baseline. What's still missing: the simulation bundles four external signals, so I can't yet isolate how much of the 1.7× comes *specifically* from `classifier_disagree` vs the other three firing alongside it. That isolation is queued.
+1.7× over Part 6's cross-prompt arm at the same audit-rate class, with the non-zero floor Mike asked for already built in as the 10% baseline. The bundled result stands; how much of the 1.7× is *specifically* `classifier_disagree` is answered in the next Update (not left off-page).
 
-The 5.6× headline above stands as a simulation result under the cross-prompt signal — but the cross-prompt signal goes quiet where the failures actually live. The replacement headline uses cross-layer disagreement, weighted on L0/L1-vs-L2 divergence with a non-zero floor in the high-confidence region.
+The 5.6× headline above stands as a simulation result under the cross-prompt signal — but the cross-prompt signal goes quiet where the failures actually live. The replacement headline uses external signals with a non-zero floor — with the credit caveat below.
+
+### Update (2026-07-22): ablation — cross-layer is necessary, not sufficient; 95.8% is qwen-heavy
+
+Mike's follow-up: (a) isolate `classifier_disagree` alone and in pairs on the same long-tail-burst fixture, or a cheaper signal may be wearing the cross-layer credit; (b) check whether 95.8% at conf≥0.9 is stable across the 3×20 panel or concentrated in one model/scenario.
+
+**Ablation** (`external-signal-sampling-test.py --ablation-only`, same burst / medium / 10% floor / 1000 trials → `results-v2/external-signal-ablation.json`):
+
+| Arm | Catch rate |
+|-----|------------|
+| Part 6 cross-prompt | 28.4% |
+| `classifier_disagree` alone | **24.9%** (best single; still **below** P6) |
+| `barely_passed` alone | 20.5% |
+| `route_changed` alone | 17.5% |
+| `input_unusual` alone | 16.0% |
+| Best pair **without** CD | `route_changed`+`barely_passed` **28.0%** (≈ P6) |
+| Best pair **with** CD | `classifier_disagree`+`barely_passed` **35.5%** (1.25× P6) |
+| Full four signals | 48.7% |
+
+So: CD alone does **not** get most of the way from 28.5 to 48.8 — it doesn't clear P6. It *is* the best single signal, and every pair that beats P6 includes it; drop CD and the best remaining pair collapses back to ~P6. The partner doing real work next to it is `barely_passed` (a margin/threshold signal, cheaper than L0/L1-vs-L2). Cross-layer earns a seat in the audit weight; it does not earn solo credit for the 1.7×. The bundled 48.8% headline stays; the causal story does not.
+
+**Concentration of the 95.8%.** Of 96 MISS runs: **qwen3-0.5b = 77 (80.2%)**, gemma3 = 16 (16.7%), deepseek-v4-flash = 3 (3.1%). Top scenario DS4 alone is 34.4%. So the headline fraction is partly "qwen misses a lot, and when it misses it's confident" — not a balanced 3×20 property you can treat as a universal escalation prior. What *does* hold as a shape, conditional on miss: qwen 75/77 (97.4%) and gemma 16/16 (100%) at conf ≥ 0.9; deepseek barely misses (1/3 high-conf). Dump: `results-v2/confidence-vs-miss-concentration.json`.
 
 ### Update (2026-07-22): escalation tripwire ≠ audit weighting — see Part 13
 
-Alexey Spinov's follow-up on this post pushes a different knob than Mike's: not *how often* to audit the high-confidence region, but *whether unanimous L2 votes should auto-execute at all* when the failure mode is correlated. Offline DF proxy + real Strict/Balanced/Lenient on qwen3:0.5b: most dangerous accepts are `unanimous_pass`; divergence-only auto-passes them; class tripwire ∪ inverse-unanimous (D+T2) catches them. Full write-up: **Part 13** (*Divergence escalates the wrong population*). This published Part 6 diagram is incomplete without that tripwire — kept here as a pointer, not a silent rewrite.
+Alexey Spinov's follow-up on this post pushes a different knob than Mike's: not *how often* to audit the high-confidence region, but *whether unanimous L2 votes should auto-execute at all* when the failure mode is correlated. Offline DF proxy + real Strict/Balanced/Lenient on qwen3:0.5b: most dangerous accepts are `unanimous_pass`; divergence-only auto-passes them; class tripwire ∪ inverse-unanimous (D+T2) catches them. Full write-up: **Part 13** (*Divergence escalates the wrong population*). This published Part 6 diagram is incomplete without that tripwire — kept here as a pointer, not a silent rewrite. (Part 13 already cites the 95.8% figure; read it with the concentration caveat above. Mike's later note: T1/T2 are the **recurrence** arm only — they don't catch confidently-wrong-and-never-caught-before; that fork is in Part 13 §5.)
 
 ---
 

@@ -1,0 +1,45 @@
+{
+  "total_miss": 96,
+  "high_conf_miss": 92,
+  "high_conf_pct": 0.9583333333333334,
+  "avg_conf": 0.969031914893617,
+  "per_model": {
+    "qwen3-0-5b": {
+      "n": 77,
+      "share_of_all_miss": 0.8020833333333334,
+      "high_conf_n": 75,
+      "high_conf_pct_given_miss": 0.974025974025974
+    },
+    "gemma3-latest": {
+      "n": 16,
+      "share_of_all_miss": 0.16666666666666666,
+      "high_conf_n": 16,
+      "high_conf_pct_given_miss": 1.0
+    },
+    "deepseek-v4-flash": {
+      "n": 3,
+      "share_of_all_miss": 0.03125,
+      "high_conf_n": 1,
+      "high_conf_pct_given_miss": 0.3333333333333333
+    }
+  },
+  "max_model": "qwen3-0-5b",
+  "max_model_share": 0.8020833333333334,
+  "top_scenarios": [
+    {
+      "id": "DS4",
+      "n": 33,
+      "share": 0.34375
+    },
+    {
+      "id": "DS9",
+      "n": 15,
+      "share": 0.15625
+    },
+    {
+      "id": "DS5",
+      "n": 13,
+      "share": 0.13541666666666666
+    }
+  ]
+}

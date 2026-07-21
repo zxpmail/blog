@@ -134,16 +134,35 @@ Mike 的第 6 篇 Update 从**审计抽样**打同一条尾（别用 1/confidenc
 - T1 需要维护类清单；无历史的冷启动类仍回退到 D，并继承 D 的盲区。  
 - forge-verify 的 `content-verify.mjs` 今天仍是分歧→UNCLEAR / 多数自动。这些 tripwire 是**设计 + 博文证据**，本稿未声称已产品化。
 
+### Update (2026-07-22)：双臂——复发 vs 新奇（Mike）
+
+Mike Czerwinski 对反向扳机：
+
+> 它只在你**已经**抓错过的类上开火。「历史上易反转」靠历史堆出来，所以你还没见过的反转类……会全票高自信、无 tripwire……这不是反对扳机……而是主张它只是双臂设计的一臂……已知反转 tripwire 抓**复发**。抓新系统偏差的**首次**出现，更接近……真正独立的第二读——不需要历史也能和错答案分歧……「已知反转类上的全票高自信」是对的增量。它不是「自信且错、且从未被抓过」的修复。
+
+第二种人在本线有了名字：**confidently-wrong-and-never-caught-before**（新奇系统偏差）。T1/T2 是**复发臂**——便宜、依赖历史、必要。它们不是新奇臂。
+
+Mike 希望新奇臂可能由单独的 `classifier_disagree` 承担（不共享模型先验的独立第二读）。我们在第 6 篇采样 fixture 上跑过消融（`external-signal-ablation.json`）：**`classifier_disagree` 单独捕获 24.9% < Part 6 的 28.4%**——外部单信号里最好，仍不够当新奇捕手。和 `barely_passed` 捆绑才抬升；单独过不了线。所以新奇臂**不是**「把 CD 单独塞进 tripwire 就当首次出现已解决」。
+
+本系列反复落到的分叉：
+
+| 臂 | 信号形状 | 抓住 | 成本 |
+|----|----------|------|------|
+| **复发** | T1 / T2——失败历史、已知反转类 | 已烧过的模式重来 | 便宜 |
+| **新奇** | **不**共享法官先验的源（出信道 probe、独立模态——见第 12 篇 probe-vs-prose；不是同文本信道里再加一个 prompt） | 新系统偏差的首次出现 | 贵 |
+
+两臂都要。错在指望便宜臂干贵臂的活。D+T2 仍是第 6 篇管线图的正确增量。它关不上 confidently-wrong-and-never-caught-before。
+
 ---
 
 ## 收束
 
-第 6 篇停掉「把分裂多数决成假共识」是对的；把补集——全票——当作对 DF v2 已测失败模式的安全自动执行，是错的。Alexey 点名了人口错配；DF 三视角重跑给了数字。
+第 6 篇停掉「把分裂多数决成假共识」是对的；把补集——全票——当作对 DF v2 已测失败模式的安全自动执行，是错的。Alexey 点名了人口错配；DF 三视角重跑给了数字。Mike 点名了复发臂看不见的残余人口。
 
-**分歧留下。它不再是唯一的 tripwire。**
+**分歧留下。T1/T2 加入。它们都不是新奇臂。**
 
 ---
 
 **系列：** Agent Determinism Illusions · 脚本：[GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
 **前回：** [第 6 篇](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
-**不是本线：** 第 12 篇 probe-vs-prose
+**相关：** 第 12 篇 probe-vs-prose（新奇 / 出信道）；第 6 篇 §4（采样消融）
