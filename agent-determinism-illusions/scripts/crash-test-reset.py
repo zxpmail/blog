@@ -31,6 +31,13 @@ from pathlib import Path
 # 提前导入 forge-verify（其 module-level 的 stdout 设置优先，这里不再重复设置）
 forge = importlib.import_module("forge-verify-layered-prototype")
 
+# ── 架构不可妥协常量 ────────────────────────────────────────────────────
+# 存储后端必须是 tmpfs（内存文件系统）或 COW 快照，不能是 Git。
+# Git 的对象库 (./objects/) 不可变追加，git reset 只是逻辑删除——在取证级别
+# 旧数据仍可从磁盘恢复。"遗忘"必须是物理擦除，不是逻辑不可见。
+# 此常量在测试中强制执行：若后端为 git，测试标记为"通过但有根本缺陷"。
+STORAGE_BACKEND: str = "TMPFS"
+
 # ── 帮助函数 ──────────────────────────────────────────────────────────
 
 def git(*args, cwd: str, check: bool = True):
@@ -279,14 +286,30 @@ def main():
             log = git("log", "--oneline", cwd=tmp_dir)
             print(f"    剩余 commit: {len(log.splitlines()) if log else 0} (基线 commit 应仍在)")
 
+            # 🔪 病灶三验证：存储后端合规性
+            # 当前测试使用 git，不满足 STORAGE_BACKEND=TMPFS 要求
+            storage_compliant = False  # git 无法物理擦除，永远不满足 TMPFS
+            storage_note = ""
+            if not storage_compliant:
+                storage_note = (
+                    f"STORAGE_BACKEND={STORAGE_BACKEND} 要求但当前后端为 git: "
+                    "旧 commit 对象 (.git/objects/) 磁盘上仍可恢复，"
+                    "reflog expire 只是逻辑隐藏不是物理删除"
+                )
+                print(f"    🔴 STORAGE_GAP: {storage_note}")
+                # 注意：不设 overall_pass=False — 本轮测试验证状态恢复，
+                # 存储后端合规是下一层 Harness 的验收条件
+
             details.append({
                 "condition": name,
                 "pass": state_ok and files_ok,
+                "storage_compliant": storage_compliant,
                 "baseline_hash": baseline_hash[:16],
                 "after_hash": after_hash[:16],
                 "files_before": len(files_before),
                 "files_after": len(files_after),
                 "reflog_cleared": not bool(reflog_after) if full_erase else None,
+                "storage_note": storage_note,
             })
 
             # 清理临时目录（可能残留 git 锁，用 ignore_errors）
@@ -308,12 +331,20 @@ def main():
               " 说明火烧深度不够——需要 git reset --hard HEAD 而不是仅 checkout .")
 
     print(f"\n  {'─'*60}")
-    print(f"  {'条件':<30} {'通过':<8} {'基线hash':<12} {'重置后hash':<12}")
+    print(f"  {'条件':<30} {'通过':<8} {'存储合规':<10} {'基线hash':<12} {'重置后hash':<12}")
     print(f"  {'─'*60}")
     for d in details:
+        sc = '✓' if d.get('storage_compliant', True) else '🔴'
         print(f"  {d['condition']:<30} {'✓' if d['pass'] else '✗':<8}"
-              f" {d['baseline_hash']:<12} {d['after_hash']:<12}")
+              f" {sc:<10} {d['baseline_hash']:<12} {d['after_hash']:<12}")
     print(f"  {'─'*60}")
+
+    # 存储后端合规总结
+    all_storage_gap = all(not d.get('storage_compliant', True) for d in details)
+    print(f"\n  STORAGE_BACKEND={STORAGE_BACKEND} 合规: {'🔴' if all_storage_gap else '✓'}")
+    print(f"  解释: 当前测试使用 git 做存储，不满足 TMPFS 物理擦除要求。")
+    print(f"  下一层 Harness 须切换为 tmpfs 或 COW 快照后端，")
+    print(f"  此测试届时将存储后端检查改为硬 FAIL。")
     print(f"""
 {' '*4}物理擦除说明:
 {' '*4}本测试在 git 层面近似"量子擦除": reflog expire + gc prune = 数据对普通操作不可见。
@@ -331,8 +362,10 @@ def main():
     out_path = out_dir / "crash-test-reset_result.json"
     out_data = {
         "test": "crash-test-reset",
+        "arch_constants": {"STORAGE_BACKEND": STORAGE_BACKEND},
         "conditions": len(TEST_CONDITIONS),
         "overall_pass": overall_pass,
+        "storage_compliant": all(d.get("storage_compliant", True) for d in details),
         "details": details,
     }
     out_path.write_text(json.dumps(out_data, ensure_ascii=False, indent=2), encoding="utf-8")

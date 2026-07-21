@@ -1,43 +1,55 @@
 {
   "test": "crash-test-reset",
+  "arch_constants": {
+    "STORAGE_BACKEND": "TMPFS"
+  },
   "conditions": 4,
   "overall_pass": true,
+  "storage_compliant": false,
   "details": [
     {
       "condition": "轻量工作 (plan.md + artifacts)",
       "pass": true,
+      "storage_compliant": false,
       "baseline_hash": "b92cb8a2b84b77dd",
       "after_hash": "b92cb8a2b84b77dd",
       "files_before": 2,
       "files_after": 2,
-      "reflog_cleared": null
+      "reflog_cleared": null,
+      "storage_note": "STORAGE_BACKEND=TMPFS 要求但当前后端为 git: 旧 commit 对象 (.git/objects/) 磁盘上仍可恢复，reflog expire 只是逻辑隐藏不是物理删除"
     },
     {
       "condition": "中量工作 (+ 修改原始 prompt)",
       "pass": true,
+      "storage_compliant": false,
       "baseline_hash": "b92cb8a2b84b77dd",
       "after_hash": "b92cb8a2b84b77dd",
       "files_before": 2,
       "files_after": 2,
-      "reflog_cleared": false
+      "reflog_cleared": false,
+      "storage_note": "STORAGE_BACKEND=TMPFS 要求但当前后端为 git: 旧 commit 对象 (.git/objects/) 磁盘上仍可恢复，reflog expire 只是逻辑隐藏不是物理删除"
     },
     {
       "condition": "大量工作 (+ 10 个 scratch 文件)",
       "pass": true,
+      "storage_compliant": false,
       "baseline_hash": "b92cb8a2b84b77dd",
       "after_hash": "b92cb8a2b84b77dd",
       "files_before": 2,
       "files_after": 2,
-      "reflog_cleared": false
+      "reflog_cleared": false,
+      "storage_note": "STORAGE_BACKEND=TMPFS 要求但当前后端为 git: 旧 commit 对象 (.git/objects/) 磁盘上仍可恢复，reflog expire 只是逻辑隐藏不是物理删除"
     },
     {
       "condition": "大量工作 + 完全擦除 (reflog expire + gc)",
       "pass": true,
+      "storage_compliant": false,
       "baseline_hash": "b92cb8a2b84b77dd",
       "after_hash": "b92cb8a2b84b77dd",
       "files_before": 2,
       "files_after": 2,
-      "reflog_cleared": false
+      "reflog_cleared": false,
+      "storage_note": "STORAGE_BACKEND=TMPFS 要求但当前后端为 git: 旧 commit 对象 (.git/objects/) 磁盘上仍可恢复，reflog expire 只是逻辑隐藏不是物理删除"
     }
   ]
 }

@@ -17,22 +17,26 @@
     "always_true": {
       "errors": 0,
       "fire_signals": 0,
-      "strikes": 6
+      "strikes": 6,
+      "unclear_violations": 0
     },
     "always_false": {
       "errors": 0,
       "fire_signals": 0,
-      "strikes": 18
+      "strikes": 18,
+      "unclear_violations": 0
     },
     "harmful": {
       "errors": 0,
       "fire_signals": 0,
-      "strikes": 24
+      "strikes": 24,
+      "unclear_violations": 0
     },
     "random": {
       "errors": 0,
       "fire_signals": 0,
-      "strikes": 21
+      "strikes": 21,
+      "unclear_violations": 0
     }
   }
 }

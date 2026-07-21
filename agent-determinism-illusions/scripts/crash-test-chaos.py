@@ -29,6 +29,12 @@ from unittest import mock
 
 # stdout 设置由 forge-verify-layered-prototype 的 import 完成
 
+# ── 架构不可妥协常量 ────────────────────────────────────────────────────
+# 物理锚点的响应时间红线。L0/L1 不经过 LLM，必须在硬件可感知的时隙内完成。
+# >200ms 意味着"物理锚"退化为"软件超时"——用户或外层编排层无法区分系统
+# 是否真的挂了。此常量由测试断言强制执行。
+PHYSICAL_TIMEOUT_MS: float = 200.0
+
 # 从分层原型导入基础设施
 sys.path.insert(0, __file__ and __file__[:-3].rsplit("/", 1)[0] or ".")
 import importlib
@@ -88,10 +94,13 @@ def run_condition(condition_name: str, mock_target, scenarios, force_llm: bool =
                 task = sc["task"]
                 correct = sc.get("correct", sc.get("label") == "correct"
                                  or (sc.get("label") == "edge" and sc.get("correctish", False)))
+                t0 = time.perf_counter()
                 r = forge.layered_judge(content, task)
+                elapsed_ms = (time.perf_counter() - t0) * 1000
                 r["id"] = sc["id"]
                 r["correct"] = correct
                 r["label"] = sc.get("label", "unknown")
+                r["elapsed_ms"] = round(elapsed_ms, 2)
                 results.append(r)
         finally:
             forge.HAVE_API = old_have
@@ -218,11 +227,24 @@ def main():
                         print(f"    ✗ {sc_id}: L2 故障模式产生非退化判决: {fv} "
                               f"(基线 L2={b.get('final_verdict')})")
 
+        # 2d. 🔪 病灶一验证：物理锚点响应时间 ≤ PHYSICAL_TIMEOUT_MS
+        latencies = [r["elapsed_ms"] for r in results if r.get("layer") in ("L0", "L1")]
+        max_latency = max(latencies) if latencies else 0.0
+        p99_latency = sorted(latencies)[int(len(latencies) * 0.99)] if len(latencies) >= 100 \
+                      else max(latencies) if latencies else 0.0
+        latency_ok = max_latency <= PHYSICAL_TIMEOUT_MS
+        if not latency_ok:
+            all_pass = False
+            print(f"    🔴 TIME_VIOLATION: max({max_latency:.1f}ms) > PHYSICAL_TIMEOUT_MS({PHYSICAL_TIMEOUT_MS}ms)")
+        print(f"    ⏱  latency: max={max_latency:.1f}ms  p99≈{p99_latency:.1f}ms  "
+              f"红线={PHYSICAL_TIMEOUT_MS}ms  {'✓' if latency_ok else '✗'}")
+
     # ── 3. 总结 ──
     print(f"\n{'='*78}")
     if all_pass:
         print("  结果: ✓ 全部通过 — L0/L1 安全气囊在 LLM 信道断联时正常弹出")
         print(f"  {len(scenarios)} 场景 × {len(FAULT_MODES)} 故障 = {len(scenarios)*len(FAULT_MODES)} 碰撞点, 0 泄漏")
+        print(f"  物理锚点响应红线: ≤{PHYSICAL_TIMEOUT_MS}ms — 全部满足")
     else:
         print("  结果: ✗ 有 FAIL — 见上方标记")
     print(f"{'='*78}")

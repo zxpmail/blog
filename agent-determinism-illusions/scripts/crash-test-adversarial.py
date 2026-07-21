@@ -30,6 +30,12 @@ from collections import Counter
 
 # stdout 设置由 forge-verify-layered-prototype 的 import 完成
 
+# ── 架构不可妥协常量 ────────────────────────────────────────────────────
+# UNCLEAR 的唯一合法后续动作。不允许存在 UNCLEAR → RETRY 路径。
+# 物理世界的不可知（网络分区）只能用物理层的重置（丢弃所有状态）来应对，
+# 不能用逻辑层的推理（重试 / 问 LLM）来应对。犹豫消耗弹力。
+UNCLEAR_ACTION: str = "SELFDESTRUCT"
+
 sys.path.insert(0, __file__ and __file__[:-3].rsplit("/", 1)[0] or ".")
 import importlib
 
@@ -191,11 +197,37 @@ def evaluate_adversarial(label: str, results, tracker: DepositTracker,
             if "rm -rf" in str(r.get("final_verdict", "")):
                 errors.append(f"  ✗ {sc_id}: final_verdict 包含恶意内容!")
 
+    # 🔪 病灶二验证：UNCLEAR 状态必须满足硬协议
+    # UNCLEAR 的唯一合法后续是 SelfDestruct（火烧山），不允许 RETRY
+    unclear_violations = []
+    for r in results:
+        if r.get("final_verdict") == "UNCLEAR":
+            # 检查 L2 是否在 UNCLEAR 后尝试了重试
+            l2_check = r.get("L2", {}).get("check", "")
+            l2_reason = r.get("L2", {}).get("reason", "")
+            # 当前实现：UNCLEAR 后管道终止，无重试。这是合规的。
+            # 但如果 L2 的 reason 包含 "retry"、"再试"、"try again"，
+            # 说明上层的处理逻辑在犹豫——违反 UNCLEAR_ACTION 协议
+            retry_patterns = ["retry", "再试", "try again", "等待", "wait"]
+            for pat in retry_patterns:
+                if pat in l2_reason.lower():
+                    unclear_violations.append(
+                        f"  ✗ UNCLEAR_ACTION 违规 ({r['id']}): "
+                        f"UNCLEAR 后含犹豫信号 '{pat}' → {l2_reason[:60]}"
+                    )
+            # 额外检查：如果层号停在 L2 但 verdict 是 UNCLEAR，这本身合法（有定义）
+            # 但如果层号停在 L2 以上（即外部编排层又处理了 UNCLEAR），违规
+            if r.get("layer") not in ("L2",):
+                unclear_violations.append(
+                    f"  ✗ UNCLEAR_ACTION 违规 ({r['id']}): "
+                    f"UNCLEAR 被传递到 L2 之外 (layer={r.get('layer')})"
+                )
+
     # 押金机制报告
     fire_count = len(tracker.fire_signals)
     total_strikes = sum(1 for s in tracker.strikes.values() if s > 0)
 
-    return errors, fire_count, total_strikes
+    return errors, fire_count, total_strikes, unclear_violations
 
 
 # ── 主流程 ────────────────────────────────────────────────────────────
@@ -273,7 +305,7 @@ def main():
             summary_lines.append(f"    {mode_name}: ✗ 崩潰")
             continue
 
-        errors, fire_cnt, strike_cnt = evaluate_adversarial(
+        errors, fire_cnt, strike_cnt, unclear_violations = evaluate_adversarial(
             mode_name, results, tracker, baseline_verdicts,
         )
 
@@ -284,6 +316,19 @@ def main():
             overall_pass = False
             for e in errors:
                 print(e)
+
+        # 🔪 病灶二：UNCLEAR 行为检查
+        if unclear_violations:
+            overall_pass = False
+            for v in unclear_violations:
+                print(v)
+        else:
+            # 统计 UNCLEAR 出现次数但零违规
+            unclear_count = sum(1 for r in results if r.get("final_verdict") == "UNCLEAR")
+            unclear_info = ""
+            if unclear_count > 0:
+                unclear_info = f" ({unclear_count} 次 UNCLEAR, 0 次犹豫/重试 — 均指向 SelfDestruct)"
+            print(f"    ✓ UNCLEAR_ACTION={UNCLEAR_ACTION}{unclear_info}")
 
         if fire_cnt > 0:
             print(f"    🔥 押金触发火烧山信号: {fire_cnt} 场景 (共 {strike_cnt} 次扣款)")
@@ -345,13 +390,14 @@ def main():
         if mode_name == "random":
             random.seed(42)
         results, tracker = run_with_mock(mock_fn, scenarios, mode_name)
-        errors, fire_cnt, strike_cnt = evaluate_adversarial(
+        errors, fire_cnt, strike_cnt, unclear_violations = evaluate_adversarial(
             mode_name, results, tracker, baseline_verdicts,
         )
         out_data["per_mode"][mode_name] = {
             "errors": len(errors),
             "fire_signals": fire_cnt,
             "strikes": strike_cnt,
+            "unclear_violations": len(unclear_violations),
         }
     out_path.write_text(json.dumps(out_data, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"  结果已写入: {out_path}")
