@@ -1,5 +1,8 @@
 {
   "test": "crash-test-chaos",
+  "arch_constants": {
+    "PHYSICAL_TIMEOUT_MS": 200.0
+  },
   "scenarios": 8,
   "fault_modes": [
     "timeout",
@@ -9,6 +12,7 @@
     "hang"
   ],
   "all_pass": true,
+  "net_delay_mode": "software",
   "baseline": [
     {
       "id": "L1",

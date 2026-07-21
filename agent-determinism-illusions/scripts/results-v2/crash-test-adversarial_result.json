@@ -1,5 +1,8 @@
 {
   "test": "crash-test-adversarial",
+  "arch_constants": {
+    "UNCLEAR_ACTION": "SELFDESTRUCT"
+  },
   "scenarios": 38,
   "mock_modes": [
     "always_true",
@@ -8,6 +11,7 @@
     "random"
   ],
   "overall_pass": true,
+  "selfdestruct_verified": null,
   "baseline": {
     "l0_caught": 6,
     "l1_caught": 8,

@@ -6,6 +6,7 @@
   "conditions": 4,
   "overall_pass": true,
   "storage_compliant": false,
+  "is_truly_ephemeral": null,
   "details": [
     {
       "condition": "轻量工作 (plan.md + artifacts)",

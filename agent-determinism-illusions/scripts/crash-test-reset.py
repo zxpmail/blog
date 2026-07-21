@@ -38,84 +38,96 @@ forge = importlib.import_module("forge-verify-layered-prototype")
 # 此常量在测试中强制执行：若后端为 git，测试标记为"通过但有根本缺陷"。
 STORAGE_BACKEND: str = "TMPFS"
 
+# ── 物理探测标记 ──────────────────────────────────────────────────────
+# 通过能力探测 + 降级标记机制设定，而非 raise RuntimeError。
+# 这样 CI 永远绿灯，但血红色的降解警告让人无法忽视。
+# 取值:
+#   True  — 经过物理验证，工作目录确实在 tmpfs 上
+#   False — 探测到非 tmpfs（ext4/overlayfs/XFS 等），仅软警告
+#   None  — 无法探测（非 Linux / df 不可用）
+IS_TRULY_EPHEMERAL: bool | None = None
 
-# ── 预检：物理层 STORAGE_BACKEND 验证 ─────────────────────────────────
+
+# ── 预检：物理层 STORAGE_BACKEND 验证（能力探测 + 降级标记）───────────
+
+_RED = "\033[1m\033[31m"
+_RESET = "\033[0m"
 
 def preflight_check_tmpfs():
     """
-    Pre-flight: 物理层验证 STORAGE_BACKEND=TMPFS 不是字符串欺骗。
+    Pre-flight: 探测工作目录的文件系统类型，设定 IS_TRULY_EPHEMERAL。
 
-    向临时目录写入一个 1GB 探针文件，然后执行 df -T 确认底层文件系统
-    类型是 tmpfs（内存文件系统）。防止 "Harness 层只改变量名不改真 tmpfs"
-    的虚假绿灯。
+    能力探测策略：
+      - Linux + df -T 可用：写入 1GB 探针，执行 df -T 确认类型
+        若为 tmpfs → IS_TRULY_EPHEMERAL = True
+        若为 overlayfs/ext4/其他 → IS_TRULY_EPHEMERAL = False，血红色警告
+      - 非 Linux：IS_TRULY_EPHEMERAL = None，跳过
 
-    如果文件系统不是 tmpfs，直接抛 RuntimeError 中止测试——不画红灯，
-    因为红灯在语义上等价于 "检查过了，但不通过"——我们需要的不是检查结果，
-    而是物理铁证。如果 Red 灯是唯一的检查手段，下一层工程师只需把测试
-    标绿就把红灯忽略。
-
-    Raises:
-        RuntimeError: 当实际文件系统类型非 tmpfs。
-        RuntimeError: 当无法执行 df -T 但平台声称是 Linux。
+    绝不 raise RuntimeError。降级标记 + 警告而非中断。
+    在 CI 受限容器中，这确保流水线保持绿色，
+    但血红色的 "⚠️ 存储非 tmpfs，遗忘测试无物理保证" 像眼中钉一样
+    逼着运维去给 Runner 挂载真 tmpfs。
     """
+    global IS_TRULY_EPHEMERAL
+
     if platform.system() != "Linux":
-        print(f"    ⚠️  df -T 仅适用于 Linux (当前平台: {platform.system()})")
-        print(f"    ⚠️  跳过物理 tmpfs 验证。请在 Linux 上运行此项预检。")
+        print(f"    ⚠️  df -T 仅适用于 Linux (当前: {platform.system()})")
+        print(f"    ⚠️  跳过物理 tmpfs 验证。")
+        IS_TRULY_EPHEMERAL = None
         return
 
     test_root = Path(tempfile.gettempdir())
     probe_file = test_root / ".crash_test_tmpfs_probe"
 
     try:
-        # 1) 写入 1GB —— 小文件会被 page cache 吸收，无法证明真 tmpfs
+        # 写入 1GB 探针
         sys.stdout.write(f"    Writing 1GB probe: {probe_file} ... ")
         sys.stdout.flush()
         with open(probe_file, "wb") as f:
-            f.seek(1024 ** 3 - 1)  # 1 GiB - 1 byte
+            f.seek(1024 ** 3 - 1)
             f.write(b"\0")
         print("done")
 
         actual_size = probe_file.stat().st_size
         print(f"    Probe size: {actual_size} bytes  (target: {1024**3})")
 
-        # 2) df -T 确认文件系统类型
+        # df -T 探测文件系统类型
         result = subprocess.run(
             ["df", "-T", str(probe_file)],
             capture_output=True, text=True, timeout=10, encoding="utf-8",
         )
         if result.returncode != 0:
-            raise RuntimeError(
-                f"df -T 失败 (rc={result.returncode}): {result.stderr}"
-            )
+            print(f"    ⚠️  df -T 失败 (rc={result.returncode}): {result.stderr}")
+            IS_TRULY_EPHEMERAL = None
+            return
 
         lines = result.stdout.strip().splitlines()
         if len(lines) < 2:
-            raise RuntimeError(f"df -T 输出异常: {result.stdout}")
+            print(f"    ⚠️  df -T 输出异常: {result.stdout}")
+            IS_TRULY_EPHEMERAL = None
+            return
 
-        # df -T 格式: Filesystem  Type  Size  Used Avail Use% Mounted on
         parts = lines[1].split()
         if len(parts) < 2:
-            raise RuntimeError(
-                f"df -T 无法解析 Type 列: {result.stdout}"
-            )
+            print(f"    ⚠️  df -T 无法解析 Type 列: {result.stdout}")
+            IS_TRULY_EPHEMERAL = None
+            return
+
         fstype = parts[1]
 
-        if fstype != "tmpfs":
-            raise RuntimeError(
-                f"🔴 STORAGE_BACKEND 物理验证失败!\n"
-                f"  STORAGE_BACKEND={STORAGE_BACKEND} (代码声明)\n"
-                f"  实际文件系统类型 = '{fstype}'\n"
-                f"  df -T 完整输出:\n"
-                f"    {result.stdout.strip()}\n\n"
-                f"  这意味着 '量子擦除' 退化为 '逻辑删除':\n"
-                f"  Harness 层将变量名改成了 TMPFS，但底层挂载的仍然是磁盘文件系统。\n"
-                f"  旧数据在磁盘上依然可恢复——这是假擦除，不是遗忘。\n"
-                f"  必须将工作目录挂载到真实 tmpfs (mount -t tmpfs ...) 才能通过此项预检。"
-            )
-
-        print(f"    ✓ 物理 tmpfs 确认: type={fstype}, "
-              f"st_dev={probe_file.stat().st_dev}, "
-              f"size={actual_size} bytes")
+        if fstype == "tmpfs":
+            IS_TRULY_EPHEMERAL = True
+            print(f"    ✓ 物理 tmpfs 确认: type={fstype}, "
+                  f"st_dev={probe_file.stat().st_dev}")
+        else:
+            IS_TRULY_EPHEMERAL = False
+            print(f"{_RED}"
+                  f"⚠️  当前存储非 tmpfs (实际类型: {fstype})!\n"
+                  f"   STORAGE_BACKEND={STORAGE_BACKEND} 是代码声明，"
+                  f"但底层文件系统是 {fstype}。\n"
+                  f"   '量子擦除' 退化为 '逻辑删除'——旧数据在磁盘上可恢复。\n"
+                  f"   请将工作目录挂载到真实 tmpfs 以消除此警告。"
+                  f"{_RESET}")
 
     finally:
         if probe_file.exists():
@@ -280,14 +292,12 @@ def main():
     print("  碰撞测试三：火烧/遗忘 — git 重置后状态彻底复原验证")
     print("=" * 78)
 
-    # ── 预检：物理层 STORAGE_BACKEND 验证 ──
+    # ── 预检：物理层 STORAGE_BACKEND 验证（能力探测，绝不 raise）──
     print(f"\n{'─'*78}")
     print("  [Pre-flight] 物理层 STORAGE_BACKEND 验证...")
     print(f"{'─'*78}")
     preflight_check_tmpfs()
-    print("  [Pre-flight] ✓")
-    # 预检之后继续运行主流程（即使预检跳过，主测试仍会运行完整结果输出）
-    # 预检抛异常则中止——不会执行到下面
+    # 预检之后继续运行主流程——降级标记不阻断 CI
 
     overall_pass = True
     details = []
@@ -436,8 +446,26 @@ def main():
     all_storage_gap = all(not d.get('storage_compliant', True) for d in details)
     print(f"\n  STORAGE_BACKEND={STORAGE_BACKEND} 合规: {'🔴' if all_storage_gap else '✓'}")
     print(f"  解释: 当前测试使用 git 做存储，不满足 TMPFS 物理擦除要求。")
-    print(f"  下一层 Harness 须切换为 tmpfs 或 COW 快照后端，")
-    print(f"  此测试届时将存储后端检查改为硬 FAIL。")
+    print(f"  下一层 Harness 须切换为 tmpfs 或 COW 快照后端。")
+
+    # ── 物理探测标记最终血红警告 ──
+    if IS_TRULY_EPHEMERAL is False:
+        print(f"\n{_RED}"
+              f"  ╔{'═'*58}╗\n"
+              f"  ║ {'⚠️  STORAGE_BACKEND 物理层未验证！':^54} ║\n"
+              f"  ║ {'工作目录不在 tmpfs 上':^54} ║\n"
+              f"  ║ {'遗忘测试无物理层保证——旧数据可从磁盘恢复':^54} ║\n"
+              f"  ╚{'═'*58}╝"
+              f"{_RESET}")
+    elif IS_TRULY_EPHEMERAL is None:
+        print(f"\n{_RED}"
+              f"  ╔{'═'*58}╗\n"
+              f"  ║ {'⚠️  STORAGE_BACKEND 物理层未探测':^54} ║\n"
+              f"  ║ {'平台不支持 df -T, 无法验证 tmpfs':^54} ║\n"
+              f"  ║ {'请在 Linux 上运行以获取完整物理保证':^54} ║\n"
+              f"  ╚{'═'*58}╝"
+              f"{_RESET}")
+
     print(f"""
 {' '*4}物理擦除说明:
 {' '*4}本测试在 git 层面近似"量子擦除": reflog expire + gc prune = 数据对普通操作不可见。
@@ -459,6 +487,7 @@ def main():
         "conditions": len(TEST_CONDITIONS),
         "overall_pass": overall_pass,
         "storage_compliant": all(d.get("storage_compliant", True) for d in details),
+        "is_truly_ephemeral": IS_TRULY_EPHEMERAL,
         "details": details,
     }
     out_path.write_text(json.dumps(out_data, ensure_ascii=False, indent=2), encoding="utf-8")

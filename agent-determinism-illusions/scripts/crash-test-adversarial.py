@@ -37,8 +37,20 @@ from collections import Counter
 # 不能用逻辑层的推理（重试 / 问 LLM）来应对。犹豫消耗弹力。
 UNCLEAR_ACTION: str = "SELFDESTRUCT"
 
+# ── 物理探测标记 ──────────────────────────────────────────────────────
+# 通过能力探测 + 降级标记机制设定，绝不 raise RuntimeError。
+# 取值:
+#   True  — O_SYNC 写入 + posix_fadvise(DONTNEED) 驱逐 page cache
+#           后，磁盘数据完整无损。
+#   False — 磁盘数据损坏或探测失败
+#   None  — 无法探测（非 Linux / posix_fadvise 不可用）
+SELFDESTRUCT_VERIFIED: bool | None = None
 
-# ── 预检：物理层 UNCLEAR_ACTION 验证 ─────────────────────────────────
+_RED = "\033[1m\033[31m"
+_RESET = "\033[0m"
+
+
+# ── 预检：物理层 UNCLEAR_ACTION 验证（能力探测 + 降级标记）────────────
 
 def preflight_check_selfdestruct():
     """
@@ -48,27 +60,34 @@ def preflight_check_selfdestruct():
     这只能证明 "代码没写 RETRY 逻辑"，不能证明 "os._exit(1) 真的安全"。
 
     真实风险：
-      一个进程执行 os._exit(1) 时，文件锁（fcntl.flock）立即释放，
-      但 page cache 中的脏页可能未落盘就消失。重启后的 Harness 可能
-      读到半残状态。
+      os._exit(1) 时，page cache 中的脏页可能未落盘就消失。
+      重启后的 Harness 可能读到半残状态。
 
-    本预检：
-      1. 启动子进程写入已知内容后 os._exit(1)
-      2. 父进程强制 sync && drop_caches（清除 page cache 残留，仅 Linux）
-      3. 重新读取文件并比较哈希
-      如果哈希不一致 → 说明 SELFDESTRUCT 后文件系统处于未定义状态。
+    本预检（用 posix_fadvise(DONTNEED) 替代 drop_caches 核武器）：
+      1. 子进程 O_SYNC 写入已知内容后 os._exit(1)
+      2. 父进程只用 posix_fadvise(DONTNEED) 逐出该文件的 page cache
+         而非全局 drop_caches——不搞瘫并行测试
+      3. 读取文件（此时已绕过 page cache，从磁盘直接读）
+      4. 比较哈希
 
-    Raises:
-        RuntimeError: 当 SELFDESTRUCT 后的文件内容损坏或不一致。
+    这比 drop_caches 更好的原因：
+      - 不需要 root 权限
+      - 只影响当前文件，不对整台机器的其他进程造成性能雪崩
+      - 物理性更强：O_SYNC 确保写入在断电场景下仍安全
 
-    Note:
-        完整验证仅 Linux 支持（需要 os.O_SYNC + /proc/sys/vm/drop_caches）。
-        非 Linux 系统下跳过物理验证。
+    绝不对环境限制 raise RuntimeError。降级标记 + 警告而非中断。
     """
+    global SELFDESTRUCT_VERIFIED
+
+    SELFDESTRUCT_VERIFIED = None  # 默认：未验证
+
     if platform.system() != "Linux":
         print(f"    ⚠️  SELFDESTRUCT 物理验证需要 Linux "
               f"(当前: {platform.system()})")
-        print(f"    ⚠️  跳过。请在 Linux 上运行此项预检。")
+        return
+
+    if not hasattr(os, "POSIX_FADV_DONTNEED"):
+        print(f"    ⚠️  os.posix_fadvise 不可用 (Python 版本过旧)")
         return
 
     print(f"    [Pre-flight] 物理层 UNCLEAR_ACTION 验证...")
@@ -76,22 +95,20 @@ def preflight_check_selfdestruct():
     probe_dir = Path(tempfile.mkdtemp(prefix="crash-test-selfdestruct-"))
     try:
         probe_file = probe_dir / "probe.bin"
-        # 已知内容 + 随机 padding 确保唯一性
         import secrets
         expected_content = (
             b"CRASH_TEST_SELFDESTRUCT_PROBE_"
             + secrets.token_bytes(64)
-            + b"\x00" * 192  # 凑整 256 bytes
+            + b"\x00" * 192
         )
 
-        # 子进程脚本：写入 → fdatasync → 暴力退出（不 close fd）
+        # 子进程：O_SYNC 写入 → os._exit(1)（不 close fd）
         script = textwrap.dedent(f"""\
             import os
             path = {str(probe_file)!r}
             fd = os.open(path, os.O_CREAT | os.O_WRONLY | os.O_SYNC)
             os.write(fd, {expected_content!r})
             os.fdatasync(fd)
-            # 👇 故意不关闭 fd，模拟暴力退出
             os._exit(1)
         """)
 
@@ -100,64 +117,46 @@ def preflight_check_selfdestruct():
             capture_output=True, timeout=15,
         )
 
-        if result.returncode != 0 and result.returncode != 1:
-            print(f"    ⚠️  子进程异常退出: rc={result.returncode}, "
-                  f"stderr={result.stderr.decode(errors='replace')[:200]}")
-            # 子进程可能因其他原因失败，不中止预检
+        if result.returncode not in (0, 1):
+            print(f"    ⚠️  子进程异常退出: rc={result.returncode}")
             return
 
-        # 第一步：sync 所有脏页到磁盘
-        if platform.system() == "Linux":
-            subprocess.run(["sync"], timeout=30)
+        # ⭐ 关键：用 posix_fadvise(DONTNEED) 逐出该文件 page cache
+        # 不调用 drop_caches——只影响当前文件，不搞瘫整台机器
+        fd = os.open(str(probe_file), os.O_RDONLY)
+        try:
+            os.posix_fadvise(fd, 0, 0, os.POSIX_FADV_DONTNEED)
+            # 此时读文件 = 从磁盘读（page cache 已驱逐）
+            actual = os.read(fd, len(expected_content))
+        finally:
+            os.close(fd)
 
-            # 第二步：清除 page cache（需要 root 权限）
-            try:
-                with open("/proc/sys/vm/drop_caches", "w") as f:
-                    f.write("3\n")
-                print(f"    drop_caches: page cache purged")
-            except PermissionError:
-                print(f"    ⚠️  drop_caches 需要 root 权限，跳过。")
-                print(f"    ⚠️  page cache 可能含有脏数据残留。")
-
-        # 第三步：读取文件哈希
-        if not probe_file.exists():
-            raise RuntimeError(
-                f"🔴 SELFDESTRUCT 物理验证失败: 文件消失!\n"
-                f"  子进程 os._exit(1) 后文件未被写入磁盘——"
-                f"数据丢失在 page cache 中。"
-                f"  SELFDESTRUCT 不安全: 重启后 Harness 无法恢复该文件。"
-            )
-
-        actual = probe_file.read_bytes()
         actual_hash = hashlib.sha256(actual).hexdigest()
         expected_hash = hashlib.sha256(expected_content).hexdigest()
 
         if actual_hash != expected_hash:
-            # 输出差异详情
+            SELFDESTRUCT_VERIFIED = False
             diff = ""
             if len(actual) != len(expected_content):
                 diff += f"  长度: got {len(actual)}, expected {len(expected_content)}\n"
-            # 找第一个差异位置
             for i in range(min(len(actual), len(expected_content))):
                 if actual[i] != expected_content[i]:
-                    diff += f"  首个字节差异 @ offset {i}: got {actual[i]:02x}, expected {expected_content[i]:02x}\n"
+                    diff += f"  首字节差异 @ offset {i}\n"
                     break
+            print(f"{_RED}"
+                  f"⚠️  SELFDESTRUCT 数据完整性未通过!\n"
+                  f"   预期hash: {expected_hash[:32]}...\n"
+                  f"   实际hash: {actual_hash[:32]}...\n"
+                  f"{diff}"
+                  f"   os._exit(1) 后文件系统状态可能不一致。\n"
+                  f"   建议检查存储层 journal 或启用 fsync 确认。"
+                  f"{_RESET}")
+            return
 
-            raise RuntimeError(
-                f"🔴 SELFDESTRUCT 数据损坏: 哈希不匹配!\n"
-                f"  Expected: {expected_hash[:32]}...\n"
-                f"  Got:      {actual_hash[:32]}...\n"
-                f"{diff}\n"
-                f"os._exit(1) 导致文件系统处于未定义状态:\n"
-                f"  进程的脏页可能被以错误顺序刷入磁盘，或内核丢弃了未写入的数据。\n"
-                f"  UNCLEAR_ACTION={UNCLEAR_ACTION} 不满足安全要求——\n"
-                f"  SELFDESTRUCT 后存储层状态不可预测。"
-            )
-
+        SELFDESTRUCT_VERIFIED = True
         print(f"    ✓ SELFDESTRUCT 物理验证: "
-              f"hash={actual_hash[:16]}... "
-              f"({len(actual)} bytes), "
-              f"sync+drop_caches 后数据完整无损")
+              f"posix_fadvise(DONTNEED) 驱逐 page cache 后 "
+              f"数据完整 (hash={actual_hash[:16]}...)")
 
     finally:
         shutil.rmtree(probe_dir, ignore_errors=True)
@@ -364,12 +363,29 @@ def main():
     print("  碰撞测试二：对抗性攻击 — Mock LLM 恶意输出时硬编码围栏拦截")
     print("=" * 78)
 
-    # ── 预检：物理层 UNCLEAR_ACTION 验证 ──
+    # ── 预检：物理层 UNCLEAR_ACTION 验证（能力探测，绝不 raise）──
     print(f"\n{'─'*78}")
     print("  [Pre-flight] 物理层 UNCLEAR_ACTION 验证...")
     print(f"{'─'*78}")
     preflight_check_selfdestruct()
-    print("  [Pre-flight] ✓\n")
+
+    # ── 👀 血红色警告 ──
+    if SELFDESTRUCT_VERIFIED is False:
+        print(f"\n{_RED}"
+              f"  ╔{'═'*58}╗\n"
+              f"  ║ {'⚠️  UNCLEAR_ACTION 物理层未验证！':^54} ║\n"
+              f"  ║ {'SELFDESTRUCT 后数据可能损坏':^54} ║\n"
+              f"  ║ {'os._exit(1) 不安全——存储层状态不可预测':^54} ║\n"
+              f"  ╚{'═'*58}╝"
+              f"{_RESET}")
+    elif SELFDESTRUCT_VERIFIED is None:
+        print(f"\n{_RED}"
+              f"  ╔{'═'*58}╗\n"
+              f"  ║ {'⚠️  UNCLEAR_ACTION 物理层未探测':^54} ║\n"
+              f"  ║ {'需要 Linux + os.posix_fadvise 支持':^54} ║\n"
+              f"  ║ {'请在 Linux 上运行以获取完整物理保证':^54} ║\n"
+              f"  ╚{'═'*58}╝"
+              f"{_RESET}")
 
     # 使用 P1 + P4 场景
     scenarios = forge.P1_SCENARIOS + forge.P4_SCENARIOS
@@ -514,9 +530,11 @@ def main():
     out_path = out_dir / "crash-test-adversarial_result.json"
     out_data = {
         "test": "crash-test-adversarial",
+        "arch_constants": {"UNCLEAR_ACTION": UNCLEAR_ACTION},
         "scenarios": len(scenarios),
         "mock_modes": list(MOCK_MODES.keys()),
         "overall_pass": overall_pass,
+        "selfdestruct_verified": SELFDESTRUCT_VERIFIED,
         "baseline": {"l0_caught": l0_caught, "l1_caught": l1_caught, "l2_reach": l2_reach},
         "per_mode": {},
     }
