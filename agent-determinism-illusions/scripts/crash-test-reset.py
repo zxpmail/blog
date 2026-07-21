@@ -46,92 +46,144 @@ STORAGE_BACKEND: str = "TMPFS"
 #   False — 探测到非 tmpfs（ext4/overlayfs/XFS 等），仅软警告
 #   None  — 无法探测（非 Linux / df 不可用）
 IS_TRULY_EPHEMERAL: bool | None = None
-
-
-# ── 预检：物理层 STORAGE_BACKEND 验证（能力探测 + 降级标记）───────────
+EPHEMERAL_ROOT: str | None = None
+EPHEMERAL_PROBE: dict | None = None
 
 _RED = "\033[1m\033[31m"
 _RESET = "\033[0m"
 
-def preflight_check_tmpfs():
-    """
-    Pre-flight: 探测工作目录的文件系统类型，设定 IS_TRULY_EPHEMERAL。
 
-    能力探测策略：
-      - Linux + df -T 可用：写入 1GB 探针，执行 df -T 确认类型
-        若为 tmpfs → IS_TRULY_EPHEMERAL = True
-        若为 overlayfs/ext4/其他 → IS_TRULY_EPHEMERAL = False，血红色警告
-      - 非 Linux：IS_TRULY_EPHEMERAL = None，跳过
-
-    绝不 raise RuntimeError。降级标记 + 警告而非中断。
-    在 CI 受限容器中，这确保流水线保持绿色，
-    但血红色的 "⚠️ 存储非 tmpfs，遗忘测试无物理保证" 像眼中钉一样
-    逼着运维去给 Runner 挂载真 tmpfs。
-    """
-    global IS_TRULY_EPHEMERAL
-
-    if platform.system() != "Linux":
-        print(f"    ⚠️  df -T 仅适用于 Linux (当前: {platform.system()})")
-        print(f"    ⚠️  跳过物理 tmpfs 验证。")
-        IS_TRULY_EPHEMERAL = None
-        return
-
-    test_root = Path(tempfile.gettempdir())
-    probe_file = test_root / ".crash_test_tmpfs_probe"
-
+def _df_fstype(path: Path) -> str | None:
+    """Linux df -T 解析文件系统类型；失败返回 None。"""
     try:
-        # 写入 1GB 探针
-        sys.stdout.write(f"    Writing 1GB probe: {probe_file} ... ")
-        sys.stdout.flush()
-        with open(probe_file, "wb") as f:
-            f.seek(1024 ** 3 - 1)
-            f.write(b"\0")
-        print("done")
-
-        actual_size = probe_file.stat().st_size
-        print(f"    Probe size: {actual_size} bytes  (target: {1024**3})")
-
-        # df -T 探测文件系统类型
         result = subprocess.run(
-            ["df", "-T", str(probe_file)],
+            ["df", "-T", str(path)],
             capture_output=True, text=True, timeout=10, encoding="utf-8",
         )
-        if result.returncode != 0:
-            print(f"    ⚠️  df -T 失败 (rc={result.returncode}): {result.stderr}")
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return None
+    if result.returncode != 0:
+        return None
+    lines = result.stdout.strip().splitlines()
+    if len(lines) < 2:
+        return None
+    parts = lines[1].split()
+    return parts[1] if len(parts) >= 2 else None
+
+
+def resolve_ephemeral_root() -> Path | None:
+    """
+    解析真易失探针根目录。
+    优先级：CRASH_TEST_EPHEMERAL_ROOT → /dev/shm（tmpfs）→ None
+    """
+    env = os.environ.get("CRASH_TEST_EPHEMERAL_ROOT", "").strip()
+    if env:
+        p = Path(env)
+        p.mkdir(parents=True, exist_ok=True)
+        return p
+    if platform.system() == "Linux":
+        shm = Path("/dev/shm")
+        if shm.is_dir() and _df_fstype(shm) == "tmpfs":
+            return shm
+    return None
+
+
+# ── 预检：物理层 STORAGE_BACKEND 验证（能力探测 + 降级标记）───────────
+
+def preflight_check_tmpfs():
+    """
+    Pre-flight: 探测易失根目录的文件系统类型，设定 IS_TRULY_EPHEMERAL。
+
+    能力探测策略：
+      - 优先 resolve_ephemeral_root()（env 或 /dev/shm）
+      - Linux + df -T：写 1MB 探针确认类型
+      - 非 Linux 且无 env：IS_TRULY_EPHEMERAL = None
+
+    绝不 raise RuntimeError。降级标记 + 警告而非中断。
+    """
+    global IS_TRULY_EPHEMERAL, EPHEMERAL_ROOT
+
+    root = resolve_ephemeral_root()
+    if root is None:
+        if platform.system() != "Linux":
+            print(f"    ⚠️  无 CRASH_TEST_EPHEMERAL_ROOT，且 df -T 仅适用于 Linux "
+                  f"(当前: {platform.system()})")
+            print(f"    ⚠️  跳过物理 tmpfs 验证。")
             IS_TRULY_EPHEMERAL = None
             return
+        root = Path(tempfile.gettempdir())
 
-        lines = result.stdout.strip().splitlines()
-        if len(lines) < 2:
-            print(f"    ⚠️  df -T 输出异常: {result.stdout}")
+    EPHEMERAL_ROOT = str(root)
+    probe_file = root / f".crash_test_tmpfs_probe_{os.getpid()}"
+
+    try:
+        sys.stdout.write(f"    Writing probe: {probe_file} ... ")
+        sys.stdout.flush()
+        with open(probe_file, "wb") as f:
+            f.write(b"\0" * (1024 * 1024))
+        print("done")
+
+        fstype = _df_fstype(probe_file)
+        if fstype is None:
+            print(f"    ⚠️  df -T 无法解析 {probe_file}")
             IS_TRULY_EPHEMERAL = None
             return
-
-        parts = lines[1].split()
-        if len(parts) < 2:
-            print(f"    ⚠️  df -T 无法解析 Type 列: {result.stdout}")
-            IS_TRULY_EPHEMERAL = None
-            return
-
-        fstype = parts[1]
 
         if fstype == "tmpfs":
             IS_TRULY_EPHEMERAL = True
-            print(f"    ✓ 物理 tmpfs 确认: type={fstype}, "
-                  f"st_dev={probe_file.stat().st_dev}")
+            print(f"    ✓ 物理 tmpfs 确认: root={root}, type={fstype}")
         else:
             IS_TRULY_EPHEMERAL = False
             print(f"{_RED}"
                   f"⚠️  当前存储非 tmpfs (实际类型: {fstype})!\n"
                   f"   STORAGE_BACKEND={STORAGE_BACKEND} 是代码声明，"
                   f"但底层文件系统是 {fstype}。\n"
-                  f"   '量子擦除' 退化为 '逻辑删除'——旧数据在磁盘上可恢复。\n"
-                  f"   请将工作目录挂载到真实 tmpfs 以消除此警告。"
+                  f"   设置 CRASH_TEST_EPHEMERAL_ROOT 指向 tmpfs，"
+                  f"或在 Linux 上使用 /dev/shm。"
                   f"{_RESET}")
-
     finally:
         if probe_file.exists():
             probe_file.unlink()
+
+
+def probe_tmpfs_ephemeral_destroy() -> dict:
+    """
+    易失探针：写密钥 → 销毁目录 → 断言密钥不可读。
+    仅当根在 tmpfs 上时抬升 storage_compliant / 物理遗忘证据。
+    """
+    global EPHEMERAL_PROBE
+
+    base = Path(EPHEMERAL_ROOT) if EPHEMERAL_ROOT else Path(tempfile.gettempdir())
+    work = Path(tempfile.mkdtemp(prefix="crash-ephemeral-", dir=str(base)))
+    secret_path = work / "secret.bin"
+    secret = b"EPHEMERAL_SECRET_" + os.urandom(32)
+    result = {
+        "root": str(base),
+        "is_tmpfs": IS_TRULY_EPHEMERAL is True,
+        "pass": False,
+        "destroyed": False,
+        "secret_gone": False,
+    }
+    try:
+        secret_path.write_bytes(secret)
+        assert secret_path.read_bytes() == secret
+        shutil.rmtree(work, ignore_errors=False)
+        result["destroyed"] = not work.exists()
+        result["secret_gone"] = not secret_path.exists()
+        result["pass"] = result["destroyed"] and result["secret_gone"]
+        if result["pass"] and result["is_tmpfs"]:
+            print(f"    ✓ tmpfs 易失探针通过: 销毁后密钥不可读 ({base})")
+        elif result["pass"]:
+            print(f"    ✓ 会话销毁探针通过（非 tmpfs，不计物理遗忘）: {base}")
+        else:
+            print(f"    ✗ 易失探针失败: {result}")
+    except Exception as exc:
+        result["error"] = str(exc)
+        print(f"    ✗ 易失探针异常: {exc}")
+        shutil.rmtree(work, ignore_errors=True)
+
+    EPHEMERAL_PROBE = result
+    return result
 
 
 # ── 帮助函数 ──────────────────────────────────────────────────────────
@@ -297,6 +349,10 @@ def main():
     print("  [Pre-flight] 物理层 STORAGE_BACKEND 验证...")
     print(f"{'─'*78}")
     preflight_check_tmpfs()
+    print(f"\n{'─'*78}")
+    print("  [Probe] tmpfs / 会话易失销毁...")
+    print(f"{'─'*78}")
+    probe_tmpfs_ephemeral_destroy()
     # 预检之后继续运行主流程——降级标记不阻断 CI
 
     overall_pass = True
@@ -390,18 +446,26 @@ def main():
             print(f"    剩余 commit: {len(log.splitlines()) if log else 0} (基线 commit 应仍在)")
 
             # 🔪 病灶三验证：存储后端合规性
-            # 当前测试使用 git，不满足 STORAGE_BACKEND=TMPFS 要求
-            storage_compliant = False  # git 无法物理擦除，永远不满足 TMPFS
+            # git 路径永远不满足物理擦除；仅 tmpfs 易失探针通过时抬升合规标记
+            storage_compliant = bool(
+                IS_TRULY_EPHEMERAL is True
+                and EPHEMERAL_PROBE
+                and EPHEMERAL_PROBE.get("pass")
+            )
             storage_note = ""
             if not storage_compliant:
                 storage_note = (
-                    f"STORAGE_BACKEND={STORAGE_BACKEND} 要求但当前后端为 git: "
-                    "旧 commit 对象 (.git/objects/) 磁盘上仍可恢复，"
-                    "reflog expire 只是逻辑隐藏不是物理删除"
+                    f"STORAGE_BACKEND={STORAGE_BACKEND}: git 重置路径仍为逻辑恢复；"
+                    f"tmpfs 物理遗忘="
+                    f"{'待 Linux/env' if IS_TRULY_EPHEMERAL is not True else '探针未通过'}"
                 )
                 print(f"    🔴 STORAGE_GAP: {storage_note}")
-                # 注意：不设 overall_pass=False — 本轮测试验证状态恢复，
-                # 存储后端合规是下一层 Harness 的验收条件
+            else:
+                storage_note = (
+                    f"tmpfs 易失探针通过 (root={EPHEMERAL_ROOT}); "
+                    f"git 条件仍只验证逻辑复原"
+                )
+                print(f"    ✓ STORAGE: {storage_note}")
 
             details.append({
                 "condition": name,
@@ -443,10 +507,19 @@ def main():
     print(f"  {'─'*60}")
 
     # 存储后端合规总结
-    all_storage_gap = all(not d.get('storage_compliant', True) for d in details)
-    print(f"\n  STORAGE_BACKEND={STORAGE_BACKEND} 合规: {'🔴' if all_storage_gap else '✓'}")
-    print(f"  解释: 当前测试使用 git 做存储，不满足 TMPFS 物理擦除要求。")
-    print(f"  下一层 Harness 须切换为 tmpfs 或 COW 快照后端。")
+    ephemeral_ok = bool(
+        IS_TRULY_EPHEMERAL is True
+        and EPHEMERAL_PROBE
+        and EPHEMERAL_PROBE.get("pass")
+    )
+    print(f"\n  STORAGE_BACKEND={STORAGE_BACKEND} 物理遗忘: "
+          f"{'✓' if ephemeral_ok else '🔴'}")
+    if ephemeral_ok:
+        print(f"  解释: tmpfs 易失探针通过 (root={EPHEMERAL_ROOT})；"
+              f"git 条件仍只覆盖逻辑复原。")
+    else:
+        print(f"  解释: 需 Linux /dev/shm 或 CRASH_TEST_EPHEMERAL_ROOT=tmpfs；"
+              f"当前 is_truly_ephemeral={IS_TRULY_EPHEMERAL}。")
 
     # ── 物理探测标记最终血红警告 ──
     if IS_TRULY_EPHEMERAL is False:
@@ -461,36 +534,55 @@ def main():
         print(f"\n{_RED}"
               f"  ╔{'═'*58}╗\n"
               f"  ║ {'⚠️  STORAGE_BACKEND 物理层未探测':^54} ║\n"
-              f"  ║ {'平台不支持 df -T, 无法验证 tmpfs':^54} ║\n"
-              f"  ║ {'请在 Linux 上运行以获取完整物理保证':^54} ║\n"
+              f"  ║ {'平台不支持 df -T / 无 ephemeral root':^54} ║\n"
+              f"  ║ {'请在 Linux 上运行 run-crash-p1-linux.sh':^54} ║\n"
               f"  ╚{'═'*58}╝"
               f"{_RESET}")
 
     print(f"""
 {' '*4}物理擦除说明:
-{' '*4}本测试在 git 层面近似"量子擦除": reflog expire + gc prune = 数据对普通操作不可见。
-{' '*4}真正的物理擦除 (shred/fallocate) 需要在 Harness 的 L4 数据库层实现——git 层无法做到
-{' '*4}文件内容的不可逆销毁，因为 git 的 object store 设计为不可变追加。
-{' '*4}要达到"量子擦除"级别的遗忘，需要:
-{' '*4}  1. 存储层用 COW (copy-on-write) 而非 git
-{' '*4}  2. 写入时用固定大小 slot，覆盖时 fallocate + FALLOC_FL_PUNCH_HOLE
-{' '*4}  3. 或每轮 session 使用 ephemeral 工作区（tmpfs），销毁即物理释放
+{' '*4}git 条件：逻辑复原（hash 一致）。tmpfs 探针：销毁目录后密钥不可读。
+{' '*4}Linux 默认用 /dev/shm；或 export CRASH_TEST_EPHEMERAL_ROOT=/path/to/tmpfs
     """)
 
     # ── 输出到 results-v2 ──
     out_dir = Path(__file__).parent / "results-v2"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / "crash-test-reset_result.json"
+    supports = [
+        "workspace content hash restored after reset/clean across 4 intensities",
+    ]
+    does_not = [
+        "physical shred of git objects (reflog expire ≠ disk wipe)",
+    ]
+    if ephemeral_ok:
+        supports.append(
+            f"tmpfs ephemeral destroy probe passed (root={EPHEMERAL_ROOT})"
+        )
+    else:
+        does_not.append(
+            "true tmpfs ephemerality when is_truly_ephemeral is not true"
+        )
+    if EPHEMERAL_PROBE and EPHEMERAL_PROBE.get("pass") and not ephemeral_ok:
+        supports.append(
+            "session workspace destroy clears secret path (non-tmpfs; not physical forget)"
+        )
     out_data = {
         "test": "crash-test-reset",
         "arch_constants": {"STORAGE_BACKEND": STORAGE_BACKEND},
         "conditions": len(TEST_CONDITIONS),
         "overall_pass": overall_pass,
-        "storage_compliant": all(d.get("storage_compliant", True) for d in details),
+        "storage_compliant": ephemeral_ok,
         "is_truly_ephemeral": IS_TRULY_EPHEMERAL,
+        "ephemeral_root": EPHEMERAL_ROOT,
+        "ephemeral_probe": EPHEMERAL_PROBE,
         "env_health": {
             "tmpfs": IS_TRULY_EPHEMERAL,
             "degraded": IS_TRULY_EPHEMERAL is not True,
+        },
+        "evidence_map": {
+            "supports": supports,
+            "does_not_support": does_not,
         },
         "details": details,
     }

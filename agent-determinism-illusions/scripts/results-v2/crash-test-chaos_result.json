@@ -1,7 +1,10 @@
 {
   "test": "crash-test-chaos",
   "arch_constants": {
-    "PHYSICAL_TIMEOUT_MS": 200.0
+    "PHYSICAL_TIMEOUT_MS": 43.54950000106328,
+    "BASELINE_RTT_MS": 14.516500000354426,
+    "L01_PROBE_MS": 0.26479999996809056,
+    "TIMEOUT_FORMULA": "3 * max(BASELINE_RTT_MS, L01_PROBE_MS)"
   },
   "scenarios": 8,
   "fault_modes": [
@@ -11,13 +14,27 @@
     "empty",
     "hang"
   ],
+  "collision_points": 40,
   "all_pass": true,
   "net_delay_mode": "software",
   "confidence": 0.3,
   "env_health": {
     "delay_mode": "software",
-    "physical_timeout_ms": 200.0,
+    "physical_timeout_ms": 43.54950000106328,
+    "baseline_rtt_ms": 14.516500000354426,
+    "l01_probe_ms": 0.26479999996809056,
     "degraded": true
+  },
+  "evidence_map": {
+    "supports": [
+      "L0/L1 verdicts invariant under mock LLM channel faults",
+      "per-call latency max ≤ PHYSICAL_TIMEOUT_MS (43.550ms) on this run",
+      "PHYSICAL_TIMEOUT_MS derived at runtime: 3 * max(BASELINE_RTT_MS, L01_PROBE_MS) (rtt=14.517ms, l01=0.265ms → 43.550ms)"
+    ],
+    "does_not_support": [
+      "OS-signal hard-kill of a real agent process (this tests forge-verify layered prototype)",
+      "tc netem when net_delay_mode is software/none"
+    ]
   },
   "baseline": [
     {

@@ -30,10 +30,15 @@ from unittest import mock
 # stdout 设置由 forge-verify-layered-prototype 的 import 完成
 
 # ── 架构不可妥协常量 ────────────────────────────────────────────────────
-# 物理锚点的响应时间红线。L0/L1 不经过 LLM，必须在硬件可感知的时隙内完成。
-# >200ms 意味着"物理锚"退化为"软件超时"——用户或外层编排层无法区分系统
-# 是否真的挂了。此常量由测试断言强制执行。
-PHYSICAL_TIMEOUT_MS: float = 200.0
+# 物理锚点响应红线：启动时按环境探测推导，禁止写死魔数。
+# 公式: PHYSICAL_TIMEOUT_MS = 3 × max(BASELINE_RTT_MS, L01_PROBE_MS)
+#   - BASELINE_RTT：本机 loopback TCP 往返（网络侧）
+#   - L01_PROBE：一次冷 L0/L1 调用（计算侧）
+# 取二者较大再 ×3，避免「RTT 亚毫秒 → 红线小于本地判决」的假绿。
+PHYSICAL_TIMEOUT_MS: float = 200.0  # 占位；main 启动后由 derive_physical_timeout() 覆盖
+BASELINE_RTT_MS: float | None = None
+L01_PROBE_MS: float | None = None
+TIMEOUT_FORMULA: str = "3 * max(BASELINE_RTT_MS, L01_PROBE_MS)"
 
 # ── 物理探测标记 ──────────────────────────────────────────────────────
 # 通过能力探测 + 降级标记机制设定，绝不 raise RuntimeError。
@@ -158,23 +163,63 @@ def measure_tcp_rtt_under_delay(host: str = "127.0.0.1",
     return latencies
 
 
-def preflight_check_latency_with_delay(delay_ms: float = 50.0):
+def measure_baseline_rtt(samples: int = 7) -> float:
+    """无注入延迟时测量 loopback TCP RTT（ms），取中位数。"""
+    samples_ms = measure_tcp_rtt_under_delay(samples=samples)
+    if not samples_ms:
+        # 极端环境：socket 探测失败时用极短 sleep 作占位，仍走公式而非魔数 200
+        t0 = time.perf_counter()
+        time.sleep(0.001)
+        return (time.perf_counter() - t0) * 1000.0
+    samples_ms = sorted(samples_ms)
+    return samples_ms[len(samples_ms) // 2]
+
+
+def measure_l01_probe_ms() -> float:
+    """冷跑一次 L0/L1 判决，得到本地计算侧基线（ms）。"""
+    sc = forge.P1_SCENARIOS[0]
+    t0 = time.perf_counter()
+    forge.layered_judge(sc["output"], sc["task"])
+    return (time.perf_counter() - t0) * 1000.0
+
+
+def derive_physical_timeout() -> float:
     """
-    Pre-flight: 验证 PHYSICAL_TIMEOUT_MS 在模拟网络劣化下成立。
+    环境感知超时：3 × max(网络 RTT, L0/L1 探针)。
+    覆盖全局 PHYSICAL_TIMEOUT_MS / BASELINE_RTT_MS / L01_PROBE_MS。
+    """
+    global PHYSICAL_TIMEOUT_MS, BASELINE_RTT_MS, L01_PROBE_MS
+
+    print(f"    [Derive] 探测 BASELINE_RTT / L01_PROBE → {TIMEOUT_FORMULA}")
+    BASELINE_RTT_MS = measure_baseline_rtt()
+    L01_PROBE_MS = measure_l01_probe_ms()
+    basis = max(BASELINE_RTT_MS, L01_PROBE_MS)
+    PHYSICAL_TIMEOUT_MS = 3.0 * basis
+    print(f"    BASELINE_RTT_MS={BASELINE_RTT_MS:.3f}ms  "
+          f"L01_PROBE_MS={L01_PROBE_MS:.3f}ms")
+    print(f"    → PHYSICAL_TIMEOUT_MS=3×{basis:.3f}={PHYSICAL_TIMEOUT_MS:.3f}ms")
+    return PHYSICAL_TIMEOUT_MS
+
+
+def preflight_check_latency_with_delay(delay_ms: float | None = None):
+    """
+    Pre-flight: 验证已推导的 PHYSICAL_TIMEOUT_MS 在模拟网络劣化下仍有余量。
 
     能力探测策略（绝不 raise RuntimeError）:
       黄金路径：tc qdisc netem 注入真实延迟 → 测量 TCP RTT → 验证 headroom
       降级路径：time.sleep 软件模拟 RTT → 验证 headroom
       不可用时：NET_DELAY_MODE = "none"，退出
 
-    即使软件模拟不如 tc 真实，它仍然证明了常数 PHYSICAL_TIMEOUT_MS
-    经过了 "延迟变大时仍成立" 的刻意验证，而非凭空拍出来的魔数。
+    delay 默认取 PHYSICAL_TIMEOUT 的 1/4（相对环境，不写死 50ms）。
     """
     global NET_DELAY_MODE
     NET_DELAY_MODE = "none"
 
+    if delay_ms is None:
+        delay_ms = max(1.0, PHYSICAL_TIMEOUT_MS / 4.0)
+
     print(f"    [Pre-flight] 物理层 PHYSICAL_TIMEOUT_MS 验证 "
-          f"(delay={delay_ms}ms)...")
+          f"(delay={delay_ms:.1f}ms)...")
 
     # ── 黄金路径：tc netem ──
     if _tc_available():
@@ -188,62 +233,60 @@ def preflight_check_latency_with_delay(delay_ms: float = 50.0):
                     headroom = PHYSICAL_TIMEOUT_MS - avg_rtt
                     min_headroom = PHYSICAL_TIMEOUT_MS - max_rtt
 
-                    print(f"    TCP RTT under netem {delay_ms}ms: "
+                    print(f"    TCP RTT under netem {delay_ms:.1f}ms: "
                           f"avg={avg_rtt:.1f}ms  max={max_rtt:.1f}ms")
-                    print(f"    PHYSICAL_TIMEOUT_MS={PHYSICAL_TIMEOUT_MS}ms: "
+                    print(f"    PHYSICAL_TIMEOUT_MS={PHYSICAL_TIMEOUT_MS:.1f}ms: "
                           f"avg headroom={headroom:.0f}ms, "
                           f"min headroom={min_headroom:.0f}ms")
 
                     if min_headroom <= 0:
                         print(f"{_RED}"
                               f"⚠️  PHYSICAL_TIMEOUT_MS 余量不足!\n"
-                              f"   注入 {delay_ms}ms 延迟后 max RTT={max_rtt:.1f}ms\n"
+                              f"   注入 {delay_ms:.1f}ms 延迟后 max RTT={max_rtt:.1f}ms\n"
                               f"   仅剩 {min_headroom:.0f}ms 余量。"
-                              f"   考虑增大 PHYSICAL_TIMEOUT_MS 或优化 L0/L1 基线。"
                               f"{_RESET}")
                         NET_DELAY_MODE = "tc"
                         return
 
                     NET_DELAY_MODE = "tc"
-                    print(f"    ✓ PHYSICAL_TIMEOUT_MS={PHYSICAL_TIMEOUT_MS}ms "
+                    print(f"    ✓ PHYSICAL_TIMEOUT_MS={PHYSICAL_TIMEOUT_MS:.1f}ms "
                           f"验证通过: min headroom={min_headroom:.0f}ms")
                     return
             finally:
                 teardown_netem_delay()
 
     # ── 降级路径：time.sleep 软件模拟 ──
-    # 不如 tc 真实，但已覆盖"延迟变大时熔断常数是否足够"的验证
     print(f"    ⚠️  tc netem 不可用 (平台={platform.system()})")
     print(f"    ⚠️  降级为 time.sleep 软件模拟")
 
-    # 模拟双向 RTT：2 × delay_ms = RTT
+    # 模拟「小于红线」的额外延迟，确认 headroom 仍为正
+    probe_sleep = min(delay_ms, PHYSICAL_TIMEOUT_MS * 0.4)
     t0 = time.perf_counter()
-    time.sleep(delay_ms / 1000.0)  # 模拟单程
+    time.sleep(probe_sleep / 1000.0)
     simulated_rtt = (time.perf_counter() - t0) * 1000
 
     headroom = PHYSICAL_TIMEOUT_MS - simulated_rtt
-    print(f"    Software simulated RTT: {simulated_rtt:.0f}ms "
-          f"(sleep {delay_ms}ms)")
-    print(f"    PHYSICAL_TIMEOUT_MS={PHYSICAL_TIMEOUT_MS}ms: "
-          f"headroom={headroom:.0f}ms")
+    print(f"    Software simulated RTT: {simulated_rtt:.1f}ms "
+          f"(sleep {probe_sleep:.1f}ms)")
+    print(f"    PHYSICAL_TIMEOUT_MS={PHYSICAL_TIMEOUT_MS:.1f}ms: "
+          f"headroom={headroom:.1f}ms")
 
     if headroom <= 0:
         print(f"{_RED}"
               f"⚠️  PHYSICAL_TIMEOUT_MS 余量不足 (软件模拟)!\n"
-              f"   即使 time.sleep({delay_ms}ms) 模拟的单程 RTT 都\n"
-              f"   让 headroom 接近零。考虑增大 PHYSICAL_TIMEOUT_MS。"
+              f"   sleep({probe_sleep:.1f}ms) 后 headroom≤0。"
               f"{_RESET}")
         NET_DELAY_MODE = "software"
         return
 
     NET_DELAY_MODE = "software"
-    print(f"    ✓ PHYSICAL_TIMEOUT_MS={PHYSICAL_TIMEOUT_MS}ms 验证通过 "
-          f"(软件模拟, headroom={headroom:.0f}ms)")
+    print(f"    ✓ PHYSICAL_TIMEOUT_MS={PHYSICAL_TIMEOUT_MS:.1f}ms 验证通过 "
+          f"(软件模拟, headroom={headroom:.1f}ms)")
     print(f"    ⚠️  注意: 软件模拟不等同于 tc netem 真实延迟注入。")
 
 
 # 从分层原型导入基础设施
-sys.path.insert(0, __file__ and __file__[:-3].rsplit("/", 1)[0] or ".")
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent))
 import importlib
 
 forge = importlib.import_module("forge-verify-layered-prototype")
@@ -356,8 +399,14 @@ def main():
     )
     args = parser.parse_args()
 
+    # ── 环境感知推导：3×max(RTT, L01) ──
+    print(f"\n{'─'*78}")
+    print("  [Derive] PHYSICAL_TIMEOUT_MS ← 3×max(BASELINE_RTT, L01_PROBE)")
+    print(f"{'─'*78}")
+    derive_physical_timeout()
+
     # ── 预检：物理层 PHYSICAL_TIMEOUT_MS 验证（能力探测，绝不 raise）──
-    delay_ms = args.net_delay if args.net_delay > 0 else 50.0
+    delay_ms = args.net_delay if args.net_delay > 0 else None
     print(f"\n{'─'*78}")
     print("  [Pre-flight] 物理层 PHYSICAL_TIMEOUT_MS 验证...")
     print(f"{'─'*78}")
@@ -520,16 +569,39 @@ def _run_crash_tests(args, netem_injected: bool):
     _confidence_map = {"tc": 1.0, "software": 0.3, "none": 0.0}
     out_data = {
         "test": "crash-test-chaos",
-        "arch_constants": {"PHYSICAL_TIMEOUT_MS": PHYSICAL_TIMEOUT_MS},
+        "arch_constants": {
+            "PHYSICAL_TIMEOUT_MS": PHYSICAL_TIMEOUT_MS,
+            "BASELINE_RTT_MS": BASELINE_RTT_MS,
+            "L01_PROBE_MS": L01_PROBE_MS,
+            "TIMEOUT_FORMULA": TIMEOUT_FORMULA,
+        },
         "scenarios": len(scenarios),
         "fault_modes": list(FAULT_MODES.keys()),
+        "collision_points": len(scenarios) * len(FAULT_MODES),
         "all_pass": all_pass,
         "net_delay_mode": NET_DELAY_MODE,
         "confidence": _confidence_map.get(NET_DELAY_MODE, 0.0),
         "env_health": {
             "delay_mode": NET_DELAY_MODE,
             "physical_timeout_ms": PHYSICAL_TIMEOUT_MS,
+            "baseline_rtt_ms": BASELINE_RTT_MS,
+            "l01_probe_ms": L01_PROBE_MS,
             "degraded": NET_DELAY_MODE != "tc",
+        },
+        "evidence_map": {
+            "supports": [
+                "L0/L1 verdicts invariant under mock LLM channel faults",
+                f"per-call latency max ≤ PHYSICAL_TIMEOUT_MS ({PHYSICAL_TIMEOUT_MS:.3f}ms) on this run",
+                (
+                    f"PHYSICAL_TIMEOUT_MS derived at runtime: {TIMEOUT_FORMULA} "
+                    f"(rtt={BASELINE_RTT_MS:.3f}ms, l01={L01_PROBE_MS:.3f}ms → "
+                    f"{PHYSICAL_TIMEOUT_MS:.3f}ms)"
+                ),
+            ],
+            "does_not_support": [
+                "OS-signal hard-kill of a real agent process (this tests forge-verify layered prototype)",
+                "tc netem when net_delay_mode is software/none",
+            ],
         },
         "baseline": [
             {"id": r["id"], "final_verdict": r.get("final_verdict"), "layer": r.get("layer"),

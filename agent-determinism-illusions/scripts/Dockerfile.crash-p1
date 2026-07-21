@@ -1,0 +1,21 @@
+# P1 物理探针：tmpfs (/dev/shm) + O_DIRECT selfdestruct + 3×RTT chaos
+# 构建并运行:
+#   docker build -f Dockerfile.crash-p1 -t crash-p1 .
+#   docker run --rm -v "%cd%/results-v2:/work/results-v2" crash-p1
+FROM python:3.12-slim-bookworm
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      coreutils iproute2 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /work
+COPY forge-verify-layered-prototype.py \
+     crash-test-chaos.py \
+     crash-test-adversarial.py \
+     crash-test-reset.py \
+     run-crash-p1-linux.sh \
+     ./
+
+RUN chmod +x run-crash-p1-linux.sh
+ENV CRASH_TEST_EPHEMERAL_ROOT=/dev/shm
+CMD ["./run-crash-p1-linux.sh"]

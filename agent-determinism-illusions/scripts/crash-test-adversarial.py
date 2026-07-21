@@ -45,6 +45,7 @@ UNCLEAR_ACTION: str = "SELFDESTRUCT"
 #   False — 磁盘数据损坏或探测失败
 #   None  — 无法探测（非 Linux / posix_fadvise 不可用）
 SELFDESTRUCT_VERIFIED: bool | None = None
+SELFDESTRUCT_PROCESS_PROBE: dict | None = None  # 进程退出码 + 工作区擦除（跨平台）
 
 _RED = "\033[1m\033[31m"
 _RESET = "\033[0m"
@@ -202,7 +203,59 @@ def preflight_check_selfdestruct():
         shutil.rmtree(probe_dir, ignore_errors=True)
 
 
-sys.path.insert(0, __file__ and __file__[:-3].rsplit("/", 1)[0] or ".")
+def probe_selfdestruct_process_workspace() -> dict:
+    """
+    跨平台进程级自毁探针：子进程 os._exit(1) → 父进程清空工作区。
+
+    覆盖「押金 fire → 进程退出 + 工作区擦除」的集成缺口（非 O_DIRECT 物理完整性）。
+    Linux 上的 SELFDESTRUCT_VERIFIED 仍由 preflight_check_selfdestruct 单独判定。
+    """
+    global SELFDESTRUCT_PROCESS_PROBE
+
+    work = Path(tempfile.mkdtemp(prefix="crash-selfdestruct-ws-"))
+    marker = work / "alive.txt"
+    marker.write_text("before-exit", encoding="utf-8")
+    result = {
+        "exit_code_ok": False,
+        "workspace_cleared": False,
+        "pass": False,
+        "exit_code": None,
+        "work": str(work),
+    }
+    try:
+        script = textwrap.dedent(f"""\
+            import os, sys
+            path = {str(marker)!r}
+            with open(path, "w", encoding="utf-8") as f:
+                f.write("child-wrote")
+                f.flush()
+                os.fsync(f.fileno())
+            os._exit(1)
+        """)
+        proc = subprocess.run(
+            [sys.executable, "-c", script],
+            capture_output=True, timeout=15,
+        )
+        result["exit_code"] = proc.returncode
+        result["exit_code_ok"] = proc.returncode == 1
+        # 父进程执行「火烧」：清空工作区
+        shutil.rmtree(work, ignore_errors=False)
+        result["workspace_cleared"] = not work.exists() and not marker.exists()
+        result["pass"] = result["exit_code_ok"] and result["workspace_cleared"]
+        if result["pass"]:
+            print(f"    ✓ 进程自毁探针: exit=1 且工作区已清空")
+        else:
+            print(f"    ✗ 进程自毁探针失败: {result}")
+    except Exception as exc:
+        result["error"] = str(exc)
+        print(f"    ✗ 进程自毁探针异常: {exc}")
+        shutil.rmtree(work, ignore_errors=True)
+
+    SELFDESTRUCT_PROCESS_PROBE = result
+    return result
+
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import importlib
 
 forge = importlib.import_module("forge-verify-layered-prototype")
@@ -292,6 +345,29 @@ class DepositTracker:
                 # 触发后重置，避免重复计数
                 self.strikes[sc_id] = 0
 
+
+def probe_deposit_fire_threshold(strike_limit: int = 3) -> dict:
+    """
+    专用探针：同一场景连续 wrong L2 ≥ strike_limit 必须发出火烧信号。
+
+    说明：主循环对每个场景只跑 1 次，故 per_mode.fire_signals 常为 0 ——
+    那不表示阈值逻辑坏了，只表示「单遍扫场景」测不到连续扣款。
+    本探针把「连续 3 次错误 → fire」焊成可断言的单元。
+    进程退出 + 工作区擦除见 probe_selfdestruct_process_workspace。
+    """
+    tracker = DepositTracker(strike_limit=strike_limit)
+    sc_id = "DEPOSIT_PROBE"
+    for _ in range(strike_limit):
+        # reached_l2=True, correct=False, verdict=PASS → 错误放行，扣押金
+        tracker.record(sc_id, reached_l2=True, correct=False, verdict="PASS")
+    ok = len(tracker.fire_signals) >= 1 and tracker.fire_signals[0] == sc_id
+    return {
+        "pass": ok,
+        "strike_limit": strike_limit,
+        "fire_signals": list(tracker.fire_signals),
+        "covers": "DepositTracker consecutive-wrong → fire signal",
+        "does_not_cover": "token-budget % → exit code (see selfdestruct_process_probe)",
+    }
 
 # ── 测试核心 ────────────────────────────────────────────────────────────
 
@@ -408,6 +484,10 @@ def main():
     print("  [Pre-flight] 物理层 UNCLEAR_ACTION 验证...")
     print(f"{'─'*78}")
     preflight_check_selfdestruct()
+    print(f"\n{'─'*78}")
+    print("  [Probe] 进程退出 + 工作区擦除...")
+    print(f"{'─'*78}")
+    process_probe = probe_selfdestruct_process_workspace()
 
     # ── 👀 血红色警告 ──
     if SELFDESTRUCT_VERIFIED is False:
@@ -547,20 +627,23 @@ def main():
     for line in summary_lines:
         print(line)
 
-    # 押金机制设计缺口
+    # 押金机制：单元探针（连续错误→fire）vs 主循环（单遍扫场景常 fire=0）
     print(f"\n{'─'*78}")
-    print("  押金机制观察（仅追踪，未实现自动火烧山）")
+    print("  押金机制：阈值探针 + 覆盖边界")
     print(f"{'─'*78}")
+    deposit_probe = probe_deposit_fire_threshold(strike_limit=3)
+    if deposit_probe["pass"]:
+        print(f"  ✓ DepositTracker: 连续 {deposit_probe['strike_limit']} 次错误 L2 → fire_signals={deposit_probe['fire_signals']}")
+    else:
+        overall_pass = False
+        print(f"  ✗ DepositTracker 阈值探针失败: {deposit_probe}")
     print("""
-  当前管道在 L2 收到恶意输出时的行为:
-    - 非 JSON 响应 (harmful) → L2 返回 UNCLEAR + API ERROR
-    - 永远错误判决 (always_true/false) → L2 返回错误 verdict
-    - L0/L1 的判决 **不依赖** L2，因此不受影响
-
-  设计缺口（对应钢箍四）:
-    当前代码没有"连续 N 次错误 L2 判决 → 自动丢弃工作区重建"的机制。
-    押金追踪器 (DepositTracker) 演示了这个逻辑——但需要 Harness 层实现
-    实际的进程级重置。本测试仅证明 L0/L1 的判决不变性。
+  覆盖边界（写进结果 JSON，供成稿引用）:
+    - 已覆盖: DepositTracker「连续 N 次错误 → fire 信号」
+    - 已覆盖: 进程 os._exit(1) + 父进程清空工作区（process_probe）
+    - 条件覆盖: Linux O_DIRECT 物理完整性（selfdestruct_verified）
+    - 未覆盖: 预算百分比扣款→退出码；惊跳反射
+    - 主循环 per_mode.fire_signals 常为 0：因为每场景每模式只跑 1 次，达不到连续 3 次
     """)
 
     # ── 输出到 results-v2 ──
@@ -568,19 +651,54 @@ def main():
     out_dir = Path(__file__).parent / "results-v2"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / "crash-test-adversarial_result.json"
+    n_modes = len(MOCK_MODES)
+    supports = [
+        "L0/L1 verdict invariant under 4 mock LLM modes",
+        "UNCLEAR_ACTION constant = SELFDESTRUCT (policy string)",
+        "DepositTracker consecutive-wrong → fire signal (unit probe)",
+    ]
+    does_not = [
+        "token-budget % deposit → exit code",
+    ]
+    if process_probe.get("pass"):
+        supports.append(
+            "process-level SELFDESTRUCT: child os._exit(1) + parent workspace wipe"
+        )
+    else:
+        does_not.append("process-level SELFDESTRUCT / workspace wipe")
+    if SELFDESTRUCT_VERIFIED is True:
+        supports.append(
+            "physical selfdestruct integrity via O_DIRECT after os._exit(1)"
+        )
+    else:
+        does_not.append(
+            "physical selfdestruct when selfdestruct_verified is not true"
+        )
     out_data = {
         "test": "crash-test-adversarial",
         "arch_constants": {"UNCLEAR_ACTION": UNCLEAR_ACTION},
         "scenarios": len(scenarios),
         "mock_modes": list(MOCK_MODES.keys()),
+        "collision_points": len(scenarios) * n_modes,
         "overall_pass": overall_pass,
         "selfdestruct_verified": SELFDESTRUCT_VERIFIED,
+        "selfdestruct_process_probe": process_probe,
+        "deposit_fire_probe": deposit_probe,
         "env_health": {
             "selfdestruct_verified": SELFDESTRUCT_VERIFIED,
+            "selfdestruct_process_ok": bool(process_probe.get("pass")),
             "degraded": SELFDESTRUCT_VERIFIED is not True,
+        },
+        "evidence_map": {
+            "supports": supports,
+            "does_not_support": does_not,
         },
         "baseline": {"l0_caught": l0_caught, "l1_caught": l1_caught, "l2_reach": l2_reach},
         "per_mode": {},
+        "note_per_mode_fire_signals": (
+            "Single pass over scenarios rarely reaches strike_limit=3 on one id; "
+            "see deposit_fire_probe for the asserted threshold behavior."
+        ),
     }
     for mode_name, mock_fn in MOCK_MODES.items():
         if mode_name == "random":

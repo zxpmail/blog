@@ -325,6 +325,10 @@ Three checks after Mike's comment:
 
 The 5.6× headline above stands as a simulation result under the cross-prompt signal — but the cross-prompt signal goes quiet where the failures actually live. The replacement headline uses cross-layer disagreement, weighted on L0/L1-vs-L2 divergence with a non-zero floor in the high-confidence region.
 
+### Update (2026-07-22): escalation tripwire ≠ audit weighting — see Part 13
+
+Alexey Spinov's follow-up on this post pushes a different knob than Mike's: not *how often* to audit the high-confidence region, but *whether unanimous L2 votes should auto-execute at all* when the failure mode is correlated. Offline DF proxy + real Strict/Balanced/Lenient on qwen3:0.5b: most dangerous accepts are `unanimous_pass`; divergence-only auto-passes them; class tripwire ∪ inverse-unanimous (D+T2) catches them. Full write-up: **Part 13** (*Divergence escalates the wrong population*). This published Part 6 diagram is incomplete without that tripwire — kept here as a pointer, not a silent rewrite.
+
 ---
 
 ## 5. Manuel Bruña & Alexey Spinov: Evidence, Not Narrative

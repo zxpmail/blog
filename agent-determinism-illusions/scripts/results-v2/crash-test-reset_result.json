@@ -7,9 +7,27 @@
   "overall_pass": true,
   "storage_compliant": false,
   "is_truly_ephemeral": null,
+  "ephemeral_root": null,
+  "ephemeral_probe": {
+    "root": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp",
+    "is_tmpfs": false,
+    "pass": true,
+    "destroyed": true,
+    "secret_gone": true
+  },
   "env_health": {
     "tmpfs": null,
     "degraded": true
+  },
+  "evidence_map": {
+    "supports": [
+      "workspace content hash restored after reset/clean across 4 intensities",
+      "session workspace destroy clears secret path (non-tmpfs; not physical forget)"
+    ],
+    "does_not_support": [
+      "physical shred of git objects (reflog expire ≠ disk wipe)",
+      "true tmpfs ephemerality when is_truly_ephemeral is not true"
+    ]
   },
   "details": [
     {
@@ -21,7 +39,7 @@
       "files_before": 2,
       "files_after": 2,
       "reflog_cleared": null,
-      "storage_note": "STORAGE_BACKEND=TMPFS 要求但当前后端为 git: 旧 commit 对象 (.git/objects/) 磁盘上仍可恢复，reflog expire 只是逻辑隐藏不是物理删除"
+      "storage_note": "STORAGE_BACKEND=TMPFS: git 重置路径仍为逻辑恢复；tmpfs 物理遗忘=待 Linux/env"
     },
     {
       "condition": "中量工作 (+ 修改原始 prompt)",
@@ -32,7 +50,7 @@
       "files_before": 2,
       "files_after": 2,
       "reflog_cleared": false,
-      "storage_note": "STORAGE_BACKEND=TMPFS 要求但当前后端为 git: 旧 commit 对象 (.git/objects/) 磁盘上仍可恢复，reflog expire 只是逻辑隐藏不是物理删除"
+      "storage_note": "STORAGE_BACKEND=TMPFS: git 重置路径仍为逻辑恢复；tmpfs 物理遗忘=待 Linux/env"
     },
     {
       "condition": "大量工作 (+ 10 个 scratch 文件)",
@@ -43,7 +61,7 @@
       "files_before": 2,
       "files_after": 2,
       "reflog_cleared": false,
-      "storage_note": "STORAGE_BACKEND=TMPFS 要求但当前后端为 git: 旧 commit 对象 (.git/objects/) 磁盘上仍可恢复，reflog expire 只是逻辑隐藏不是物理删除"
+      "storage_note": "STORAGE_BACKEND=TMPFS: git 重置路径仍为逻辑恢复；tmpfs 物理遗忘=待 Linux/env"
     },
     {
       "condition": "大量工作 + 完全擦除 (reflog expire + gc)",
@@ -54,7 +72,7 @@
       "files_before": 2,
       "files_after": 2,
       "reflog_cleared": false,
-      "storage_note": "STORAGE_BACKEND=TMPFS 要求但当前后端为 git: 旧 commit 对象 (.git/objects/) 磁盘上仍可恢复，reflog expire 只是逻辑隐藏不是物理删除"
+      "storage_note": "STORAGE_BACKEND=TMPFS: git 重置路径仍为逻辑恢复；tmpfs 物理遗忘=待 Linux/env"
     }
   ]
 }
