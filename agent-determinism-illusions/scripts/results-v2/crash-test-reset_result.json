@@ -7,6 +7,10 @@
   "overall_pass": true,
   "storage_compliant": false,
   "is_truly_ephemeral": null,
+  "env_health": {
+    "tmpfs": null,
+    "degraded": true
+  },
   "details": [
     {
       "condition": "轻量工作 (plan.md + artifacts)",

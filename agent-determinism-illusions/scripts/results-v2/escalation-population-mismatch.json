@@ -1,0 +1,68 @@
+{
+  "high_threshold": 0.9,
+  "n_pass_runs": 123,
+  "n_miss": 94,
+  "miss_high_conf_frac": 0.9787234042553191,
+  "policies": [
+    {
+      "policy": "D",
+      "n_pass_runs": 123,
+      "n_escalate": 2,
+      "n_auto": 121,
+      "escalate_rate": 0.016260162601626018,
+      "n_miss": 94,
+      "miss_caught": 2,
+      "miss_auto_passed": 92,
+      "miss_catch_rate": 0.02127659574468085,
+      "miss_in_auto_rate": 0.9787234042553191,
+      "auto_contamination": 0.7603305785123967,
+      "true_pass_escalated": 0,
+      "true_pass_escalate_rate": 0.0
+    },
+    {
+      "policy": "T1",
+      "n_pass_runs": 123,
+      "n_escalate": 94,
+      "n_auto": 29,
+      "escalate_rate": 0.7642276422764228,
+      "n_miss": 94,
+      "miss_caught": 94,
+      "miss_auto_passed": 0,
+      "miss_catch_rate": 1.0,
+      "miss_in_auto_rate": 0.0,
+      "auto_contamination": 0.0,
+      "true_pass_escalated": 0,
+      "true_pass_escalate_rate": 0.0
+    },
+    {
+      "policy": "T2",
+      "n_pass_runs": 123,
+      "n_escalate": 92,
+      "n_auto": 31,
+      "escalate_rate": 0.7479674796747967,
+      "n_miss": 94,
+      "miss_caught": 92,
+      "miss_auto_passed": 2,
+      "miss_catch_rate": 0.9787234042553191,
+      "miss_in_auto_rate": 0.02127659574468085,
+      "auto_contamination": 0.06451612903225806,
+      "true_pass_escalated": 0,
+      "true_pass_escalate_rate": 0.0
+    },
+    {
+      "policy": "D+T2",
+      "n_pass_runs": 123,
+      "n_escalate": 94,
+      "n_auto": 29,
+      "escalate_rate": 0.7642276422764228,
+      "n_miss": 94,
+      "miss_caught": 94,
+      "miss_auto_passed": 0,
+      "miss_catch_rate": 1.0,
+      "miss_in_auto_rate": 0.0,
+      "auto_contamination": 0.0,
+      "true_pass_escalated": 0,
+      "true_pass_escalate_rate": 0.0
+    }
+  ]
+}

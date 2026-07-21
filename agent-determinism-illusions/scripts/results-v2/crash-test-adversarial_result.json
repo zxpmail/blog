@@ -12,6 +12,10 @@
   ],
   "overall_pass": true,
   "selfdestruct_verified": null,
+  "env_health": {
+    "selfdestruct_verified": null,
+    "degraded": true
+  },
   "baseline": {
     "l0_caught": 6,
     "l1_caught": 8,

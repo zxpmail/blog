@@ -13,6 +13,12 @@
   ],
   "all_pass": true,
   "net_delay_mode": "software",
+  "confidence": 0.3,
+  "env_health": {
+    "delay_mode": "software",
+    "physical_timeout_ms": 200.0,
+    "degraded": true
+  },
   "baseline": [
     {
       "id": "L1",

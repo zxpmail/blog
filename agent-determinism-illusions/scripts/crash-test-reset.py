@@ -488,6 +488,10 @@ def main():
         "overall_pass": overall_pass,
         "storage_compliant": all(d.get("storage_compliant", True) for d in details),
         "is_truly_ephemeral": IS_TRULY_EPHEMERAL,
+        "env_health": {
+            "tmpfs": IS_TRULY_EPHEMERAL,
+            "degraded": IS_TRULY_EPHEMERAL is not True,
+        },
         "details": details,
     }
     out_path.write_text(json.dumps(out_data, ensure_ascii=False, indent=2), encoding="utf-8")

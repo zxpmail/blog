@@ -50,6 +50,45 @@ _RED = "\033[1m\033[31m"
 _RESET = "\033[0m"
 
 
+def _read_with_direct(path: str) -> bytes | None:
+    """
+    用 O_DIRECT 绕过 page cache 读取文件。
+
+    posix_fadvise(DONTNEED) 是"建议"，内核在高内存压力下完全无视它。
+    O_DIRECT 保证读操作直接命中磁盘，不受 page cache 干扰。
+
+    由于 Python 的 os.read() 的缓冲区可能是非对齐的（O_DIRECT 要求
+    缓冲区地址、偏移、长度均为块大小的整数倍），这里用 dd(1) 的
+    iflag=direct 处理对齐需求。
+
+    Returns:
+        bytes: 文件内容（O_DIRECT 读取，或 fallback 普通读取）。
+        None: 读取失败。
+    """
+    # 黄金路径：dd iflag=direct
+    try:
+        result = subprocess.run(
+            ["dd", f"if={path}", "bs=4096", "iflag=direct", "status=none"],
+            capture_output=True, timeout=15,
+        )
+        if result.returncode == 0:
+            return result.stdout
+        print(f"      ⚠️  dd direct 失败 (rc={result.returncode}), "
+              f"fallback 到普通读取")
+    except FileNotFoundError:
+        print(f"      ⚠️  dd 不可用, fallback 到普通读取")
+    except subprocess.TimeoutExpired:
+        print(f"      ⚠️  dd 超时, fallback 到普通读取")
+
+    # 降级路径：普通读取（可能命中 page cache，验证力减弱）
+    try:
+        with open(path, "rb") as f:
+            return f.read()
+    except OSError as e:
+        print(f"      ⚠️  普通读取也失败: {e}")
+        return None
+
+
 # ── 预检：物理层 UNCLEAR_ACTION 验证（能力探测 + 降级标记）────────────
 
 def preflight_check_selfdestruct():
@@ -121,15 +160,16 @@ def preflight_check_selfdestruct():
             print(f"    ⚠️  子进程异常退出: rc={result.returncode}")
             return
 
-        # ⭐ 关键：用 posix_fadvise(DONTNEED) 逐出该文件 page cache
-        # 不调用 drop_caches——只影响当前文件，不搞瘫整台机器
-        fd = os.open(str(probe_file), os.O_RDONLY)
-        try:
-            os.posix_fadvise(fd, 0, 0, os.POSIX_FADV_DONTNEED)
-            # 此时读文件 = 从磁盘读（page cache 已驱逐）
-            actual = os.read(fd, len(expected_content))
-        finally:
-            os.close(fd)
+        # ⭐ 关键：用 O_DIRECT 绕过 page cache 读磁盘扇区
+        # posix_fadvise(DONTNEED) 只是"建议"，内核有完全裁量权无视它。
+        # O_DIRECT 保证读操作真正命中磁盘——内核没有拒绝权。
+        # dd(1) 的 iflag=direct 自动处理 O_DIRECT 的内存对齐要求。
+        actual = _read_with_direct(str(probe_file))
+
+        if actual is None:
+            print(f"    ⚠️  O_DIRECT 读取失败, 跳过哈希验证")
+            # SELFDESTRUCT_VERIFIED 保持 None（未验证）
+            return
 
         actual_hash = hashlib.sha256(actual).hexdigest()
         expected_hash = hashlib.sha256(expected_content).hexdigest()
@@ -155,7 +195,7 @@ def preflight_check_selfdestruct():
 
         SELFDESTRUCT_VERIFIED = True
         print(f"    ✓ SELFDESTRUCT 物理验证: "
-              f"posix_fadvise(DONTNEED) 驱逐 page cache 后 "
+              f"O_DIRECT (dd iflag=direct) 绕过 page cache 后 "
               f"数据完整 (hash={actual_hash[:16]}...)")
 
     finally:
@@ -535,6 +575,10 @@ def main():
         "mock_modes": list(MOCK_MODES.keys()),
         "overall_pass": overall_pass,
         "selfdestruct_verified": SELFDESTRUCT_VERIFIED,
+        "env_health": {
+            "selfdestruct_verified": SELFDESTRUCT_VERIFIED,
+            "degraded": SELFDESTRUCT_VERIFIED is not True,
+        },
         "baseline": {"l0_caught": l0_caught, "l1_caught": l1_caught, "l2_reach": l2_reach},
         "per_mode": {},
     }

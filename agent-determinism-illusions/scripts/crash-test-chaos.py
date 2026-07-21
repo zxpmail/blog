@@ -516,6 +516,8 @@ def _run_crash_tests(args, netem_injected: bool):
     out_dir = Path(__file__).parent / "results-v2"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / "crash-test-chaos_result.json"
+    # 可信度: tc 注入=1.0, 软件模拟=0.3, 未验证=0.0
+    _confidence_map = {"tc": 1.0, "software": 0.3, "none": 0.0}
     out_data = {
         "test": "crash-test-chaos",
         "arch_constants": {"PHYSICAL_TIMEOUT_MS": PHYSICAL_TIMEOUT_MS},
@@ -523,6 +525,12 @@ def _run_crash_tests(args, netem_injected: bool):
         "fault_modes": list(FAULT_MODES.keys()),
         "all_pass": all_pass,
         "net_delay_mode": NET_DELAY_MODE,
+        "confidence": _confidence_map.get(NET_DELAY_MODE, 0.0),
+        "env_health": {
+            "delay_mode": NET_DELAY_MODE,
+            "physical_timeout_ms": PHYSICAL_TIMEOUT_MS,
+            "degraded": NET_DELAY_MODE != "tc",
+        },
         "baseline": [
             {"id": r["id"], "final_verdict": r.get("final_verdict"), "layer": r.get("layer"),
              "L0": r.get("L0"), "L1": r.get("L1")}
