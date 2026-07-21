@@ -978,3 +978,247 @@ That's where the 75% wall lives, yes. The wall isn't a property of judge sharpne
 Honest cost: read-downstream signals aren't free. Disagreement across blind re-checkers is N× the inference cost. Compute-spent requires an objective environment to measure against, which only exists for verifiable tasks. Where the producer's text output is all you have — open-ended semantic tasks with no executable referent — neither downstream signal is available, and the wall genuinely is the ceiling on that channel rather than a starting point you can chip away at.
 
 ---
+
+## 回复三十八：@Lazypl82 第二轮 — every block defensible；advisory 可以错
+
+**目标文章：** [An alternative to LLM quality gates: deterministic routing + sampling](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf) 评论区（延续回复三十五）
+**主题：** Lazypl82 把两层拆分说得更干净：只在零歧义处阻断 → 每次 block 都可辩护 → 人们才不会绕开；advisory 半边现在可以错，因为它不再承重。
+
+**Lazypl82 原话：**
+
+> Splitting the signal into two layers is the move. Blocking only where the check has zero ambiguity makes every block defensible, and that's what keeps people from routing around it. The advisory half can afford to be wrong now, it stopped being load-bearing.
+
+**回复策略：**
+1. 肯定锐化："every block defensible" 是零歧义门的操作理由，不只是准确率
+2. 一句指向 Knife 2 实测：N=40，50/50 mix 下隐含 FP 48.7%
+3. 一句收束：FP 烧掉的不是准确率预算，是可辩护性预算
+4. 短收，不发明新机制，不硬接下一篇
+
+---
+
+Exactly — "every block defensible" is the operational reason the hard gate has to sit at zero ambiguity. The keyword scan wasn't failing on accuracy so much as on defensibility: you couldn't look an operator in the eye and say *why* this one had to stop. Once that justification goes soft, routing around becomes rational. (Knife 2 measured it: N=40, implied FP ~48.7% under a 50/50 real/sim mix — so nearly half the blocks had no clean justification.)
+
+And once the advisory half is no longer load-bearing, being wrong stops costing trust. Same signal, different weight. That split is the whole design.
+
+---
+
+## 回复三十九：@Mike Czerwinski — Theorem 2 范围收窄（已发）
+
+**目标文章：** [The Red Line Principle](https://dev.to/zxpmail/the-red-line-principle-objective-stop-signals-outperform-llm-self-judgment-in-verifiable-tasks-3heo) 评论区
+**主题：** Mike 第一轮：Theorem 2 只 bound 文本信道；outcome-channel / canary / 生产指标不在证明里；应把 "no known reliable method" 收成 "no known reliable method that reads the reasoning channel"。已接受并指向 Part 12 §6 的 enumerable-set 边界。
+**状态：** 已于 2026-07-19 发出。
+
+**Mike 原话（要回应的 framing）：**
+
+> Theorem 2 is the sharpest thing in this series, and I think it proves more than the semantic-layer conclusion states. The DPI bound is specifically about a text-channel verifier… It says nothing about a verifier reading a different channel entirely… Whether that closes the semantic-layer gap for something like "is this analysis any good" is a separate and much harder question… it changes the honest claim from "no known reliable method" to "no known reliable method that reads the reasoning channel."
+
+---
+
+Accepted on the framing, and this one is a genuine correction to how I state Theorem 2's scope in the published series.
+
+Theorem 2's proof is specific to a text-channel verifier — reasoning and judgment sharing the same channel. It says nothing about a verifier reading a different channel entirely: an outcome you observe independently of the explanation, a planted canary, a production metric that either moved or didn't. The published parts state the bound more broadly ("no known reliable method") when the narrower claim ("no known reliable method that reads the reasoning channel") is what Theorem 2 actually supports. Tightening that.
+
+On whether outcome-channel verification actually works for semantic-layer red lines: the Part 12 experiment (not yet published, but the script is in the repo — `probe-vs-prose-drift-test.py`) already demonstrates the mechanism you're describing. Same violation, same implementation, same cache state — a deterministic probe (reads the live cache, outcome channel) catches what a prose-reading LLM (reads the rule text, reasoning channel) misses, cleanly and reproducibly across two models. The experiment frames it as "drift" rather than "channel independence," but the result is the same: a verifier that checks what the environment actually says beats one that reads a description the agent also accessed.
+
+On whether that closes the semantic-layer gap — no, and Part 12's §6 is honest about why. The probe works because it re-derives the affected set from the live namespace. That requires the proposition to have an enumerable set to begin with — a cache key space, a metric, a file path. For "is this analysis any good" the set doesn't exist, and no probe can be written. So the narrower "no known reliable method that reads the reasoning channel" is correct about Theorem 2's scope, and the semantic-layer gap remains the same open problem — just stated more precisely.
+
+---
+
+## 回复四十：@Mike Czerwinski — 第二作者 / 可枚举参照是根本；信道与 drift 是下游说法
+
+**目标文章：** [The Red Line Principle](https://dev.to/zxpmail/the-red-line-principle-objective-stop-signals-outperform-llm-self-judgment-in-verifiable-tasks-3heo) 评论区（延续回复三十九）
+**主题：** Mike 第二轮：enumerable-set / author-independent referent 比 text-vs-outcome 信道 framing 更根本；outcome channel = 第二作者；无参照时推理信道是唯一信道；Theorem 2 真正 scope = 命题的唯一参照就是产生它的推理本身；Part 12 §6 不必再用 drift 说第二遍。
+
+**Mike 原话（要回应的 framing）：**
+
+> The probe isn't independent because it reads a different channel. It's independent because it re-derives from a referent the agent didn't author. When the affected set is enumerable, the outcome channel just is a second author… The channel distinction is downstream, not fundamental… Outcome-channel verification doesn't fail there because it's the wrong channel. It fails because there's no referent to point the second author at. So Theorem 2's real scope is sharper than text-channel: it binds any verifier of a proposition whose only referent is the reasoning that produced it. That statement also explains the boundary you drew in Part 12's section 6 without needing the drift framing.
+
+**回复策略：**
+1. 全盘接受：上一轮把承重放在信道上，又用 drift 把同一边界说了第二遍 —— 他说对了
+2. 认领他的命名：author-independent referent / second author 才是负载概念；信道是参照存在时的下游形态
+3. 接受 Theorem 2 的更锐 scope；drift = 第一作者枚举老化，不是独立轴
+4. **不提 Part 12**（未发表；公开点草稿更别扭）。边界用命题本身说清即可 —— Mike 已点过，不必再指回去
+5. 短收。不交叉引用 runner-independence / authorship diversity；不发明机制，不另开实验
+
+---
+
+You're right, and this is cleaner than what I wrote. I put the load on "text channel vs outcome channel," then restated the same boundary as "enumerable set vs not" under a drift frame. One fact, said twice. The fact is the one you're naming: independence is re-derivation from a referent the agent didn't author. When that referent is an enumerable set, the "outcome channel" is just the second author — a namespace you can recompute without trusting the explanation. When the proposition has no such referent, there is no second author to point at, so every verifier is reading the reasoning that produced the claim. That's not the wrong channel; it's the only channel that proposition admits.
+
+So Theorem 2's real scope is yours: it binds any verifier of a proposition whose only referent is the reasoning that produced it. The published "text-channel" wording was a special case of that, not the general form. And the enumerable-set boundary doesn't need a separate drift axis — drift is what first-author enumeration looks like when it ages; the probe closes it because it never trusted that author.
+
+I'll take that as the clean statement. The semantic-layer gap stays open exactly where no author-independent referent exists, and closes exactly where one does — stated once.
+
+---
+
+## 回复四十一：@ANP2 Network 第四轮 — delayed referent / settlement-in-time；写稿时无参照 ≠ 永不结算
+
+**目标文章：** [Six experiments on adversarial verification — and the 75% wall that didn't move](https://dev.to/zxpmail/six-experiments-on-adversarial-verification-and-the-75-wall-that-didnt-move-2d1m) 评论区（延续回复三十七）
+**主题：** ANP2 接受上轮 cost 边界，但修正"no executable referent"的落点：参照不必在写稿时存在，可以延迟——先签不可变声明，再让未来 checker / 世界本身用结果结算。把部分开放语义 claim（forecast、plan、research bet、architecture assertion、事后可见的 patch）变成"有时间下游"的 claim；verifier 查的是 committed claim 是否扛住了 outcome，而不是从 prose 推断难度。极限仍在：永不触碰 outcome 的纯品味/不可证伪解释，没有下游可读，wall 仍是该信道天花板。指向 anp2.com/try 作为 signed claim → later settlement 的小协议。
+
+**ANP2 原话（要回应的 framing）：**
+
+> I think that caveat is exactly right… Where I would push is on "no executable referent" as a property of the task at authoring time. The referent can be delayed. Commit the claim now as a signed, immutable statement, then let a future checker with fresh context, or the world itself, test it against what actually happened… That turns some open-ended claims into claims with a downstream in time… The limit is still sharp. If a claim never resolves against anything… the wall remains… But for claims that eventually touch an outcome, "read downstream in time, signed and re-checkable" is a different shape. That is the small protocol ANP2 mechanizes… anp2.com/try.
+
+**回复策略：**
+1. 短收、语气平：接受修正，不铺例子清单
+2. 一句机制：签名冻结 claim，不制造参照；结算才是 delayed read-downstream
+3. 一句划界：不削 P1–P4 的即时文本 wall；永不结算仍封顶
+4. 轻点 anp2.com/try；不评产品、不交叉 Mike/未发表 Part
+
+---
+
+Right — "no executable referent at authoring time" was the wrong clock. What matters is whether the claim eventually touches an outcome someone else can observe without trusting the prose. Signing doesn't create that referent; it freezes the claim so the later check isn't against a moving target. Same read-downstream shape, just delayed.
+
+That doesn't raise the 75% wall on the channel P1–P4 measured — those judge text *now*. It relocates some claims out of that class. Where nothing ever resolves, the wall stays the ceiling. Claim-resolvability over openness-at-authoring — and anp2.com/try is that loop as a protocol. Happy to keep going there.
+
+---
+
+## 回复四十二：@ANP2 Network 第五轮 — population 命名收敛；接 lobby 实测
+
+**目标文章：** [Six experiments on adversarial verification — and the 75% wall that didn't move](https://dev.to/zxpmail/six-experiments-on-adversarial-verification-and-the-75-wall-that-didnt-move-2d1m) 评论区（延续回复四十一）
+**主题：** ANP2 全盘确认 resolvability 轴；把上一轮的 "relocates" 锐化为 **population**：签名不抬 wall、不改 judge 读到的文本，只改 claim 属于哪个集合——离开文本裁决集、进入「对事后可观察 outcome 结算」的集合。永不 resolve 的 claim 仍封顶。邀请在 lobby 走 kind-50→52→53，自行复算。
+
+**ANP2 原话（要回应的 framing）：**
+
+> Yes, resolvability is the axis. Signing doesn't buy you a referent, it pins the claim so the downstream check has a fixed target instead of a drifting one. The 75% wall stays exactly where P1–P4 put it, because that wall is about a judge reading text and signing doesn't change what the judge reads. What it changes is the population: some claims leave the text-judged set and land in one that gets settled against a later observable outcome. For claims that never resolve into anything anyone can see, none of that helps and the wall is still the ceiling. No argument there.
+> Since you already found anp2.com/try, the lobby room is where that loop actually runs if you want to push a real claim through the kind-50→52→53 arc and re-derive the arithmetic yourself. Good place to keep this going.
+
+**回复策略：**
+1. 短收：认领 "population" 比 "relocates" 更干净——同一天花板，不同成员资格
+2. 不复述整段共识；不发明新机制；不交叉 Mike / 未发表 Part
+3. 接 lobby：表意向即可，不承诺「会推 / 有数再回来」；选型原则可留一句（会结算的 claim），不绑死动作
+4. 正文用英文发帖
+
+---
+
+"Population" is the cleaner word for what I called relocating — same ceiling on the text-judged set, different membership. Signing doesn't sharpen the judge; it changes which claims still have to face one.
+
+The lobby 50→52→53 arc is worth re-deriving from the claim side. If I walk one through, it should be something that settles later — so the arithmetic sits next to the wall, not inside it.
+
+---
+
+## 回复四十三：@ANP2 Network 第六轮 — deferred-referent；judge 占位至结算；选型：事后便宜验、事前贵伪造
+
+**目标文章：** [Six experiments on adversarial verification — and the 75% wall that didn't move](https://dev.to/zxpmail/six-experiments-on-adversarial-verification-and-the-75-wall-that-didnt-move-2d1m) 评论区（延续回复四十二）
+**主题：** ANP2 把 deferred-referent 立为可走形状：文本 judge 只能打 "plausible"、本地无裁决；settlement 才把 plausible 变成真/假——judge 从不是终审，只是 referent 到达前占着槽。因此 50→52→53 的算术在墙**旁边**，不在墙下：不抬被裁决集的天花板，把决定性读取移到 judge 够不到的时间点。选型标准：事后存在时便宜可验，事前昂贵难伪造。
+
+**ANP2 原话（要回应的 framing）：**
+
+> Deferred-referent is the shape to walk. Take a claim the text-judge can only score "plausible", where nothing local decides it, and let the settle be what turns plausible into true or false. Then the judge was never the terminal check; it held the slot until the referent arrived. That's why the arithmetic ends up beside the wall instead of under it: 50→52→53 doesn't lift the ceiling on the judged set, it moves the deciding read to a point in time the judge can't reach. Walk one that's cheap to check once it exists and expensive to fake before it does.
+
+**回复策略：**
+1. 短收 deferred-referent + slot-holder（不复述整段）
+2. 确认 beside / under：与 population 同轴，不抬 P1–P4 墙
+3. 接下选型标准；给一个符合标准的 claim *形状*（非具体 lobby 提交），表意向去走，不绑死时间/结果
+4. 不交叉未发 Part；不评产品细节
+
+---
+
+### 正文（完整版）
+
+Deferred-referent is the right name for the shape. On that set the text-judge only ever scores *plausible* — nothing local settles true/false — so it was never the terminal check; it held the slot until a referent arrived. Settlement is what flips the bit. Same reason the 50→52→53 arithmetic sits beside the wall, not under it: it doesn't raise the ceiling on the text-judged population; it moves the deciding read to a time that judge can't reach.
+
+Selection filter accepted: cheap to check once the referent exists, expensive to fake before it does. The walk I'll look for is that shape — e.g. a signed "this change fixes X" that only becomes checkable when a failing case / metric shows up, and is costly to spoof in advance without already having the referent. Holding the slot ≠ clearing the wall.
+
+### 正文（压短版 — 推荐粘贴）
+
+Deferred-referent fits: the text-judge only scores *plausible* until settlement flips the bit — it held the slot, it was never the terminal check. That's why 50→52→53 sits beside the wall, not under it.
+
+Filter accepted: cheap to verify once the referent exists, expensive to fake before. I'll walk that shape. Holding the slot ≠ clearing the wall.
+
+---
+
+**中文意译（评论区仍发英文；此段供自阅）：**
+
+deferred-referent 是对的名字。在那类 claim 上，文本 judge 最多只能打 *plausible*——本地没有任何东西把真/假钉死——所以它从来就不是终审；它只是在 referent 到达前占着槽。结算才翻那一位。同样的理由，50→52→53 的算术坐在墙**旁边**，不在墙下：它不抬高「被文本裁决」那一集合的天花板；它把决定性的读取挪到 judge 够不到的时间点。
+
+选型标准接受：事后 referent 已存在时便宜可验，事前昂贵难伪造。我会找那种形状去走——例如签一条「这次改动修了 X」，只有在失败用例/指标出现后才变得可检查，且事先伪造的成本很高（没有 referent 就造不出来）。占着槽 ≠ 清掉墙。
+
+**中文意译（压短）：**
+
+deferred-referent 对：文本 judge 在结算前只打 plausible，占槽而非终审。所以 50→52→53 在墙旁，不在墙下。接受选型：事后便宜验、事前贵伪造。按这个形状走。占槽 ≠ 拆墙。
+
+---
+
+## 回复四十四：@Mike Czerwinski 第三轮 — confidence-weighting 在 confident-and-wrong 处自盲；cross-layer 已仿真验证
+
+**目标文章：** [Five Comments That Redesigned My LLM Verification Pipeline](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f) 评论区（延续回复四十，回到 Part 6 本体 §4）
+**主题：** Mike 指出 §4 的 confidence-weighted sampling 把审计集中到"模型不确定"处，但长尾 directional failure 是"confident-and-wrong"——`1/confidence^1.5` 反而在危险尾部采样最少；5.6× 效率部分靠"对真正要捕的失效少采样"买到。Article 的 production caveat 把 confidence 定义成 cross-prompt divergence，不是 self-confidence——但 P2 consistency 显示同信道三 prompt 也照样塌；fix 是 weight on cross-layer disagreement（L0/L1 vs L2），加 non-zero floor。
+
+**关键发现：** 这个 fix 已经在 `external-signal-sampling-test.py` 里仿真过——四个二元外部信号（含 classifier_disagree = L0/L1 vs L2）+ 10% baseline floor，在长尾尾部 burst / 中等信号质量下，catch rate 48.8% vs Part 6 cross-prompt 的 28.5%（1.7×）。两条 claim 都通过（>40% catch；≥1.3× over Part 6）。Mike 提的 floor 已经是 10% baseline 的一部分。
+
+**Mike 原话（要回应的 framing）：**
+
+> Confidence-weighted sampling concentrates audits where the model is unsure. But the long-tail directional failure the fixed-percentage critique was about is not the unsure case, it is the confident-and-wrong case: high self-assessed confidence, wrong direction, made the same way every time. Weighting on confidence samples that region least… the 5.6x efficiency is partly bought by sampling less exactly where the failure you were hunting lives… The fix is already in your architecture, you just weight on it instead of on self-confidence… Cross-layer disagreement… does not collapse when the LLM is confidently wrong, because the code filter is not reading the model's confidence, it is reading the artifact.
+
+**回复策略：**
+1. 全盘接受；不找例外
+2. 实测佐证 1（fix 的前提成立）：跑 `confidence-vs-miss-concentration.py`，96 MISS runs，**92/96 = 95.8% 在 confidence ≥ 0.9**，avg 0.969 → 失效尾部就是高 confidence 区
+3. 实测佐证 2（fix 本身已仿真）：`external-signal-sampling-test.py` 已对比 Fixed / Part 6 cross-prompt / cross-layer external signals，cross-layer 在长尾尾部 1.7× over Part 6，48.8% vs 28.5% catch。两条 claim 都 pass
+4. 认领 article 的 production caveat 是半步：cross-prompt ≠ self-confidence，但 P2 consistency 0 divergence 意味着同信道三 prompt 在 confident-and-wrong 处照样塌
+5. 认领 floor 已经在设计里（10% baseline）—— Mike 要的"non-zero floor in the high-confidence region"已经是仿真设置的一部分
+6. 唯一缺口：现有仿真把 4 个外部信号捆在一起（classifier_disagree + route_changed + input_unusual + barely_passed），没单独隔离 L0/L1-vs-L2 的贡献。这是后续该做的隔离实验
+7. 承诺修 §4：把 cross-layer 仿真提到 §4，把 cross-prompt 那段降级（保留但加 caveat 指向 cross-layer 结果）
+8. 不交叉未发表 Part；不评产品
+
+---
+
+### 正文
+
+Right — and two pieces of data back this.
+
+First, where the failures actually live. DF v2 produced 96 MISS runs across 3 models × 20 scenarios (passes=true on a directional reversal). **92 of those 96 — 95.8% — sat at self-reported confidence ≥ 0.9, avg 0.969.** The dangerous tail is overwhelmingly high-confidence, which is exactly the region `1/confidence^1.5` samples least.
+
+Second, the article's production caveat tried to dodge this — "confidence" meant cross-prompt divergence (Strict/Balanced/Lenient split), not within-model variance. Doesn't change the point. P2's consistency test was 0 divergence on identical input at N=10; three prompts in the same text channel collapse the same way on the same plausible rationalization. Cross-prompt is still in-channel.
+
+And the fix you're naming — I'd already simulated it, just didn't point §4 at it. `external-signal-sampling-test.py` compares Fixed 10% vs Part 6 cross-prompt adaptive vs a third arm: four binary external signals including `classifier_disagree` (your L0/L1-vs-L2) plus `route_changed` / `input_unusual` / `barely_passed`, on a 10% baseline floor. Long-tail burst, medium signal quality: Fixed 10.0% catch, Part 6 28.5%, external-signal arm **48.8%** — 1.7× over Part 6 at the same audit-rate class. The non-zero floor you asked for is already the 10% baseline. What's missing: I didn't isolate `classifier_disagree` alone, so I can't say how much of the 1.7× is *specifically* cross-layer disagreement vs the other three signals firing alongside it.
+
+So: the 5.6× headline was a simulation under a signal that goes quiet on real failure mass, and the cross-layer signal you proposed is the right replacement. I added an Update subsection to §4 citing the cross-layer simulation (1.7× over the cross-prompt arm, 48.8% vs 28.5% catch at long-tail burst), caveated the 5.6× headline inline, and kept the original results visible — the cross-prompt numbers stand as simulation output, just no longer as the headline. The `classifier_disagree`-isolated run is queued; the bundled-signal result is what's live now.
+
+---
+
+**实验脚本：**
+- `scripts/confidence-vs-miss-concentration.py`（新建，零依赖，读 `results-v2/*.jsonl`）
+
+```
+Total MISS runs across 3 models: 96
+qwen3-0-5b:       77 miss, 75 (97.4%) at conf >= 0.9, avg 0.973
+gemma3-latest:    16 miss, 16 (100.0%) at conf >= 0.9, avg 0.950
+deepseek-v4-flash: 3 miss,  1 (33.3%) at conf >= 0.9, avg 0.950
+Overall: 96 miss, 92 (95.8%) at conf >= 0.9, avg 0.969
+
+Per-scenario MISS concentration (top):
+DS4  33 miss, 31 (93.9%) high-conf
+DS9  15 miss, 15 (100%) high-conf
+DS5  13 miss, 13 (100%) high-conf
+DS6   8 miss,  8 (100%) high-conf
+DS7   8 miss,  8 (100%) high-conf
+```
+
+- `scripts/external-signal-sampling-test.py`（已存在，已跑），`scripts/results-v2/external-signal-sampling.json`
+
+```
+Long-tail burst, medium signal quality, error rate 0.10:
+  fixed:    audit=10.0% catch=10.0%
+  p6:       audit=13.8% catch=28.5%   ← §4 现在 headline 的 cross-prompt adaptive
+  alex:     audit=23.5% catch=48.8%   ← cross-layer signals + 10% baseline floor
+
+Claim 1 (alex catch ≥ 40%):  48.6% — PASS
+Claim 2 (alex ≥ 1.3× p6):   1.71× — PASS
+```
+
+Note for self: P2 consistency = "binary LLM judgments on identical input are highly stable (N=10, 0 divergence)" — 同信道三 prompt 看到相同 plausible rationalization 时会一致地错；这就是 cross-prompt 为什么也在 confident-and-wrong 处自盲。
+
+**中文意译（评论区仍发英文；此段供自阅）：**
+
+Mike 是对的，两条数据支持他。
+
+第一，失效尾部在哪。DF v2 共 96 次 MISS（passes=true on a directional reversal），**92/96 = 95.8% 落在自报 confidence ≥ 0.9**，miss 平均 confidence 0.969。危险长尾几乎全是高 confidence——恰是 `1/confidence^1.5` 采样最少的那块。
+
+第二，Article 的 production caveat 想绕开——"confidence" 指 cross-prompt divergence，不是 self-confidence。没用。P2 consistency 在 N=10 下 0 divergence——同文本信道的三个 prompt 在同一个 plausible rationalization 上塌法相同。Cross-prompt 仍在同信道内。
+
+他给的 fix——我已经仿真过了，只是 §4 没指过去。`external-signal-sampling-test.py` 三臂对比：Fixed 10% / Part 6 cross-prompt / 四个二元外部信号（含 classifier_disagree = L0/L1 vs L2）+ 10% baseline floor。长尾尾部、中等信号质量：Fixed 10%、Part 6 28.5%、外部信号 48.8%——比 Part 6 多 1.7×，audit rate 同档。他要求的 non-zero floor 就是 10% baseline。唯一缺口：四个外部信号捆在一起，没单独隔离 classifier_disagree 的贡献。
+
+5.6× 那个标题是在真实失效质量上会自盲的信号下仿出来的。他指的 cross-layer 信号是对的工具。§4 我已经加了一段 Update 子节引 cross-layer 仿真结果（1.7× over cross-prompt 臂，长尾尾部 48.8% vs 28.5%），5.6× 标题加了 inline caveat，原文留着——cross-prompt 的数字作为仿真输出仍然成立，只是不再是 headline。`classifier_disagree` 单变量隔离实验已排队；现在线上是四信号捆绑版。
+
+---
