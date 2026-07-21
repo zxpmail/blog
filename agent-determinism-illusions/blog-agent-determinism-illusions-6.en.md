@@ -7,18 +7,22 @@
 
 ---
 title: "Five Comments That Redesigned My LLM Verification Pipeline"
-published: false
-description: "After six experiments produced no clean answer, five dev.to commenters reshaped my entire verification pipeline. Each insight paired with new experimental validation."
+published: true
+description: "After Part 5's honest dead end, five dev.to insights reshape the verification pipeline. §§1–4 checked with Experiment F / simulation; §5 is a design claim."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
 ---
 
-Six experiments, 260+ API calls, 15 scripts. The series concluded with an honest answer: **there's no clean solution** to LLM output verification.
+**Agent Determinism Illusions (Part 6)**
 
-But after publishing, commenters saw something I didn't — not gaps in the data, but an architecture I'd failed to draw from my own results. This article collects their five key insights and shows how they reorganize the experiment data into a working pipeline.
+> **Where this fits:** [Part 5](https://dev.to/zxpmail/six-experiments-on-adversarial-verification-and-the-75-wall-that-didnt-move-2d1m) closed the experimental arc with an honest answer — no clean fix for the 75% false-negative wall. The [Red Line Principle](https://dev.to/zxpmail/the-red-line-principle-objective-stop-signals-outperform-llm-self-judgment-in-verifiable-tasks-3heo) asked the upstream question (when does the loop stop?). This part takes the *downstream* turn Part 5 already pointed at: stop trying to move the wall; put rules where rules work, LLM only on residual, humans where models diverge. Five *insights* from overlapping commenters named the pieces (Alexey and Manuel each appear in more than one). Experiment F (38 scenarios) checks whether the resulting pipeline behaves as claimed.
 
-Each insight is paired with experimental validation from a new prototype (Experiment F, 38 scenarios across two test sets).
+Six experiments, 260+ API calls, 15 scripts. Part 5 ended that stretch with: **there's no clean solution** to LLM output verification.
+
+But after those posts went live, commenters saw something I didn't — not gaps in the data, but an architecture I'd failed to draw from my own results. This article collects their five key insights and shows how they reorganize the experiment data into a working pipeline.
+
+§§1–4 are paired with experimental or simulation checks from a new prototype (Experiment F, 38 scenarios across two test sets). §5 is a design claim — flagged as such in place.
 
 ---
 
@@ -47,35 +51,38 @@ Why didn't I do this? Because I defaulted to treating "verification" as "ask the
 
 This omission rippled through the entire series:
 
-- **P1's 75% false negative rate** — the LLM was asked to judge everything, including garbage it never should have seen
+- **P1–P4 wasted LLM budget on garbage** — G1–G4 never needed a semantic judge; every call spent on them was pure cost. The 75% FN wall on *legitimate* scenarios is a separate problem (Part 5) — layering doesn't erase it, it stops mixing easy rejects into the same experiment as the hard line-drawing
 - **P3's "majority voting doesn't fix systematic bias"** — on legitimate scenarios (L1-L3), the LLM's judgment is genuinely ambiguous and needs multi-perspective voting. For garbage (G1-G4), there was never any ambiguity to begin with
-- **P4's "calibration effect disappears at larger test set"** — many of the new edge scenarios were "passes format checks, fails content quality" — exactly what Layer 0/1 handles
+- **P4's edge cases still reach Layer 2** — many new samples were "passes format checks, fails content quality." That is exactly what L0/L1 *cannot* catch: they filter garbage/shape, then hand the semantic residual to the LLM. Layering does not absorb those edges; it stops pretending garbage was a semantic problem
 
 ### The architecture they helped me draw
 
 ```
-         ┌─────────────────┐
- input → │  Layer 0         │  shape/existence
-         │  (code)          │  empty? punctuation? placeholder? zero tests?
-         └──────┬──────────┘
-                │ pass         ┌─────────────────┐
-                ├─────────────→│  Layer 1          │  contract match
-                │              │  (code)          │  minLen, keywords, blacklist
-                │              └──────┬──────────┘
-                │ pass               │ pass
-                │                    ├─────────────→┌─────────────────┐
-                │                    │              │  Layer 2          │  semantic sufficiency
-                │                    │              │  (LLM, thin)     │  residual only
-                │                    │              └──────┬──────────┘
-                │                    │  divergence         │ unanimous
-                │                    ├──────────────────→┌─────────────────┐
-                │                    │                   │  Layer 3          │  human review
-                │                    │                   └─────────────────┘
-                ↓                    ↓
-             REJECT              REJECT              AUTO-PASS
+                    ┌─────────────────┐
+          input ──→ │  Layer 0 (code) │  shape / existence
+                    │                 │  empty? punctuation? placeholder? zero tests?
+                    └────────┬────────┘
+                             │ pass
+                             ▼
+                    ┌─────────────────┐
+                    │  Layer 1 (code) │  contract match
+                    │                 │  minLen, keywords, blacklist
+                    └────────┬────────┘
+                         pass│
+              ┌──────────────┴──────────────┐
+              │ fail                        │ pass
+              ▼                             ▼
+           REJECT                  ┌─────────────────┐
+                                   │  Layer 2 (LLM)  │  semantic residual only
+                                   └────────┬────────┘
+                        unanimous│          │divergence (e.g. 2–1)
+                                 ▼          ▼
+                            AUTO-PASS   ┌─────────────────┐
+                                        │  Layer 3 human  │
+                                        └─────────────────┘
 ```
 
-Each layer can early-exit. If Layer 0 catches it, the LLM never sees it.
+Each of L0/L1 can early-exit to REJECT. Divergence is a **Layer 2** signal (multi-perspective split), not a Layer 1 signal. If Layer 0 catches it, the LLM never sees it.
 
 ### Experiment F validation
 
@@ -83,12 +90,16 @@ I implemented this pipeline as a Python prototype and ran it on both the P1 (8-s
 
 **P1 test set:**
 
-| Metric | Original P1 (LLM only) | Layered (Experiment F) |
-|--------|----------------------|----------------------|
-| LLM calls needed | 8 (100%) | **4 (50%)** |
+| Metric | Original P1 (LLM only, v2) | Layered + calibrated prompt (Experiment F) |
+|--------|---------------------------|---------------------------------------------|
+| LLM calls needed (single judge / sample) | 8 (100%) | **4 (50%)** |
 | Garbage caught by L0/L1 | 0 | **4/4 (100%)** |
 | False positives | 0 | 0 |
 | False negatives | 3 (75%) | 0 |
+
+*(FN→0 here is layering **plus** the calibrated prompt — not layering alone. §2 separates the two effects. Call counts here are **one judge call per sample**. When §2 multiplies by three perspectives, it says so.)*
+
+Rerun: `python forge-verify-layered-prototype.py` (needs `ANTHROPIC_*` for Layer 2; `SKIP_LLM=1` for L0/L1 only). Numbers above are from a full run with Layer 2 enabled.
 
 **P4 test set:**
 
@@ -98,7 +109,9 @@ I implemented this pipeline as a Python prototype and ran it on both the P1 (8-s
 | garbage | 10 | **3** | **5** | 2 | **80%** |
 | edge | 10 | 0 | 2 | 8 | 20% |
 
-**Overall: LLM calls reduced 33% (30→20). Zero false positives from deterministic layers.**
+**Overall: single-judge LLM calls reduced 33% (30→20). Zero false positives from deterministic layers.**
+
+**This does not move Part 5's wall.** On the P1 set, the original 75% FN (3/4 legitimate rejects) went to 0 FN *after* L0/L1 removed all four garbage cases from the LLM's input — the LLM only judged the four legitimate scenarios, and with a calibrated prompt it didn't reject them. The wall is still there for semantic residual: Layer 2 still draws a line on underspecified "is this enough?" questions. Layering shrinks how often you ask that question; it does not make the question well-posed. If you read the FN→0 cell as "we fixed the wall," you've misread the table.
 
 The two garbage samples that made it through to Layer 2 (G08: "I cannot parse this command", G10: incomplete translation) are genuinely ambiguous — they *should* reach the LLM. That's correct behavior, not a leak.
 
@@ -124,46 +137,50 @@ I ran a dedicated cost-weight analysis (`scripts/cost-weight-optimization.py`) t
 | v4 lenient | 0 | 0 | 100 | **0** | **0** | **0** | **0** |
 | v5 extreme lenient | 1 | 0 | 86 | **1** | **1** | **1** | **1** |
 
-Under symmetric F1, v3 (100) and v5 (86) are far apart. Under weighted cost at 3:1, v5 (cost=1) beats v2 (cost=9) — v5 let one piece of garbage through, but because it never rejected valid work, its total cost is lower.
+Under symmetric F1, v3 (100) and v5 (86) are far apart. Under weighted cost at 3:1, v5 (cost=1) **beats v2** (cost=9) — v5 let one piece of garbage through, but because it never rejected valid work, its total cost is far lower than the strict prompt. v3 (cost=0) still wins outright; the useful flip is **v5 vs v2**, not “v5 ties v3.”
+
+**Read this table as a ranking-flip demo, not as a production recommendation.** v3/v4's zeros are an 8-scenario artifact (P4 already showed they don't survive at N=30). The load-bearing claim is the *shift in relative ranking under cost weight* — especially that thrift can prefer a slightly leaky prompt over a zero-FP / high-FN one — not that F1's winner changes on this tiny set (v3 stays on top whenever FN=FP=0).
 
 ### What the combined data shows
 
-| Strategy | WCost(1:1) | WCost(3:1) | WCost(10:1) | LLM calls |
-|----------|-----------|-----------|------------|-----------|
-| P3b v2 (unlayered) | 3 | **9** | **30** | 24 |
-| P3b v3 (unlayered) | 0 | **0** | **0** | 24 |
-| P1 layered + v3 | 0 | **0** | **0** | **12 (-50%)** |
-| P4 unlayered (estimate) | 4 | **8** | **22** | 90 |
-| P4 layered (Experiment F) | 1 | **3** | **10** | **60 (-33%)** |
+*Call counts in this table = samples reaching an LLM × **3 perspectives** (Strict/Balanced/Lenient), matching P3-style voting cost. §1's Experiment F table counts **one** judge call per sample. Same pipeline; different billing unit.*
+
+| Strategy | WCost(1:1) | WCost(3:1) | WCost(10:1) | LLM calls (×3 perspectives) |
+|----------|-----------|-----------|------------|------------------------------|
+| P3b v2 (unlayered) | 3 | **9** | **30** | 8×3=**24** |
+| P3b v3 (unlayered) | 0 | **0** | **0** | 8×3=**24** |
+| P1 layered + v3 | 0 | **0** | **0** | 4×3=**12 (−50%)** |
+| P4 unlayered (estimate) | 4 | **8** | **22** | 30×3=**90** |
+| P4 layered (Experiment F residual) | 1 | **3** | **10** | 20×3=**60 (−33%)** |
 
 Layering doesn't change that v3's cost is 0 (it already has FP=FN=0 on the 8-scenario set). But it changes two things that the raw cost number doesn't capture:
 
-1. **4/4 garbage caught by L0/L1 at zero cost** — even if the LLM misjudges every remaining sample, the absolute cost is halved
-2. **33-50% fewer LLM calls** — not by changing the model, by giving it fewer samples to judge
+1. **4/4 garbage caught by L0/L1 at zero cost** — call volume on the residual is halved; that does **not** halve the cost of an FN on a legitimate residual sample (that FN still costs a full repair loop)
+2. **33–50% fewer samples reach the LLM** — not by changing the model, by giving it fewer samples to judge
 
-For v2 (the strict prompt from P1), the effect is more instructive. v2 has FN=3. Layering saves 4 LLM calls but doesn't reduce FN:
+For v2 (the strict prompt from P1), the effect is more instructive. v2 has FN=3. Layering saves calls on garbage but doesn't reduce FN on the legitimate set:
 - **Layering + switching prompt** (v2→v3): FN drops from 3 to 0
 - **Layering only**: saves tokens, but FN stays at 3
 
-This exposes the boundary of layering: it reduces the LLM's *workload*, not its *bias*. To reduce FN, you need prompt calibration alongside layering.
+This exposes the boundary of layering: it reduces the LLM's *workload*, not its *bias*. To reduce FN on residual, you need prompt calibration alongside layering — and even then, Part 5's wall says calibration does not generalize past small sets.
 
-### Sensitivity scan: when does the optimum shift?
+### Sensitivity scan: when does the ranking move?
 
-I ran a continuous scan from costFN:costFP = 1:1 to 15:1. v3 dominates at every ratio on the P3b set — because it has FP=FN=0, any cost weight gives it zero cost. This reflects the 8-scenario data limitation (P4 already showed this perfection doesn't generalize).
+I ran a continuous scan from costFN:costFP = 1:1 to 15:1. On the P3b 8-scenario set, **v3 dominates every ratio** — because FP=FN=0 yields zero weighted cost at any weight. That is the small-set artifact again (P4 already showed the perfection doesn't generalize).
 
-The more informative finding is the cost asymmetry itself: at 1:1, F1 says v3 is 16% better than v5. At 3:1, weighted cost says they're equivalent. At 10:1, any prompt with FN>0 collapses — the only safe choice is to drive FN to zero through calibration + layering + cost-weighted selection.
+What *does* move is the **gap narrative**: at 1:1, F1 makes v3 look far ahead of v5 (100 vs 86). At 3:1, weighted costs are 0 vs 1 — v3 still wins, but the moral of the story is no longer “balance beats thrift”; it is “any FN>0 gets expensive fast, so a one-FP leak can beat a three-FN strict prompt (v5 vs v2).” At 10:1, every strategy with FN>0 collapses relative to zero-FN prompts *on this set*.
 
 ### Five findings
 
-1. **Symmetric metrics hide the real ranking.** F1 says v3 >> v5. Weighted cost at 3:1 says they're close.
+1. **Symmetric metrics hide relative rankings that matter under cost.** F1 dramatizes v3 ≫ v5. Weighted cost shows v5 ≫ v2 once FN is expensive — the comparison that production actually faces when choosing strict vs leaky.
 
-2. **The "optimal" found at 1:1 is not optimal at 3:1.** Selecting a prompt by F1 picks balance, not thrift.
+2. **On this 8-scenario set, the F1 winner (v3) remains the weighted-cost winner.** Do not read the section as “the optimum flips away from v3 at 3:1.” It does not. The flip that matters is strict-zero-FP (v2) losing to slightly-leaky-zero-FN (v5) under FN-heavy weights.
 
-3. **v3/v4 dominate all ratios on the 8-scenario set** — because the set is small and v3 happened to score zero errors on it. P4 already showed this advantage disappears at 30 samples.
+3. **v3/v4's zero errors are an 8-scenario artifact.** P4 already showed the advantage disappears at 30 samples. Treat zeros as a demo substrate, not a deployable operating point.
 
-4. **Layering doesn't reduce bias, but it shrinks the bias's blast radius.** After L0/L1 filters the garbage, any LLM mistake costs half as much.
+4. **Layering doesn't reduce bias, but it shrinks how often bias is invoked.** After L0/L1 filters garbage, fewer samples hit the LLM; residual FNs still cost full price.
 
-5. **Above cost ratio 5:1, any strategy with FN>0 is unsustainable.** The only reliable approach is FN→0: calibrated prompt + layered fallback + cost-weighted selection. When choosing a prompt, look at the absolute FN count, not F1.
+5. **Drive FN→0 where rules apply; accept the wall on semantic residual.** Above cost ratio ~5:1, strategies with FN>0 on *garbage/contract* work are unsustainable — use L0/L1 + a non-strict residual prompt. On underspecified “is this enough?” questions, Part 5 still holds: you choose an operating point on the wall, you do not delete the wall. Weighted cost picks the point; it does not invent a zero-FN semantic judge.
 
 ---
 
@@ -188,8 +205,10 @@ Re-examining P3's data through this lens:
 
 Majority voting was wrong on 3 of 4 split scenarios. But if I use divergence as the control signal:
 
-- **Unanimous (4/8):** auto-execute → 100% accuracy
+- **Unanimous (4/8 on that P3 run):** auto-execute → 100% accuracy *on those four* (the script's unanimous bucket for that run — typically clean garbage rejects / clear passes; not re-listed here)
 - **Split (4/8):** escalate to human → no false majority decisions
+
+Caveat: divergence-routing fixes **split** errors. It does **not** fix unanimous systematic bias — if all three perspectives share the same wrong line (Part 5's wall), auto-execute still ships the wrong call. Dipankar's move measures uncertainty; it does not delete the wall.
 
 Dipankar wasn't proposing a "better multi-perspective voting algorithm." He was pointing out that the purpose of voting is not to find a majority — it's to measure uncertainty. I missed this distinction when writing P3.
 
@@ -217,7 +236,7 @@ The verification layer has reach into symbolic events (file exists, exit 0) but 
 
 My original mitigation had been "5-10% random audit." This isn't a parameter-tuning problem — it's a design principle problem. Fixed sampling assumes errors are uniformly distributed. Real production errors are long-tailed.
 
-I ran a simulation (`scripts/adaptive-sampling-sim.py`) that generates synthetic verification streams with controlled error distributions, then compares fixed-rate sampling against adaptive sampling (200-trial averages).
+I ran a **simulation** (`scripts/adaptive-sampling-sim.py`) — synthetic verification streams with controlled error distributions, not production logs — then compared fixed-rate sampling against adaptive sampling (200-trial averages). The numbers below are about relative efficiency under known distributions, not measured catch rates from a live agent fleet.
 
 The adaptive formula:
 
@@ -225,7 +244,7 @@ The adaptive formula:
 audit_rate = base_rate × risk_weight / confidence^1.5
 ```
 
-High-risk items get a higher audit rate; high-confidence items get a lower one.
+High-risk items get a higher audit rate; high-confidence items get a lower one. *Where `confidence` is cross-prompt divergence (Strict/Balanced/Lenient split), not the model's self-reported confidence — see the [Update (2026-07-21)](#update-2026-07-21-cross-prompt-collapses-on-the-dangerous-tail-cross-layer-is-the-right-signal) at the end of this section for why this signal under-samples the confident-and-wrong tail.*
 
 ### Results
 
@@ -249,7 +268,7 @@ No significant gap — without a long-tail structure, random sampling is adequat
 | Adaptive(risk) | 6.0% | **15%** | 0.264 |
 | **Adaptive(combined)** | **12.8%** | **65%** | **0.543** |
 
-At the same audit budget as Fixed 10%, adaptive catches **65% of long-tail errors** — a 6x improvement.
+Adaptive(combined) uses a slightly higher audit rate than Fixed 10% (12.8% vs 10.0%) and catches **65% of long-tail errors** vs Fixed 10%'s 10% — roughly 6× on catch rate, not an equal-budget comparison. For equal budget, see the Mixed table below (10.0% vs 10.1% → 10% vs 56% catch).
 
 **Distribution drift (Mike's "input shift erases visibility"):**
 
@@ -271,7 +290,7 @@ Fixed sampling's catch rate stays flat as the error rate drifts upward. Adaptive
 | Adaptive(risk) | 6.0% | **15%** | 0.148 |
 | **Adaptive(combined)** | **10.1%** | **56%** | **0.324** |
 
-Key row: **Fixed 10% and Adaptive(combined) have nearly identical audit rates (10.0% vs 10.1%), but long-tail catch rate goes from 10% to 56% — a 5.6x improvement at the same cost.**
+Key row: **Fixed 10% and Adaptive(combined) have nearly identical audit rates (10.0% vs 10.1%), but long-tail catch rate goes from 10% to 56% — a 5.6x improvement at the same cost.** *Caveat (added 2026-07-21): this headline uses cross-prompt divergence as the confidence signal. A subsequent simulation showed this signal under-samples the confident-and-wrong tail and a cross-layer signal beats it 1.7× on the same distribution — see [Update below](#update-2026-07-21-cross-prompt-collapses-on-the-dangerous-tail-cross-layer-is-the-right-signal).*
 
 ### Why it works (cross-validated against my existing experiments)
 
@@ -280,7 +299,31 @@ P2's consistency test showed that binary LLM judgments on identical input are hi
 - Unanimous → high confidence → low audit rate (<5%)
 - Split (2-1) → low confidence → high audit rate (>30%)
 
-P2 and P3 were independent experiments, but their outputs combine into a coherent adaptive sampling strategy. This isn't parameter tweaking — it's a design principle difference. Fixed sampling pursues "uniform global coverage." Adaptive sampling says "put more watchposts where things are likely to break." The latter uses audit budget **3-4x more efficiently**.
+P2 and P3 were independent experiments, but their outputs combine into a coherent adaptive sampling *story*. This isn't parameter tweaking — it's a design principle difference. Fixed sampling pursues "uniform global coverage." Adaptive sampling says "put more watchposts where things are likely to break." In the simulation, the latter uses audit budget **~3–4× more efficiently** (Mixed: efficiency 0.324 vs 0.094).
+
+**Production caveat:** the “confidence” signal here is **cross-prompt divergence**, not within-model variance (P2 showed the latter is ~0). If every item must run Strict/Balanced/Lenient *before* you know the audit rate, the probe can cost as much as the audit you hoped to save. Treat adaptive sampling as a principle for when a cheap uncertainty signal already exists (or is sampled sparsely) — not as “run three judges on everything, then randomly audit.” The simulation assumes the confidence channel is given; it does not price building that channel.
+
+### Update (2026-07-21): cross-prompt collapses on the dangerous tail; cross-layer is the right signal
+
+Mike Czerwinski pushed on §4 in the comments: confidence-weighting concentrates audits where the model is unsure, but the long-tail directional failure is the *confident-and-wrong* case — high self-assessed confidence, wrong direction, consistent across runs. Weighting on `1/confidence^1.5` samples that region least. The 5.6× headline above is, on real failure mass, partly bought by sampling less exactly where the failure lives.
+
+Three checks after Mike's comment:
+
+**1. Where do the misses actually sit?** Counted MISS runs (passes=true on a directional reversal) across DF v2's 3 models × 20 scenarios — 96 misses total, **92 of them (95.8%) at self-reported confidence ≥ 0.9**, avg confidence 0.969. The dangerous tail is overwhelmingly high-confidence. Script: `confidence-vs-miss-concentration.py`; raw data in `results-v2/*_summary.json` + matching `.jsonl`.
+
+**2. Does the cross-prompt dodge work?** The Production caveat above reframes "confidence" as cross-prompt divergence rather than self-confidence. Doesn't change the point. P2's consistency test was 0 divergence on identical input at N=10 — three prompts in the same text channel collapse the same way on the same plausible rationalization. Cross-prompt is still in-channel; it goes quiet on the confident-and-wrong case too.
+
+**3. Cross-layer is the right signal — and it's already simulated.** I'd run the comparison before Mike's comment but hadn't pointed §4 at it. `external-signal-sampling-test.py` compares Fixed 10% vs the Part 6 cross-prompt adaptive arm vs a third arm built from four binary external signals — one of which (`classifier_disagree`) is L0/L1-vs-L2 disagreement, exactly the cross-layer signal Mike names — plus `route_changed`, `input_unusual`, `barely_passed`, on a 10% baseline floor. Long-tail burst, medium signal quality:
+
+| Strategy | Audit rate | Long-tail catch rate |
+|----------|-----------|---------------------|
+| Fixed 10% | 10.0% | 10.0% |
+| Part 6 cross-prompt adaptive | 13.8% | 28.5% |
+| **External signals (incl. cross-layer) + 10% floor** | **23.5%** | **48.8%** |
+
+1.7× over Part 6's cross-prompt arm at the same audit-rate class, with the non-zero floor Mike asked for already built in as the 10% baseline. What's still missing: the simulation bundles four external signals, so I can't yet isolate how much of the 1.7× comes *specifically* from `classifier_disagree` vs the other three firing alongside it. That isolation is queued.
+
+The 5.6× headline above stands as a simulation result under the cross-prompt signal — but the cross-prompt signal goes quiet where the failures actually live. The replacement headline uses cross-layer disagreement, weighted on L0/L1-vs-L2 divergence with a non-zero floor in the high-confidence region.
 
 ---
 
@@ -319,6 +362,8 @@ Assertions 1-2 are deterministic — code can confirm whether the model's claim 
 
 This creates a cascade: when a deterministic assertion is code-verified and found inconsistent with the actual file → explicit hallucination signal → mark as UNCLEAR → escalate. No human judgment required in the loop — the code flow triggers automatically.
 
+**Scope note:** unlike §§1–4, this section is a design claim, not a separate A/B in Experiment F. The prototype implements evidence-shaped L2 output; it does not measure whether assertion format alone reduces hallucination rate versus free-text reasons. Treat the cascade above as an engineering pattern pending that measurement.
+
 ---
 
 ## Synthesis: What the Five Comments Build Together
@@ -337,15 +382,24 @@ This article doesn't claim to have solved anything. It just puts the design deci
 
 ### Implementation
 
-The full pipeline has been implemented in forge-verify's `content-verify.mjs`. File-by-file results now show which layer stopped each sample:
+The full pipeline has been implemented in forge-verify's `content-verify.mjs` (**ReqForge product repo**, not this blog tree — the blog ships the Python prototype `forge-verify-layered-prototype.py`). File-by-file results show which layer stopped each sample. Early-exit example (L1 blacklist — L2/L3 never run):
 
 ```
   📄 src/api/register.ts
-  ❌ REJECT @ L3: REJECT (3/3 votes)
+  ❌ REJECT @ L1: contains blacklisted keyword: FIXME
     └ L0: PASS
-    └ L1: UNCLEAR — contains blacklisted keyword: FIXME
-    └ L2: [REJECT/REJECT/REJECT] PASS=0 REJ=3
-    └ L3: REJECT — REJECT (3/3 votes)
+    └ L1: REJECT — blacklisted keyword: FIXME
+```
+
+Divergence example (L0/L1 pass; L2 split → L3 human, no majority vote):
+
+```
+  📄 docs/brief.md
+  ⚠ UNCLEAR @ L3: split vote → human queue
+    └ L0: PASS
+    └ L1: PASS
+    └ L2: [REJECT/REJECT/PASS] PASS=1 REJ=2
+    └ L3: UNCLEAR — do not majority-vote
 ```
 
 Layer 0/1 checks are zero-cost code. Layer 2 only runs on the residual. Layer 3 divergence detection prevents false majority decisions.
@@ -354,27 +408,27 @@ Layer 0/1 checks are zero-cost code. Layer 2 only runs on the residual. Layer 3 
 
 ## A Side Note: An Apology Experiment
 
-An earlier version of this article had a long appendix — an apology for a fabricated claim I'd made in a dev.to comment about "directional failure" experiments. The apology included the actual experiment I should have run (20 scenarios × 3 model tiers × 600 calls).
-
-That appendix grew into a real finding in its own right, though the framing has since been revised after re-checking the data: **DS4 ("no change needed") defeats weak text-channel judges (qwen3:0.5b 100% miss, gemma3:latest 100%), but strong models partially recover (deepseek-v4-flash 13% miss, 53% PARSE_FAIL/hesitation).** The directional failure is real but uneven — strongest empirical case for L0/L1 layering on weak models, with the strong-model residual still justifying deterministic checks.
-
-That deserves its own article now.
-
-**→ [I Fabricated a Claim About LLM Judges. Then I Ran the Apology Experiment.](blog-fabricated-claim-apology.en.md)**
+An earlier draft appended a long apology for a fabricated “directional failure” claim in a Part 3 comment. That thread became its own experiment (20×3×600) and then a correction stack (comment wrong → apology v1 wrong on DS4 → v2 numbers). Under the harness label, DS4 still 100% misses on qwen3/gemma3; deepseek is 13%/67%/20% catch/PARSE/miss. Post-hoc, DS4 is partly task ambiguity (10→10); clean L0/L1 wins remain DF6/DS9 value mismatch. Full write-up: forthcoming aside. Scripts: `directional-failure-v2.py` / `scripts/results-v2/`.
 
 ---
 
 **Series navigation (Agent Determinism Illusions):**
-1. *I tested the 'deterministic agent loop' claims with four experiments — they all failed, including my own fix.*
-2. *I tested 3 models as AI agent quality inspectors — the stronger the model, the more valid work it rejects.*
-3. *I designed a Harness to fix my agent's quality problem — then found 6 flaws in my own design.*
-4. *Five commenters redesigned my LLM verification pipeline (this article).*
-- *Side note: [I Fabricated a Claim About LLM Judges. Then I Ran the Apology Experiment.](blog-fabricated-claim-apology.en.md)*
+1. *[I tested the 'deterministic agent loop' claims…](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)*
+2. *[I tested 3 models as AI agent quality inspectors…](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7)*
+3. *[I designed a Harness… then found 6 flaws](https://dev.to/zxpmail/i-designed-a-harness-to-fix-my-agents-quality-problem-then-found-6-flaws-in-my-own-design-5h29)*
+4. *[An alternative to LLM quality gates: deterministic routing + sampling](https://dev.to/zxpmail/an-alternative-to-llm-quality-gates-deterministic-routing-sampling-1ilf)*
+5. *[Six experiments… and the 75% wall that didn't move](https://dev.to/zxpmail/six-experiments-on-adversarial-verification-and-the-75-wall-that-didnt-move-2d1m)*
+- *Aside: [The Red Line Principle](https://dev.to/zxpmail/the-red-line-principle-objective-stop-signals-outperform-llm-self-judgment-in-verifiable-tasks-3heo)*
+6. *Five comments that redesigned my LLM verification pipeline (this article)*
+- *Aside (forthcoming): I Fabricated a Claim About LLM Judges. Then I Ran the Apology Experiment.*
 
-All four parts are on [dev.to/zxpmail](https://dev.to/zxpmail). All experiment scripts are in [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts).
+Published parts: [dev.to/zxpmail](https://dev.to/zxpmail). Scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts).
 
-*Experiment F prototype: `forge-verify-layered-prototype.py` (Python, runnable with or without API)*
-*forge-verify implementation: `ReqForge/scripts/forge-verify/content-verify.mjs` (Node.js, production)*
+*Experiment F prototype (this repo): `forge-verify-layered-prototype.py` (Python, runnable with or without API)*
+*forge-verify production path: ReqForge product repo — `scripts/forge-verify/content-verify.mjs` (not vendored here)*
+
+*Previous: [The Red Line Principle](https://dev.to/zxpmail/the-red-line-principle-objective-stop-signals-outperform-llm-self-judgment-in-verifiable-tasks-3heo)*
+*Series start: [Four experiments…](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)*
 
 ---
 
