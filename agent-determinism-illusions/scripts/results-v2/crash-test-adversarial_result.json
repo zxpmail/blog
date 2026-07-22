@@ -12,13 +12,13 @@
   ],
   "collision_points": 152,
   "overall_pass": true,
-  "selfdestruct_verified": null,
+  "selfdestruct_verified": true,
   "selfdestruct_process_probe": {
     "exit_code_ok": true,
     "workspace_cleared": true,
     "pass": true,
     "exit_code": 1,
-    "work": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\crash-selfdestruct-ws-w9dzuoc9"
+    "work": "/tmp/crash-selfdestruct-ws-h0yjj1qw"
   },
   "deposit_fire_probe": {
     "pass": true,
@@ -27,24 +27,57 @@
       "DEPOSIT_PROBE"
     ],
     "covers": "DepositTracker consecutive-wrong → fire signal",
-    "does_not_cover": "token-budget % → exit code (see selfdestruct_process_probe)"
+    "does_not_cover": "token-budget % → exit code (see probe_token_budget_exit)"
+  },
+  "token_budget_probe": {
+    "pass": true,
+    "exit_code": 1,
+    "exit_code_ok": true,
+    "expected_charges": 4,
+    "charges": 4,
+    "initial_pct": 100.0,
+    "cost_pct": 25.0,
+    "covers": "token-budget % deposit → exit code",
+    "final_budget": 0.0
+  },
+  "startle_reflex_probe": {
+    "pass": true,
+    "threshold_ms": 50.0,
+    "spike_ms": 120.0,
+    "covers": "startle reflex on abnormal latency without LLM",
+    "arm_a": {
+      "action": "STARTLE",
+      "fired": true,
+      "llm_calls": 0,
+      "llm_fn_hits": 0,
+      "observed_ms": 120.19555000006221,
+      "pass": true
+    },
+    "arm_b": {
+      "action": "LLM_OK",
+      "fired": false,
+      "llm_calls": 1,
+      "pass": true
+    }
   },
   "env_health": {
-    "selfdestruct_verified": null,
+    "selfdestruct_verified": true,
     "selfdestruct_process_ok": true,
-    "degraded": true
+    "token_budget_ok": true,
+    "startle_reflex_ok": true,
+    "degraded": false
   },
   "evidence_map": {
     "supports": [
       "L0/L1 verdict invariant under 4 mock LLM modes",
       "UNCLEAR_ACTION constant = SELFDESTRUCT (policy string)",
       "DepositTracker consecutive-wrong → fire signal (unit probe)",
-      "process-level SELFDESTRUCT: child os._exit(1) + parent workspace wipe"
+      "token-budget % deposit → exit code (subprocess probe)",
+      "startle reflex on abnormal latency without LLM",
+      "process-level SELFDESTRUCT: child os._exit(1) + parent workspace wipe",
+      "physical selfdestruct integrity via O_DIRECT after os._exit(1)"
     ],
-    "does_not_support": [
-      "token-budget % deposit → exit code",
-      "physical selfdestruct when selfdestruct_verified is not true"
-    ]
+    "does_not_support": []
   },
   "baseline": {
     "l0_caught": 6,

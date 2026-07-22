@@ -23,8 +23,9 @@
 | 续篇二 | 0%假阳是个会骗人的指标 | 三档模型权衡曲线 |
 | 续篇三 | 把「架构画了」当「问题解决了」 | 六刀拆自己的 Harness 方案 |
 | 续篇四 | LLM 质量检查的替代方案:确定性路由 + 抽样 | 风险分流框架 + 三刀修正 |
+| [第 14 篇](blog-agent-determinism-illusions-14.zh.md) | Harness 不是编排壳：闸门先于编排——一份工程备忘录 | 运行时闸门 vs 稻草人编排；假接受↓ / 假拒绝有代价 |
 
-英文(4 篇):
+英文(4 篇 + 后续):
 
 | # | dev.to 标题 | HN 标题 |
 |---|-----------|---------|
@@ -32,6 +33,9 @@
 | 2 | I tested 3 models as AI agent quality inspectors: the stronger the model, the more valid work it rejects | 3 model tiers as agent quality inspectors — the false-positive/false-rejection tradeoff |
 | 3 | I designed a Harness to fix my agent's quality problem — then found 6 flaws in my own design | 6 flaws in a human-in-the-loop agent quality Harness |
 | 4 | An alternative to LLM quality gates: deterministic routing + sampling | Risk-based agent output quality: an alternative to LLM quality gates |
+| [14](blog-agent-determinism-illusions-14.en.md) | Harness Is a Gate, Not an Orchestrator — an engineering memo | Gates before orchestration; strawman ORCH contrast |
+
+> 第 5–13 篇文件见仓库 `blog-agent-determinism-illusions-{n}.{zh,en}.md`（部分未上架索引表）。
 
 ### 2. Judging vs. Building in the AI Era(三姊妹 essay)
 
@@ -71,6 +75,9 @@
 | `spc-coldstart-test.py` | SPC 冷启动基线漂移模拟 | 无 |
 | `routing-accuracy-test.py` | 路由分类准确率(40 条任务) | 无 |
 | `redline-v2-experiment.py` | 红线对比实验(支持 `--task-file`) | Ollama/API |
+| `harness-kernel.py` | 可部署闸门进程(NDJSON/HTTP) | 可选 API/cc-switch |
+| `prod-gate-acceptance.py` | 生产路径闸门验收 A/B/C/D | 可选 `--live-llm` |
+| `gate-vs-orch-controlled.py` | 闸门 vs 编排对照+消融+Wilson CI | 可选 `--live-l2` |
 | `handoff-protocol-sim.py` | 人工介入协议仿真 | 无 |
 | `convergence-loop-test.py` | 收敛循环条件 | Ollama/API |
 

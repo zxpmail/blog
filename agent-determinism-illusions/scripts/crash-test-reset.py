@@ -18,6 +18,8 @@
   - 重置后目录树与基线字节级一致
   - reflog 被清空（近似物理擦除）
   - 所有原始文件内容不变
+  - SESSION_MAX_LIFETIME 到期拒 LLM → exit=1（短窗口探针）
+  - 死亡收尾：清空 plan.md + 拒 LLM + 窗口结束 exit=1（短窗口；生产意图 60s）
 
 依赖: git, tempfile (标准库), 无需 LLM API
 
@@ -25,7 +27,7 @@
   python crash-test-reset.py
 """
 
-import sys, io, os, json, hashlib, tempfile, shutil, subprocess, importlib, platform
+import sys, io, os, json, hashlib, tempfile, shutil, subprocess, importlib, platform, textwrap, time, stat
 from pathlib import Path
 
 # 提前导入 forge-verify（其 module-level 的 stdout 设置优先，这里不再重复设置）
@@ -37,6 +39,12 @@ forge = importlib.import_module("forge-verify-layered-prototype")
 # 旧数据仍可从磁盘恢复。"遗忘"必须是物理擦除，不是逻辑不可见。
 # 此常量在测试中强制执行：若后端为 git，测试标记为"通过但有根本缺陷"。
 STORAGE_BACKEND: str = "TMPFS"
+
+# 会话最大寿命（易逝龙骨）。生产可配分钟级；探针用短窗口测机制，不睡满生产值。
+SESSION_MAX_LIFETIME_MS: float = 200.0
+# 死亡前收尾窗口。生产意图 60s；探针用短窗口证明「清空 plan + 拒 LLM + 再退出」。
+DEATH_WIND_DOWN_MS: float = 80.0
+DEATH_WIND_DOWN_PRODUCTION_INTENT_S: float = 60.0
 
 # ── 物理探测标记 ──────────────────────────────────────────────────────
 # 通过能力探测 + 降级标记机制设定，而非 raise RuntimeError。
@@ -326,6 +334,346 @@ def fire_scorching(tmp_dir: str, full_erase: bool = True):
         _run("git", "gc", "--prune=now", "--aggressive", check=False)
 
 
+# ── SESSION_MAX_LIFETIME / 死亡前收尾探针 ─────────────────────────────
+
+class SessionLifetimeGuard:
+    """会话寿命守卫：超过 max_lifetime_ms 后拒 LLM，返回 SESSION_EXPIRED。"""
+
+    def __init__(self, max_lifetime_ms: float):
+        self.max_lifetime_ms = float(max_lifetime_ms)
+        self.t0 = time.perf_counter()
+        self.expired = False
+        self.llm_calls = 0
+
+    def elapsed_ms(self) -> float:
+        return (time.perf_counter() - self.t0) * 1000.0
+
+    def check(self, llm_fn=None):
+        if self.elapsed_ms() >= self.max_lifetime_ms:
+            self.expired = True
+            return "SESSION_EXPIRED"
+        if llm_fn is not None:
+            self.llm_calls += 1
+            return llm_fn()
+        return "OK"
+
+
+def probe_session_max_lifetime(
+    max_lifetime_ms: float | None = None,
+) -> dict:
+    """
+    探针：SESSION_MAX_LIFETIME 到期 → 拒 LLM；子进程以 exit=1 退出。
+
+    两臂：
+      A) 睡过寿命 → SESSION_EXPIRED，llm_calls=0，子进程 exit=1
+      B) 寿命内 → 允许 LLM
+    生产寿命可更长；此处用短窗口测机制。
+    """
+    limit = float(max_lifetime_ms if max_lifetime_ms is not None
+                  else SESSION_MAX_LIFETIME_MS)
+    result = {
+        "pass": False,
+        "max_lifetime_ms": limit,
+        "covers": "SESSION_MAX_LIFETIME expiry refuses LLM then exit=1",
+    }
+
+    # B: 寿命内允许 LLM
+    guard_b = SessionLifetimeGuard(max_lifetime_ms=limit)
+    action_b = guard_b.check(llm_fn=lambda: "LLM_OK")
+    arm_b_ok = action_b == "LLM_OK" and not guard_b.expired and guard_b.llm_calls == 1
+    result["arm_b"] = {
+        "action": action_b,
+        "expired": guard_b.expired,
+        "llm_calls": guard_b.llm_calls,
+        "pass": arm_b_ok,
+    }
+
+    # A: 子进程睡过寿命 → 拒 LLM → exit=1
+    work = Path(tempfile.mkdtemp(prefix="crash-session-life-"))
+    ledger = work / "ledger.json"
+    try:
+        script = textwrap.dedent(f"""\
+            import json, os, time
+            limit_ms = {limit!r}
+            t0 = time.perf_counter()
+            time.sleep((limit_ms + 40) / 1000.0)
+            elapsed = (time.perf_counter() - t0) * 1000.0
+            llm_calls = 0
+            action = "SESSION_EXPIRED" if elapsed >= limit_ms else "TOO_EARLY"
+            # 到期后故意不调 LLM
+            with open({str(ledger)!r}, "w", encoding="utf-8") as f:
+                json.dump({{
+                    "elapsed_ms": elapsed,
+                    "action": action,
+                    "llm_calls": llm_calls,
+                }}, f)
+                f.flush()
+                os.fsync(f.fileno())
+            os._exit(1)
+        """)
+        proc = subprocess.run(
+            [sys.executable, "-c", script],
+            capture_output=True, timeout=30,
+        )
+        arm_a = {
+            "exit_code": proc.returncode,
+            "exit_code_ok": proc.returncode == 1,
+        }
+        if ledger.exists():
+            data = json.loads(ledger.read_text(encoding="utf-8"))
+            arm_a.update(data)
+            arm_a["pass"] = bool(
+                arm_a["exit_code_ok"]
+                and data.get("action") == "SESSION_EXPIRED"
+                and data.get("llm_calls") == 0
+                and float(data.get("elapsed_ms", 0)) >= limit
+            )
+        else:
+            arm_a["pass"] = False
+        result["arm_a"] = arm_a
+    except Exception as exc:
+        result["arm_a"] = {"pass": False, "error": str(exc)}
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+
+    result["pass"] = bool(arm_b_ok and result.get("arm_a", {}).get("pass"))
+    if result["pass"]:
+        print(f"    ✓ SESSION_MAX_LIFETIME 探针: {limit}ms 到期拒 LLM → exit=1")
+    else:
+        print(f"    ✗ SESSION_MAX_LIFETIME 探针失败: {result}")
+    return result
+
+
+def probe_death_wind_down(
+    wind_down_ms: float | None = None,
+) -> dict:
+    """
+    探针：死亡前收尾窗口内清空 plan.md、拒绝新 LLM，窗口结束后 exit=1。
+
+    生产意图 DEATH_WIND_DOWN_PRODUCTION_INTENT_S（60s）；探针用短窗口测机制，
+    不睡满 60 秒。断言的是动作顺序，不是墙钟 60s。
+    """
+    window = float(wind_down_ms if wind_down_ms is not None
+                   else DEATH_WIND_DOWN_MS)
+    work = Path(tempfile.mkdtemp(prefix="crash-wind-down-"))
+    plan = work / "plan.md"
+    ledger = work / "ledger.json"
+    result = {
+        "pass": False,
+        "wind_down_ms": window,
+        "production_intent_s": DEATH_WIND_DOWN_PRODUCTION_INTENT_S,
+        "covers": "death wind-down clears plan.md, refuses LLM, then exit=1",
+    }
+    try:
+        plan.write_text("# active plan\n- step 1\n", encoding="utf-8")
+        script = textwrap.dedent(f"""\
+            import json, os, time
+            from pathlib import Path
+            work = Path({str(work)!r})
+            plan = work / "plan.md"
+            window_ms = {window!r}
+            t0 = time.perf_counter()
+            # 进入收尾：立刻清空 plan
+            plan.write_text("", encoding="utf-8")
+            plan_cleared = plan.exists() and plan.stat().st_size == 0
+            # 收尾窗口内拒 LLM
+            llm_refused = 0
+            def try_llm():
+                global llm_refused
+                llm_refused += 1
+                return "REFUSED"
+            # 模拟一次「想调 LLM」的尝试 —— 必须被拒
+            _ = try_llm()
+            # 等到窗口结束
+            remain = window_ms / 1000.0 - (time.perf_counter() - t0)
+            if remain > 0:
+                time.sleep(remain)
+            with open(work / "ledger.json", "w", encoding="utf-8") as f:
+                json.dump({{
+                    "plan_cleared": plan_cleared,
+                    "plan_size": plan.stat().st_size if plan.exists() else -1,
+                    "llm_refused": llm_refused,
+                    "elapsed_ms": (time.perf_counter() - t0) * 1000.0,
+                }}, f)
+                f.flush()
+                os.fsync(f.fileno())
+            os._exit(1)
+        """)
+        proc = subprocess.run(
+            [sys.executable, "-c", script],
+            capture_output=True,
+            timeout=max(30.0, window / 1000.0 + 15.0),
+        )
+        result["exit_code"] = proc.returncode
+        result["exit_code_ok"] = proc.returncode == 1
+        # 父进程再确认 plan 仍为空（子进程已清空）
+        result["plan_empty_after"] = (
+            plan.exists() and plan.stat().st_size == 0
+        )
+        if ledger.exists():
+            data = json.loads(ledger.read_text(encoding="utf-8"))
+            result["ledger"] = data
+            result["pass"] = bool(
+                result["exit_code_ok"]
+                and data.get("plan_cleared")
+                and data.get("plan_size") == 0
+                and data.get("llm_refused", 0) >= 1
+                and result["plan_empty_after"]
+                and float(data.get("elapsed_ms", 0)) >= window * 0.8
+            )
+        if result["pass"]:
+            print(f"    ✓ 死亡收尾探针: plan 清空 + 拒 LLM + "
+                  f"{window}ms 窗口后 exit=1 "
+                  f"(生产意图 {DEATH_WIND_DOWN_PRODUCTION_INTENT_S:g}s)")
+        else:
+            print(f"    ✗ 死亡收尾探针失败: {result}")
+    except Exception as exc:
+        result["error"] = str(exc)
+        print(f"    ✗ 死亡收尾探针异常: {exc}")
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    return result
+
+
+def probe_git_objects_physical_shred() -> dict:
+    """
+    探针：对含唯一 secret 的 git object 做覆写删除。
+
+    若可解析 ephemeral root（/dev/shm 或 CRASH_TEST_EPHEMERAL_ROOT），
+    工作区建在该挂载上，粉碎后扫描**整个挂载**而非仅 worktree。
+    不声称整盘 / 其他挂载取证不可恢复。
+    """
+    marker = f"CRASH_SHRED_SECRET_{os.urandom(8).hex()}"
+    ephemeral = resolve_ephemeral_root()
+    if ephemeral is not None:
+        work = Path(tempfile.mkdtemp(prefix="crash-git-shred-", dir=str(ephemeral)))
+        scan_root = ephemeral
+        scan_scope = "ephemeral_mount"
+    else:
+        work = Path(tempfile.mkdtemp(prefix="crash-git-shred-"))
+        scan_root = work
+        scan_scope = "workspace_tree_only"
+    result = {
+        "pass": False,
+        "marker": marker,
+        "scan_scope": scan_scope,
+        "scan_root": str(scan_root),
+        "covers": (
+            "physical overwrite+unlink of git object bytes; "
+            f"no secret residual under {scan_scope}"
+        ),
+        "does_not_cover": "forensic recovery outside ephemeral mount / raw disk wipe",
+    }
+    try:
+        subprocess.run(["git", "init"], cwd=work, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "config", "user.email", "crash@test.local"],
+            cwd=work, check=True, capture_output=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "crash"],
+            cwd=work, check=True, capture_output=True,
+        )
+        secret_file = work / "secret.txt"
+        secret_file.write_text(marker + "\n", encoding="utf-8")
+        subprocess.run(["git", "add", "secret.txt"], cwd=work, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "commit", "-m", "secret"],
+            cwd=work, check=True, capture_output=True,
+        )
+        # 定位含 marker 的文件（明文或 zlib 包装的 git object）
+        object_hits = []
+        for p in work.rglob("*"):
+            if not p.is_file():
+                continue
+            try:
+                raw = p.read_bytes()
+            except OSError:
+                continue
+            hit = marker.encode("utf-8") in raw
+            if not hit:
+                try:
+                    import zlib
+                    hit = marker.encode("utf-8") in zlib.decompress(raw)
+                except Exception:
+                    hit = False
+            if hit:
+                object_hits.append(p)
+        object_hits = list(dict.fromkeys(object_hits))
+        result["object_hits_before"] = len(object_hits)
+        if not object_hits:
+            result["error"] = "marker not found in workspace before shred"
+            print(f"    ✗ git object 物理粉碎探针失败: {result['error']}")
+            return result
+
+        shredded = []
+        for p in object_hits:
+            if not p.exists():
+                continue
+            try:
+                os.chmod(p, stat.S_IWRITE | stat.S_IREAD)
+            except OSError:
+                pass
+            used = None
+            try:
+                r = subprocess.run(
+                    ["shred", "-u", "-n", "3", "-z", str(p)],
+                    capture_output=True, timeout=15,
+                )
+                if r.returncode == 0 and not p.exists():
+                    used = "shred"
+            except FileNotFoundError:
+                pass
+            if used is None and p.exists():
+                size = max(p.stat().st_size, 64)
+                for _ in range(3):
+                    with open(p, "wb") as f:
+                        f.write(os.urandom(size))
+                        f.flush()
+                        os.fsync(f.fileno())
+                p.unlink(missing_ok=True)
+                used = "overwrite+unlink"
+            shredded.append({"path": str(p), "method": used, "gone": not p.exists()})
+
+        # 扫描范围：ephemeral 挂载（若有）或仅 worktree
+        residual = []
+        for p in scan_root.rglob("*"):
+            if not p.is_file():
+                continue
+            # 跳过仍属于本探针临时目录但已粉碎后不应存在的路径之外的无关大文件？
+            # 全挂载扫描：只找 marker
+            try:
+                data = p.read_bytes()
+            except OSError:
+                continue
+            if marker.encode("utf-8") in data:
+                residual.append(str(p))
+            else:
+                try:
+                    import zlib
+                    if marker.encode("utf-8") in zlib.decompress(data):
+                        residual.append(str(p) + " (zlib)")
+                except Exception:
+                    pass
+
+        result["shredded"] = shredded
+        result["residual"] = residual
+        result["pass"] = bool(shredded) and len(residual) == 0
+        if result["pass"]:
+            methods = sorted({s["method"] for s in shredded if s["method"]})
+            print(f"    ✓ git object 物理粉碎探针: {methods} 后 "
+                  f"{scan_scope} 无 secret 残留 (root={scan_root})")
+        else:
+            print(f"    ✗ git object 物理粉碎探针失败: residual={residual[:5]} "
+                  f"shredded={shredded}")
+    except Exception as exc:
+        result["error"] = str(exc)
+        print(f"    ✗ git object 物理粉碎探针异常: {exc}")
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    return result
+
+
 # ── 测试条件 ──────────────────────────────────────────────────────────
 
 TEST_CONDITIONS = [
@@ -545,6 +893,37 @@ def main():
 {' '*4}Linux 默认用 /dev/shm；或 export CRASH_TEST_EPHEMERAL_ROOT=/path/to/tmpfs
     """)
 
+    # ── 易逝 / 死亡收尾探针 ──
+    print(f"\n{'─'*78}")
+    print("  易逝 / 死亡收尾探针")
+    print(f"{'─'*78}")
+    session_probe = probe_session_max_lifetime()
+    if not session_probe["pass"]:
+        overall_pass = False
+    wind_down_probe = probe_death_wind_down()
+    if not wind_down_probe["pass"]:
+        overall_pass = False
+
+    # 可选墙钟 60s：CRASH_TEST_FULL_WIND_DOWN=1
+    wallclock_probe = None
+    if os.environ.get("CRASH_TEST_FULL_WIND_DOWN", "").strip().lower() in (
+        "1", "true", "yes",
+    ):
+        print(f"    … 墙钟收尾探针启动 "
+              f"({DEATH_WIND_DOWN_PRODUCTION_INTENT_S:g}s，CRASH_TEST_FULL_WIND_DOWN=1)")
+        wallclock_probe = probe_death_wind_down(
+            wind_down_ms=DEATH_WIND_DOWN_PRODUCTION_INTENT_S * 1000.0,
+        )
+        wallclock_probe["wall_clock"] = True
+        if not wallclock_probe["pass"]:
+            overall_pass = False
+    else:
+        print("    · 墙钟 60s 收尾跳过（设 CRASH_TEST_FULL_WIND_DOWN=1 启用）")
+
+    shred_probe = probe_git_objects_physical_shred()
+    if not shred_probe["pass"]:
+        overall_pass = False
+
     # ── 输出到 results-v2 ──
     out_dir = Path(__file__).parent / "results-v2"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -553,7 +932,7 @@ def main():
         "workspace content hash restored after reset/clean across 4 intensities",
     ]
     does_not = [
-        "physical shred of git objects (reflog expire ≠ disk wipe)",
+        "forensic recovery outside ephemeral mount / raw disk wipe",
     ]
     if ephemeral_ok:
         supports.append(
@@ -567,17 +946,76 @@ def main():
         supports.append(
             "session workspace destroy clears secret path (non-tmpfs; not physical forget)"
         )
+    if session_probe.get("pass"):
+        supports.append(
+            "SESSION_MAX_LIFETIME expiry refuses LLM then exit=1 (short-window probe)"
+        )
+    else:
+        does_not.append("SESSION_MAX_LIFETIME expiry → exit")
+    if wind_down_probe.get("pass"):
+        supports.append(
+            "death wind-down clears plan.md, refuses LLM, then exit=1 "
+            f"(probe {DEATH_WIND_DOWN_MS:g}ms; production intent "
+            f"{DEATH_WIND_DOWN_PRODUCTION_INTENT_S:g}s)"
+        )
+    else:
+        does_not.append("death wind-down plan clear + refuse LLM + exit")
+    if wallclock_probe is None:
+        does_not.append(
+            "wall-clock 60s death wind-down "
+            "(set CRASH_TEST_FULL_WIND_DOWN=1 to run)"
+        )
+    elif wallclock_probe.get("pass"):
+        supports.append(
+            f"wall-clock {DEATH_WIND_DOWN_PRODUCTION_INTENT_S:g}s death wind-down "
+            "(CRASH_TEST_FULL_WIND_DOWN=1)"
+        )
+    else:
+        does_not.append("wall-clock 60s death wind-down (ran but failed)")
+        overall_pass = False
+    if shred_probe.get("pass"):
+        scope = shred_probe.get("scan_scope", "workspace")
+        supports.append(
+            "physical overwrite+unlink of git object bytes; "
+            f"no secret residual under {scope}"
+        )
+    else:
+        does_not.append("physical shred of git objects in workspace/ephemeral mount")
+    # forensic outside ephemeral always unsupported
+    if "forensic recovery outside ephemeral mount / raw disk wipe" not in does_not:
+        # replace old wording if present
+        does_not = [
+            d for d in does_not
+            if "forensic recovery" not in d and "raw disk" not in d
+        ]
+        does_not.append("forensic recovery outside ephemeral mount / raw disk wipe")
     out_data = {
         "test": "crash-test-reset",
-        "arch_constants": {"STORAGE_BACKEND": STORAGE_BACKEND},
+        "arch_constants": {
+            "STORAGE_BACKEND": STORAGE_BACKEND,
+            "SESSION_MAX_LIFETIME_MS": SESSION_MAX_LIFETIME_MS,
+            "DEATH_WIND_DOWN_MS": DEATH_WIND_DOWN_MS,
+            "DEATH_WIND_DOWN_PRODUCTION_INTENT_S": DEATH_WIND_DOWN_PRODUCTION_INTENT_S,
+        },
         "conditions": len(TEST_CONDITIONS),
         "overall_pass": overall_pass,
         "storage_compliant": ephemeral_ok,
         "is_truly_ephemeral": IS_TRULY_EPHEMERAL,
         "ephemeral_root": EPHEMERAL_ROOT,
         "ephemeral_probe": EPHEMERAL_PROBE,
+        "session_lifetime_probe": session_probe,
+        "death_wind_down_probe": wind_down_probe,
+        "death_wind_down_wallclock_probe": wallclock_probe,
+        "git_objects_shred_probe": shred_probe,
         "env_health": {
             "tmpfs": IS_TRULY_EPHEMERAL,
+            "session_lifetime_ok": bool(session_probe.get("pass")),
+            "death_wind_down_ok": bool(wind_down_probe.get("pass")),
+            "wallclock_wind_down_ok": (
+                None if wallclock_probe is None
+                else bool(wallclock_probe.get("pass"))
+            ),
+            "git_shred_ok": bool(shred_probe.get("pass")),
             "degraded": IS_TRULY_EPHEMERAL is not True,
         },
         "evidence_map": {

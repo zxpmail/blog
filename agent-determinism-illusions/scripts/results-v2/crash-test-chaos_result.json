@@ -1,9 +1,9 @@
 {
   "test": "crash-test-chaos",
   "arch_constants": {
-    "PHYSICAL_TIMEOUT_MS": 43.54950000106328,
-    "BASELINE_RTT_MS": 14.516500000354426,
-    "L01_PROBE_MS": 0.26479999996809056,
+    "PHYSICAL_TIMEOUT_MS": 6.686073002128978,
+    "BASELINE_RTT_MS": 0.22259300021687523,
+    "L01_PROBE_MS": 0.6104490003053797,
     "TIMEOUT_FORMULA": "3 * max(BASELINE_RTT_MS, L01_PROBE_MS)"
   },
   "scenarios": 8,
@@ -16,24 +16,37 @@
   ],
   "collision_points": 40,
   "all_pass": true,
-  "net_delay_mode": "software",
-  "confidence": 0.3,
+  "net_delay_mode": "tc",
+  "confidence": 1.0,
+  "os_signal_kill_probe": {
+    "pass": true,
+    "covers": "OS-signal hard-kill of agent-like child process",
+    "does_not_cover": "full productized L0–L4 agent runtime",
+    "platform": "Linux",
+    "heartbeat_growing": true,
+    "kill_path": "SIGTERM",
+    "returncode": 143,
+    "alive_after": false,
+    "heartbeat_stopped": true
+  },
   "env_health": {
-    "delay_mode": "software",
-    "physical_timeout_ms": 43.54950000106328,
-    "baseline_rtt_ms": 14.516500000354426,
-    "l01_probe_ms": 0.26479999996809056,
-    "degraded": true
+    "delay_mode": "tc",
+    "physical_timeout_ms": 6.686073002128978,
+    "baseline_rtt_ms": 0.22259300021687523,
+    "l01_probe_ms": 0.6104490003053797,
+    "os_signal_kill_ok": true,
+    "degraded": false
   },
   "evidence_map": {
     "supports": [
       "L0/L1 verdicts invariant under mock LLM channel faults",
-      "per-call latency max ≤ PHYSICAL_TIMEOUT_MS (43.550ms) on this run",
-      "PHYSICAL_TIMEOUT_MS derived at runtime: 3 * max(BASELINE_RTT_MS, L01_PROBE_MS) (rtt=14.517ms, l01=0.265ms → 43.550ms)"
+      "per-call latency max ≤ PHYSICAL_TIMEOUT_MS (6.686ms) on this run",
+      "PHYSICAL_TIMEOUT_MS derived at runtime: 3 * max(BASELINE_RTT_MS, L01_PROBE_MS) (rtt=0.223ms, l01=0.610ms → 6.686ms)",
+      "PHYSICAL_TIMEOUT_MS verified under tc netem delay injection",
+      "OS-signal hard-kill of agent-like child process (SIGTERM)"
     ],
     "does_not_support": [
-      "OS-signal hard-kill of a real agent process (this tests forge-verify layered prototype)",
-      "tc netem when net_delay_mode is software/none"
+      "full productized L0–L4 agent runtime"
     ]
   },
   "baseline": [

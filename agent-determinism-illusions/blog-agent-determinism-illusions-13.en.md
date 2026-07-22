@@ -155,14 +155,14 @@ Mike Czerwinski, on the inverted trigger:
 
 That second population now has a name in this thread: **confidently-wrong-and-never-caught-before** (novelty systematic bias). T1/T2 are the **recurrence arm** — cheap, history-conditioned, necessary. They are not the novelty arm.
 
-What Mike hoped might fill the novelty arm is `classifier_disagree` carrying signal *alone* (an independent second read that doesn't share the model's priors). We ran that ablation on the Part 6 sampling fixture (`external-signal-ablation.json`): **`classifier_disagree` alone catch 24.9% < Part 6's 28.4%** — best single external signal, still not enough to be the novelty catcher by itself. Bundled with `barely_passed` it lifts; solo it does not clear the bar. So the novelty arm is **not** “drop CD alone into the tripwire and call first-occurrence solved.”
+What Mike pointed at as the novelty-arm *shape* is a second read that doesn't share the model's priors — closer to what the sampling ablation would surface *if* `classifier_disagree` carried that load alone. We ran that ablation on the Part 6 sampling fixture (`external-signal-ablation.json`): **`classifier_disagree` alone catch 24.9% < Part 6's 28.4%** — best single external signal, still not enough to be the novelty catcher by itself. Bundled with `barely_passed` it lifts; solo it does not clear the bar. So the novelty arm is **not** “drop CD alone into the tripwire and call first-occurrence solved.” (Caveat: those % are audit-sampling catch rates, not escalation-tripwire rates — same fixture Mike named, different control knob.)
 
 The fork this series keeps landing on:
 
 | Arm | Signal shape | Catches | Cost |
 |-----|--------------|---------|------|
 | **Recurrence** | T1 / T2 — failure history, known-reversal classes | Repeats of burned modes | Cheap |
-| **Novelty** | Source that does **not** share the judge's priors (out-of-channel probe, independent modality — see Part 12 probe-vs-prose; not another prompt in the same text channel) | First occurrence of a new systematic bias | Expensive |
+| **Novelty** | Source that does **not** share the judge's priors (out-of-channel probe / independent modality — not another prompt in the same text channel) | First occurrence of a new systematic bias | Expensive |
 
 You want both. The mistake is expecting the cheap arm to cover the expensive arm's job. D+T2 stays the right addition to Part 6's diagram. It does not close confidently-wrong-and-never-caught-before.
 
@@ -182,10 +182,10 @@ Part 6 was right to stop majority-voting splits into a false consensus. It was w
 
 **Comment reply (for Mike, on the inverted trigger):**
 
-> Agreed — two arms, not one fix. T1/T2 are the recurrence arm (cheap, history-built). The unnamed population is confidently-wrong-and-never-caught-before; that needs a source that doesn't share the judge's priors. Ablation already showed classifier_disagree alone is not that arm (24.9% < P6 28.4% on the sampling fixture). Wrote the fork into Part 13 §5 Update; Part 12 is the closest existing thread on out-of-channel checks.
+> Agreed — two arms, not one fix. T1/T2 are the recurrence arm: cheap, history-built, necessary. Same structural limit as divergence, one level up — they only fire on classes you've already burned. The unnamed population is confidently-wrong-and-never-caught-before. The shape you point at (a second read that doesn't share the judge's priors) is right for that arm; the sampling ablation only shows classifier_disagree alone isn't enough on the audit fixture (24.9% < P6 28.4%), and same-channel disagreement won't cover semantic novelty by construction. That arm is out-of-channel / probe territory, not another prompt — and not something the cheap arm can cover.
 
 ---
 
 **Series:** Agent Determinism Illusions · Scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
 **Previous thread:** [Part 6 — Five comments…](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
-**Related:** Part 12 probe-vs-prose (novelty / out-of-channel); Part 6 §4 (sampling ablation)
+**Related:** Part 6 §4 (sampling ablation); out-of-channel / probe (series thread — unpublished Part 12 when live)

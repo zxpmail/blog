@@ -1,0 +1,56 @@
+{
+  "test": "prod-gate-acceptance",
+  "overall_pass": true,
+  "arms": {
+    "A": {
+      "pass": true,
+      "checks": {
+        "a1_tests_pass": true,
+        "a2_l0_reject": true,
+        "a3_physical_timeout": true,
+        "a4_l0_pass_shape": true
+      }
+    },
+    "B": {
+      "pass": true,
+      "checks": {
+        "b1_legit_l0": true,
+        "b2_garbage_l0": true,
+        "b3_todo_l0": true,
+        "b4_duck_rejected": true
+      }
+    },
+    "C": {
+      "pass": true,
+      "checks": {
+        "c1_tool_loop": true,
+        "c2_budget": true,
+        "c3_startle_wind": true
+      }
+    },
+    "D": {
+      "pass": true,
+      "checks": {
+        "d0_entry_exists": true,
+        "d1_pipeline_runs": true,
+        "d2_outer_l0_rejects": true,
+        "d3_wrapper_budget": true,
+        "d4_timeout_before_verify": true
+      }
+    }
+  },
+  "evidence_map": {
+    "supports": [
+      "A: write+test path — real unittest + L0 reject garbage + PHYSICAL_TIMEOUT",
+      "B: multi-file delivery — forge L0 rejects garbage/TODO/duck",
+      "C: short tool loop — budget/startle/wind_down gate before continue",
+      "D: wrap phasegate entry — outer L0 rejects formalism garbage; wrapper budget; timeout before verify"
+    ],
+    "does_not_support": [
+      "full production business coverage",
+      "multi-tenant RBAC / encrypted vault",
+      "harness-as-orchestration-without-gates"
+    ],
+    "stance": "capabilities may be thick; harness must be a gate first"
+  }
+}

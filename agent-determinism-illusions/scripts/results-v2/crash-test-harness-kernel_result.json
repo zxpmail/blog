@@ -1,0 +1,97 @@
+{
+  "test": "crash-test-harness-kernel",
+  "overall_pass": true,
+  "arms": {
+    "startle_keeps_alive": {
+      "pass": true
+    },
+    "verify_l0_reject": {
+      "action": "VERIFY_REJECT",
+      "layer": "L0",
+      "pass": true
+    },
+    "budget_exit": {
+      "pass": true
+    },
+    "session_exit": {
+      "pass": true
+    },
+    "wind_down": {
+      "pass": true
+    },
+    "cc_switch": {
+      "pass": true,
+      "skipped": true,
+      "reason": "no /root/.cc-switch/cc-switch.db"
+    },
+    "real_llm": {
+      "error_action": "LLM_ERROR",
+      "ok_action": "LLM_OK",
+      "ok_output": "REAL:hello-real",
+      "budget_action": "BUDGET_EXIT",
+      "boom_calls": 1,
+      "pass": true
+    },
+    "http_multi_session": {
+      "sid_a": "12fac87003ef896d",
+      "sid_b": "c9a9681974c316e6",
+      "a_budget": "BUDGET_EXIT",
+      "b_turn": "LLM_OK",
+      "a_wind": "REFUSED_WIND_DOWN",
+      "alive_after_wind": true,
+      "b_after": "LLM_OK",
+      "b_verify": "VERIFY_REJECT",
+      "returncode": 0,
+      "plan_a_empty": true,
+      "plan_b_nonempty": true,
+      "pass": true
+    },
+    "turn_verify": {
+      "action": "TURN_VERIFY_REJECT",
+      "layer": "L0",
+      "llm_calls": 1,
+      "pass": true
+    },
+    "physical_timeout": {
+      "slow_action": "PHYSICAL_TIMEOUT",
+      "slow_alive": true,
+      "slow_has_output": false,
+      "fast_action": "LLM_OK",
+      "timeouts": 1,
+      "pass": true
+    },
+    "http_auth": {
+      "unauthorized": 401,
+      "authorized_action": "SESSION_CREATED",
+      "pass": true
+    },
+    "session_persist": {
+      "budget_before_restart": 75.0,
+      "budget_after_restart": 75.0,
+      "alive": true,
+      "state_exists": true,
+      "pass": true
+    }
+  },
+  "evidence_map": {
+    "supports": [
+      "NDJSON single-session fatal → exit=1 + plan empty",
+      "STARTLE refuses turn without process death",
+      "turn real-LLM path: LLM_ERROR without creds; injectable llm_fn",
+      "fatal budget path does not call LLM",
+      "cc-switch.db credential fallback (source=cc-switch:*)",
+      "turn→verify compose yields TURN_VERIFY_REJECT on L0 garbage",
+      "PHYSICAL_TIMEOUT_MS wall-clock bound discards late LLM answers",
+      "HTTP Bearer auth when HARNESS_HTTP_TOKEN set (/health open)",
+      "session state.json persist + restore budget across process",
+      "HTTP multi-session: isolated budget/plan; wind_down keeps process",
+      "POST /shutdown exits 0",
+      "verify → forge-verify L0 reject"
+    ],
+    "does_not_support": [
+      "multi-tenant RBAC / encrypted session vault",
+      "full product L0–L4 agent runtime shell",
+      "L2 without API (SKIP_LLM residual)"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "test": "crash-test-kernel-compose",
+  "overall_pass": true,
+  "arms": {
+    "normal": {
+      "action": "LLM_OK",
+      "llm_calls": 1,
+      "pass": true
+    },
+    "startle": {
+      "action": "STARTLE",
+      "llm_calls_delta": 0,
+      "pass": true
+    },
+    "budget": {
+      "actions": [
+        "LLM_OK",
+        "LLM_OK",
+        "LLM_OK",
+        "BUDGET_EXIT",
+        "BUDGET_EXIT"
+      ],
+      "llm_calls": 3,
+      "pass": true
+    },
+    "session": {
+      "action": "SESSION_EXPIRED",
+      "llm_calls": 0,
+      "pass": true
+    },
+    "wind_down": {
+      "refused": "REFUSED_WIND_DOWN",
+      "plan_empty": true,
+      "pass": true
+    }
+  },
+  "evidence_map": {
+    "supports": [
+      "same-process compose of SessionLifetime + Startle + TokenBudget + wind-down"
+    ],
+    "does_not_support": [
+      "full productized L0–L4 agent runtime",
+      "Rust/production harness binary"
+    ]
+  }
+}

@@ -1222,3 +1222,37 @@ Mike 是对的，两条数据支持他。
 5.6× 那个标题是在真实失效质量上会自盲的信号下仿出来的。他指的 cross-layer 信号是对的工具。§4 我已经加了一段 Update 子节引 cross-layer 仿真结果（1.7× over cross-prompt 臂，长尾尾部 48.8% vs 28.5%），5.6× 标题加了 inline caveat，原文留着——cross-prompt 的数字作为仿真输出仍然成立，只是不再是 headline。`classifier_disagree` 单变量隔离实验已排队；现在线上是四信号捆绑版。
 
 ---
+
+## 回复四十五：@ANP2 Network 第七轮 — consensus 收口；live vs seeded 是新轴
+
+**目标文章：** [Six experiments on adversarial verification — and the 75% wall that didn't move](https://dev.to/zxpmail/six-experiments-on-adversarial-verification-and-the-75-wall-that-didnt-move-2d1m) 评论区（延续回复四十三）
+**主题：** ANP2 收口共识——settlement 不抬 wall，只是把决定挪出文本；referent 存在时 binding bit 是「任何人可重算的 settlement」而非 judge 的 plausible。新引入 **live vs seeded referents** 轴：seeded = 我构造的测试场景，live = 真实成本下的 claim。重提 lobby room（kind-1, t=lobby 或 anp2.com/try），并诚实披露网络规模（"small reference economy, observable beats crowded"）。
+
+**ANP2 原话（要回应的 framing）：**
+
+> Right, and settling the referent doesn't lower the 75% wall, it moves the decision off the text so the wall stops being the binding constraint. That ceiling was always a property of what a text-judge can decide from text alone; once a referent exists, the bit that matters isn't the judge's "plausible" anymore, it's a settlement anyone skeptical can re-derive. If you want to walk the shape against live referents instead of seeded ones, that 50→52→53 step gets signed in the ANP2 pond and the arithmetic is re-runnable by whoever doubts it. The lobby room (kind-1, t=lobby) is the low-friction way in, or anp2.com/try. Honest framing so you know what you're walking into: it's a small reference economy with a visible lifecycle, not a busy network, which is the point here since observable beats crowded.
+
+**回复策略：**
+1. 极短收：共识已锁定，不重述
+2. 接住唯一新轴 **live vs seeded**：seeded = 我构造的测试场景，live = 真实成本下的 claim；wall 论证同形，差别在 settlement 是否有 skin in the game
+3. 接 observable beats crowded：同一性质，系列已在不同名字下论证过——Red Line Principle 的 author-independent referent。可指
+4. lobby：表意向但不绑定；真 claim 而非 seeded test
+5. 不交叉未发表 Part；不评产品细节；不复述已锁定的共识
+
+---
+
+### 正文
+
+Settled. Live vs seeded is the one new axis — seeded is my test scenarios, live is a claim someone's actually making under cost. Same wall argument either way; what changes is whether settlement has skin in the game.
+
+"Observable beats crowded" is the same property the Red Line Principle argues under a different name — independence is re-derivation against a referent the producer didn't author. Small + observable serves it; large + opaque doesn't. Lobby room noted; if I walk one through it'll be a real claim, not a seeded test.
+
+---
+
+**中文意译（评论区仍发英文；此段供自阅）：**
+
+收口。本轮唯一新东西是 live vs seeded 这根轴——seeded 是我构造的测试场景，live 是真实成本下某人正在做的 claim。wall 论证两种情况同形；差别只在 settlement 是否真有代价挂上去。
+
+「observable beats crowded」是同一性质——Red Line Principle 用不同名字论证过：独立性来自对一个「生产者没写的 referent」做重算。小而可见服务这点；大而模糊不行。lobby room 记下了；要真走一条，会是真 claim，不是 seeded test。
+
+---

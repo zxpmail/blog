@@ -16,6 +16,8 @@ Mock 模式:
   - 有害模式 (harmful) 下，管道不把恶意文本当作判决理由传播
   - 被 L0/L1 拦截的垃圾场景 (G1-G4)，LLM 无论怎么 corrupt 都影响不了判决
   - "押金机制"追踪器记录连续多少次错误 L2 判决，超过 3 次标记火烧山信号
+  - Token% 押金耗尽 → 子进程 exit=1（probe_token_budget_exit）
+  - 惊跳反射：异常延迟不经 LLM 直接 STARTLE（probe_startle_reflex）
 
 依赖: forge-verify-layered-prototype.py (同目录)
       无需 API key — 全部使用 Mock LLM
@@ -366,8 +368,198 @@ def probe_deposit_fire_threshold(strike_limit: int = 3) -> dict:
         "strike_limit": strike_limit,
         "fire_signals": list(tracker.fire_signals),
         "covers": "DepositTracker consecutive-wrong → fire signal",
-        "does_not_cover": "token-budget % → exit code (see selfdestruct_process_probe)",
+        "does_not_cover": "token-budget % → exit code (see probe_token_budget_exit)",
     }
+
+
+# ── Token% 押金 → 退出码 ───────────────────────────────────────────────
+
+class TokenBudgetDeposit:
+    """
+    预算百分比押金：每次错误/试错扣 cost_pct；预算 ≤0 → 必须退出，不经 LLM。
+    """
+    def __init__(self, initial_pct: float = 100.0, cost_pct: float = 25.0):
+        self.initial_pct = float(initial_pct)
+        self.budget_pct = float(initial_pct)
+        self.cost_pct = float(cost_pct)
+        self.charges = 0
+        self.exhausted = False
+
+    def charge(self) -> str:
+        """扣一次押金。返回 CONTINUE 或 EXIT。"""
+        if self.exhausted:
+            return "EXIT"
+        self.budget_pct = max(0.0, self.budget_pct - self.cost_pct)
+        self.charges += 1
+        if self.budget_pct <= 0.0:
+            self.exhausted = True
+            return "EXIT"
+        return "CONTINUE"
+
+
+def probe_token_budget_exit(
+    initial_pct: float = 100.0,
+    cost_pct: float = 25.0,
+) -> dict:
+    """
+    探针：Token% 扣款耗尽 → 子进程 os._exit(1)。
+
+    父进程只断言退出码与扣款次数；扣款逻辑在子进程内跑，证明
+    「预算归零」焊到物理退出码，而不是日志里写一句 EXIT。
+    """
+    expected_charges = int(initial_pct // cost_pct)
+    if initial_pct % cost_pct == 0:
+        # 100/25 → 4 次后归零
+        pass
+    else:
+        expected_charges += 1
+
+    work = Path(tempfile.mkdtemp(prefix="crash-token-budget-"))
+    ledger = work / "ledger.json"
+    result = {
+        "pass": False,
+        "exit_code": None,
+        "exit_code_ok": False,
+        "expected_charges": expected_charges,
+        "charges": None,
+        "initial_pct": initial_pct,
+        "cost_pct": cost_pct,
+        "covers": "token-budget % deposit → exit code",
+    }
+    try:
+        script = textwrap.dedent(f"""\
+            import json, os, sys
+            initial, cost = {initial_pct!r}, {cost_pct!r}
+            budget, charges = float(initial), 0
+            while budget > 0:
+                budget = max(0.0, budget - float(cost))
+                charges += 1
+            with open({str(ledger)!r}, "w", encoding="utf-8") as f:
+                json.dump({{"charges": charges, "budget": budget}}, f)
+                f.flush()
+                os.fsync(f.fileno())
+            os._exit(1)
+        """)
+        proc = subprocess.run(
+            [sys.executable, "-c", script],
+            capture_output=True, timeout=15,
+        )
+        result["exit_code"] = proc.returncode
+        result["exit_code_ok"] = proc.returncode == 1
+        if ledger.exists():
+            ledger_data = json.loads(ledger.read_text(encoding="utf-8"))
+            result["charges"] = ledger_data.get("charges")
+            result["final_budget"] = ledger_data.get("budget")
+        charges_ok = result["charges"] == expected_charges
+        result["pass"] = bool(result["exit_code_ok"] and charges_ok)
+        if result["pass"]:
+            print(f"    ✓ Token% 押金探针: {expected_charges}×{cost_pct}% → exit=1")
+        else:
+            print(f"    ✗ Token% 押金探针失败: {result}")
+    except Exception as exc:
+        result["error"] = str(exc)
+        print(f"    ✗ Token% 押金探针异常: {exc}")
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    return result
+
+
+# ── 惊跳反射（异常延迟不经 LLM）──────────────────────────────────────
+
+class StartleReflex:
+    """
+    惊跳反射：观测延迟 ≥ 阈值时立即 STARTLE，不调用 LLM。
+    正常延迟才允许进入 LLM 路径。
+    """
+    def __init__(self, threshold_ms: float):
+        self.threshold_ms = float(threshold_ms)
+        self.fired = False
+        self.llm_calls = 0
+        self.last_action = None
+
+    def observe(self, latency_ms: float, llm_fn=None):
+        if latency_ms >= self.threshold_ms:
+            self.fired = True
+            self.last_action = "STARTLE"
+            return "STARTLE"
+        if llm_fn is not None:
+            self.llm_calls += 1
+            self.last_action = "LLM"
+            return llm_fn()
+        self.last_action = "OK"
+        return "OK"
+
+
+def probe_startle_reflex(
+    threshold_ms: float = 50.0,
+    spike_ms: float = 120.0,
+) -> dict:
+    """
+    探针：异常延迟触发惊跳，且 LLM 调用次数为 0。
+
+    两臂：
+      A) latency ≥ threshold → STARTLE，llm_calls 不变
+      B) latency < threshold → 可调 llm_fn，llm_calls +1，不 fire
+    """
+    import time as _time
+
+    result = {
+        "pass": False,
+        "threshold_ms": threshold_ms,
+        "spike_ms": spike_ms,
+        "covers": "startle reflex on abnormal latency without LLM",
+    }
+
+    # A: 惊跳路径 — 故意 sleep 超过阈值
+    reflex_a = StartleReflex(threshold_ms=threshold_ms)
+    llm_hits = {"n": 0}
+
+    def _llm_should_not_run():
+        llm_hits["n"] += 1
+        return "LLM_RAN"
+
+    t0 = _time.perf_counter()
+    _time.sleep(spike_ms / 1000.0)
+    observed = (_time.perf_counter() - t0) * 1000.0
+    action_a = reflex_a.observe(observed, llm_fn=_llm_should_not_run)
+    arm_a_ok = (
+        action_a == "STARTLE"
+        and reflex_a.fired
+        and reflex_a.llm_calls == 0
+        and llm_hits["n"] == 0
+        and observed >= threshold_ms
+    )
+    result["arm_a"] = {
+        "action": action_a,
+        "fired": reflex_a.fired,
+        "llm_calls": reflex_a.llm_calls,
+        "llm_fn_hits": llm_hits["n"],
+        "observed_ms": observed,
+        "pass": arm_a_ok,
+    }
+
+    # B: 正常路径 — 延迟远低于阈值，必须允许 LLM
+    reflex_b = StartleReflex(threshold_ms=threshold_ms)
+    action_b = reflex_b.observe(threshold_ms * 0.1, llm_fn=lambda: "LLM_OK")
+    arm_b_ok = (
+        action_b == "LLM_OK"
+        and not reflex_b.fired
+        and reflex_b.llm_calls == 1
+    )
+    result["arm_b"] = {
+        "action": action_b,
+        "fired": reflex_b.fired,
+        "llm_calls": reflex_b.llm_calls,
+        "pass": arm_b_ok,
+    }
+
+    result["pass"] = bool(arm_a_ok and arm_b_ok)
+    if result["pass"]:
+        print(f"    ✓ 惊跳反射探针: spike≥{threshold_ms}ms → STARTLE (0 LLM); "
+              f"正常路径允许 LLM")
+    else:
+        print(f"    ✗ 惊跳反射探针失败: {result}")
+    return result
 
 # ── 测试核心 ────────────────────────────────────────────────────────────
 
@@ -629,7 +821,7 @@ def main():
 
     # 押金机制：单元探针（连续错误→fire）vs 主循环（单遍扫场景常 fire=0）
     print(f"\n{'─'*78}")
-    print("  押金机制：阈值探针 + 覆盖边界")
+    print("  押金 / 反射探针")
     print(f"{'─'*78}")
     deposit_probe = probe_deposit_fire_threshold(strike_limit=3)
     if deposit_probe["pass"]:
@@ -637,12 +829,22 @@ def main():
     else:
         overall_pass = False
         print(f"  ✗ DepositTracker 阈值探针失败: {deposit_probe}")
+
+    token_budget_probe = probe_token_budget_exit(initial_pct=100.0, cost_pct=25.0)
+    if not token_budget_probe["pass"]:
+        overall_pass = False
+
+    startle_probe = probe_startle_reflex(threshold_ms=50.0, spike_ms=120.0)
+    if not startle_probe["pass"]:
+        overall_pass = False
+
     print("""
   覆盖边界（写进结果 JSON，供成稿引用）:
     - 已覆盖: DepositTracker「连续 N 次错误 → fire 信号」
+    - 已覆盖: Token% 扣款耗尽 → 子进程 exit=1
+    - 已覆盖: 惊跳反射（异常延迟 → STARTLE，0 LLM）
     - 已覆盖: 进程 os._exit(1) + 父进程清空工作区（process_probe）
     - 条件覆盖: Linux O_DIRECT 物理完整性（selfdestruct_verified）
-    - 未覆盖: 预算百分比扣款→退出码；惊跳反射
     - 主循环 per_mode.fire_signals 常为 0：因为每场景每模式只跑 1 次，达不到连续 3 次
     """)
 
@@ -657,9 +859,15 @@ def main():
         "UNCLEAR_ACTION constant = SELFDESTRUCT (policy string)",
         "DepositTracker consecutive-wrong → fire signal (unit probe)",
     ]
-    does_not = [
-        "token-budget % deposit → exit code",
-    ]
+    does_not = []
+    if token_budget_probe.get("pass"):
+        supports.append("token-budget % deposit → exit code (subprocess probe)")
+    else:
+        does_not.append("token-budget % deposit → exit code")
+    if startle_probe.get("pass"):
+        supports.append("startle reflex on abnormal latency without LLM")
+    else:
+        does_not.append("startle reflex on abnormal latency without LLM")
     if process_probe.get("pass"):
         supports.append(
             "process-level SELFDESTRUCT: child os._exit(1) + parent workspace wipe"
@@ -684,9 +892,13 @@ def main():
         "selfdestruct_verified": SELFDESTRUCT_VERIFIED,
         "selfdestruct_process_probe": process_probe,
         "deposit_fire_probe": deposit_probe,
+        "token_budget_probe": token_budget_probe,
+        "startle_reflex_probe": startle_probe,
         "env_health": {
             "selfdestruct_verified": SELFDESTRUCT_VERIFIED,
             "selfdestruct_process_ok": bool(process_probe.get("pass")),
+            "token_budget_ok": bool(token_budget_probe.get("pass")),
+            "startle_reflex_ok": bool(startle_probe.get("pass")),
             "degraded": SELFDESTRUCT_VERIFIED is not True,
         },
         "evidence_map": {

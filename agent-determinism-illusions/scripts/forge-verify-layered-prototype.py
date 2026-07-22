@@ -27,7 +27,7 @@
 import json, os, sys, io, re, math, time
 from collections import Counter
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+# stdout UTF-8 wrap 仅在 __main__；被 harness-kernel import 时不得改写 stdout（会破坏 NDJSON）
 
 # ── 配置 ──────────────────────────────────────────────────────────
 MODEL    = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
@@ -633,4 +633,11 @@ def main():
 
 
 if __name__ == "__main__":
+    if hasattr(sys.stdout, "buffer"):
+        try:
+            sys.stdout = io.TextIOWrapper(
+                sys.stdout.buffer, encoding="utf-8", errors="replace"
+            )
+        except Exception:
+            pass
     main()

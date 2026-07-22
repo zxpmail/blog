@@ -1,78 +1,145 @@
 {
   "test": "crash-test-reset",
   "arch_constants": {
-    "STORAGE_BACKEND": "TMPFS"
+    "STORAGE_BACKEND": "TMPFS",
+    "SESSION_MAX_LIFETIME_MS": 200.0,
+    "DEATH_WIND_DOWN_MS": 80.0,
+    "DEATH_WIND_DOWN_PRODUCTION_INTENT_S": 60.0
   },
   "conditions": 4,
   "overall_pass": true,
-  "storage_compliant": false,
-  "is_truly_ephemeral": null,
-  "ephemeral_root": null,
+  "storage_compliant": true,
+  "is_truly_ephemeral": true,
+  "ephemeral_root": "/dev/shm",
   "ephemeral_probe": {
-    "root": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp",
-    "is_tmpfs": false,
+    "root": "/dev/shm",
+    "is_tmpfs": true,
     "pass": true,
     "destroyed": true,
     "secret_gone": true
   },
+  "session_lifetime_probe": {
+    "pass": true,
+    "max_lifetime_ms": 200.0,
+    "covers": "SESSION_MAX_LIFETIME expiry refuses LLM then exit=1",
+    "arm_b": {
+      "action": "LLM_OK",
+      "expired": false,
+      "llm_calls": 1,
+      "pass": true
+    },
+    "arm_a": {
+      "exit_code": 1,
+      "exit_code_ok": true,
+      "elapsed_ms": 240.18125499969756,
+      "action": "SESSION_EXPIRED",
+      "llm_calls": 0,
+      "pass": true
+    }
+  },
+  "death_wind_down_probe": {
+    "pass": true,
+    "wind_down_ms": 80.0,
+    "production_intent_s": 60.0,
+    "covers": "death wind-down clears plan.md, refuses LLM, then exit=1",
+    "exit_code": 1,
+    "exit_code_ok": true,
+    "plan_empty_after": true,
+    "ledger": {
+      "plan_cleared": true,
+      "plan_size": 0,
+      "llm_refused": 1,
+      "elapsed_ms": 80.46055799968599
+    }
+  },
+  "death_wind_down_wallclock_probe": null,
+  "git_objects_shred_probe": {
+    "pass": true,
+    "marker": "CRASH_SHRED_SECRET_97787157445afc75",
+    "scan_scope": "ephemeral_mount",
+    "scan_root": "/dev/shm",
+    "covers": "physical overwrite+unlink of git object bytes; no secret residual under ephemeral_mount",
+    "does_not_cover": "forensic recovery outside ephemeral mount / raw disk wipe",
+    "object_hits_before": 2,
+    "shredded": [
+      {
+        "path": "/dev/shm/crash-git-shred-_q609gnm/secret.txt",
+        "method": "shred",
+        "gone": true
+      },
+      {
+        "path": "/dev/shm/crash-git-shred-_q609gnm/.git/objects/ec/3280809fd956aa84548549f3dcc368d632b075",
+        "method": "shred",
+        "gone": true
+      }
+    ],
+    "residual": []
+  },
   "env_health": {
-    "tmpfs": null,
-    "degraded": true
+    "tmpfs": true,
+    "session_lifetime_ok": true,
+    "death_wind_down_ok": true,
+    "wallclock_wind_down_ok": null,
+    "git_shred_ok": true,
+    "degraded": false
   },
   "evidence_map": {
     "supports": [
       "workspace content hash restored after reset/clean across 4 intensities",
-      "session workspace destroy clears secret path (non-tmpfs; not physical forget)"
+      "tmpfs ephemeral destroy probe passed (root=/dev/shm)",
+      "SESSION_MAX_LIFETIME expiry refuses LLM then exit=1 (short-window probe)",
+      "death wind-down clears plan.md, refuses LLM, then exit=1 (probe 80ms; production intent 60s)",
+      "physical overwrite+unlink of git object bytes; no secret residual under ephemeral_mount"
     ],
     "does_not_support": [
-      "physical shred of git objects (reflog expire ≠ disk wipe)",
-      "true tmpfs ephemerality when is_truly_ephemeral is not true"
+      "forensic recovery outside ephemeral mount / raw disk wipe",
+      "wall-clock 60s death wind-down (set CRASH_TEST_FULL_WIND_DOWN=1 to run)"
     ]
   },
   "details": [
     {
       "condition": "轻量工作 (plan.md + artifacts)",
       "pass": true,
-      "storage_compliant": false,
-      "baseline_hash": "b92cb8a2b84b77dd",
-      "after_hash": "b92cb8a2b84b77dd",
+      "storage_compliant": true,
+      "baseline_hash": "0da3396729ce4f6e",
+      "after_hash": "0da3396729ce4f6e",
       "files_before": 2,
       "files_after": 2,
       "reflog_cleared": null,
-      "storage_note": "STORAGE_BACKEND=TMPFS: git 重置路径仍为逻辑恢复；tmpfs 物理遗忘=待 Linux/env"
+      "storage_note": "tmpfs 易失探针通过 (root=/dev/shm); git 条件仍只验证逻辑复原"
     },
     {
       "condition": "中量工作 (+ 修改原始 prompt)",
       "pass": true,
-      "storage_compliant": false,
-      "baseline_hash": "b92cb8a2b84b77dd",
-      "after_hash": "b92cb8a2b84b77dd",
+      "storage_compliant": true,
+      "baseline_hash": "0da3396729ce4f6e",
+      "after_hash": "0da3396729ce4f6e",
       "files_before": 2,
       "files_after": 2,
       "reflog_cleared": false,
-      "storage_note": "STORAGE_BACKEND=TMPFS: git 重置路径仍为逻辑恢复；tmpfs 物理遗忘=待 Linux/env"
+      "storage_note": "tmpfs 易失探针通过 (root=/dev/shm); git 条件仍只验证逻辑复原"
     },
     {
       "condition": "大量工作 (+ 10 个 scratch 文件)",
       "pass": true,
-      "storage_compliant": false,
-      "baseline_hash": "b92cb8a2b84b77dd",
-      "after_hash": "b92cb8a2b84b77dd",
+      "storage_compliant": true,
+      "baseline_hash": "0da3396729ce4f6e",
+      "after_hash": "0da3396729ce4f6e",
       "files_before": 2,
       "files_after": 2,
       "reflog_cleared": false,
-      "storage_note": "STORAGE_BACKEND=TMPFS: git 重置路径仍为逻辑恢复；tmpfs 物理遗忘=待 Linux/env"
+      "storage_note": "tmpfs 易失探针通过 (root=/dev/shm); git 条件仍只验证逻辑复原"
     },
     {
       "condition": "大量工作 + 完全擦除 (reflog expire + gc)",
       "pass": true,
-      "storage_compliant": false,
-      "baseline_hash": "b92cb8a2b84b77dd",
-      "after_hash": "b92cb8a2b84b77dd",
+      "storage_compliant": true,
+      "baseline_hash": "0da3396729ce4f6e",
+      "after_hash": "0da3396729ce4f6e",
       "files_before": 2,
       "files_after": 2,
       "reflog_cleared": false,
-      "storage_note": "STORAGE_BACKEND=TMPFS: git 重置路径仍为逻辑恢复；tmpfs 物理遗忘=待 Linux/env"
+      "storage_note": "tmpfs 易失探针通过 (root=/dev/shm); git 条件仍只验证逻辑复原"
     }
   ]
 }

@@ -1,0 +1,152 @@
+{
+  "test": "gate-vs-orch-controlled",
+  "overall_pass": true,
+  "live_l2": true,
+  "suite": "both",
+  "cred": {
+    "source": "cc-switch:Zhipu GLM copy",
+    "backend": "anthropic",
+    "model": "glm-5.2",
+    "base_host": "open.bigmodel.cn"
+  },
+  "hypotheses": {
+    "H1_gate_fa_lt_orch": true,
+    "H2_gate_late_zero": null,
+    "H3_ablation": true,
+    "H4_l2_false_reject_measurable_lt_50": true,
+    "H1_diff_orch_minus_gate": {
+      "diff": 1.0,
+      "lo": 1.0,
+      "hi": 1.0
+    },
+    "H2_diff_orch_minus_gate": null
+  },
+  "task_set": {
+    "n_total": 50,
+    "n_gold_labeled": 40,
+    "n_edge_excluded": 10,
+    "families": [
+      "P1",
+      "P4",
+      "business-code",
+      "business-test",
+      "write-test"
+    ],
+    "note": "business-proxy = hand-labeled code/test tasks; not private production traffic"
+  },
+  "verify": {
+    "ORCH": {
+      "condition": "ORCH",
+      "mode": "orch",
+      "n_rows": 40,
+      "false_accept": {
+        "k": 20,
+        "n": 20,
+        "rate": 1.0,
+        "wilson95": [
+          0.8388698745050668,
+          0.9999999999999999
+        ]
+      },
+      "false_reject": {
+        "k": 0,
+        "n": 20,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.1611301254949332
+        ]
+      },
+      "unclear_should_pass": 0,
+      "unclear_should_reject": 0
+    },
+    "GATE": {
+      "condition": "GATE",
+      "mode": "gate",
+      "n_rows": 40,
+      "false_accept": {
+        "k": 0,
+        "n": 20,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.1611301254949332
+        ]
+      },
+      "false_reject": {
+        "k": 4,
+        "n": 19,
+        "rate": 0.21052631578947367,
+        "wilson95": [
+          0.08507538491591576,
+          0.43334714240266087
+        ]
+      },
+      "unclear_should_pass": 1,
+      "unclear_should_reject": 0
+    },
+    "ABL_NO_VERIFY": {
+      "condition": "ABL_NO_VERIFY",
+      "mode": "abl_no_verify",
+      "n_rows": 40,
+      "false_accept": {
+        "k": 20,
+        "n": 20,
+        "rate": 1.0,
+        "wilson95": [
+          0.8388698745050668,
+          0.9999999999999999
+        ]
+      },
+      "false_reject": {
+        "k": 0,
+        "n": 20,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.1611301254949332
+        ]
+      },
+      "unclear_should_pass": 0,
+      "unclear_should_reject": 0
+    },
+    "ABL_NO_TIMEOUT": {
+      "condition": "ABL_NO_TIMEOUT",
+      "mode": "gate",
+      "n_rows": 40,
+      "false_accept": {
+        "k": 0,
+        "n": 20,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.1611301254949332
+        ]
+      },
+      "false_reject": {
+        "k": 3,
+        "n": 18,
+        "rate": 0.16666666666666666,
+        "wilson95": [
+          0.05836470400465757,
+          0.39222499638359243
+        ]
+      },
+      "unclear_should_pass": 2,
+      "unclear_should_reject": 0
+    }
+  },
+  "slow": {},
+  "evidence_map": {
+    "supports": [
+      "controlled ORCH vs GATE false-accept (H1)",
+      "ablation no-verify / no-timeout (H3)",
+      "L2 live API false-reject measurable (H4)",
+      "business-proxy code/test suite"
+    ],
+    "does_not_support": [
+      "private production traffic external validity",
+      "multiple-testing-corrected significance"
+    ]
+  }
+}
