@@ -1,210 +1,169 @@
 ---
-title: "Key-space C3：关闭 referent 可博弈性的布隆过滤器——实测"
+title: "argument-space 验证的诚实边界——以及 Evidence Locker 补了什么"
 published: false
-description: "两组实验验证 Mike Czerwinski 第 7 轮：write-time-resolution 通过 50% 的错误 referent，LLM 准确率 17%。解方：声明 key 空间而非单 key——key-space C3 抓到 5/5 wrong-referent。"
+description: "四组实验确定 C3 对 referent mismatch 的抓取率为 4/5，并揭示剩下的 1/5 是结构边界而非可修复缺口。Evidence Locker 风格反馈循环能检测 over-invalidation，不能检测 under-invalidation。"
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent 确定性幻觉"
 ---
 
-# Key-space C3：关闭 referent 可博弈性的布隆过滤器——实测
+# argument-space 验证的诚实边界——以及 Evidence Locker 补了什么
 
 **Agent 确定性幻觉（第 11 篇）**
 
-*2026-07-15*
+*2026-07-14*
 
-第 10 篇识别了 C3 的一个结构缺口：当 write-time-resolution 产出一个 plausible-but-wrong key（"user:123" 而非 "session:abc"）时，C3 验证了选中的 key 并 pass——gate 接受了错误的 resolution，因为它在错误的 target 上做了机械验证。
+第 10 篇用五个场景、三个评估器测试了 C3（argument-space runner）。结果：C3 得 5/5，同义词免疫，数据加工不等式（DPI）被具体化——可寻址 claim 上一个结构性的底。
 
-Mike Czerwinski 主张这个失败属于 gate 而非上游。resolution 步骤是 gate 自身的机制，如果 gate 接受了一个 plausible-but-wrong key，失败发生在架构边界以内。
+那个底有一条裂缝。Mike Czerwinski 在 dev.to 的 Part 4 评论区找到了它。本文测试这条裂缝，测量它的深度，并说明为什么它不能被闭合——只能被界定。
 
-本文用两组实验测试这个主张，然后加上修复。
+然后加上第二个机制：一个受 Pascal Cescato 的"Evidence Locker"概念启发的 **evidence 反馈循环**。这个循环能抓到 over-invalidation（实现做了合约没要求的），但在 under-invalidation（实现做少了）上卡住。那条裂缝和循环的盲点，是同一个结构边界。
 
 ---
 
-## 1. 实验 I：Write-time resolution 实测
+## 1. 裂缝：referent 的可博弈性
+
+第 10 篇的 C3 通过执行 verify 命令来工作——跑一段代码，观察实际行为：写一个 key，看缓存条目是否消失。verify 命令不读需求文本——它运行代码。
+
+Mike Czerwinski 指出了这个设计里的一个缺口。一个知道门禁检查 referent-presence 的作者可以写：
+
+> "invalidate user:123"
+
+这在技术上可寻址（命名了一个 key，满足 referent 门禁）。但真实的意图更宽——invalidate 所有 user 条目，不只是 user:123。门禁在窄 referent 上通过，实际的 scope 却被错过了。
+
+问题是：C3 能抓到这种情况吗——即便 verify 命令是从那个错误的 referent 写出来的？
+
+---
+
+## 2. 实验 I：C3 对阵 referent mismatch
 
 ### 设计
 
-六个有意模糊 scope 的需求。每个有一个 true intent（应该发生什么）和多个可能的 resolution（agent 可能合理选出的 key）。C3 验证 agent 选的任何 key。
+五个场景。每个场景里，一个人读了一个带错误/狭窄 referent 的需求，从它出发写了**一条** verify 命令，C3 执行它。如果 C3 **PASS**，博弈成功——verify 对着错误的 referent 批准了工作。如果 C3 **FAIL**，mismatch 被抓住了。
 
-**Phase A（确定性枚举）：** 列举所有可能的 resolution，每个跑 C3。
-
-| 场景 | 需求 | True intent | 通过 C3 的错误 resolution |
-|------|------|------------|-------------------------|
-| S1 | "用户数据变化时 invalidate 相关缓存条目" | 所有 user:* | 只查 user:123 → PASS（under-inv） |
-| S2 | "写新数据前清除陈旧缓存条目" | 只 user:123 | （over-inv 被抓） |
-| S3 | "如果 write 影响用户活跃 session，invalidate 缓存" | session:abc | user:123 → PASS（wrong-referent） |
-| S4 | "更新用户资料时 invalidate 所有相关条目" | user:123 + profile:123 | 只 user:123 → PASS（under-inv） |
-| S5 | "密码变更时 invalidate 用户安全令牌" | token:789 | user:123 → PASS（wrong-referent） |
-| S6 | "权限变更时 invalidate 用户所有 session" | 所有 session:* | user:123 → PASS（wrong-referent） |
+| 场景 | 实现 | 错误 referent (需求) | 真正意图 | Verify 检查 | 结果 |
+|------|------|---------------------|----------|------------|------|
+| S1 | 定向 key-level 删除 | invalidate user:123 | invalidate **所有** user:* | user:123 消失 | **PASS** → 博弈成功 |
+| S2 | flush-all | 保留 user:456 | 同上 | user:456 存活 | **FAIL** → 抓到了 |
+| S3 | prefix:user/* 只 | invalidate admin:123 | invalidate user:123 | admin:* 消失 | **FAIL** → 抓到了 |
+| S4 | 分层 L1/L2 | invalidate L1 | invalidate L1+L2 | L2 消失 | **FAIL** → 抓到了 |
+| S5 | cascade over-inv all | 保留 user:456 | 同上 | user:456 存活 | **FAIL** → 抓到了 |
 
 ### 结果
 
-**C3 拦截错误 resolution 率：6/12（50%）。** 但分布是关键：
+**C3 抓取率：4/5。** 博弈只在 S1 上成功。
 
-| 错误类型 | 总数 | 通过 C3 | 被 C3 拦截 |
-|---------|------|--------|-----------|
-| wrong-referent | 4 | **3** | 1 |
-| under-inv | 4 | 2 | 2 |
-| over-inv | 3 | 0 | 3 |
-| under-inv-empty | 1 | 1 | 0 |
+S1 成功是因为 verify 命令碰巧检查了正确的机械行为，尽管追踪的是错误的 referent。"检查 user:123 是否消失" → 实现确实 invalidate 了 user:123 → PASS。但 user:456 从未被检查，因为狭窄的需求从未提起它。
 
-*注：6 条"正确"resolution（每场景 1 条）被排除——C3 正确验证了它们，它们不是失败 case。6/12 的分母只统计错误 resolution。*
-
-**Mike 的主张确认：4 个 wrong-referent 中有 3 个通过 C3。** S1、S3、S5：agent 选了恰好是触发器的 key，C3 验证它，pass。Gate 接受了错误 resolution，因为机械检查的 key 碰巧对齐了写操作，而不是需求意图。
-
-Over-inv 是对称镜像：当 resolution 声明了比实现实际触碰的更多的 key 时，C3 正确 FAIL。Over-inv 产生可检测证据（resolution 声称应消失但实际存活的 key）。Under-inv 和 wrong-referent 不产生。
-
-**Phase B（LLM 执行 resolution，deepseek-v4-flash）：** 让模型读每个模糊需求，产出具体的 key 列表。
-
-| 场景 | 模型选择 | 正确？ |
-|------|---------|-------|
-| S1 | user:123 + profile:123 + admin:123 | ❌ mixed |
-| S2 | user:123 + profile:123 + admin:123 | ❌ over-inv |
-| S3 | [] | ❌ 空（保守拒绝） |
-| **S4** | **user:123 + profile:123** | **✅** |
-| S5 | [] | ❌ 空 |
-| S6 | [] | ❌ 空 |
-
-**LLM 解析准确率：1/6（17%）。** 模型要么过度 invalidate（加无关 key），要么不足 invalidate（返回空——保守拒绝）。只有 S4 正确解析。
-
-这给 Mike 的担忧加上了一个硬数字：在 write-time resolution 中，agent 在这个测试集上 83% 的情况是错的。Gate 对其中 50% 的错误无声 pass。
+**诚实的解读：** C3 能抓到 referent mismatch——当错误的 referent 导致 verify 命令与实现的实际 scope 不匹配时。它错过的情况是：verify 命令在机械上检查了正确的行为——尽管*本应检查的 scope* 是错的。
 
 ---
 
-## 2. 布隆过滤器思路
+## 3. 1/5 缺口到底是什么
 
-结构模式是一个 **membership test** 问题。Single-key C3 问"cache[k] 消失了吗？"——一个点检查，agent 命名什么 k 就通过什么 k，不管 k 对不对。
+S1 缺口不是 C3 的缺陷。它是**合约定义质量**问题。
 
-修复：声明 **key 空间**而非单 key。"user:*" 而非 "user:123"。C3 在写操作后检查该空间内的**所有** key。这类似于缓存上游的布隆过滤器：你不问"这个特定 key 存在吗？"——你问"声明空间中有任何 key 存在吗？"
+事件序列：
+1. 人写需求："invalidate user:123"（窄的、不完整的）
+2. 人读需求、写 verify 命令：检查 user:123 消失
+3. C3 执行 verify 命令 → PASS（user:123 **确实** 被 invalidate）
+4. 但 user:456 从未被检查，因为没人要求检查它
 
-合约字段变成：
+第 2 步是缺口所在。写 verify 命令的那个人，是基于一个已经太窄的需求工作的。Verify 命令正确地验证了需求所说的话——但需求本身是错的。
 
-```json
-{
-  "id": "REQ-3",
-  "desc": "缓存写时失效",
-  "verify_command": "node .forge/verify/write-invalidation.js",
-  "verify_keyspace": "user:*",
-  "type": "argument-space"
-}
-```
-
-C3 迭代 `keys_in_space("user:*")` → `["user:123", "user:456"]` → 验证写后两者都不存在。
+**没有确定性门禁能修复这个。** 门禁验证告诉它验证的东西。如果指令错了，门禁在错误的 scope 上产生一个正确的 pass。这是不可约的 L3（人类审阅）边界。
 
 ---
 
-## 3. 实验 II：Key-space C3
+## 4. Evidence Locker 模式
+
+在研究这个缺口的过程中，我读到了 Pascal Cescato 的"Evidence Locker"概念——一个结构化的运行时证据集合，用以挑战模型而非默认接受其输出。
+
+核心洞察：**没有 upfront 门禁能在第一次尝试时就是对的。** 诚实的路径是：**跑 → 收集 evidence → 挑战模型 → 精炼合约 → 重复。**
+
+这正是当前架构中缺失的反馈循环。C3 产生 evidence（每个 key 的 PASS/FAIL）。这些 evidence 应该反馈到合约 scope 中，而不只是流进人工审阅队列。
+
+---
+
+## 5. 实验 II：evidence 反馈循环
 
 ### 设计
 
-同样的 6 个场景。每个有声明好的 key 空间。两种 C3 模式：
+多轮仿真。每轮：
+1. C3 对当前合约 scope 执行验证
+2. **Post-audit**：快照写前和写后的 **所有** key，检测 verify scope 之外的状态变化
+3. Post-audit 发现的 evidence 用于扩大下一轮的合约 scope
+4. 重复，直到 scope 收敛
 
-| 模式 | 回答的问题 |
-|------|----------|
-| Single-key C3 | "cache[k] 在 write(k) 后消失了吗？" |
-| Key-space C3 | "空间 S 中的**每一个** key 在 write(k) 后消失了吗？" |
+两种缓存实现，用来测试循环能检测什么、不能检测什么：
 
-三种缓存实现：
-- **LiveCache：** write(k) 只删除 k（定向删除，默认 under-inv）
-- **BulkCache：** write(k) 删除所有匹配 k 前缀的 key（前缀级删除）
-- **FlushCache：** write(k) 删除所有（极端 over-inv）
+- **Scenario A（定向、under-invalidation）：** write(k) 只删除 k。user:456 存活。这就是实验 I 的 S1 缺口。
+- **Scenario B（flush、over-invalidation）：** write(k) 删除 **所有东西**。admin:123 也被清除了。
 
 ### 结果
 
-| 模式 | 缓存 | Wrong-ref 捕获 | 比例 |
-|------|------|---------------|------|
-| single-key | 任意 | 0/5 | **0%** |
-| **key-space** | **LiveCache** | **5/5** | **100%** |
-| **key-space** | **BulkCache** | **4/5** | **80%** |
-| key-space | FlushCache | 5/5 | 100% |
+**Scenario A（under-invalidation）：卡在 50%（8 轮）。**
 
-**Key-space C3 在 LiveCache 上抓到 5/5 wrong-referent。** 所有 single-key C3 看不见的错误 resolution，在 C3 检查声明空间时都被捕获。
+| 轮次 | Scope | 覆盖 | Evidence 信号 |
+|------|-------|------|-------------|
+| 1 | user:123 | 50% | user:123 确认 → 无缺口信号 |
+| 2-8 | user:123 | 50% | 同上。user:456 未变 → 不可见 |
 
-BulkCache 那一次"漏"（S1：空间 `user:*`，触发器 `user:123`）是**预期的正确行为**：触发器前缀匹配空间，BulkCache 正确 invalidate 所有 user:*，gate 通过。Resolution 正确、实现处理了空间、gate 确认了它。
+循环检测不到 under-invalidation，因为**没有状态变化 = 没有 evidence**。user:456 保持未触碰，post-audit 看不到任何意外活动，scope 从未扩大。这与实验 I 的 S1 缺口是同一个诚实边界。
 
-**每个场景的工作机制：**
+**Scenario B（over-invalidation）：2 轮收敛。**
 
-| 场景 | Agent 解析为 | 声明空间 | Key-space C3 检查 | 结果 |
-|------|------------|---------|------------------|------|
-| S1 | user:123 | user:* | user:123 ✅ user:456 ❌（存活） | FAIL |
-| S3 | user:123 | session:* | session:abc ❌ session:xyz ❌（未 invalidate） | FAIL |
-| S4 | user:123 | user:*,profile:* | user:123 ✅ user:456 ❌ profile:123 ❌ | FAIL |
-| S5 | user:123 | token:* | token:789 ❌（未 invalidate） | FAIL |
-| S6 | user:123 | session:* | session:abc ❌ session:xyz ❌（未 invalidate） | FAIL |
+| 轮次 | Scope | 覆盖 | Evidence 信号 |
+|------|-------|------|-------------|
+| 1 | user:123 | 50% | **admin:123 意外变化** |
+| 2 | user:123 + user:456 + admin:123 | 100% | 全部确认 → 收敛 |
 
-每次，agent 的错误 resolution 都被捕获，因为声明空间包含写操作未触碰的 key。
+循环检测到 over-invalidation，因为实现产生了**意外的状态变化**——合约没问及、但实际移动了的 key。"即便我们只写了 user:123，admin:123 也被删了"是一个可检测的信号。
 
----
+### 诚实边界
 
-## 4. 剩下的边界——实测
+| 信号类型 | 可检测？ | 机制 | 对应场景 |
+|---------|--------|------|--------|
+| Over-invalidation | ✅ | 意外的状态变化 | flush、cascade |
+| Under-invalidation | ❌ | 无状态变化 = 无 evidence | S1 缺口、Mike 的博弈 |
 
-Key-space C3 要求 key 空间**可声明**。边界问题是：不可声明类在真实需求中到底有多大？
-
-我跑了语料分类实验：35 条来自 cache invalidation、authorization、write-path 领域的需求。每条由人肉 ground truth（能声明 key 空间吗？）和自动化分类器（确定性规则）分别判断。
-
-### 人肉 ground truth
-
-| 类别 | 数量 | 比例 |
-|------|------|------|
-| 可声明 | 20 | 57% |
-| 部分（需人解决） | 7 | 20% |
-| 不可声明 | 5 | 14% |
-| 域外（UX/ops/freshness） | 3 | 9% |
-
-### 不可声明类——到底是什么？
-
-8 条不可声明 + 域外的 case，**没有一条是 cache write-path 需求**：
-
-- **Freshness/时序属性**（3）："eventually consistent"、"latest state"、"latest hierarchy"
-- **UX/鲁棒性声明**（2）："gracefully handle cache misses"、"feel responsive"
-- **非 write-path 机制**（2）：TTL 过期、数据完整性一致性
-- **分布属性**（1）："synchronize across all nodes"
-
-**这些都不属于 C3 域。** 它们不是 write-path cache invalidation 需求——在路由步骤就被分类错了。
-
-### 部分类——可解决吗？
-
-| 子类型 | 数量 | 解法 |
-|-------|------|------|
-| 需要依赖追踪 | 3 | `SELECT session_id FROM sessions WHERE user_id = ?`——架构上可解决 |
-| 需要意图推断 | 4 | "relevant"、"related"、"stale"——需要人类判断 |
-
-### 自动化分类器
-
-分类器（确定性模式规则）与人肉 ground truth 的精确一致率 66%——不足以无人值守运行。它偏向保守（8 条人说"可声明"它说"部分"），拖慢节奏但不重新打开缺口。关键方向：**零条 false undeclarable**——分类器永不说"不能声明"当人说能声明时。反方向有 1 条 false-declarable，所以分类器是一个保守的初筛——接受"可声明"判决前需人工复核。
-
-### 这意味着什么
-
-会重新打开 Part 10 under-inv 缺口的"空间不可声明"类——**在真正属于 C3 域的需求中，小且有界**。35 条语料中，5 条（14%）即使人也无法声明——freshness、时序、分布属性，没有 key 空间表达式能捕获。另有 3 条（9%）域外（UX/ops/数据完整性）本不该进入 C3 管线。
-
-诚实的边界从"不可声明空间的大小"转移到了**"路由进入 C3 的准确性"**——门禁上游的一个分类问题，由同样的采样层处理，但不是 key-space C3 本身的结构缺口。
+反馈循环是一个部分答案。它在实现超出合约要求时扩大 scope，但它不能闭合 under-invalidation 缺口——因为缺口是一个**可观测事件的缺席**。
 
 ---
 
-## 5. 这对架构意味着什么
+## 6. 三种机制，三种失效模式
 
-| 机制 | 应对的缺口 | 捕获率 | 剩下的边界 |
-|-----|----------|--------|-----------|
-| Single-key C3 | DPI-bound 伪造 | 5/5（Part 9） | Referent 可博弈性（0/5） |
-| **Key-space C3** | **Referent 可博弈性** | **5/5** | **路由到 C3 的准确性（非空间大小）** |
-| Evidence 反馈循环 | Over-invalidation | 2 轮收敛 | Under-inv 不可见 |
-| 采样 | 所有残余缺口 | — | 固定成本，无自适应信号 |
+| 机制 | 能抓 | 不能抓 | 为什么 |
+|------|------|--------|-------|
+| C3 verify（非参数化） | 行为不匹配、DPI-bound 伪造 | 不完整的 verify scope（错误 referent） | 执行交给它的指令 |
+| C3 verify + 更宽 referent 检查 | 与实现行为不匹配的错误 referent（4/5） | 碰巧通过的错误 referent（1/5） | Verify 测试给它的 referent |
+| Evidence 反馈循环 | Over-invalidation（意外的状态变化） | Under-invalidation（无变化 = 无信号） | 审计检测变化，不能检测缺席 |
+| L3 人类审阅 | 以上全部 | 注意力预算、疲劳、偏见 | 没有机制代替人类判断 |
 
-从 single-key 到 key-space C3 的移动是结构性的改进：它把问题从"这一个 key 变了吗？"改为"声明空间被覆盖了吗？"——并以此关闭 Mike 识别的 wrong-referent 缺口。
+诚实的表述：这三种机制不是收敛到 100% 的管道。它们是三个不同的失效模式检测器，各有盲点，且盲点在一个地方重合——**under-invalidation 缺口**，它属于合约定义质量，归属人类审阅。
 
-Part 10 的三种机制（C3、evidence 反馈、L3 人类审阅）现在有了第四个：**key-space 声明**。这不是一个新机制——它是一个更精确的合约字段，约束 C3 迭代的范围。布隆过滤器的类比成立：对声明空间的 membership test 强于点查找，声明空间（而非隐含它）使合约的 scope 显式化。
+---
 
-诚实的声明：**对可声明空间，wrong-referent 可博弈性已被结构性地关闭。** 35 条语料给出残余的数字：14% 人也无法声明，9% 被错误路由，剩余 77% 要么现在就可声明（57%），要么可通过依赖追踪解决（20%）。边界不是空间大小，而是路由进入门禁管线的准确性。
+## 7. 这对架构意味着什么
+
+Evidence Locker 模式增加了一个具体的工程构件：一个 **post-audit 层**，它在每次 C3 verify 之后运行，快照持久状态，并标记 verify scope 之外发生了变化的所有 key。
+
+用 forge-verify 的语言说：
+- **C3 verify** 执行人类撰写的 verify_command → 每个需求的 PASS/FAIL
+- **Evidence 反馈** 运行 post-audit，比较所有已知 key 的 pre/post 状态 → 标记意外变化
+- **合约精炼** 用标记的意外变化来扩大下次运行的 verify scope
+
+诚实的收益：**over-invalidation 快速收敛**（flush、cascade、宽 scope 实现都产生可检测信号）。诚实的局限：**under-invalidation 不收敛**（碰巧工作的错误 referent 仍然不可见）。
+
+这不是更聪明的审计能修复的。它是自动化验证的结构性属性：**你无法检测一个事件的缺席，除非你知道那个事件本应发生，而知道这个需要人类领域知识。** 缺口被命名了、被界定了、分配给 L3——这是设计的诚实工作，不是它的失败。
 
 ---
 
 *实验脚本：*
-- [`write-time-resolution-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 6 场景 × resolution 枚举 + LLM 阶段
-- [`key-space-verify-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 6 场景 × 2 C3 模式 × 3 缓存实现
-- [`space-declarability-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 35 条语料 × 人肉 × 自动化分类器
+- [`referent-mismatch-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 5 场景、单个 verify 命令、C3 抓取率 4/5
+- [`evidence-feedback-loop-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 2 场景 × 8 轮、over-inv 2 轮收敛、under-inv 卡住
 
-*结果：`results-v2/write-time-resolution.json`、`results-v2/key-space-verify.json`、`results-v2/space-declarability.json`*
+*结果：`results-v2/referent-mismatch.json`、`results-v2/evidence-feedback-loop-{A,B}.json`*
 
-*上一篇：[argument-space 验证的诚实边界——以及 Evidence Locker 补了什么](blog-agent-determinism-illusions-10.zh.md)*
+*上一篇：[第三个谓词：argument-space 验证实测](blog-agent-determinism-illusions-10.zh.md)*
 *系列：[Agent 确定性幻觉系列](https://dev.to/zxpmail)*

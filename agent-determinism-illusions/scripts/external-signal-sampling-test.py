@@ -261,6 +261,68 @@ def print_table(rows, headers):
     print()
 
 
+def run_unique_catch(error_dist: str, signal_configs: list, trials: int = TRIALS,
+                     baseline: float = ALEX_BASELINE, escalation: float = ALEX_ESCALATION_PER_SIGNAL):
+    """
+    Mike unique-catch: among defectives, cases caught by solo arm i that none of
+    the other three solo arms would have caught (coupled audit draw per output).
+    Also unique_fire: defective + only signal i fires (channel exclusivity).
+    """
+    n = len(signal_configs)
+    names = [sc.name for sc in signal_configs]
+    unique_catch = [0] * n
+    unique_fire = [0] * n
+    solo_catch = [0] * n
+    total_defective = 0
+
+    for _ in range(trials):
+        gts = generate_stream(0.10, error_dist)
+        outs = generate_signals(gts, signal_configs)
+        for o in outs:
+            if not o["defective"]:
+                continue
+            total_defective += 1
+            sigs = o["signals"]
+            u = random.random()  # coupled draw across solo arms
+            caught = []
+            for i, s in enumerate(sigs):
+                rate = min(1.0, baseline + s * escalation)
+                c = u < rate
+                caught.append(c)
+                if c:
+                    solo_catch[i] += 1
+            for i in range(n):
+                if caught[i] and not any(caught[j] for j in range(n) if j != i):
+                    unique_catch[i] += 1
+            fired = [i for i, s in enumerate(sigs) if s]
+            if len(fired) == 1:
+                unique_fire[fired[0]] += 1
+
+    rows = []
+    for i, name in enumerate(names):
+        rows.append({
+            "signal": name,
+            "unique_catch_rate": unique_catch[i] / total_defective if total_defective else 0,
+            "unique_catch_count": unique_catch[i],
+            "unique_fire_rate": unique_fire[i] / total_defective if total_defective else 0,
+            "unique_fire_count": unique_fire[i],
+            "solo_catch_rate": solo_catch[i] / total_defective if total_defective else 0,
+            "unique_share_of_solo": (
+                unique_catch[i] / solo_catch[i] if solo_catch[i] else None
+            ),
+        })
+    return {
+        "total_defective": total_defective,
+        "trials": trials,
+        "definition": (
+            "unique_catch = defective caught by solo-i under Alex(baseline+esc*s_i) "
+            "with coupled Uniform draw, and not caught by any other solo-j; "
+            "unique_fire = defective where only signal i fires"
+        ),
+        "by_signal": rows,
+    }
+
+
 def run_mike_ablation(error_dist: str = "burst", signal_quality: str = "medium",
                       trials: int = TRIALS):
     """
@@ -389,6 +451,30 @@ def run_mike_ablation(error_dist: str = "burst", signal_quality: str = "medium",
             "Cross-layer is not a solo oracle; it co-drives with a margin signal."
         )
 
+    # Mike follow-up: unique catch (not solo CR) is the fixture-retention quantity
+    unique = run_unique_catch(error_dist, configs, trials=trials)
+    print("\nUNIQUE CATCH (coupled solo arms; cases none of the other three catch alone):")
+    urows = []
+    for r in unique["by_signal"]:
+        urows.append([
+            r["signal"],
+            f"{r['solo_catch_rate']:.3f}",
+            f"{r['unique_catch_rate']:.3f}",
+            f"{100 * r['unique_share_of_solo']:.0f}%" if r["unique_share_of_solo"] is not None else "-",
+            f"{r['unique_fire_rate']:.3f}",
+        ])
+    print_table(
+        urows,
+        ["Signal", "solo CR", "unique CR", "unique/solo", "unique fire"],
+    )
+    ranked_u = sorted(unique["by_signal"], key=lambda r: -r["unique_catch_rate"])
+    top_u = ranked_u[0]
+    interpretation.append(
+        f"Unique catch (Mike): top={top_u['signal']} unique_CR={top_u['unique_catch_rate']:.1%} "
+        f"({100 * (top_u['unique_share_of_solo'] or 0):.0f}% of its solo catches). "
+        "Solo CR undersells load-bearing signals; fixture retention should use unique catch."
+    )
+
     for line in interpretation:
         print(line)
 
@@ -411,6 +497,7 @@ def run_mike_ablation(error_dist: str = "burst", signal_quality: str = "medium",
         },
         "singles": singles,
         "pairs": pairs,
+        "unique_catch": unique,
         "classifier_disagree_alone": alone_cd,
         "best_alone": best_alone,
         "best_pair": best_pair,

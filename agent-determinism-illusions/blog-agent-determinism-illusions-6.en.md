@@ -115,6 +115,22 @@ Rerun: `python forge-verify-layered-prototype.py` (needs `ANTHROPIC_*` for Layer
 
 The two garbage samples that made it through to Layer 2 (G08: "I cannot parse this command", G10: incomplete translation) are genuinely ambiguous — they *should* reach the LLM. That's correct behavior, not a leak.
 
+### Update (2026-07-23): blocking vs advisory — different semantics per layer (Ethan)
+
+[Ethan Walker](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f) defended the L0-before-judge split hardest, then named the CI wiring Experiment F still left implicit:
+
+> The two layers deserve different blocking semantics. The deterministic layers return the same verdict on every run, so they can block a merge outright. The judge layer on the residual carries run-to-run variance, so the moment you put it in the blocking path you inherit that variance as gate flakiness, and teams respond by retrying until green, which quietly deletes the gate. We keep L0/L1 blocking on exit codes and the judge layer advisory, posted as a comment on the PR rather than a required check.
+
+That is the same soft/hard split the series already hit elsewhere (Part 4 sensitive-tool soft signal vs hard gate; Lazypl82 on advisory vs load-bearing). Applied here:
+
+| Layer | Stability | CI / merge semantics |
+|-------|-----------|----------------------|
+| L0 / L1 | Same verdict every run | **Required check** — exit code can block merge |
+| L2 judge (residual) | Run-to-run variance | **Advisory** — PR comment / non-required check |
+| L3 human | Escalation queue | Human owns the load-bearing decision on splits |
+
+Experiment F already separates the layers in the pipeline; Ethan's point is the *gate wiring*. Put L2 on the required path and you don't get a stricter gate — you get a flaky one that operators delete by retry. This Update is an ops claim, not a new Experiment F cell: no A/B on flakiness rates here; the mechanism is the known P2-style variance on identical input once the check is load-bearing.
+
 ---
 
 ## 2. Alexey Spinov: Cost Asymmetry
@@ -342,13 +358,26 @@ Mike's follow-up: (a) isolate `classifier_disagree` alone and in pairs on the sa
 | Best pair **with** CD | `classifier_disagree`+`barely_passed` **35.5%** (1.25× P6) |
 | Full four signals | 48.7% |
 
-So: CD alone does **not** get most of the way from 28.5 to 48.8 — it doesn't clear P6. It *is* the best single signal, and every pair that beats P6 includes it; drop CD and the best remaining pair collapses back to ~P6. The partner doing real work next to it is `barely_passed` (a margin/threshold signal, cheaper than L0/L1-vs-L2). Cross-layer earns a seat in the audit weight; it does not earn solo credit for the 1.7×. The bundled 48.8% headline stays; the causal story does not.
+So: CD alone does **not** get most of the way from 28.5 to 48.8 — it doesn't clear P6. It *is* the best single signal, and every pair that beats P6 includes it; drop CD and the best remaining pair collapses back to ~P6. The partner doing real work next to it is `barely_passed` (a margin/threshold signal, cheaper than L0/L1-vs-L2). Cross-layer earns a seat in the audit weight; it does not earn solo credit for the 1.7×. The bundled 48.7% headline stays; the causal story does not.
+
+**Unique catch (Mike, same fixture).** Solo CR is the wrong retention metric. Coupled solo arms — cases caught by arm *i* that none of the other three would have caught alone (`results-v2/external-signal-ablation.json` → `unique_catch`):
+
+| Signal | Solo CR | Unique CR | Unique / solo | Unique fire |
+|--------|---------|-----------|---------------|-------------|
+| `classifier_disagree` | 25.0% | **5.8%** | **23%** | 19.6% |
+| `barely_passed` | 20.4% | 3.2% | 16% | 10.6% |
+| `route_changed` | 17.4% | 1.9% | 11% | 6.5% |
+| `input_unusual` | 16.0% | 1.4% | 9% | 4.9% |
+
+CD looks like the weak link next to P6 on solo CR (24.9 vs 28.4) and is the load-bearing unique catcher — ~3× `route`, ~4× `input`. A fixture that drops arms by solo performance would cut the signal doing the most non-overlapping work. Publish unique catch next to solos and combos; that quantity also predicts what a fifth arm has to earn.
 
 **Concentration of the 95.8%.** Of 96 MISS runs: **qwen3-0.5b = 77 (80.2%)**, gemma3 = 16 (16.7%), deepseek-v4-flash = 3 (3.1%). Top scenario DS4 alone is 34.4%. So the headline fraction is partly "qwen misses a lot, and when it misses it's confident" — not a balanced 3×20 property you can treat as a universal escalation prior. What *does* hold as a shape, conditional on miss: qwen 75/77 (97.4%) and gemma 16/16 (100%) at conf ≥ 0.9; deepseek barely misses (1/3 high-conf). Dump: `results-v2/confidence-vs-miss-concentration.json`.
 
-### Update (2026-07-22): escalation tripwire ≠ audit weighting — see Part 13
+### Update (2026-07-22): escalation tripwire ≠ audit weighting — next part (draft)
 
-Alexey Spinov's follow-up on this post pushes a different knob than Mike's: not *how often* to audit the high-confidence region, but *whether unanimous L2 votes should auto-execute at all* when the failure mode is correlated. Offline DF proxy + real Strict/Balanced/Lenient on qwen3:0.5b: most dangerous accepts are `unanimous_pass`; divergence-only auto-passes them; class tripwire ∪ inverse-unanimous (D+T2) catches them. Full write-up: **Part 13** (*Divergence escalates the wrong population*). This published Part 6 diagram is incomplete without that tripwire — kept here as a pointer, not a silent rewrite. (Part 13 already cites the 95.8% figure; read it with the concentration caveat above. Mike's later note: T1/T2 are the **recurrence** arm only — they don't catch confidently-wrong-and-never-caught-before; that fork is in Part 13 §5.)
+Alexey Spinov's follow-up on this post pushes a different knob than Mike's: not *how often* to audit the high-confidence region, but *whether unanimous L2 votes should auto-execute at all* when the failure mode is correlated. That incompleteness in the Part 6 diagram is real — divergence-only escalation is not enough for the failure mode DF v2 already measured.
+
+**Full write-up is [Part 7](blog-agent-determinism-illusions-7.en.md)** (*Divergence escalates the wrong population* — local draft, **not published on DEV.to yet**). This Update is only a pointer so the published post does not pretend the old diagram is complete. Numbers, D+T2, recurrence vs novelty, structural≠causal independence, and hold-out tests live in that draft — not duplicated here.
 
 ---
 
@@ -396,12 +425,13 @@ This creates a cascade: when a deterministic assertion is code-verified and foun
 | Comment | My blind spot | Replacement |
 |---------|-------------|-------------|
 | Alexey + Manuel | Fed everything to the same LLM reviewer | L0/L1 filter deterministically; LLM handles residual |
+| Ethan Walker | Same merge-blocking semantics for every layer | L0/L1 required (exit code); L2 advisory (PR comment); L3 human on splits |
 | Alexey (2nd) | Symmetric FP/FN metrics | Weighted cost (FN×3) shifts optimal operating point |
 | Dipankar | Split votes averaged by majority | Divergence = UNCLEAR → human, no majority |
 | Mike + xm_dev_2026 | Fixed 5-10% audit rate | Adaptive sampling by confidence × risk |
 | Manuel + Alexey (2nd) | Narrative "reason" field | Evidence-quoted reviewer + deterministic assertions |
 
-Combined, these form a layered verification architecture — not a closed one: L0/L1 handle deterministic filtering (Alexey+Manuel), L2 LLM quotes exact failing evidence (Manuel+Alexey), divergence escalates to L3 human review (Dipankar), audit rate adapts by confidence (Mike+xm_dev_2026), and system thresholds are selected by weighted cost (Alexey 2nd). Each layer narrows what the next sees; none closes the semantic residue.
+Combined, these form a layered verification architecture — not a closed one: L0/L1 handle deterministic filtering (Alexey+Manuel) with **blocking** CI semantics (Ethan), L2 LLM quotes exact failing evidence as **advisory** (Manuel+Alexey / Ethan), divergence escalates to L3 human review (Dipankar), audit rate adapts by confidence (Mike+xm_dev_2026), and system thresholds are selected by weighted cost (Alexey 2nd). Each layer narrows what the next sees; none closes the semantic residue.
 
 This article doesn't claim to have solved anything. It just puts the design decisions I made and the corrections the community provided side by side.
 

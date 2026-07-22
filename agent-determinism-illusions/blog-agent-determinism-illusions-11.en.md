@@ -1,210 +1,169 @@
 ---
-title: "Key-space C3: the Bloom filter that closes referent gameability — tested"
+title: "The honest boundary of argument-space verification — and what the Evidence Locker adds"
 published: false
-description: "Two experiments on Mike Czerwinski's round 7: write-time-resolution passes 50% of wrong referents and LLM accuracy is 17%. Solution: declare key space instead of single key — key-space C3 catches 5/5 wrong-referent cases."
+description: "Four experiments establish C3's catch rate at 4/5 against referent mismatch, and show why the remaining 1/5 is a structural boundary, not a fixable gap. Evidence Locker-style feedback loops detect over-invalidation but not under-invalidation."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
 ---
 
-# Key-space C3: the Bloom filter that closes referent gameability — tested
+# The honest boundary of argument-space verification — and what the Evidence Locker adds
 
 **Agent Determinism Illusions (Part 11)**
 
-*2026-07-15*
+*2026-07-14*
 
-Part 10 identified a structural gap in C3: when a write-time-resolution produces a plausible-but-wrong key ("user:123" instead of "session:abc"), C3 verifies the chosen key and passes — the gate accepts a bad resolution because it verifies mechanically on the wrong target.
+Part 10 tested C3 (argument-space runner) against five scenarios and three evaluators. The result: C3 scored 5/5, synonym-immune, DPI-bound made concrete — a structural floor on addressable claims.
 
-Mike Czerwinski argued this failure belongs to the gate, not upstream of it. The resolution step is the gate's own mechanism, and if the gate accepts a plausible-but-wrong key, the failure happened within the architecture's boundary.
+That floor has a crack. Mike Czerwinski found it in the dev.to comments on Part 4. This article tests the crack, measures its depth, and shows why it can't be closed — only bounded.
 
-This article tests that claim with two experiments, then adds the fix.
+Then it adds a second mechanism: an **evidence feedback loop** inspired by Pascal Cescato's "Evidence Locker" concept. The loop catches over-invalidation (the implementation did more than the contract asked for) but stalls on under-invalidation (the implementation did less). The crack and the loop's blind spot are the same structural boundary.
 
 ---
 
-## 1. Experiment I: Write-time resolution, tested
+## 1. The crack: referent gameability
+
+Part 10's C3 works by running a verify command that tests the actual behavior: write a key, observe whether the cache entry is gone. The verify command doesn't read the requirement text — it runs code.
+
+Mike Czerwinski pointed out a gap in this design. An author who knows the gate checks referent-presence can write:
+
+> "invalidate user:123"
+
+This is technically addressable (names a key, satisfies the referent gate). But the real intent was broader — invalidate ALL user entries, not just user:123. The gate passes on the narrow referent while the actual scope is missed.
+
+The question: can C3 catch this, even when the verify command is written from the wrong referent?
+
+---
+
+## 2. Experiment I: C3 vs referent mismatch
 
 ### Design
 
-Six requirements that intentionally defer scope. Each has a true intent (what should happen) and multiple possible resolutions (what an agent could plausibly choose). C3 verifies whatever key the agent picks.
+Five scenarios. In each, a human reads a requirement with a wrong/narrow referent, writes ONE verify command from it, and C3 runs it. If C3 PASSES, the game succeeded — the verify approved work against a wrong referent. If C3 FAILS, the mismatch was caught.
 
-**Phase A (deterministic):** enumerate all possible resolutions, run C3 on each.
-
-| Scenario | Requirement | True intent | Wrong resolution that passes C3 |
-|----------|------------|-------------|--------------------------------|
-| S1 | "invalidate the relevant cache entry when user data changes" | all user:* | user:123 only → PASS (under-inv) |
-| S2 | "clear stale cache entries before writing" | only user:123 | (none — over-inv caught) |
-| S3 | "invalidate cache if write affects the user's session" | session:abc | user:123 → PASS (wrong-referent) |
-| S4 | "invalidate all related entries on profile update" | user:123 + profile:123 | user:123 only → PASS (under-inv) |
-| S5 | "on password change, invalidate security token" | token:789 | user:123 → PASS (wrong-referent) |
-| S6 | "on permissions change, invalidate all sessions" | all session:* | user:123 → PASS (wrong-referent) |
+| Scenario | Implementation | Wrong referent (req) | True intent | Verify checks | Result |
+|----------|---------------|---------------------|-------------|---------------|--------|
+| S1 | targeted key-level delete | invalidate user:123 | invalidate ALL user:* | user:123 gone | **PASS** → game succeeds |
+| S2 | flush-all | leave user:456 alive | same | user:456 alive | **FAIL** → caught |
+| S3 | prefix:user/* only | invalidate admin:123 | invalidate user:123 | admin:* gone | **FAIL** → caught |
+| S4 | tiered L1/L2 | invalidate L1 | invalidate L1+L2 | L2 gone | **FAIL** → caught |
+| S5 | cascade over-inv all | leave user:456 alive | same | user:456 alive | **FAIL** → caught |
 
 ### Results
 
-**C3 blocks wrong resolutions at 6/12 (50%).** But the distribution matters:
+**C3 catch rate: 4/5.** The game succeeds only on S1.
 
-| Error type | Total | Pass C3 | Blocked by C3 |
-|-----------|-------|---------|---------------|
-| wrong-referent | 4 | **3** | 1 |
-| under-inv | 4 | 2 | 2 |
-| over-inv | 3 | 0 | 3 |
-| under-inv-empty | 1 | 1 | 0 |
+S1 succeeds because the verify command happens to check the right mechanical behavior despite following the wrong referent. "Check user:123 gone" → implementation invalidates user:123 → PASS. But user:456 was never checked, because the narrow requirement never mentioned it.
 
-*Note: 6 "correct" resolutions (1 per scenario) are excluded — C3 verifies them correctly and they are not failure cases. The 6/12 denominator counts only the wrong resolutions.*
-
-**Mike's claim confirmed: 3 of 4 wrong-referent resolutions pass C3.** S1, S3, S5: the agent chose a key that happens to be the trigger key, C3 verifies it, passes. The gate accepted a bad resolution because the mechanically checked key happened to align with the write operation, not with the requirement's intent.
-
-The over-inv pattern is the mirror: when the resolution claims *more* keys than the implementation actually touched, C3 correctly FAILs. Over-inv produces detectable evidence (surviving keys the resolution claimed should be gone). Under-inv and wrong-referent don't.
-
-**Phase B (LLM performs the resolution, deepseek-v4-flash):** Let the model read each ambiguous requirement and produce the concrete key list.
-
-| Scenario | Model chose | Correct? |
-|----------|------------|----------|
-| S1 | user:123 + profile:123 + admin:123 | ❌ mixed |
-| S2 | user:123 + profile:123 + admin:123 | ❌ over-inv |
-| S3 | [] | ❌ empty refusal |
-| **S4** | **user:123 + profile:123** | **✅** |
-| S5 | [] | ❌ empty refusal |
-| S6 | [] | ❌ empty refusal |
-
-**LLM resolution accuracy: 1/6 (17%).** The model either over-invalidates (adds unrelated keys) or under-invalidates (returns empty — cautious refusal). Only S4 was correctly resolved.
-
-This adds a hard number to Mike's concern: an agent doing write-time resolution is wrong 83% of the time on this test set. The gate passes 50% of those errors silently.
+**The honest interpretation:** C3 catches referent mismatch when the wrong referent leads to a verify command that mismatches the implementation's actual scope. It misses when the verify command mechanically checks the right behavior — even though the SCOPE of what should be checked was wrong.
 
 ---
 
-## 2. The Bloom filter idea
+## 3. What the 1/5 gap actually is
 
-The structural pattern is a **membership test** problem. Single-key C3 asks "is cache[k] gone?" — a point check that passes on any k the agent names, regardless of whether k was the right one.
+The S1 gap is not a C3 defect. It's a **contract-definition quality** issue.
 
-The fix: declare the **key space** instead of the single key. "user:*" instead of "user:123". C3 checks ALL keys in that space after the write operation. This is analogous to a Bloom filter upstream of a cache: you don't ask "is this specific key present?" — you ask "is ANY key in the declared space present?"
+Sequence of events:
+1. Human writes requirement: "invalidate user:123" (narrow, incomplete)
+2. Human reads requirement, writes verify command: check user:123 gone
+3. C3 runs verify command → PASS (user:123 IS invalidated)
+4. But user:456 was never checked, because no one asked for it
 
-The contract field becomes:
+Step 2 is where the gap lives. The human who wrote the verify command was working from a requirement that was already too narrow. The verify command correctly verifies what the requirement says — but the requirement itself was wrong.
 
-```json
-{
-  "id": "REQ-3",
-  "desc": "write-invalidation on cache writes",
-  "verify_command": "node .forge/verify/write-invalidation.js",
-  "verify_keyspace": "user:*",
-  "type": "argument-space"
-}
-```
-
-C3 iterates `keys_in_space("user:*")` → `["user:123", "user:456"]` → verifies both are gone after the write.
+**No deterministic gate can fix this.** A gate verifies what it's told to verify. If the instructions are wrong, the gate produces a correct pass on the wrong scope. This is the irreducible L3 (human review) boundary.
 
 ---
 
-## 3. Experiment II: Key-space C3
+## 4. The Evidence Locker pattern
+
+While working on this gap, I read Pascal Cescato's concept of an "Evidence Locker" — a structured collection of runtime evidence that challenges the model rather than accepting it by default.
+
+The core insight: no upfront gate is correct on the first attempt. The honest path is **run → collect evidence → challenge the model → refine the contract → repeat.**
+
+This is exactly the feedback loop missing from the current architecture. C3 produces evidence (PASS/FAIL per key). That evidence should feed back into the contract scope, not just into a human review queue.
+
+---
+
+## 5. Experiment II: evidence feedback loop
 
 ### Design
 
-Same 6 scenarios. Each has a declared key space. Two C3 modes:
+Multi-round simulation. Each round:
+1. C3 verifies against the current contract scope
+2. **Post-audit**: snapshot ALL keys before and after write, detect state changes outside the verify scope
+3. Evidence from the post-audit broadens the contract for the next round
+4. Repeat until scope converges
 
-| Mode | Question it answers |
-|------|-------------------|
-| Single-key C3 | "Is cache[k] gone after write(k)?" |
-| Key-space C3 | "Is EVERY key in space S gone after write(k)?" |
+Two cache implementations to test what the loop can and cannot detect:
 
-Three cache implementations:
-- **LiveCache:** write(k) removes only k (targeted, under-inv by default)
-- **BulkCache:** write(k) removes ALL keys matching k's prefix (prefix-based)
-- **FlushCache:** write(k) removes everything (over-inv extreme)
+- **Scenario A (targeted, under-invalidation):** write(k) removes only k. user:456 survives. This is the S1 gap from Experiment I.
+- **Scenario B (flush, over-invalidation):** write(k) removes EVERYTHING. admin:123 also gets cleared.
 
 ### Results
 
-| Mode | Cache | Wrong-ref caught | Rate |
-|------|-------|-----------------|------|
-| single-key | any | 0/5 | **0%** |
-| **key-space** | **LiveCache** | **5/5** | **100%** |
-| **key-space** | **BulkCache** | **4/5** | **80%** |
-| key-space | FlushCache | 5/5 | 100% |
+**Scenario A (under-invalidation): STALLED at 50% (8 rounds).**
 
-**Key-space C3 catches 5/5 wrong-referent cases with LiveCache.** Every scenario where single-key C3 was blind to a wrong resolution is caught when C3 checks the declared space.
+| Round | Scope | Coverage | Evidence signal |
+|-------|-------|----------|----------------|
+| 1 | user:123 | 50% | user:123 confirmed → no gap signal |
+| 2-8 | user:123 | 50% | Same. user:456 unchanged → invisible |
 
-The one BulkCache "miss" (S1: space `user:*`, trigger `user:123`) is the *desired* behavior: the trigger's prefix matches the space, BulkCache correctly invalidates all user:* keys, and the gate passes. The resolution was correct, the implementation handled the space, and the gate confirmed it.
+The loop cannot detect under-invalidation because **no state change = no evidence**. user:456 sits untouched, the post-audit sees no unexpected activity, and the scope never broadens. This is the same honest boundary as Experiment I's S1 gap.
 
-**How it works in each scenario:**
+**Scenario B (over-invalidation): CONVERGED in 2 rounds.**
 
-| Scenario | Agent resolves to | Declared space | Key-space C3 checks | Result |
-|----------|-----------------|----------------|-------------------|--------|
-| S1 | user:123 | user:* | user:123 ✅ user:456 ❌ (survived) | FAIL |
-| S3 | user:123 | session:* | session:abc ❌ session:xyz ❌ (not invalidated) | FAIL |
-| S4 | user:123 | user:*,profile:* | user:123 ✅ user:456 ❌ profile:123 ❌ | FAIL |
-| S5 | user:123 | token:* | token:789 ❌ (not invalidated) | FAIL |
-| S6 | user:123 | session:* | session:abc ❌ session:xyz ❌ (not invalidated) | FAIL |
+| Round | Scope | Coverage | Evidence signal |
+|-------|-------|----------|----------------|
+| 1 | user:123 | 50% | **admin:123 changed unexpectedly** |
+| 2 | user:123 + user:456 + admin:123 | 100% | all confirmed → converged |
 
-In every case, the agent's wrong resolution is caught because the declared space contains keys that the write operation didn't touch.
+The loop detects over-invalidation because the implementation produces **unexpected state changes** — keys that moved even though the contract didn't ask about them. "admin:123 was deleted even though we only wrote user:123" is a detectable signal.
 
----
+### Honest boundary
 
-## 4. The remaining boundary — measured
+| Signal type | Detectable? | Mechanism | Maps to |
+|-------------|------------|-----------|---------|
+| Over-invalidation | ✅ | Unexpected state change | flush, cascade |
+| Under-invalidation | ❌ | No state change = no evidence | S1 gap, Mike's game |
 
-Key-space C3 requires the key space to be **declarable**. The boundary question is: how large is the undeclarable class in real requirements?
-
-I ran a corpus classification experiment: 35 requirements from cache invalidation, authorization, and write-path domains. Each classified by human ground truth (can a key space be declared?) and by an automated classifier (deterministic rules).
-
-### Human ground truth
-
-| Class | Count | Rate |
-|-------|-------|------|
-| Declarable | 20 | 57% |
-| Partial (needs human resolution) | 7 | 20% |
-| Undeclarable | 5 | 14% |
-| Out-of-scope (UX/ops/freshness) | 3 | 9% |
-
-### The undeclarable class — what is it?
-
-The 8 undeclarable + out-of-scope cases are not cache write-path requirements. They are:
-
-- **Freshness/timing properties** (3): "eventually consistent", "latest state", "latest hierarchy"
-- **UX/robustness claims** (2): "gracefully handle cache misses", "feel responsive"
-- **Non-write-path mechanisms** (2): TTL-based expiry, data integrity consistency
-- **Distribution property** (1): "synchronize across all nodes"
-
-**Zero of these belong in C3's domain.** They are not write-path cache invalidation requirements — they were misclassified at the routing step.
-
-### The partial class — resolvable?
-
-| Subtype | Count | Resolution |
-|---------|-------|-----------|
-| Needs dependency trace | 3 | `SELECT session_id FROM sessions WHERE user_id = ?` — architecturally resolvable |
-| Needs intent inference | 4 | "relevant", "related", "stale" — requires human judgment |
-
-### Automated classifier
-
-The classifier (deterministic pattern rules) achieves 66% exact agreement with human ground truth — not high enough to run unattended. It tends to be conservative (says "partial" for 8 cases the human called "declarable"), which slows things down without reopening the gap. The critical direction: **zero false undeclarables** — the classifier never said "can't declare" when a human said "can declare." There is 1 false-declarable in the other direction, so the classifier is a conservative first-pass that needs review before accepting a "declarable" verdict.
-
-### What this means
-
-The undeclarable-space class that would reopen Part 10's under-inv gap is **small and bounded for requirements legitimately in C3's domain**. Of the 35-requirement corpus, 5 (14%) are genuinely undeclarable even by a human — freshness, timing, and distribution properties that no key-space expression can capture. Another 3 (9%) are out-of-scope (UX/ops/data-integrity) and shouldn't have entered the C3 pipeline at all.
-
-The honest boundary shifts from "undeclarable space size" to **"routing accuracy into C3"** — a classification problem upstream of the gate. That's a different problem, addressable by the same sampling layer, but not a structural gap in key-space C3 itself.
+The feedback loop is a partial answer. It broadens scope when the implementation over-delivers, but it cannot close the under-invalidation gap — because the gap is the ABSENCE of an observable event.
 
 ---
 
-## 5. What this means for the architecture
+## 6. Three mechanisms, three failure modes
 
-| Mechanism | Gap it addresses | Catch rate | Remaining boundary |
-|-----------|-----------------|------------|-------------------|
-| Single-key C3 | DPI-bound fabrications | 5/5 (Part 9) | Referent gameability (0/5) |
-| **Key-space C3** | **Referent gameability** | **5/5** | **Routing into C3 (not space size)** |
-| Evidence feedback loop | Over-invalidation | Converges 2 rounds | Under-inv invisible |
-| Sampling | All residual gaps | — | Fixed cost, no adaptive signal |
+| Mechanism | Catches | Misses | Why |
+|-----------|---------|--------|-----|
+| C3 verify (non-parameterized) | Behavior mismatch, DPI-bound fabrications | Incomplete verify scope (wrong referent) | Runs what it's told |
+| C3 verify + broader referent check | Wrong referent that mismatches impl behavior (4/5) | Wrong referent that coincidentally passes (1/5) | Verify tests the referent it was given |
+| Evidence feedback loop | Over-invalidation (unexpected state changes) | Under-invalidation (no change = no signal) | Audit detects changes, cannot detect absences |
+| L3 human review | All of the above | Attention budget, fatigue, bias | No mechanism replaces human judgment |
 
-The move from single-key to key-space C3 is a structural improvement: it changes the question from "did this one key change?" to "is the declared space covered?" and in doing so closes the wrong-referent gap that Mike identified.
+The honest claim: these three mechanisms are not a pipeline that converges to 100%. They are three different failure-mode detectors, each with a blind spot, and the blind spots overlap in one place — the under-invalidation gap, which is contract-definition quality and belongs to human review.
 
-The three mechanisms from Part 10 (C3, evidence feedback, L3 human review) now have a fourth: **key-space declaration**. It's not a new mechanism — it's a more precise contract field that constrains what C3 iterates over. The Bloom filter analogy holds: a membership test against a declared space is stronger than a point lookup, and declaring the space (rather than implying it) makes the contract's scope explicit.
+---
 
-The honest claim: **wrong-referent gameability is structurally closed for declarable spaces.** The 35-requirement corpus puts a number on the residual: 14% are genuinely undeclarable by a human, 9% are misrouted, and the remaining 77% are either declarable now (57%) or resolvable via dependency tracing (20%). The boundary is not space size but routing accuracy into the gated pipeline.
+## 7. What this means for the architecture
+
+The Evidence Locker pattern adds a specific engineering artifact: a **post-audit layer** that runs after every C3 verify, snapshots persistent state, and flags keys that changed outside the verify scope.
+
+In forge-verify terms:
+- **C3 verify** runs the human-authored verify_command → PASS/FAIL per requirement
+- **Evidence feedback** runs a post-audit that compares pre/post state across ALL known keys → unexpected changes flagged
+- **Contract refinement** uses flagged unexpected changes to broaden the verify scope for the next run
+
+The honest benefit: **over-invalidation converges quickly** (flush, cascade, broad-scope implementations all produce detectable signals). The honest limitation: **under-invalidation does not converge** (wrong referent that happens to work remains invisible).
+
+This is not fixable by a smarter audit. It is a structural property of automated verification: you cannot detect the absence of an event without knowing the event should have occurred, and knowing that requires human domain knowledge. The gap is named, bounded, and assigned to L3 — which is the design's honest work, not its failure.
 
 ---
 
 *Experiment scripts:*
-- [`write-time-resolution-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 6 scenarios × resolution enumeration + LLM phase
-- [`key-space-verify-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 6 scenarios × 2 C3 modes × 3 cache impls
-- [`space-declarability-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 35-requirement corpus × human × automated classifier
+- [`referent-mismatch-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 5 scenarios, single verify command, C3 catch rate 4/5
+- [`evidence-feedback-loop-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 2 scenarios × 8 rounds, over-inv converges in 2, under-inv stalls
 
-*Results: `results-v2/write-time-resolution.json`, `results-v2/key-space-verify.json`, `results-v2/space-declarability.json`*
+*Results: `results-v2/referent-mismatch.json`, `results-v2/evidence-feedback-loop-{A,B}.json`*
 
-*Previous: [The honest boundary of argument-space verification](blog-agent-determinism-illusions-10.en.md)*
+*Previous: [The Third Predicate: Argument-Space Verification, Tested](blog-agent-determinism-illusions-10.en.md)*
 *Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*

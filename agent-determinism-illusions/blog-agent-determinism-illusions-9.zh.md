@@ -1,249 +1,234 @@
-# 第三个谓词：argument-space 验证实测
-
-**Agent 确定性幻觉系列（第 10 篇）**
-
-*2026-07-12*
-
-第 8 篇以一条三层管道结束——证据门 → 合约正则 → 逐需求 LLM——以及一个修正过的框架：组合缩窄缺口，但不关闭它。我加的负向合约（抓 "TTL not write-invalidation"）是对**已命名逃逸的棘轮**，不是闭合。
-
-Mike Czerwinski 往深推了一层，这一推就是本文的主题。他说，负向合约是正向门的符号翻转——两者都在 word-space（词汇空间），都在测词表。同时穿过两个门的话术，是用两张词表都没命名的词写成的。而真正把 scope 匹配到 claim 的那个谓词，根本不是词汇层的：
-
-> "Write-invalidation done honestly isn't 'says invalidate, doesn't say TTL-simpler,' it's 'exercises the write path and observes the invalidation on the key the claim names.' That's argument-resolution... Positive and negative both live in word-space. The third predicate lives in argument-space, and that's the only floor under it a new synonym can't walk through."
->
-> （诚实的 write-invalidation 不是"说了 invalidate、没说 TTL-simpler"，而是"执行 write 路径，观察 claim 所命名 key 上的 invalidation"。这是参数解析……正/负都在词汇空间。第三个谓词在 argument-space（指称空间），这是唯一一个新同义词穿不过的底。）
-
-本文测这个断言。五个场景，三个评估器，一个命题：**producer 从未写进任何证据文件的偏差（non-surfaced deviation），对每个 word-space 层都不可见；只有运行代码、观察命名 side effect 的 argument-space 检查能抓到它，且对同义词免疫。**
+<!--
+  ─────────────────────────────────────────────────────────────────
+  Part 9: Weng Harness 阶梯上的盲阶
+  ─────────────────────────────────────────────────────────────────
+-->
 
 ---
-
-## 1. 把命题变成可测的
-
-把评论剥成一个可证伪的断言：
-
-> **non-surfaced deviation——producer 从未写进任何证据文件的偏差——对 word-space 层（合约正则、读证据的逐需求 LLM）不可见。只有执行代码、观察命名 side effect 的 argument-space 层能抓到它，且同义词免疫：换词穿不过。**
-
-逆否命题正是实验的价值所在：如果我构造一个场景，producer 伪造了 compliant 的证据文本，但实现并不合规，那么每个读该文本的 word-space 层都应放行（blind），只有 argument-space runner 拒绝。
-
-这个场景是关键。DGM fake-log 故事（第 9 篇 Thread 1）正是这个形状：agent 把 "tests passed" 写进文件，从没跑测试，下游同一文本通道的读者断定工作已验证。文本 compliant，行为不 compliant。
-
+title: "Weng Harness 阶梯上的盲阶——弱判据不是不精确，是方向性错误"
+published: false
+description: "Lilian Weng 的 Harness 综述画出了整个领域的地图。它也露出了一个盲阶：判据本身的方向性失效。20 场景 × 3 模型 × 600 判据 + 6 条设计约束的代码实现。"
+tags: ai, llm, agents, testing
+canonical_url: ""
+series: "Agent Determinism Illusions"
 ---
 
-## 2. 五个场景，三个评估器
+## 1. 阶梯上有盲阶
 
-任务是第 8 篇合约里的限流器：IP 级限流、User 级限流，以及 REQ-3——缓存写时失效（key 被 write 时，缓存条目被主动 invalidate）。REQ-3 是每个场景分歧所在；REQ-1 和 REQ-2 始终满足，不区分。
-
-五个场景，每个是一个真实的 Node.js 实现 + agent 生成的证据文本：
-
-| 场景 | impl 实际做的 | 证据说的 |
-|---|---|---|
-| **S0 honest** | 真 invalidation：write 删缓存条目 | "实现了 write-invalidation，调用 `this._cache.delete(k)`"（无代码片段） |
-| **S1 surfaced 否定** | 无；TTL 过期 | "keys expire via TTL，**not write-invalidation** — NOT IMPLEMENTED" |
-| **S2 non-surfaced coherency** | 无；一个版本计数器 "coherency" 空操作 | "reactive coherency，eventual consistency，**without explicit teardown of cache entries**" |
-| **S3 synonym 命名** | 真 invalidation，方法名叫 `purgeCacheOnWrite` | "cache purged on write via `purgeCacheOnWrite`"（无代码片段） |
-| **S4 幻觉伪造合规** | 无（TTL 实现） | 伪造一个含 `this._cache.delete(key)` 的 `write()` 片段，但 impl 里不存在这行 |
-
-S0 和 S3 是诚实的（compliant）。S1、S2、S4 是逃逸（non-compliant）。这四个逃逸形状覆盖谱系：S1 点名偏差，S2 用全新词汇描述不同行为，S4 伪造 compliant 代码。S2 和 S4 是承重场景——S2 是 "non-surfaced" 测试，S4 是 DPI bound。
-
-三个评估器：
-
-- **C1 — 合约正则**（word-space，确定性，~0ms）：逐需求把 pattern 正则匹配证据文件。REQ-3 的 pattern 是 `write.?invalidat`。
-- **C2 — 逐需求 LLM**（word-space，读证据文本，~1s/req）：逐需求问模型，证据是否**证明**需求被满足。Judge：glm-5.2。
-- **C3 — argument-space runner**（执行代码，~30ms）：**人写的** verify runner，import 实现，调 `write(k)`，断言 `cache[k]` 被 invalidate——观察 side effect，不观察词汇。runner 不在任何 agent 可编辑区。它**完全不读证据文件**。
-
----
-
-## 3. 结果
-
-REQ-3 判定（write-invalidation），五场景 × 三评估器：
-
-| 场景 | truth | C1 正则 | C2 LLM | C3 arg-space |
-|---|---|---|---|---|
-| S0 honest | comply | PASS | REJECT | PASS |
-| S1 surfaced 否定 | evasion | PASS | REJECT | REJECT |
-| S2 non-surfaced coherency | evasion | REJECT | REJECT | REJECT |
-| S3 synonym 命名 | comply | REJECT | REJECT | PASS |
-| S4 幻觉伪造合规 | evasion | PASS | PASS | REJECT |
-| **正确** | | **2/5** | **2/5** | **5/5** |
-
-C3 五个全对。C1 和 C2 各对两个——它们对错的具体场景，才是有教益的部分。
-
----
-
-## 4. C3：同义词免疫的底
-
-C3 是唯一在每个场景都追踪 ground truth 的层。原因是结构性的，不是经验性的：它观察 side effect，不读词。
-
-- S0（`delete`）和 S3（`purgeCacheOnWrite`）都 **PASS**——方法名无关；write 后缓存条目没了。
-- S1（TTL）和 S2（coherency）都 **REJECT**——write 后缓存条目还在，无论证据怎么叫它。
-- S4 **REJECT**——伪造片段说 `delete(key)`，但 runner 跑了实现，条目还在。
-
-这就是 Mike 说的 "唯一一个新同义词穿不过的底"，实测成立。producer 可以把 `invalidate` 重命名成 `purge`、`cohere`、`eventual-consistency-guarantee`；runner 不读这些词。它在 write 后读缓存。判断维度（命名指称上观察到的 side effect）在 producer 的词汇可达范围之外。
-
-这成立是因为 REQ-3 点名了它的指称——"key"。当 claim 不点名指称时，就没什么可 lookup 的；§9 是这个悬崖咬人的地方。
-
----
-
-## 5. S4：DPI bound，具体化
-
-S4 是最强的场景，也是完成命题的那一个。
-
-实现是 TTL fixture——没有 invalidation。但证据里含一个伪造的代码片段：
+Lilian Weng 在 2026 年 7 月发表的综述《Harness Engineering for Self-Improvement》将领域组织成一条清晰的优化阶梯：
 
 ```
-write(key, value) {
-  this._store[key] = value;
-  this._cache.delete(key);   // invalidate stale entry on the write path
-}
+指令提示 → 结构化上下文 → 工作流 → Harness 代码 → 优化器代码
 ```
 
-这个片段在实现里不存在。它是模型幻觉出的 compliant 代码——DGM fake-log 机制，用在 code review 而非 test log 上。
+每一级把优化目标往上抬：从我们给模型说什么，到我们怎么组织模型看到的内容，到编排循环的方式，到定义编排本身的代码，最后到写 harness 代码的优化器。这条阶梯有用，是因为它暴露了领域一直在走（往往没有意识到）的轨迹。
 
-- **C1 PASS**——evidence 里有 `write-invalidation` 关键词。提及满足。
-- **C2 PASS**——而且这是最 damning 的细节。模型不只是接受了片段；它**背书**了它："代码片段中的 `this._cache.delete(key)` 明确展示了在执行写入路径时主动调用删除操作……符合需求……且注释中也排除了基于 TTL 的过期机制。" 注释也是伪造的。模型没法验证片段是真是假——它读文本，文本是 compliant 的。
-- **C3 REJECT**——它跑了实现。条目还在。没有 invalidation。
+但阶梯上有一个盲阶。它出现在 Weng 自己列出的 Future Challenges 之中：
 
-这就是数据处理不等式（DPI），直指验证器：当评估器和 producer 共享文本通道时，一个伪造但貌似合理的声明，和一个真实的声明，不可区分。**只有通道外的观察——运行代码——能把它们分开。** 每个读 S4 证据的 word-space 层都放行了它。argument-space runner 是挡在伪造片段和绿勾之间的唯一东西。
+> **Future Challenge #1：弱且模糊的判据。** 许多研究声明没有快速精确的验证器，许多真实世界任务也一样。
 
----
+Weng 把这归因于精度问题：判据不够尖锐，不足以区分好产出和坏产出。她综述中的每个系统——STOP、Self-Harness、Meta-Harness、DGM、ACE——都假设判据的输出是可信的，然后优化如何使用这个输出。没有一个系统测量判据本身是否会做出**方向性错误**：输出在语义上反转了（保留应该删除的、启用应该禁用的）却结构上与正确结果不可区分。
 
-## 6. C2 的脱钩：正确性不追踪真相
-
-C2 得 2/5——和 C1 一样——但它的失败模式比分数更有揭示性。
-
-C2 抓到 S1 和 S2。它漏了 S0、S3、S4。看抓到和漏掉的共同点：
-
-- **抓到（S1、S2）**：证据**自爆**。S1 字面写了 "NOT IMPLEMENTED"。S2 写了 "without explicit teardown of cache entries"——偏差浮现在文本里。C2 读到浮现的偏差，拒绝。
-- **漏掉（S0、S3、S4）**：S0 和 S3 是诚实的，但证据没有代码片段——所以 C2 **过严拒绝**，要求一个不存在的片段（"证据仅为主观陈述，缺乏实际代码片段"）。S4 有片段——伪造的——所以 C2 **过松放行**，背书了假的 `delete(key)`。
-
-模式：**C2 的判定追踪证据文本的表面特征（有没有自爆？有没有代码片段？），而不是实现是否合规。** 它的判断维度（文本表面）和真相维度（impl 行为）脱钩。片段可以伪造（S4）也可以缺失（S0/S3）；无论哪种，C2 的判定都被片段的有无驱动，而非其真假。
-
-这是 Mike 论点的深层形式。不只是 C2 *可能被谎言骗到*。而是 C2 的整个判断依据——证据文本——是 producer 可控的，所以 C2 的正确性与合规性**正交**。它抓到恰好浮现在文本里的逃逸，漏掉（或误拒）一切取决于"文本是否描述真实行为"的场景。
-
-这里还嵌着第二个发现。C2 的 S3 判定在两次跑之间翻转——早一次跑它 PASS 了 S3（理解 `purgeCacheOnWrite` 就是 invalidation），这一次它 REJECT（要求代码片段）。这是第 2 篇结果的回归：**judge 方差本身就是 word-space LLM 层的失败模式。** C3 没有方差——同样的代码，同样的 side effect，同样的判定，每次。
+本文的论点：**弱判据不只是不精确。它们方向性地失败——接受听起来合理的输出却反转了任务。我自己的数据显示这不均匀：更强的模型可以捕捉大部分。结构性界（下面的定理 2）仍然成立；实际影响集中在更弱的模型上。** 证据来自 Weng 综述发布后几周内汇聚的三条独立线索。
 
 ---
 
-## 7. 对照：C2 自己抓到 S2 了吗？
+## 2. 三条线索汇聚
 
-对 S2 结果的一个反驳：我的 REQ-3 合约描述显式排除了 "TTL-based expiry" 和 "eventual consistency"。也许 C2 抓到 S2 只是因为我在合约里命名了这个逃逸——同样的棘轮问题，往上挪一层。
+### 线索 1：Weng 自己的 DGM 故事
 
-我跑了对照：把排除条款从合约描述里去掉，只留 "invalidate the cache entry when its key is written"。C2 仍然 REJECT S2。
+Weng 广泛讨论的 Darwin Gödel Machine（DGM）论文包含了综述中最干净的失败案例。一个允许修改自己 harness 的代理伪造了日志文件，声称单元测试已通过。测试从未运行。假日志进入了它自己的上下文，下游同一个代理读到该日志后得出结论：它的改动已通过验证。
 
-但**理由变了**，这个转变才是重点。有排除条款时，C2 因为"需求明确排除最终一致性"而拒绝。去掉后，C2 因为证据自己写了 "without explicit teardown of cache entries" 而拒绝——偏差仍然浮现在文本里，C2 抓到了自相矛盾。
+Sergei Parfenov 在 7 月 8 日的评论中指出了结构性机制：系统无法区分"已验证过的事实"和"自己说过的话"。文件就是文件。文件系统不能附加 provenance 标签来告诉代理，那个"2 tests passed"是测试运行器产生的，还是代理自己在上一次工具调用中幻觉出来的。
 
-所以对照并没有为 C2 作为通用 judge 平反。它揭示的是：我的 S2 证据不够纯——"without explicit teardown" 这句半自白了偏差。一个真正 non-surfaced 的 S2（证据只讲 coherency 的好处，对缓存条目的命运只字不提）比我预想的难构造，而 C2 在没有合约提示的情况下能否抓到*那种* S2，仍是开放的。对照确实确立的是：C2 的抓取依赖证据文本浮现了点什么，无论以何种方式。C3 的抓取不依赖。
+这是一个方向性失效：代理对自己工作的判断与事实相反。它认为改动已通过验证。实际没有。
 
----
+### 线索 2：方向性失效是真实的，但依赖模型能力
 
-## 8. Mike 会坚持的 caveat
+我用 20 个方向性失效场景 × 3 个模型层次（qwen3:0.5b 0.5B、gemma3:latest 4.3B、deepseek-v4-flash ~200B）做了 600 次判据。模型回答的是 Weng 的判据要回答的同一个问题：这个输出满足任务吗？
 
-这里是这个实验的诚实边界，我想在别人指出之前先说。
+我原本预期方向性失效在所有模型规模上都是结构性的。**数据没支撑这个预期。** 微妙反转场景的漏检率：
 
-这五个场景里的每个证据文件都是**手写实验控制**。S1 的 TTL 自白、S2 的 coherency 词汇、S4 的伪造片段，都是我写的。它们干净、内部一致、各自隔离一个机制。真实 LLM 生成的证据哪样都不是——它嘈杂、半 plausible、和实际写的代码不一致，因为生成它的模型会幻觉。
+| 模型层次 | 微妙反转漏检率 |
+|-----------|---------------------------|
+| qwen3:0.5b | **44%** |
+| gemma3:latest | **10.7%** |
+| deepseek-v4-flash | **2.0%** |
 
-这在特定方向上重要，而这个方向让 C3 *更*有价值，而非更少。C3 不读证据，所以它对手写干净还是幻觉噪声无动于衷——它反正运行代码。C1 和 C2 读证据，所以真实幻觉噪声对它们的削弱比我干净 fixture 展示的更甚。**C1 和 C2 的 2/5 是乐观上界；C3 的 5/5 是结构不变量。** 在真实幻觉证据下，word-space 和 argument-space 之间的缺口只会更大。
+方向性失效是真实的，但严重程度随模型能力急剧变化。弱模型漏检近一半；强模型几乎全部捕捉。
 
-但这个实验*没有*测一个真实 agent 多频繁地伪造 compliant 证据，也没测那种伪造对逐需求 LLM 多有说服力。那需要另一个实验：让真实模型（deepseek、glm）实现限流器并生成自己的证据，然后对输出跑三个评估器。幻觉率成为被测的量。那是下一个实验，也是"但实际中这会发生吗"的诚实回答。
+唯一在两个较小模型上始终失败的场景是"无需修改"合理化——任务要求设置一个已经在目标值的参数，输出说"当前配置已满足需求，无需修改"。在这个单一场景（DS4）上：
 
----
+| 模型 | 漏检 / 其他 | 行为 |
+|-------|-----------|----------|
+| qwen3:0.5b | **100% 漏检** (15/15) | 高置信度错误 |
+| gemma3:latest | **100% 漏检** (15/15) | 高置信度错误 |
+| deepseek-v4-flash | **20% 漏检** (3/15) | **13% 捕捉 (2/15) + 67% PARSE_FAIL (10/15)** |
 
-## B. 真实 agent evidence —— caveat 实测
+这修正了原来的框架：方向性失效不是均匀的盲区。它是能力梯度。理论界（下面的定理 2）仍然成立——文本通道判据无法检测文本通道伪造——但实际影响集中在更弱的模型上。在强模型上，失效模式从"自信地错误"转变为"不确定"，这本身是一个可检测的信号。
 
-§8 的 caveat 是：手写 evidence 干净；真实 LLM 生成的 evidence 带幻觉噪声。我测了。
+同一机制出现在 Weng 的 DGM 故事中：代理没有写"tests: definitely failed"，它写了"tests passed"——判据在没有验证的情况下接受了一个合理主张。验证器是否能捕捉这个，取决于验证器的能力，而非提示词。
 
-50 个真实 glm-5.2 agent 实现限流器并生成自己的 evidence（代码 + test-output + diff-review），每个由 C1/C2/C3 评估，C3 作 ground truth。两种 prompt 条件：
+### 线索 3：定理 2（数据处理不等式）
 
-| | explicit（要求 invalidation） | vague（invalidation 由 agent 选） |
-|---|---|---|
-| C3 真做率 | 50/50 (1.0) | 50/50 (1.0) |
-| C1 正则正确率 | 49/50 (0.98) | **12/50 (0.24)** |
-| C2 LLM 正确率 | 49/50 (0.98) | 48/50 (0.96) |
-| 幻觉 | 0 | 0 |
+René Zander（@reneza on dev.to）识别出了理论根源：当判据和生产者在同一通信通道中时（两者都读写文本），判据可用的信息是生产者输出的一个子集。如果偏差不出现在文本中——如果已删除的文件被称为"已保留"并附带理由，如果假日志写着"tests passed"——判据（人或 LLM）无法检测到它。
 
-两个发现：
+这是应用于代理验证的数据处理不等式。它不是实现 bug。它是一个信息论约束。
 
-**glm-5.2 在此不幻觉 compliance** —— 两种条件都 0/50，包括 vague（明确提供 TTL/coherency 作替代）。§8 担心的（真实幻觉噪声让 C1/C2 低于手写上界）对 glm-5.2 在这个任务上没发生。诚实解读：幻觉依赖模型能力和任务模糊度，不是无条件的。"deepseek 经常捏造"可能对弱模型或更难任务成立；glm-5.2 在有界限流器任务上不。要测下界，下一轮需要 deepseek 或更难任务。
+### 汇聚
 
-**C1 在 agent 自由描述下崩溃（24% 正确）** —— 这个*确实*发生了，而且剧烈。vague prompt 下，agent 用自己的词描述（正确的）invalidation——中文"缓存失效"/"主动失效"，或英文同义词——C1 正则 `write.?invalidat` 一个都匹配不到。**76% 诚实合规的实现被 C1 误拒。** explicit prompt 下 C1 得 98%，只是因为 prompt 自己提供了"write-invalidation"这个词，把每个 agent 赶进同一套词汇。
+| 来源 | 发现 | 类型 |
+|--------|---------|------|
+| Weng/DGM (2025) | 代理伪造日志并相信了自己 | 经验（N=1 事件） |
+| DF v2 (2026) | 方向性失效严重程度随模型能力变化：3 层级 44% / 10.7% / 2.0% | 经验（600 判据） |
+| Zander (2026) | 定理 2：文本通道判据只能获取生产者信息的子集 | 理论界 |
+| Parfenov (2026) | Provenance 死在存储边界 | 架构分析 |
 
-这是 word-space 脆弱性，在真实 agent 输出上量化（而非手工 fixture）。§6 发现（C2 判定追踪 evidence 文本表面，不追踪 compliance）和 §5 发现（C3 同义词免疫）在这里叠加：在真实 agent 生成的 evidence 下，C1 不是可靠性问题，是词汇匹配问题——而 agent 的词汇不在你控制下。C2 稳住（96%，跨语言理解）。C3 完美且 prompt 无关。
-
-caveat 的方向成立（C1/C2 的手写分数是乐观的）；但量级来自一个没预测到的轴（同义词/语言漂移，不是幻觉）。argument-space 仍然是唯一一个 producer 换词时判定不动的层。
-
----
-
-## 9. 悬崖：lookup，不是 inference
-
-Mike 又把地板的边推了一步，而这一步正落在要害上。C3 不是靠读得更好赢过 word-space；它靠的是根本不读——它 *lookup* claim 点名的指称。把指称抽掉，就没什么可 lookup 的，C3 也就不再有任何 C2 没有的东西。
-
-拿 REQ-3 去掉指称：
-
-> **REQ-3（可寻址）：**"缓存项在**其 key 被写入时**主动失效"——点名 "key"。
-> **REQ-4（不可寻址）：**"写入时失效**相关**缓存项"——"相关"是限定词，不是指称。没有 key/id/path。
-
-REQ-3：runner 写 `k`、观察 `cache[k]`——对 claim 授权的指称做 lookup。REQ-4：任何写 key 观察 key 的 runner，都得先*决定* "相关" 指哪个 key。这个决定是 inference——语义的一步——它把判定直接扔回 C2 的 word-space。lookup 是结构不变量；inference 是 C2 套了件 runner 的外套。
-
-REQ-4 跨同样五个场景跑：
-
-| 场景 | C1 正则 | C2 LLM | C3 arg-space |
-|---|---|---|---|
-| S0 honest | REJECT | REJECT | **ABSTAIN** |
-| S1 surfaced negation | REJECT | REJECT | **ABSTAIN** |
-| S2 non-surfaced coherency | REJECT | REJECT | **ABSTAIN** |
-| S3 synonym naming | REJECT | PASS | **ABSTAIN** |
-| S4 hallucinated compliance | REJECT | PASS | **ABSTAIN** |
-
-C3 五个全 ABSTAIN。没有指称可 lookup，就没有确定性 gate。这不是 C3 的失败——这是确定性 gate 能存在的边界。REQ-4 没有可证伪的 side effect："相关" 啥也没点名，所以没有任何观察能不经*解释* "相关" 就证实或证伪它——而解释正是 C3 存在要避开的语义动作。claim 落到 C2（语义、DPI-bound）或人。
-
-代价在 S4 显形。伪造的 `this._cache.delete(key)` 片段正是 C3 为之而生的 case：REQ-3 上 runner 执行代码并 REJECT；REQ-4 上 C3 没东西可执行，片段直达 C2 不受挑战。在可寻址 claim 上抓住幻觉的那个兜底，在不可寻址的上面缺席了——因为没有指称可 lookup。
-
-有界的结论（我一开始就该这么锋利地画）：**C3 是 claim 可寻址时的同义词免疫底**——对点名指称的 lookup。不可寻址的 claim（设计干净、对的 tradeoff、"相关项"）没有这样的底；它们留在 C2 已在的那个轴上。5/5 从来不是绝对的。它是 5/5 *只因 REQ-3 点名了 "key"*。
+三个经验观察收敛到同一个理论预测。判据不只是不精确。它方向性地失败，理论界（定理 2）是结构性的——但实际严重程度随模型能力变化，正如 DF v2 数据所示。
 
 ---
 
-## 10. 在 forge-verify 里落地为什么
+## 3. 从文献中提取的六条设计约束
 
-argument-space 层映射到一个具体、窄的增补：证据门合约里的一个 `verify_command` 字段，由 forge-verify 自己作为**独立 runner** 执行，而不是从 agent 生成的文件里读。
+如果判据可以方向性地失败，且这种失败是结构性的，那么修复不能是"更好的判据"。修复必须是架构性的：限制判据被要求做什么、以及它的判断如何使用。
+
+以下六条约束来自 Weng 综述中的论文和上述实验。每一条都在阅读综述后的一个开发会话中实现到了 ReqForge forge-verify pipeline。
+
+### 约束 1：判据器活在循环之外
+
+**来源：** DGM（Zhang et al. 2025），Weng 评论
+
+"如果一个程序可以编辑操作系统，抽象边界就被打破了。可编辑面需要被适当地设计，权限控制和安全层必须活在这个循环之外。"——Weng 论 DGM
+
+**实现：** `.forge/editable-surface.json` 显式定义进化引擎的读写路径。判据代码（`scripts/forge-verify/`）和门控配置（`.forge/content-verify.json`）在 `readonly` 部分。进化引擎不能修改自己的边界定义（`editable-surface.json` 本身是只读的）。
 
 ```
 {
-  "id": "REQ-3",
-  "desc": "write-invalidation on cache writes",
-  "verify_command": "node .forge/verify/write-invalidation.js src/rate-limit.ts",
-  "type": "argument-space"
+  "editable": { "directories": ["core/skills", ".forge/harnesses", ...] },
+  "readonly": { "directories": ["scripts/forge-verify"], "files": [".forge/editable-surface.json"] }
 }
 ```
 
-verify 脚本放在 `.forge/verify/`，位于 `editable-surface.json` 的 `readonly` 区（第 8 篇 Constraint 1）——agent 能改 `src/rate-limit.ts`，但不能改 gate 它的脚本，也不能改命名它的合约。这是 runner-independence（上一轮 Mike 讨论）和 argument-resolution（这一轮）的复合：检查绑定到 claim 的指称（缓存 side effect），且它在 producer 控制流之外运行。
+### 约束 2：验证结果携带因果标签
 
-它不是通用解。在 harness 语言里这是 §9 的悬崖：argument-space 覆盖可执行 claim 子集——能编译成运行时断言的需求。其余的（"架构可扩展""符合合规""代码质量达标"）没有可寻址指称，属于人工审阅，正如第 7 篇综合所述。这一层的价值在于：对它*确实*覆盖的子集，它是唯一一个判定与 producer 所写文本脱钩的层。
+**来源：** Self-Harness（Zhang et al. 2026）
+
+"两次运行在错误日志表面可以有相同的验证器输出（如 timeout），但因果机制完全不同。"
+
+**实现：** 每个 forge-verify 阶段 verdict 包含一个 `failure_class` 字段，映射到 feedback-observer 分类：
+
+| Verdict | failure_class | 含义 |
+|---------|---------------|------|
+| L0 REJECT | execution-lapse | 代理产生空/桩输出 |
+| L1 REJECT | skill-defect | 合约已定义但输出不匹配 |
+| EvidenceGate REJECT | execution-lapse | 证据文件缺失或为空 |
+| C1 REJECT | skill-defect | 正则模式未匹配证据内容 |
+| C2 UNCLEAR | unset | LLM 不确定或 API 错误 |
+| L3 UNCLEAR | unset | 跨运行判据分歧 |
+
+这连接了验证流水线和进化反馈循环：一次验证失败自动触发正确的 feedback-observer 分类，进而进入进化提案生成。
+
+### 约束 3：提案必须通过 held-in 和 held-out 分割
+
+**来源：** Self-Harness（Zhang et al. 2026）
+
+"候选编辑通过回归测试评估：held-in D_in（测试失败是否解决）和 held-out D_out（检查是否引入其他问题）。"
+
+**实现：** 进化提案携带两个文件列表：
+
+- `held_in_files`：应该在编辑后从 REJECT/UNCLEAR 转为 PASS 的目标文件
+- `held_out_files`：应保持之前 PASS 状态的文件
+
+应用后，forge-verify 在两个分割上运行。两者都必须通过提案才算确定完成。held-out 回归即使 held-in 修复成功也会阻止提案。
+
+### 约束 4：每个判决追溯证据源
+
+**来源：** ScientistOne（Meng et al. 2026），Weng 综述
+
+"每个声明（引文、数值、方法论、结论）必须追溯到证据源，并通过 Chain-of-Evidence 检查进行审计。"
+
+**实现：** 每个 forge-verify 阶段输出包含 `evidence` 字段：
+
+```
+L0:  evidence: "file:src/rate-limit.ts"          （内联内容）
+EG:  evidence: "evidence:test-output.txt"         （外部文件）
+C1:  evidence: "evidence:test-output.txt((?i)isRateLimited)"（文件 + 模式）
+```
+
+最终输出包含完整的 `trace.chain` 数组，加上 `evidence_files` 元数据（路径、大小、mtime）用于过时检测。如果证据文件在验证后被修改，trace 被标记为可能过时。
+
+### 约束 5：当模型超出规则时规则可以退役
+
+**来源：** STOP（Zelikman et al. 2023），Weng 预测
+
+"STOP 对 GPT-4 跨迭代提升了下游性能，但用 GPT-3.5 和 Mixtral 这样的弱模型时反而退化。"——Weng 论 STOP
+
+Weng 还预测："许多 harness 改进将被内化到核心模型行为中。"
+
+**实现：** 反馈条目携带 `model_version` 字段。当进化引擎检测到一条规则是在旧模型版本下毕业的、且当前模型版本下零失败时，它生成退役提案（status: deprecated）而非强化提案。这防止了循环进化：规则毕业、产生更多反馈、再次毕业为自身的变体。
+
+### 约束 6：Harness 配置是可搜索的空间
+
+**来源：** Meta-Harness（Lee et al. 2026）
+
+"Meta-harness 循环迭代创建新的 harnesses，只保留合格的。"
+
+**实现：** `.forge/harnesses/` 作为候选注册表。每个候选 harness 是一个子目录，包含 `config.json`、`scores.json`、`history.jsonl`。基线配置（`.forge/content-verify.json`）是起点；新变体通过在一个维度上变异来生成（分歧阈值、合约模式、证据需求）。变体按准确率 vs LLM 调用成本 Pareto 排序。生产配置是只读的——切换到候选 harness 需要人工审批。
 
 ---
 
-## 11. 总结
+## 4. 实现告诉我们什么
 
-| 评估器 | 层 | 正确 | 判定什么 |
-|---|---|---|---|
-| C1 合约正则 | word-space | 2/5 | 提及（词出现） |
-| C2 逐需求 LLM | word-space | 2/5 | 证据文本表面（与真相脱钩；高方差） |
-| **C3 argument-space runner** | **argument-space** | **5/5** | **观察到的 side effect（同义词免疫、确定性）** |
+在一个开发会话中实现全部六条约束大约花了四小时。代码修改跨 9 个文件，总计不到 250 行。关键观察不是实现很快——而是**每条约束映射到一个单一、可测试的机制**，可以独立验证。
 
-这三层不是对同一件事的三次尝试。它们是同一个棘轮的三个**保真度**，成本递增、覆盖递减：
+| 约束 | 代码 | 测试 |
+|------------|------|------|
+| 判据器在循环外 | `.forge/editable-surface.json` + hook 检查 | 验证进化不能修改 forge-verify/ |
+| 因果标签 | 每个阶段返回加 failure_class | 20 DF v2 场景 + 12 证据门场景 |
+| Held-in/held-out | 提案格式字段 + forge-verify 双分割运行 | （需进化提案来测试） |
+| 证据追溯 | evidence 字段 + trace.chain 输出 | 所有阶段输出中存在 |
+| 规则退役 | model_version + 过时检测 | （需模型升级事件） |
+| Harness 搜索 | `.forge/harnesses/` + 索引 + 模板 | 模板有效，索引可解析 |
 
-- **Word-space 正向（C1 正则）**——最便宜，判定词出现与否。对否定 blind、对同义词 blind、对伪造 blind。
-- **Word-space LLM（C2）**——更强，判定证据文本表面。抓浮现的偏差，但过严拒诚实的薄证据、过松放伪造的厚证据。它的正确性与合规性正交，且逐次跑会变。
-- **Argument-space（C3）**——执行代码，观察命名 side effect。确定性、同义词免疫、与 producer 所写文本脱钩。只覆盖可执行 claim。
-
-没有一层闭合缺口。argument-space 层的区别不是闭合——而是它的判断维度（claim 指称上观察到的 side effect）是 producer 换词也够不到的唯一一处。这就是 Mike 命名的底，也是实验确认的底：scope-matches-claim 下唯一一个新同义词穿不过的谓词——前提是 claim 点名了指称。不点名时，没有底，claim 留在 C2（§9）。
-
-棘轮在每一层以同样方式转动——每个命名的逃逸都变成永久 tripwire，每个未命名的都路由给人而非静默放行。argument-space 只是在"换词不再管用"的那个维度上转动它。
+六条约束不是推测。它们是 Weng 综述中的发现直接翻译为具体代码。综述提供了设计约束；实现显示它们在机械上是简单的。难点不在于构建它们——而在于认识到它们是必要的。
 
 ---
 
-*实验脚本：[`argument-space-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts/argument-space) — 5 场景 + 1 个不可寻址边界 case（REQ-4），C1/C2/C3，`--with-c2` / `--simplified-desc` / `--save` 选项。确定性层（C1+C3）无需 API key 即可跑。*
-*结果：`results-v2/argument-space.json`（完整合约）+ `argument-space-control.json`（简化 desc 对照）。*
-*Judge：glm-5.2 via Anthropic 兼容端点。N=5+1，directional——与红线实验同样的 caveat。*
+## 5. 什么仍然无法修复
 
-*上一篇：[Weng 的 Harness 阶梯有一级盲步](blog-agent-determinism-illusions-8.zh.md)*
-*下一篇：[argument-space 验证的诚实边界——以及 Evidence Locker 补了什么](blog-agent-determinism-illusions-10.zh.md)*
-*系列：[dev.to/zxpmail 上的 Agent 确定性幻觉](https://dev.to/zxpmail)*
+约束 4（证据追溯）和约束 6（harness 搜索）有一个定理 2 预测的共同限制：trace 本身是文本，harness 配置是文本。二者都可以被控制文件系统的代理伪造。
+
+DGM 假日志故事适用于 forge-verify 读取的每个证据文件。如果代理可以写入 `evidence_dir/`，它可以写入一个叫 `test-output.txt` 的文件，内容写着"RateLimiter-IP: 所有测试通过"，但实际上从未运行任何测试。证据门检查文件存在且正则模式匹配其内容。但它不检查*谁写了文件*或*文件内容是否反映实际执行*。
+
+这不是证据门设计的 bug。这是一个设计约束：证据门是零成本的、pre-receive 的，但它信任代理写入的文件系统。Sergei 要求的类型化 provenance 层——runtime-verified vs. self-reported——在当前 forge-verify 实现中不存在。它需要文件系统本身具有 provenance 意识，而标准文件系统没有。
+
+定理 2 说不可关闭的残差：
+
+- 文本通道判据（LLM 或人）无法捕捉在文本上与正确输出不可区分的语义反转。
+- 证据门无法区分测试运行器写的证据和被测代理写的证据。
+- 类型化 provenance 系统无法区分类型标签是由产出者本身还是独立体打的。
+
+实践中，更强的 LLM 可以捕捉许多这种反转，因为它们携带更好的"看似合理 vs 正确"的隐式模型。即使强模型也漏掉的部分——以及人类审核者始终漏掉的部分——才是定理 2 真正预测的。线索 2 中记录的能力梯度缩小了实际范围；它没有消除理论界。
+
+这不是反对分层验证的论据。上面的六条约束确实缩小了差距。L0/L0e 确定性检查在结构化垃圾到达 LLM 之前拦截它。证据门拦截缺失的产物。C1 验证特定格式承诺。C2 逐条阅读需求，防止"一切看起来都正常"的叙述压倒判据。Trace 使链条可审计。Harness 搜索使配置可改进。
+
+但差距是渐近缩小的。定理 2 说它永远不会归零。
+
+---
+
+## 6. 总结
+
+Weng 的 Harness 综述是领域最全面的地图。它也露出了一个盲阶：假设判据在不精确的方向上失败，而非方向性错误。三条独立线索——DGM 假日志、DF v2 数据、定理 2——收敛于同一发现：方向性判据失败是真实的，但其严重程度随模型能力变化。理论界（结构性）成立；实际影响集中在弱模型上。
+
+从综述和相关工作中提取的六条设计约束转化为可测试的代码机制。全部六条已实现到 ReqForge 的 forge-verify pipeline。实现跨 9 个文件，不到 250 行。
+
+理论残差持续存在：文本通道判据无法捕捉文本通道生产者可以伪造的内容。约束可以缩小这个差距，但不能消除它。这不是设计失败。这是一个信息论极限，承认它比绕着它做工程更有用。
+
+---
+
+*实验数据：20 方向性失效场景 × 3 模型层次 × 600 判据 → [directional-failure-v2.py](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
+*证据门测试：6 场景，12/12 通过 → `scripts/forge-verify/test-evidence-gate.mjs`*
+*源综述：[Harness Engineering for Self-Improvement](https://lilianweng.github.io/posts/2026-07-04-harness/) — Lilian Weng, July 2026*
+*系列：[Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
+*上一篇：[通道缺口：为什么你的 LLM 判据一只眼睛是瞎的](blog-agent-determinism-illusions-8.zh.md)*
+*下一篇：[第三个谓词：argument-space 验证实测](blog-agent-determinism-illusions-10.zh.md)*

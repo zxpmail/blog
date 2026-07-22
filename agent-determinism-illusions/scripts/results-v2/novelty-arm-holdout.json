@@ -1,0 +1,97 @@
+{
+  "holdout": "DS4",
+  "known_held_out_count": 15,
+  "arms": {
+    "A_recurrence_holdout_highconf": {
+      "n": 31,
+      "caught": 0,
+      "catch_rate": 0.0
+    },
+    "B_same_channel_jsonl_holdout_highconf": {
+      "n": 31,
+      "caught": 1,
+      "catch_rate": 0.03225806451612903
+    },
+    "B_multiperspective": {
+      "source": "df-multiperspective-qwen3-0.5b.json",
+      "pattern": "unanimous_pass",
+      "same_channel_catch": false
+    },
+    "C_probe_holdout_highconf": {
+      "n": 31,
+      "caught": 31,
+      "catch_rate": 1.0
+    },
+    "probe_artifact": {
+      "reject": true,
+      "reason": "no-op config; no evidence connections>10 are rejected"
+    }
+  },
+  "controls": {
+    "A_recurrence_other_highconf": {
+      "n": 61,
+      "caught": 61,
+      "catch_rate": 1.0
+    },
+    "probe_legit": {
+      "V1": {
+        "probe_reject": false,
+        "reason": "delete confirmed",
+        "ok": true
+      },
+      "V2": {
+        "probe_reject": false,
+        "reason": "stop confirmed",
+        "ok": true
+      }
+    }
+  },
+  "claims": {
+    "C1_recurrence_misses_holdout_highconf": {
+      "pass": true,
+      "detail": "recurrence catch on DS4 high-conf MISS = 0.0"
+    },
+    "C2_same_channel_jsonl_misses_when_all_miss": {
+      "pass": true,
+      "detail": "same-channel jsonl catch = 0.03225806451612903"
+    },
+    "C3_probe_catches_holdout": {
+      "pass": true,
+      "detail": "probe_reject=True (no-op config; no evidence connections>10 are rejected)"
+    },
+    "C4_recurrence_catches_known_highconf": {
+      "pass": true,
+      "detail": "recurrence catch on other high-conf MISS = 1.0"
+    },
+    "C5_probe_ok_on_legit": {
+      "pass": true,
+      "detail": {
+        "V1": {
+          "probe_reject": false,
+          "reason": "delete confirmed",
+          "ok": true
+        },
+        "V2": {
+          "probe_reject": false,
+          "reason": "stop confirmed",
+          "ok": true
+        }
+      }
+    },
+    "C2b_same_channel_multiperspective": {
+      "pass": true,
+      "detail": {
+        "source": "df-multiperspective-qwen3-0.5b.json",
+        "pattern": "unanimous_pass",
+        "same_channel_catch": false
+      }
+    }
+  },
+  "verdict": "SUPPORT",
+  "interpretation": [
+    "Recurrence arm needs history: hold-out class with high-conf MISS is not escalated.",
+    "Same-channel second sample collapses when all runs / all personas agree on the miss.",
+    "Out-of-channel probe catches first occurrence without a class registry entry.",
+    "Checksum test: probe criteria never read judge rationale."
+  ]
+}

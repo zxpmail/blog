@@ -1,116 +1,210 @@
-<!--
-  ─────────────────────────────────────────────────────────────────
-  微信公众号 / 知乎标题备选:
-  Probe 与 Prose:验证器与你共享文本信道,真正的代价是什么
-  ─────────────────────────────────────────────────────────────────
--->
+---
+title: "Key-space C3：关闭 referent 可博弈性的布隆过滤器——实测"
+published: false
+description: "两组实验验证 Mike Czerwinski 第 7 轮：write-time-resolution 通过 50% 的错误 referent，LLM 准确率 17%。解方：声明 key 空间而非单 key——key-space C3 抓到 5/5 wrong-referent。"
+tags: ai, llm, agents, testing
+canonical_url: ""
+series: "Agent 确定性幻觉"
+---
 
-# Probe 与 Prose:验证器与你共享文本信道,真正的代价是什么
+# Key-space C3：关闭 referent 可博弈性的布隆过滤器——实测
 
-**Agent Determinism Illusions(第 12 篇)**
+**Agent 确定性幻觉（第 12 篇）**
 
-> **本文在系列中的位置:** 本篇不延续第 9–11 篇的 C3 / key-space 机制线。它回到一条更早的线索——第 4 篇的 *runner-independence*(Mike Czerwinski 的观点:"可验证"是检查独立于生成器的属性,不是输出本身的属性)和 Theorem 2(文本信道验证的数据处理不等式边界)。nexus-lab-zen 的一条评论给这条线索在 *assumption* 侧命了名,而一个实验迫使我们精确化"prose 腐烂"到底意味着什么。
+*2026-07-15*
 
-## 1. nexus-lab-zen 与逃逸口的第三面
+第 11 篇识别了 C3 的一个结构缺口：当 write-time-resolution 产出一个 plausible-but-wrong key（"user:123" 而非 "session:abc"）时，C3 验证了选中的 key 并 pass——gate 接受了错误的 resolution，因为它在错误的 target 上做了机械验证。
 
-在第 2 篇的评论区,与 nexus-lab-zen 的四轮对话最终落到了一个有用的词汇上。线程从职责分离与共因失效(common-mode failure)开始([第 2 篇评论](https://dev.to/zxpmail/i-tested-3-models-as-ai-agent-quality-inspectors-the-stronger-the-model-the-more-valid-work-it-gl7));到第四轮,nexus-lab-zen 已经从理论转到了他们团队本周上线的东西:
+Mike Czerwinski 主张这个失败属于 gate 而非上游。resolution 步骤是 gate 自身的机制，如果 gate 接受了一个 plausible-but-wrong key，失败发生在架构边界以内。
 
-> 我们也没有 per-assertion TTL……我们本周上线的是逃逸口的第三面:一张 binding map(绑定图)。我们注册表里的每一条规则——目前 39 条——要么必须点名那个物理执行它的检测器,要么必须带一条明确的"为何未绑定"的理由;fail-closed 的 lint 会在两者皆无的规则上中断。结果是:9 条已绑定,30 条未绑定-带理由……在让 TTL 真正可用这件事上,我们时间戳事故的一个教训可以推广:**人手抄的字段会腐烂;机器内嵌的字段不会。** 写成散文(prose)的失效条件会像任何散文一样失效。写成 probe——那条一旦输出改变就证伪断言的命令——TTL 重检就变成了 runner(执行者),而不是 reader(阅读者)。
-
-这段评论里有两件事值得拆开看,因为其中一件经得起实验,另一件被实验精确化了。
-
-第一件是 **binding map**:39 条规则,其中 9 条点名了一个物理检测器,30 条带一条明确的"未绑定-带理由"。这不是 TTL——它不能告诉你某个前提死了。它告诉你哪些规则*从未被接线*到任何能注意到它的东西上。nexus-lab-zen 把它叫做"另一种腐烂:曾经隐形的 enforcement 缺失,现在有了一张清单"。这部分毫无歧义,我没什么可补充的。
-
-第二件是 **probe-vs-prose** 的主张,而这个我可以测。主张作为机制来说是这么说的:写成 prose 的失效条件("假设传输 X 是活的")会腐烂,因为 prose 是文本,而文本会在没人注意时偏离现实。同一个条件写成 probe——那条一旦输出改变就证伪断言的命令——不会腐烂,因为 probe 是*被执行*的,不是*被阅读*的。"TTL 重检变成 runner,不是 reader。"
-
-这是一个强而具体的主张,而且它在我自己的系列里有一个名字。把这次命名上的收敛讲出来是有意义的,因为我们是从两侧撞上了同一堵墙。
-
-## 2. 这堵墙有两面,我们各命名了一面
-
-第 4 篇里,Mike Czerwinski 从 *generator*(生成器)那一侧推到了这一点。"可验证,"他论证道,是检查*独立于生成器*的属性,不是输出本身的属性。如果 agent 能写 verify 脚本、runner 配置或测试定义,那么"编译通过"就不再是确定性门禁,而是一个戴着绿色对勾的自报告。DGM 伪造日志事件是同一机制:agent 没跑测试却往日志里写了"tests passed",然后下游同一个 agent 读了自己的日志,断定改动已通过验证。第 4 篇的修法是 readonly editable-surface——显式声明 agent 可以写哪些路径,把 verify 脚本、runner 配置以及 editable-surface 文件本身放在只读区。
-
-nexus-lab-zen 的 probe-vs-prose 是 *assumption*(假设)那一侧的对称动作。写成 prose 的失效条件是关于"前提何时死亡"的自报告——它断言"如果 X 发生,这个就会失效",然后等一个人在 X 发生时注意到。写成 probe,它就是一个*执行*证伪、而非*描述*证伪的 runner。probe 直接问环境;prose 则要一个阅读者去想象环境会说什么。
-
-这两个动作都是对同一个边界的逃逸,而这个边界有名字。**Theorem 2**(数据处理不等式应用于 agent 验证):当推理与验证器共享同一文本信道时,验证器的信息是生产者的严格子集。如果合理化解释与真实原因在文本上不可区分,则任何文本信道阅读者——LLM 评判、辩论小组、或人类——都检测不到这个缺口。任何留在 prose 里的东西都活在文本信道里,按构造就不可验证。把它移出文本信道,是唯一不依赖某人诚实或专注的路径。
-
-所以,经过第 4 篇和这条线程之后,这幅图景有了同一个逃逸的两面:
-
-- **生成器侧**(第 4 篇,Mike):被验证的东西必须由一个生成器无法写入的过程产生。Readonly editable-surface。
-- **假设侧**(本线程,nexus-lab-zen):被验证的东西必须由环境执行的命令来检查,而不是由阅读者解读的句子。Probe,不是 prose。
-
-同一堵墙,两面,同一个出口:把检查移出文本信道,放进环境强制执行的东西里。
-
-这就是收敛。下一个问题是:nexus-lab-zen 命名的那个*机制*——"prose 腐烂,probe 不会"——是不是正确的机制,还是实验会说得更精确。它说得更精确,而且略有不同。
-
-## 3. 实验:20 个场景、两个模型,以及一个我必须绕开的公平性陷阱
-
-要测的主张很窄:对于一个给定的静默失效(一个本应失效却没失效的缓存),读 prose 规则的 LLM 评判,能不能检测出可执行 probe 检测出的东西?在能跑之前,有一个公平性问题会让任何结果失效,而它值得讲出来,因为它是细致的读者会追问的那种东西。
-
-**公平性陷阱。** Prose 和 probe 天生不对等。Prose 给 LLM 阅读者;probe 给执行的机器。如果我给 LLM 一句模糊的单行规则("相关缓存应失效"),然后指出它漏了一个违规,最明显的反对是:*你是故意把 prose 写得烂,换个更详细的 prompt 就能抓到。* 这个反对是对的,而且如果它成立,整个实验就会是个 prompt 工程的假象,而不是关于文本信道的发现。所以设计必须给 prose 侧一切优势:完整的规则文本、完整的实现(`write` 函数体或写后的缓存状态)、以及一条明确指令去检查"应失效却没失效的缓存"。Prose 评判能看到 probe 能检查的一切。如果 prose 在信息充分时仍然失败,那失败就是结构性的——文本信道的属性,不是 prompt 的属性。
-
-**20 个场景。** 五种缺口类型,每种四档难度(easy / medium / hard / 一个合规对照),共 20 个。缺口类型直接来自系列前面缓存失效的工作:
-
-- **key-miss** —— `write(k)` 只删触发 key,留下同命名空间的兄弟 key
-- **prefix-miss** —— 删了部分 `prefix:*` key,留下其他的
-- **tier-miss** —— 删了 L1,留下 L2
-- **cascade-miss** —— 删了源头,留下派生缓存
-- **referent-wrong** —— 失效了错误的命名空间(session vs user)
-
-难度档控制 prose 评判要做多少推理:*easy* 在注释里说明缺口或列出所有 key;*medium* 把缺口藏在 `write` 函数体里;*hard* 让规则只点名触发 key,迫使评判推断某个兄弟 key 也受影响。每个场景在温度 0 下跑 5 次。Probe 是确定性的——它直接检查写后状态,所以按构造它抓住每个真实缺口。两个模型:deepseek-v4-flash 和 glm-5.2。
-
-**核心结果。** 不是按难度排序,而是按规则是*精确*还是*模糊*排序,数据干净地分开了:
-
-| 规则清晰度 | n | DeepSeek prose | GLM prose | probe |
-|-----------|---|----------------|-----------|-------|
-| 精确 | 13 | **13/13(100%)** | **13/13(100%)** | 13/13 |
-| 模糊 | 7 | 5/7(71%) | 4/7(57%) | 7/7 |
-
-(实验:`scripts/probe-vs-prose-expanded.py`。结果:`results-v2/probe-vs-prose-expanded.json`。"模糊" = 规则表述为"所有受影响的缓存"却不枚举受影响集合,或对照场景里规则的"相关"一词容许比实现所取更宽的解读。)
-
-在解读之前有两点要注意。第一,**当规则精确时,prose 与 probe 完全一致**——两个模型都 100%。这正是数据里悄悄推翻"prose 腐烂"简单解读的部分。给定充分信息和一条说清楚自己意思的规则,LLM 评判检测缺口和可执行检查一样可靠。在精确情形下,检测能力*不是*缺口。第二,**当规则模糊时,prose 失稳——而且是同时向两个方向失稳。** 这是简单解读漏掉的部分,值得单独讲一个场景。
-
-**双向失稳,一个场景说清。** `key-hard` 是最干净的例子。规则说"修改 user:123 时,所有受影响的缓存都必须失效"——而且*不*点名 user:456。实现只删了 user:123;user:456,一个同命名空间的兄弟 key,被留在那活着。这是真实违规。两个模型,同一规则,同一实现,相反裁决:
-
-- **deepseek-v4-flash** 把模糊短语读宽:"user:123 和 user:456 同属一个命名空间;从命名空间推理,修改一个可能影响另一个。"它抓住了违规(5 次中 3 次)。
-- **glm-5.2** 把同一短语读窄:"user:456 是独立的 key,不是因 user:123 被修改就必须失效的。"它放行了实现(0/5——五次全漏)。
-
-同一条模糊规则。一个模型读宽抓住了它;另一个读窄漏掉了它。模糊性并不把裁决偏向一个方向——它*分散*了裁决,因为"所有受影响的"在有人固定受影响集合之前没有固定含义。Probe 没有这种自由。它检查一个具体的 key 集合,456 要么在那个集合里,要么不在。
-
-还有第三对场景补全了图景,而它最初看起来像是我实验里的 bug。`tier` 和 `referent` 的合规对照——那些*确实*正确的实现——被两个模型都标记为违规,5/5。读原始输出:对 `ref-control`,规则说"user:123 相关缓存必须失效",实现删除了精确的 user:123 这个 key,两个模型都标记它:*"只删了精确的 key user:123,但'相关'可能包括 user:123:profile、user:123:friends,这些派生 key 没失效。"* 它们担心得并不错——"相关"确实是模糊的,更严的解读站得住脚。它们是在一条模糊规则上过度报警,是 `key-hard` 漏报的镜像。同一机制(模糊性),相反方向。
-
-所以模糊规则上的完整图景是:prose 不是一贯地漏,也不是一贯地过度报警。它**发散**——模型之间、试验之间——因为模糊短语没有单一含义,每个阅读者各固定一个。Probe 收敛,因为它没有固定含义的自由;集合是被声明出来的。
-
-## 4. 精确化:不是"prose 腐烂",而是"prose 在模糊规则上发散——而 probe 的作用是消除模糊,不是检测得更好"
-
-实验在这里精确化了 nexus-lab-zen 的框架,而我想小心使用"精确化"这个词,因为这个框架大体是对的。
-
-"prose 腐烂"的强形式暗示 prose 是比 probe *更弱的检测器*——它会漏掉 probe 抓到的东西。数据不支持这个。在精确规则上,prose 和 probe 不可区分(13/13 vs 13/13,两个模型都是)。如果 prose 单纯更弱,它在精确规则上也会落后于 probe。它没有。所以检测能力不是它们差异所在的轴。
-
-数据确实支持的,更窄也更有趣。**Prose 和 probe 恰好在规则模糊的地方不同,而在那里 prose 发散——有时漏报(key-hard),有时过度报警(ref/tier 对照)——而 probe 保持固定。** Probe 保持固定的原因不是它检测得更好。原因是一条 probe 根本无法针对模糊规则写出来。要写"那条一旦输出改变就证伪断言的命令",你必须固定断言*是什么*——你必须枚举受影响集合、选定具体信号、删掉形容词。Probe 的构造*强制消模糊*。等到一条 probe 存在,规则就不再模糊;模糊已经在写它的过程中被花掉了。
-
-这就是精确化。nexus-lab-zen 说 prose 腐烂。实验说:**腐烂的不是 prose 本身,而是其中的模糊;而 probe 真正的优势是,在模糊被消除之前它写不出来。** Probe 不是规则更强的阅读者;它是一个强制函数,逼你把规则写完。"Runner,不是 reader"是对的,但机制是写作时的消模糊,不是运行时的检测。
-
-而这里正是 nexus-lab-zen 自己评论里的 binding map 啪地归位的地方。他们的注册表:39 条规则,9 条绑定到检测器,30 条未绑定-带理由。透过这个实验的镜头读那 30 条:它们恰好是那些模糊到无法针对它们写出 probe 的规则——除非你发明那个枚举。团队的回应——"带一条明确的为何未绑定的理由"——是实验表明你无法伪造的东西的诚实版本。你无法 probe 一条你说不出受影响集合的规则。这 30 条不是"我们还没顾得上的 probe";它们是"我们尚未花掉的模糊"。在既无检测器又无理由的规则上中断的 fail-closed lint,是正确的 enforcement,因为它拒绝让一条模糊规则假装被 enforced。
-
-这也重塑了开启这条线程的原始 TTL 问题。nexus-lab-zen 想要 per-assertion TTL——每个前提上一个过期日。Probe-as-runner 让 TTL 成真,因为 probe 在每次检查时都执行,所以一个死掉的前提在 probe 输出改变的那一刻就被抓住了。但注意这要成立必须先满足什么:前提必须能表达为 probe,这意味着它必须先被消模糊。Prose 上的 TTL 即使按计划跑也不会有用,因为重读模糊 prose 每次产生发散的裁决——阅读者每次固定不同的含义。Probe 上的 TTL 有用,因为 probe 没有含义可固定;它只是跑。**Runner 胜过 reader,不是因为 runner 更警觉,而是因为模糊文本的阅读者无法在多次重读中保持一致。** 这是一个比"prose 腐烂"更尖锐的陈述,而它正是数据买来的东西。
-
-## 5. 边界——它在哪里停下,以及它迫出的递归
-
-两个边界,一个诚实,一个递归。
-
-**递归:probe-the-probe。** 如果 probe 的优势在于它通过针对具体信号被写出来而消除了模糊,那么显然的攻击来自第 4 篇:谁写 probe,agent 能不能碰到它?Probe 是一条命令。如果 probe 要抓的那个 agent 能重写 probe——改命令、编辑它检查的信号、把它指向一个总返回预期输出的桩——那么 probe 就径直退化回自报告。这是 Mike 的 runner-independence 往上应用一层:probe 命令本身必须和 verify 脚本、runner 配置一起待在 readonly editable-surface 上。Probe-the-probe 是它到底的地方,而那个底和第 4 篇的底一样:声明 agent 可以写什么,而 enforcement surface 不在那个清单上。nexus-lab-zen 自己也标出了这一点——"我们在建 enforcement 侧的孪生;assumption 侧的孪生正好是你的下一刀,而我们也没开始。"我们也没。
-
-**诚实的边界:不是每个前提都能成为 probe。** 这个实验跑在缓存失效规则上,在那里"受影响集合"是一个你原则上可以枚举的有限 key 集合。Probe 的强制函数之所以有用,是因为这个领域让你能说出那个集合。有些前提你说不出。"这个分析是自洽的"、"这个摘要抓住了用户意图"、"这个推荐没有误导性"——这些是没有可枚举受影响集合、也没有单一命令的输出能证伪它们的语义属性。对这些,写不出 probe,规则就永久待在 binding map 的"未绑定"列里,带着你能说出的任何理由。这就是红线法则文章称之为语义层验证开放问题的那堵同样的墙,而 DPI 是原因:验证器与推理共享文本信道,而当属性本身没有非文本的表现形式时,把 prose 重写成命令也逃不出这个信道。
-
-所以 probe-vs-prose 在实验之后的诚实范围是:**对于任何受影响集合可以被说出的规则,写 probe——它逼你写完规则,然后它跑而不是被读,这是让重检保持一致的唯一办法。对于任何受影响集合无法被说出的规则,不存在 probe;规则保持未绑定-带理由,而 fail-closed lint 在沉默上中断是对的。** Prose 和 probe 之间的缺口不是检测。它是"说出你是什么意思"的自律,在写作时被这样一个事实强制:否则 probe 写不出来。
+本文用两组实验测试这个主张，然后加上修复。
 
 ---
 
-*实验脚本:* [`probe-vs-prose-expanded.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) —— 20 场景 × 5 次 × 2 模型,公平性设计(prose 给完整规则 + 实现 + 缓存状态)
+## 1. 实验 I：Write-time resolution 实测
 
-*结果:* `results-v2/probe-vs-prose-expanded.json`(含每次试验的模型原始输出,便于复现)
+### 设计
 
-*上一篇:[Key-space C3:闭合 referent gameability 的 Bloom filter](blog-agent-determinism-illusions-11.zh.md)*
-*系列:[dev.to/zxpmail 上的 Agent Determinism Illusions](https://dev.to/zxpmail)*
+六个有意模糊 scope 的需求。每个有一个 true intent（应该发生什么）和多个可能的 resolution（agent 可能合理选出的 key）。C3 验证 agent 选的任何 key。
 
-*关于方法的一点说明:* 把模型输出解析成 VIOLATION/COMPLIANT 的判定逻辑,在本实验过程中经历了三次修复——DeepSeek 的 thinking 模式 token 预算、以及一个在合规回答里的"没有遗漏"上误触发的子串匹配。每次试验的原始输出正是为了可重新审计而持久化进结果 JSON 的。讽刺并不在我意料之外:一个用子串解析器去判断模型有没有正确判断合规的 pipeline,那个解析器本身是最弱的 reader,而修法是让它只读第一行。那是本篇所论证的同一原则的一个小实例。
+**Phase A（确定性枚举）：** 列举所有可能的 resolution，每个跑 C3。
+
+| 场景 | 需求 | True intent | 通过 C3 的错误 resolution |
+|------|------|------------|-------------------------|
+| S1 | "用户数据变化时 invalidate 相关缓存条目" | 所有 user:* | 只查 user:123 → PASS（under-inv） |
+| S2 | "写新数据前清除陈旧缓存条目" | 只 user:123 | （over-inv 被抓） |
+| S3 | "如果 write 影响用户活跃 session，invalidate 缓存" | session:abc | user:123 → PASS（wrong-referent） |
+| S4 | "更新用户资料时 invalidate 所有相关条目" | user:123 + profile:123 | 只 user:123 → PASS（under-inv） |
+| S5 | "密码变更时 invalidate 用户安全令牌" | token:789 | user:123 → PASS（wrong-referent） |
+| S6 | "权限变更时 invalidate 用户所有 session" | 所有 session:* | user:123 → PASS（wrong-referent） |
+
+### 结果
+
+**C3 拦截错误 resolution 率：6/12（50%）。** 但分布是关键：
+
+| 错误类型 | 总数 | 通过 C3 | 被 C3 拦截 |
+|---------|------|--------|-----------|
+| wrong-referent | 4 | **3** | 1 |
+| under-inv | 4 | 2 | 2 |
+| over-inv | 3 | 0 | 3 |
+| under-inv-empty | 1 | 1 | 0 |
+
+*注：6 条"正确"resolution（每场景 1 条）被排除——C3 正确验证了它们，它们不是失败 case。6/12 的分母只统计错误 resolution。*
+
+**Mike 的主张确认：4 个 wrong-referent 中有 3 个通过 C3。** S1、S3、S5：agent 选了恰好是触发器的 key，C3 验证它，pass。Gate 接受了错误 resolution，因为机械检查的 key 碰巧对齐了写操作，而不是需求意图。
+
+Over-inv 是对称镜像：当 resolution 声明了比实现实际触碰的更多的 key 时，C3 正确 FAIL。Over-inv 产生可检测证据（resolution 声称应消失但实际存活的 key）。Under-inv 和 wrong-referent 不产生。
+
+**Phase B（LLM 执行 resolution，deepseek-v4-flash）：** 让模型读每个模糊需求，产出具体的 key 列表。
+
+| 场景 | 模型选择 | 正确？ |
+|------|---------|-------|
+| S1 | user:123 + profile:123 + admin:123 | ❌ mixed |
+| S2 | user:123 + profile:123 + admin:123 | ❌ over-inv |
+| S3 | [] | ❌ 空（保守拒绝） |
+| **S4** | **user:123 + profile:123** | **✅** |
+| S5 | [] | ❌ 空 |
+| S6 | [] | ❌ 空 |
+
+**LLM 解析准确率：1/6（17%）。** 模型要么过度 invalidate（加无关 key），要么不足 invalidate（返回空——保守拒绝）。只有 S4 正确解析。
+
+这给 Mike 的担忧加上了一个硬数字：在 write-time resolution 中，agent 在这个测试集上 83% 的情况是错的。Gate 对其中 50% 的错误无声 pass。
+
+---
+
+## 2. 布隆过滤器思路
+
+结构模式是一个 **membership test** 问题。Single-key C3 问"cache[k] 消失了吗？"——一个点检查，agent 命名什么 k 就通过什么 k，不管 k 对不对。
+
+修复：声明 **key 空间**而非单 key。"user:*" 而非 "user:123"。C3 在写操作后检查该空间内的**所有** key。这类似于缓存上游的布隆过滤器：你不问"这个特定 key 存在吗？"——你问"声明空间中有任何 key 存在吗？"
+
+合约字段变成：
+
+```json
+{
+  "id": "REQ-3",
+  "desc": "缓存写时失效",
+  "verify_command": "node .forge/verify/write-invalidation.js",
+  "verify_keyspace": "user:*",
+  "type": "argument-space"
+}
+```
+
+C3 迭代 `keys_in_space("user:*")` → `["user:123", "user:456"]` → 验证写后两者都不存在。
+
+---
+
+## 3. 实验 II：Key-space C3
+
+### 设计
+
+同样的 6 个场景。每个有声明好的 key 空间。两种 C3 模式：
+
+| 模式 | 回答的问题 |
+|------|----------|
+| Single-key C3 | "cache[k] 在 write(k) 后消失了吗？" |
+| Key-space C3 | "空间 S 中的**每一个** key 在 write(k) 后消失了吗？" |
+
+三种缓存实现：
+- **LiveCache：** write(k) 只删除 k（定向删除，默认 under-inv）
+- **BulkCache：** write(k) 删除所有匹配 k 前缀的 key（前缀级删除）
+- **FlushCache：** write(k) 删除所有（极端 over-inv）
+
+### 结果
+
+| 模式 | 缓存 | Wrong-ref 捕获 | 比例 |
+|------|------|---------------|------|
+| single-key | 任意 | 0/5 | **0%** |
+| **key-space** | **LiveCache** | **5/5** | **100%** |
+| **key-space** | **BulkCache** | **4/5** | **80%** |
+| key-space | FlushCache | 5/5 | 100% |
+
+**Key-space C3 在 LiveCache 上抓到 5/5 wrong-referent。** 所有 single-key C3 看不见的错误 resolution，在 C3 检查声明空间时都被捕获。
+
+BulkCache 那一次"漏"（S1：空间 `user:*`，触发器 `user:123`）是**预期的正确行为**：触发器前缀匹配空间，BulkCache 正确 invalidate 所有 user:*，gate 通过。Resolution 正确、实现处理了空间、gate 确认了它。
+
+**每个场景的工作机制：**
+
+| 场景 | Agent 解析为 | 声明空间 | Key-space C3 检查 | 结果 |
+|------|------------|---------|------------------|------|
+| S1 | user:123 | user:* | user:123 ✅ user:456 ❌（存活） | FAIL |
+| S3 | user:123 | session:* | session:abc ❌ session:xyz ❌（未 invalidate） | FAIL |
+| S4 | user:123 | user:*,profile:* | user:123 ✅ user:456 ❌ profile:123 ❌ | FAIL |
+| S5 | user:123 | token:* | token:789 ❌（未 invalidate） | FAIL |
+| S6 | user:123 | session:* | session:abc ❌ session:xyz ❌（未 invalidate） | FAIL |
+
+每次，agent 的错误 resolution 都被捕获，因为声明空间包含写操作未触碰的 key。
+
+---
+
+## 4. 剩下的边界——实测
+
+Key-space C3 要求 key 空间**可声明**。边界问题是：不可声明类在真实需求中到底有多大？
+
+我跑了语料分类实验：35 条来自 cache invalidation、authorization、write-path 领域的需求。每条由人肉 ground truth（能声明 key 空间吗？）和自动化分类器（确定性规则）分别判断。
+
+### 人肉 ground truth
+
+| 类别 | 数量 | 比例 |
+|------|------|------|
+| 可声明 | 20 | 57% |
+| 部分（需人解决） | 7 | 20% |
+| 不可声明 | 5 | 14% |
+| 域外（UX/ops/freshness） | 3 | 9% |
+
+### 不可声明类——到底是什么？
+
+8 条不可声明 + 域外的 case，**没有一条是 cache write-path 需求**：
+
+- **Freshness/时序属性**（3）："eventually consistent"、"latest state"、"latest hierarchy"
+- **UX/鲁棒性声明**（2）："gracefully handle cache misses"、"feel responsive"
+- **非 write-path 机制**（2）：TTL 过期、数据完整性一致性
+- **分布属性**（1）："synchronize across all nodes"
+
+**这些都不属于 C3 域。** 它们不是 write-path cache invalidation 需求——在路由步骤就被分类错了。
+
+### 部分类——可解决吗？
+
+| 子类型 | 数量 | 解法 |
+|-------|------|------|
+| 需要依赖追踪 | 3 | `SELECT session_id FROM sessions WHERE user_id = ?`——架构上可解决 |
+| 需要意图推断 | 4 | "relevant"、"related"、"stale"——需要人类判断 |
+
+### 自动化分类器
+
+分类器（确定性模式规则）与人肉 ground truth 的精确一致率 66%——不足以无人值守运行。它偏向保守（8 条人说"可声明"它说"部分"），拖慢节奏但不重新打开缺口。关键方向：**零条 false undeclarable**——分类器永不说"不能声明"当人说能声明时。反方向有 1 条 false-declarable，所以分类器是一个保守的初筛——接受"可声明"判决前需人工复核。
+
+### 这意味着什么
+
+会重新打开 Part 11 under-inv 缺口的"空间不可声明"类——**在真正属于 C3 域的需求中，小且有界**。35 条语料中，5 条（14%）即使人也无法声明——freshness、时序、分布属性，没有 key 空间表达式能捕获。另有 3 条（9%）域外（UX/ops/数据完整性）本不该进入 C3 管线。
+
+诚实的边界从"不可声明空间的大小"转移到了**"路由进入 C3 的准确性"**——门禁上游的一个分类问题，由同样的采样层处理，但不是 key-space C3 本身的结构缺口。
+
+---
+
+## 5. 这对架构意味着什么
+
+| 机制 | 应对的缺口 | 捕获率 | 剩下的边界 |
+|-----|----------|--------|-----------|
+| Single-key C3 | DPI-bound 伪造 | 5/5（Part 10） | Referent 可博弈性（0/5） |
+| **Key-space C3** | **Referent 可博弈性** | **5/5** | **路由到 C3 的准确性（非空间大小）** |
+| Evidence 反馈循环 | Over-invalidation | 2 轮收敛 | Under-inv 不可见 |
+| 采样 | 所有残余缺口 | — | 固定成本，无自适应信号 |
+
+从 single-key 到 key-space C3 的移动是结构性的改进：它把问题从"这一个 key 变了吗？"改为"声明空间被覆盖了吗？"——并以此关闭 Mike 识别的 wrong-referent 缺口。
+
+Part 11 的三种机制（C3、evidence 反馈、L3 人类审阅）现在有了第四个：**key-space 声明**。这不是一个新机制——它是一个更精确的合约字段，约束 C3 迭代的范围。布隆过滤器的类比成立：对声明空间的 membership test 强于点查找，声明空间（而非隐含它）使合约的 scope 显式化。
+
+诚实的声明：**对可声明空间，wrong-referent 可博弈性已被结构性地关闭。** 35 条语料给出残余的数字：14% 人也无法声明，9% 被错误路由，剩余 77% 要么现在就可声明（57%），要么可通过依赖追踪解决（20%）。边界不是空间大小，而是路由进入门禁管线的准确性。
+
+---
+
+*实验脚本：*
+- [`write-time-resolution-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 6 场景 × resolution 枚举 + LLM 阶段
+- [`key-space-verify-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 6 场景 × 2 C3 模式 × 3 缓存实现
+- [`space-declarability-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) — 35 条语料 × 人肉 × 自动化分类器
+
+*结果：`results-v2/write-time-resolution.json`、`results-v2/key-space-verify.json`、`results-v2/space-declarability.json`*
+
+*上一篇：[argument-space 验证的诚实边界——以及 Evidence Locker 补了什么](blog-agent-determinism-illusions-11.zh.md)*
+*系列：[Agent 确定性幻觉系列](https://dev.to/zxpmail)*

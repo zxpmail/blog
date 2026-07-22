@@ -9,48 +9,48 @@
     "escalation_per_signal": 0.3
   },
   "baselines": {
-    "fixed_catch_rate": 0.10028438308550766,
-    "p6_catch_rate": 0.28442609312219425,
-    "full4_catch_rate": 0.48693156748294963,
-    "full4_audit_rate": 0.23511333333333334,
-    "full4_vs_p6": 1.7119792426138472
+    "fixed_catch_rate": 0.09908294340234713,
+    "p6_catch_rate": 0.2848356619023656,
+    "full4_catch_rate": 0.48732457759097086,
+    "full4_audit_rate": 0.23427133333333333,
+    "full4_vs_p6": 1.7108973445818498
   },
   "singles": [
     {
       "signals": [
         "route_changed"
       ],
-      "catch_rate": 0.17522326541360023,
-      "audit_rate": 0.12475933333333333,
-      "vs_p6": 0.6160590383608769,
-      "share_of_full_lift": -0.5392586449986708
+      "catch_rate": 0.1749046115510391,
+      "audit_rate": 0.12485466666666667,
+      "vs_p6": 0.6140544705072497,
+      "share_of_full_lift": -0.5428991013038087
     },
     {
       "signals": [
         "classifier_disagree"
       ],
-      "catch_rate": 0.24920509998393955,
-      "audit_rate": 0.15446066666666666,
-      "vs_p6": 0.8761682068208729,
-      "share_of_full_lift": -0.17392612841423685
+      "catch_rate": 0.25112067626750634,
+      "audit_rate": 0.15362333333333333,
+      "vs_p6": 0.8816335517481098,
+      "share_of_full_lift": -0.16650287014577808
     },
     {
       "signals": [
         "input_unusual"
       ],
-      "catch_rate": 0.15986293362537882,
-      "audit_rate": 0.11991866666666666,
-      "vs_p6": 0.562054387734036,
-      "share_of_full_lift": -0.6151100847521344
+      "catch_rate": 0.15938234998631254,
+      "audit_rate": 0.11957866666666667,
+      "vs_p6": 0.5595589713795907,
+      "share_of_full_lift": -0.6195564408521979
     },
     {
       "signals": [
         "barely_passed"
       ],
-      "catch_rate": 0.20535027714440607,
-      "audit_rate": 0.13716266666666665,
-      "vs_p6": 0.7219811476867002,
-      "share_of_full_lift": -0.390487300293511
+      "catch_rate": 0.20677946771405542,
+      "audit_rate": 0.13695466666666667,
+      "vs_p6": 0.725960598939799,
+      "share_of_full_lift": -0.38548378770691716
     }
   ],
   "pairs": [
@@ -59,114 +59,158 @@
         "route_changed",
         "classifier_disagree"
       ],
-      "catch_rate": 0.3253296528423959,
-      "audit_rate": 0.17874133333333334,
-      "vs_p6": 1.143810855295294,
-      "share_of_full_lift": 0.2019874270032503
+      "catch_rate": 0.32319271812411765,
+      "audit_rate": 0.179138,
+      "vs_p6": 1.134663812689648,
+      "share_of_full_lift": 0.18942793036997108
     },
     {
       "signals": [
         "route_changed",
         "input_unusual"
       ],
-      "catch_rate": 0.23514836993018387,
-      "audit_rate": 0.14407666666666666,
-      "vs_p6": 0.8267468267377289,
-      "share_of_full_lift": -0.24334020276520568
+      "catch_rate": 0.23585439002425826,
+      "audit_rate": 0.144308,
+      "vs_p6": 0.8280367298428493,
+      "share_of_full_lift": -0.24189606483661796
     },
     {
       "signals": [
         "route_changed",
         "barely_passed"
       ],
-      "catch_rate": 0.28015551795996374,
-      "audit_rate": 0.16151866666666667,
-      "vs_p6": 0.9849852905007707,
-      "share_of_full_lift": -0.02108868995127829
+      "catch_rate": 0.28199340472202,
+      "audit_rate": 0.16152266666666668,
+      "vs_p6": 0.9900214138870018,
+      "share_of_full_lift": -0.014036606254124603
     },
     {
       "signals": [
         "classifier_disagree",
         "input_unusual"
       ],
-      "catch_rate": 0.30990772592190646,
-      "audit_rate": 0.17414733333333332,
-      "vs_p6": 1.08958964530995,
-      "share_of_full_lift": 0.12583182197987255
+      "catch_rate": 0.3120287412333838,
+      "audit_rate": 0.173974,
+      "vs_p6": 1.0954693634547044,
+      "share_of_full_lift": 0.13429416241645897
     },
     {
       "signals": [
         "classifier_disagree",
         "barely_passed"
       ],
-      "catch_rate": 0.35500806978466587,
-      "audit_rate": 0.191146,
-      "vs_p6": 1.2481557718129201,
-      "share_of_full_lift": 0.34854354868813403
+      "catch_rate": 0.3536119811052985,
+      "audit_rate": 0.191368,
+      "vs_p6": 1.2414596499033457,
+      "share_of_full_lift": 0.339654736008857
     },
     {
       "signals": [
         "input_unusual",
         "barely_passed"
       ],
-      "catch_rate": 0.26442159487377737,
-      "audit_rate": 0.15653533333333333,
-      "vs_p6": 0.929667148225312,
-      "share_of_full_lift": -0.09878497513000398
+      "catch_rate": 0.26569331076933356,
+      "audit_rate": 0.15647,
+      "vs_p6": 0.9327951036566708,
+      "share_of_full_lift": -0.09453530366308953
     }
   ],
+  "unique_catch": {
+    "total_defective": 240097,
+    "trials": 1000,
+    "definition": "unique_catch = defective caught by solo-i under Alex(baseline+esc*s_i) with coupled Uniform draw, and not caught by any other solo-j; unique_fire = defective where only signal i fires",
+    "by_signal": [
+      {
+        "signal": "route_changed",
+        "unique_catch_rate": 0.019279707784770322,
+        "unique_catch_count": 4629,
+        "unique_fire_rate": 0.06470301586442147,
+        "unique_fire_count": 15535,
+        "solo_catch_rate": 0.17427123204371567,
+        "unique_share_of_solo": 0.11063046699488552
+      },
+      {
+        "signal": "classifier_disagree",
+        "unique_catch_rate": 0.05848469576879345,
+        "unique_catch_count": 14042,
+        "unique_fire_rate": 0.19558761667159524,
+        "unique_fire_count": 46960,
+        "solo_catch_rate": 0.25009475337051273,
+        "unique_share_of_solo": 0.23385015071527304
+      },
+      {
+        "signal": "input_unusual",
+        "unique_catch_rate": 0.014419172251215135,
+        "unique_catch_count": 3462,
+        "unique_fire_rate": 0.04862618025214809,
+        "unique_fire_count": 11675,
+        "solo_catch_rate": 0.15967296550977314,
+        "unique_share_of_solo": 0.09030440566554504
+      },
+      {
+        "signal": "barely_passed",
+        "unique_catch_rate": 0.031695523059430145,
+        "unique_catch_count": 7610,
+        "unique_fire_rate": 0.10584055610857279,
+        "unique_fire_count": 25412,
+        "solo_catch_rate": 0.20439655639179166,
+        "unique_share_of_solo": 0.15506877228731533
+      }
+    ]
+  },
   "classifier_disagree_alone": {
     "signals": [
       "classifier_disagree"
     ],
-    "catch_rate": 0.24920509998393955,
-    "audit_rate": 0.15446066666666666,
-    "vs_p6": 0.8761682068208729,
-    "share_of_full_lift": -0.17392612841423685
+    "catch_rate": 0.25112067626750634,
+    "audit_rate": 0.15362333333333333,
+    "vs_p6": 0.8816335517481098,
+    "share_of_full_lift": -0.16650287014577808
   },
   "best_alone": {
     "signals": [
       "classifier_disagree"
     ],
-    "catch_rate": 0.24920509998393955,
-    "audit_rate": 0.15446066666666666,
-    "vs_p6": 0.8761682068208729,
-    "share_of_full_lift": -0.17392612841423685
+    "catch_rate": 0.25112067626750634,
+    "audit_rate": 0.15362333333333333,
+    "vs_p6": 0.8816335517481098,
+    "share_of_full_lift": -0.16650287014577808
   },
   "best_pair": {
     "signals": [
       "classifier_disagree",
       "barely_passed"
     ],
-    "catch_rate": 0.35500806978466587,
-    "audit_rate": 0.191146,
-    "vs_p6": 1.2481557718129201,
-    "share_of_full_lift": 0.34854354868813403
+    "catch_rate": 0.3536119811052985,
+    "audit_rate": 0.191368,
+    "vs_p6": 1.2414596499033457,
+    "share_of_full_lift": 0.339654736008857
   },
   "best_pair_with_cd": {
     "signals": [
       "classifier_disagree",
       "barely_passed"
     ],
-    "catch_rate": 0.35500806978466587,
-    "audit_rate": 0.191146,
-    "vs_p6": 1.2481557718129201,
-    "share_of_full_lift": 0.34854354868813403
+    "catch_rate": 0.3536119811052985,
+    "audit_rate": 0.191368,
+    "vs_p6": 1.2414596499033457,
+    "share_of_full_lift": 0.339654736008857
   },
   "best_pair_without_cd": {
     "signals": [
       "route_changed",
       "barely_passed"
     ],
-    "catch_rate": 0.28015551795996374,
-    "audit_rate": 0.16151866666666667,
-    "vs_p6": 0.9849852905007707,
-    "share_of_full_lift": -0.02108868995127829
+    "catch_rate": 0.28199340472202,
+    "audit_rate": 0.16152266666666668,
+    "vs_p6": 0.9900214138870018,
+    "share_of_full_lift": -0.014036606254124603
   },
   "interpretation": [
-    "REJECT 'CD alone earns the 1.7×': classifier_disagree alone CR=24.9% is *below* P6 28.4%. It is still the best single signal (rank 1/4), but the published lift to 48.7% requires bundling.",
-    "Best pair: classifier_disagree+barely_passed CR=35.5% (1.25× P6). Best with CD: classifier_disagree+barely_passed=35.5%; best without CD: route_changed+barely_passed=28.0%.",
+    "REJECT 'CD alone earns the 1.7×': classifier_disagree alone CR=25.1% is *below* P6 28.5%. It is still the best single signal (rank 1/4), but the published lift to 48.7% requires bundling.",
+    "Best pair: classifier_disagree+barely_passed CR=35.4% (1.24× P6). Best with CD: classifier_disagree+barely_passed=35.4%; best without CD: route_changed+barely_passed=28.2%.",
     "CD is necessary in the pair set: every top pair includes it; dropping CD collapses pair catch back near P6.",
-    "CAUTION on credit: strongest partner is barely_passed (cheaper than L0/L1-vs-L2). Cross-layer is not a solo oracle; it co-drives with a margin signal."
+    "CAUTION on credit: strongest partner is barely_passed (cheaper than L0/L1-vs-L2). Cross-layer is not a solo oracle; it co-drives with a margin signal.",
+    "Unique catch (Mike): top=classifier_disagree unique_CR=5.8% (23% of its solo catches). Solo CR undersells load-bearing signals; fixture retention should use unique catch."
   ]
 }

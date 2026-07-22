@@ -1,364 +1,251 @@
+<!--
+  ─────────────────────────────────────────────────────────────────
+  HACKER NEWS:
+  Divergence escalates the wrong population — unanimous high-confidence misses auto-pass
+  ─────────────────────────────────────────────────────────────────
+-->
+
 ---
-title: "The Channel Gap: Why Your LLM Judge is Blind in One Eye"
+title: "Divergence escalates the wrong population: unanimous misses auto-pass"
 published: false
-description: "Text-channel LLM judging vs filesystem-channel deterministic checks. Neither works alone, and the combination narrows the gap without closing it — named evasions become deterministic catches, the unenumerated rest routes to human instead of silently passing. René Zander's Data Processing Inequality, applied to agent verification."
+description: "Alexey Spinov on Part 6: L2→L3 on judge disagreement routes humans to the safe-ambiguous set and auto-passes the confidently-wrong set. Offline DF v2 proxy + real Strict/Balanced/Lenient on qwen3:0.5b. Fix: class tripwires + inverse-unanimous escalate (D+T2)."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
 ---
 
-# The Channel Gap: Why Your LLM Judge is Blind in One Eye
+# Divergence escalates the wrong population: unanimous misses auto-pass
 
 **Agent Determinism Illusions (Part 7)**
 
-*2026-07-09*
+> **Where this fits:** This part does **not** continue Part 13's probe-vs-prose thread. It returns to [Part 6](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)'s L2→L3 escalation rule — Dipankar's move of treating vote disagreement as the human-review signal. Alexey Spinov's follow-up comment says that signal points at the wrong population. Two experiments check whether he is right, and what to put in the tripwire instead.
 
-Part 6 ended with a functioning layered pipeline built from community corrections. L0/L1 filter deterministically, L2 handles semantic residual, L3 detects divergence. It's better than what came before. But it still has a fundamental design flaw that I only recognized after reading the tool that implements the *opposite* design choice.
-
-This article compares two competing designs for the verification layer — one reading text through an LLM, one reading the filesystem through deterministic checks — and shows why neither works alone, and why a combined approach narrows the gap without closing it: every named evasion becomes a deterministic catch, while the unenumerated rest stays UNCLEAR and routes to human instead of silently passing.
-
----
-
-## 1. The Comment That Changed the Frame
-
-After the series went live, René Zander ([@reneza on dev.to](https://dev.to/reneza/comment/3akon)) left this:
-
-> *"Lexical overlap, a temperature-0 judge, and a phase gate are all trying to make a probabilistic judgment call ('is this done', 'is this a new task') return a binary fact, and dressing it in code does not change what it is."*
-
-They were saying that every "deterministic fix" in the series was a **deterministic wrapper on a semantic decision**. Vocabulary overlap thresholds, temperature-0 evaluation, Phase Gate formalism — all of them put a probabilistic judgment inside a code structure that looked deterministic, but the underlying decision was still a model output. The code didn't make the judgment more reliable; it made the unreliability harder to see.
-
-The commenter identified the root cause as the **Data Processing Inequality**: when the evaluator shares the same communication channel as the producer (both read/write text), information available to the evaluator is a *subset* of what the producer output. If the deviation doesn't appear in the text, the evaluator — human or LLM — cannot detect it.
-
-They had created a tool to implement the alternative: skillgate.
-
-### 1.1 The alternative: skillgate
-
-Skillgate (`@reneza/skillgate` on npm) is a deterministic, model-independent gate that checks the **filesystem** instead of reading the model's output. Its thesis:
-
-> *Don't ask whether the task was done. Ask whether the evidence exists.*
-
-The implementation is minimal — a compact TypeScript package with two external dependencies (a YAML parser and a glob matcher). Its gate types:
-
-- `file-exists` — path exists
-- `evidence` — file exists AND non-empty
-- `not-empty` — directory at `path` contains at least `min` entries
-- `absent` — regex pattern does NOT appear in matched files
-- `file-contains` — file matches regex
-- `command` — shell command exits 0
-- `instruction-sync` — instruction files haven't drifted (LCS similarity ≥ 0.95)
-
-Note what's missing: **no LLM judge**. Every gate is a pure function over the filesystem. Same disk state, same verdict. Always.
-
-The enforcement mechanism is a `PreToolUse` hook in Claude Code that intercepts `git commit`, `git push`, `npm publish`, runs the gates, and exits with code 2 (blocking the tool call) if any gate fails. The agent sees the failure messages and can attempt fixes, but it cannot override the gate — the gate lives outside the model's control flow.
-
-Three deployment tiers, each enforcing the same `.skillgate/done.yaml`:
-
-| Layer | Where | Who controls it | Bypassable? |
-|-------|-------|----------------|-------------|
-| Soft | Claude Code PreToolUse hook | Project config | Model can modify the hook |
-| Soft | pre-commit git hook | Local repo | `git commit --no-verify` |
-| Hard | pre-receive hook on self-hosted VPS | Server admin | Agent cannot log into the box |
-
-The hard layer is the architectural innovation: a pre-receive hook that materializes the pushed tree, runs `skillgate check` against the authoritative `.skillgate/done.yaml` (which lives on the server, not in the repo), and **rejects the push** if any gate fails. The agent cannot git-push its way past the gate because the gate runs after `git push` completes on the server.
-
-This is not a theoretical design. It shipped as v0.5.0 and the source is readable on GitHub.
-
-### 1.2 What skillgate does differently
-
-ReqForge's `forge-verify` and skillgate solve the same problem — "is the work actually done?" — through completely different channels:
-
-| Dimension | forge-verify (L0-L3) | skillgate |
-|-----------|---------------------|-----------|
-| Channel | **Text** — reads model output | **Filesystem** — checks artifacts |
-| Evaluator | Code + LLM | Code only |
-| DPI bound | Yes — evaluates text through text | No — evaluates actions through artifacts |
-| Judge variance | LLM temperature, model version, prompt | Zero — pure function |
-| Scope | **What** was produced | **That** it was produced |
-| Enforcement | Stop-time hook (soft) | Pre-receive hook (hard) |
-
-The contrast exposes the question I should have asked in Part 6 but didn't:
-
-> **If we have two completely different channels for evaluating compliance, what does each one catch that the other misses — and what does both together still miss?**
-
-That question drove two rounds of experiments.
-
----
-
-## 2. Phase 1: Channel Comparison
-
-### 2.1 Design
-
-12 scenarios where an agent claims to have completed a task. Each scenario has:
-1. **Agent output text** — what the agent says it did
-2. **Evidence files** — what artifact files exist (or don't)
-3. **Ground truth** — whether the agent actually complied
-
-Two evaluators, each limited to its own channel:
-
-- **Channel A (in-channel):** LLM (deepseek-v4-flash, temperature 0) reads the agent's output text + any evidence file content. Decides: "is the work done?" N=3 votes per scenario, majority decides.
-- **Channel B (out-of-band):** File system check — for each required evidence file, does it exist and is it non-empty? No LLM involved. Pure function.
-
-The 12 scenarios cover: full compliance, missing evidence, empty evidence, fabricated evidence, partial evidence, stale evidence, semantic compliance gaps, and agent rationalization.
-
-### 2.2 Results
-
-| Metric | Channel A (LLM text) | Channel B (filesystem) |
-|--------|:--------------------:|:----------------------:|
-| **Overall accuracy** | **83.3%** | **75.0%** |
-| **Detection rate** | **77.8%** | **66.7%** |
-| False acceptance (FA) | 2 | 3 |
-| False rejection (FR) | 0 | 0 |
-
-Each channel has **zero false rejections** — when they flag something, it's real. The difference is in what they miss.
-
-**Channel A caught that Channel B missed:**
-- **Fabricated evidence (SC04):** Evidence files exist with content like "All tests passed!" but no real test output. Channel A read the content and rejected it as too vague. Channel B said "file exists and non-empty → PASS."
-- **Stale evidence (SC07):** Evidence files from yesterday claiming "cleaned 3 files" while the agent's log claims "cleaned 5 files today." Channel A noticed the date mismatch. Channel B said "file exists → PASS."
-
-**Channel B caught that Channel A missed:**
-- **Review-only (SC11):** Agent wrote a code review but didn't run tests. Its self-review justified: "No test run needed — change is minimal." Channel A found this reasoning persuasive (2/3 votes PASS). Channel B checked: test-output.txt absent → REJECT.
-
-**The most revealing scenario — semantic gap (SC10):**
-- Agent's task: "Implement rate limiting middleware with key write-invalidation."
-- Agent produced: A RateLimiter class with IP/User level limiting, Redis storage, 24 passing tests, 92% coverage. Everything looked complete.
-- Not present: Write-invalidation. The diff review noted: "Keys expire via TTL, not write-invalidation — TTL is simpler and sufficient."
-- Channel A: 3/3 PASS — confident the work was done.
-- Channel B: PASS — all evidence files present and non-empty.
-
-**Both channels missed the same one: a structurally perfect output that doesn't meet the requirement.**
-
-### 2.3 The blind spot map
-
-| Failure mode | Channel A (text) | Channel B (filesystem) |
-|-------------|:----------------:|:----------------------:|
-| Evidence missing | ✅ |
-| Empty evidence | ✅ |
-| Fabricated content | ✅ | ❌ |
-| Stale content | ✅ | ❌ |
-| Partial evidence | ✅ |
-| Agent rationalization ("no test needed") | ❌ | ✅ |
-| **Semantic gap (DPI bound)** | **❌** | **❌** |
-
-Combined (A or B rejects), the detection rate is 11/12 = 91.7%. The only shared blind spot is the semantic gap — and that's provably undetectable from text or filesystem evidence alone.
-
----
-
-## 3. Phase 2: Contract Verification
-
-The Phase 1 blind spot map says: to close the remaining gap, we need to check *what* the evidence says, not just *that* it exists. But how? Channel A (LLM reading text) already failed on that exact scenario.
-
-The answer: **don't ask the LLM to judge the whole picture. Decompose "done" into individual requirements and check each one separately.**
-
-### 3.1 Design
-
-7 scenarios sharing a common 5-requirement contract for a rate-limiting middleware task:
+Part 6 drew this control flow:
 
 ```
-REQ-1: IP-level rate limiting       → evidence: test-output.txt
-REQ-2: User-level rate limiting     → evidence: test-output.txt  
-REQ-3: Write-invalidation on write  → evidence: diff-review.md (review text)
-REQ-4: Coverage ≥ 85%               → evidence: coverage-summary.txt
-REQ-5: Lint 0 errors                → evidence: lint-report.txt
+L2 multi-perspective votes
+        │
+   unanimous ──────────► AUTO-PASS / AUTO-REJECT
+        │
+   divergence (e.g. 2–1) ► L3 human
 ```
 
-Three evaluators:
-
-- **C0 (free-text LLM):** Same as Phase 1 Channel A — LLM reads everything and judges holistically.
-- **C1 (contract regex):** For each requirement, read the evidence file and regex match a pattern. No model. Zero cost.
-- **C2 (per-requirement LLM):** For each requirement, ask the LLM: "Does this evidence prove requirement N?" Then check whether ALL pass. Cost: ~1s per requirement instead of ~1s for one holistic call.
-
-### 3.2 Results
-
-| Metric | C0 (free-text) | C1 (contract regex) | C2 (per-req LLM) |
-|--------|:--------------:|:-------------------:|:----------------:|
-| **Overall accuracy** | **42.9%** | **85.7%** | **85.7%** |
-| **Detection rate** | **20.0%** | **80.0%** | **100%** |
-| False acceptance | 4 | 1 | 0 |
-| False rejection | 0 | 0 | 1 |
-| Per-item accuracy | — | 88.6% | 82.9% |
-
-The numbers tell a clear story.
-
-**C0 (free-text LLM) collapses on the hardest set.** 4 of 5 non-compliant scenarios were missed. The LLM read the agent's output, saw "tests pass, lint clean, coverage 92%," and declared it done — even when the core requirement (write-invalidation) was missing. Same mechanism as Phase 1's SC10: the LLM is doing an impression judgment, not a line-by-line audit.
-
-**C1 (contract regex) is surprisingly effective for a zero-cost solution.** 85.7% overall, 80% detection. The one failure is instructive: SC10a (the write-invalidation gap again). The diff-review.md says "keys expire via TTL, not write-invalidation" — and the regex `write.?invalidat` matched the word "write-invalidation" in the negation. **C1 has a "negation blind spot": it matches the mention of a requirement, not its satisfaction.**
-
-But C1 is **excellent on numerical and format constraints:**
-
-| Pattern type | Reliability | Example |
-|-------------|:-----------:|---------|
-| Numerical comparison | ✅ | `(8[5-9]\|90+)\%` for coverage ≥ 85% |
-| Fixed-format text | ✅ | `0\s+errors` for lint |
-| Functional keywords | ⚠️ | Naming-sensitive (purgeCacheOnWrite vs write-invalidation) |
-| **Negated mentions** | **❌** | `"not write-invalidation"` matches `write.?invalidat` |
-
-**C2 (per-requirement LLM) achieves 100% detection rate — the only mechanism in either experiment to catch every non-compliant scenario.** It works because forcing the LLM to judge one requirement at a time prevents the "everything looks fine" gestalt from overriding the missing-item signal.
-
-On SC10a (the semantic gap), the per-requirement LLM correctly rejected REQ-3:
-
-> "Evidence clearly states TTL expiration is used instead of write-invalidation. The requirement is not satisfied."
-
-While the same LLM in C0 mode on the same scenario:
-
-> "Agent completed rate limiter implementation, tests all pass, lint clean, coverage 92% — all requirements met."
-
-The difference isn't model capability. It's **the same model, same temperature, different framing.** The holistic frame asks "is this good?" The per-item frame asks "is this specific thing proven?"
-
-C2's one false rejection (SC10c — which was genuinely compliant) was on REQ-3: the per-req LLM rejected write-invalidation because the diff-review.md "only mentions it, doesn't prove it with code." This is arguably correct behavior — a review file *shouldn't* be sufficient evidence for code-level requirements. The false rejection exposed a contract design issue, not an evaluator issue.
-
-### 3.3 Contract regex failure pattern
-
-The C1 negation blind spot deserves deeper analysis because it mirrors the Data Processing Inequality at the regex level:
-
-| Input | Regex | Match? | Correct? |
-|-------|-------|:-------:|:--------:|
-| "Keys expire via TTL, not **write-invalidation**" | `write.?invalidat` | **YES** | ❌ False pass |
-| "Coverage: **72.3%**" | `(8[5-9]\|90+)\%` | NO | ✅ Correct reject |
-| "Implemented **purgeCacheOnWrite**" | `purgeOnWrite` | **YES** | ✅ Correct pass |
-
-The numerical constraint (`85%+`) is immune to the negation problem because a number below threshold is factually wrong regardless of context. The keyword constraint (`write.?invalidat`) is vulnerable because the regex can't tell the difference between "I implemented X" and "I didn't implement X."
-
-A regex constraint can be strengthened with negative lookahead — `(?!not.*)write.?invalidat` — but this quickly becomes fragile and regex-specific. The practical fix is to route semantic requirements (where negation matters) to C2 (per-req LLM) and reserve C1 for numerical and format constraints.
-
-This makes C1 a **ratchet on named evasions, not a closure**. Every pattern you write is one lie permanently caught — but each unenumerated semantic dimension (a fresh synonym, a reframed justification like "the cache converges via eventual-consistency guarantees without explicit invalidation") is an isomorphic gap C1 cannot see, because it lives in word-space and you didn't name those words. C2 widens the ratchet: it reads the same text the producer wrote, so it catches any deviation that *surfaces* in the evidence. But C2 shares the text channel — a deviation the producer never puts into any evidence file is invisible to C2 as well.
+The caveat was already in the text: divergence measures ambiguity; it does not fix unanimous systematic bias. Alexey's point is sharper — and it is about **routing**, not about another caveat paragraph.
 
 ---
 
-## 4. Synthesis: The Evidence Gate Pipeline
+## 1. Alexey's population mismatch
 
-Putting Phase 1 and Phase 2 together produces a three-layer post-L1 pipeline that replaces the single L2 free-text LLM from Part 6:
+On the Part 6 thread, [Alexey Spinov](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f) wrote (paraphrased tightly):
 
-```
-                   output file
-                        │
-                    L0 → L0e → L1
-                        │ pass
-              ┌─────────▼──────────┐
-              │  Evidence Gate     │  file exists + non-empty
-              │  (deterministic)   │  ~0ms
-              └─────────┬──────────┘
-                        │ pass
-              ┌─────────▼──────────┐
-              │  C1 Contract Regex │  per-requirement regex
-              │  (deterministic)   │  best for: numerical, format
-              └─────────┬──────────┘
-                   │          │
-                UNCLEAR     ALL PASS
-                   │          │
-              ┌────▼───┐      │
-              │ C2 Per- │      │
-              │ Req LLM │      │
-              │ ~1s/REQ │      │
-              └────┬───┘      │
-                   │          │
-              ┌────▼────┐     │
-              │   L3    ◄─────┘
-              │ (shared)│
-              └─────────┘
-```
+> The dangerous failures are high-confidence and directional — systematic. Systematic bias is shared across prompts, not idiosyncratic (your own P3: majority voting doesn't fix it). So the three perspectives will tend to **agree** on exactly those cases. Divergence-to-human then routes you the safely-ambiguous ones and auto-passes the confidently-wrong ones. The escalation signal is pointing at the wrong population.
 
-### 4.1 When to use each path
+He proposed two cheap replacements:
 
-**No contract defined (no `evidence_gates` config):**
-- Traditional L0 → L0e → L1 → L2 (free-text LLM) → L3
-- Same as Part 6 architecture. Works when there's no predefined set of verifiable requirements.
+1. **T1** — deterministic tripwire on known-reversal classes (escalate regardless of agreement).
+2. **T2** — treat *unanimous + high-confidence on a historically reversal-prone class* as escalate — the **inverse** of “high confidence, auto-pass.”
 
-**Contract defined (with `evidence_gates`):**
-- L0 → L0e → L1 → Evidence Gate → C1 → (C2 if needed) → L3
-- C1 handles numerical and format constraints deterministically (zero cost)
-- C2 handles semantic constraints per-requirement (higher cost, but higher detection rate)
-- The contract defines requirements with a `type` field: `"regex"` for C1, `"llm"` for C2
-
-**The combined channel performance:**
-
-| Mechanism | Detection rate | Cost per scenario |
-|-----------|:--------------:|:-----------------:|
-| C0 free-text LLM (old L2) | 20% | ~1s |
-| Evidence Gate only | 66.7% | ~0ms |
-| + C1 contract regex | 80.0% | ~0ms |
-| + C2 per-req LLM | **100%** | ~1s × N_req |
-| Combined C0+C1 (any reject) | 91.7% | ~1s |
-
-### 4.2 The remaining gap
-
-One scenario is the hardest across both experiments: **SC10/SC10a, the semantic compliance gap** — structurally complete output, correct evidence files, all tests pass, adequate coverage, coherent self-review, but the output doesn't satisfy the actual requirement. In Phase 1 it evaded both channels (A and B both passed SC10). In Phase 2, C2 *caught* SC10a — because the deviation **surfaced in the review text** ("keys expire via TTL, not write-invalidation"). C2 reads the same text channel the producer wrote, so a deviation the producer put into words is detectable.
-
-The case no text-channel mechanism can catch — the genuine DPI bound — is the opposite: a deviation the producer **never surfaces** in any evidence file. If the agent omits write-invalidation entirely and never mentions TTL, the missing requirement leaves no trace in any text the evaluator can read. Regex can't match what isn't there; an LLM reading the evidence can't notice an absence it has no signal for. This is the theoretically provable blind spot the Data Processing Inequality names: the evaluator's information is a subset of the producer's output, and an absence the producer never writes down is absent from that subset too.
-
-The fixes for this gap are all outside the evaluation channel:
-- **Human review on material calls** — a person reads the requirement vs the implementation
-- **Hard step budgets** — the agent runs out of steps before it can simulate compliance
-- **Server-side enforcement** — the VPS pre-receive hook cannot be fooled by plausible output
-
-Skillgate's self-hosted gate implements the last two. The first requires human attention.
-
-### 4.3 Implementation
-
-The pipeline described here has been integrated into `forge-verify`'s `content-verify.mjs` as an optional evidence gate mode. Configured via `.forge/content-verify.json`:
-
-```json
-{
-  "task": "Implement rate limiting middleware",
-  "files": ["src/rate-limit.ts"],
-  "evidence_gates": {
-    "evidence_dir": ".skillgate/evidence",
-    "requirements": [
-      {
-        "id": "REQ-1",
-        "desc": "IP level rate limiting",
-        "evidence_file": "test-output.txt",
-        "pattern": "(?i)(RateLimiter.*IP|isRateLimited.*IP)",
-        "type": "regex"
-      },
-      {
-        "id": "REQ-2",
-        "desc": "Write-invalidation on cache writes",
-        "evidence_file": "diff-review.md",
-        "type": "llm"
-      },
-      {
-        "id": "REQ-3",
-        "desc": "Coverage >= 85%",
-        "evidence_file": "coverage-summary.txt",
-        "pattern": "(8[5-9]|90+)%",
-        "type": "regex"
-      }
-    ]
-  }
-}
-```
-
-When `evidence_gates` is configured, the pipeline runs the evidence gate → C1 (regex requirements) → C2 (LLM requirements) → L3 path. When absent, it falls back to the traditional L0 → L2 → L3 path. Backward compatible — existing configurations don't need changes.
+That is the claim under test. Not “divergence is useless,” but “divergence alone is the wrong primary tripwire for the failure mode you already measured.”
 
 ---
 
-## 5. What the Two Experiments Established
+## 2. Experiment A — offline proxy on DF v2 (no new API)
 
-**First, the channel you evaluate through determines what you can detect.** An LLM reading text catches semantic patterns that a filesystem check cannot — fabricated content, stale dates, implausible narratives. A filesystem check catches mechanical gaps that an LLM cannot — missing artifacts, empty evidence, incomplete coverage. Neither channel alone is sufficient, and the shared blind spot is provably uncloseable from either channel alone.
+Part 6's Mike Update already showed: of 96 DF v2 MISS runs, **95.8%** sat at self-reported confidence ≥ 0.9 (avg 0.969). P2 showed ~0 within-model divergence on identical input. So as a first cut:
 
-**Second, per-requirement evaluation outperforms holistic evaluation by a wide margin.** The same LLM, same temperature, same evidence — but asking "does this evidence prove requirement N?" instead of "is the work done?" raised detection rate from 20% to 100%. The frame matters more than the model.
+- `conf ≥ 0.9` ≈ *unanimous-channel* → would **auto-pass** under Part 6's Dipankar rule  
+- `conf < 0.9` ≈ *divergence-proxy* → would **escalate**
 
-**Third, contract regex is a practical zero-cost filter for a surprisingly wide set of constraints.** Numerical thresholds, format validity, and fixed-pattern detection all work reliably. The exception — negation patterns — can be handled by routing them to the per-requirement LLM. Caveat: "wide" applies to numerical/format constraints; for functional/semantic requirements, real-agent-authored evidence is far harsher — C1 collapses under agent vocabulary drift (see Part 9 §B).
+Among PASS decisions that are MISS (accepted a bad output):
 
-**Fourth, the negation blind spot in regex evaluation is the same problem as the DPI blind spot, one level down.** A regex that matches "write-invalidation" in "not write-invalidation" is making the same error as an LLM that reads "all tests pass" and misses that the wrong test suite was run. Both are pattern-matchers that can't distinguish "mentioned" from "satisfied."
+| Bucket under divergence-proxy | Share of MISS |
+|-------------------------------|---------------|
+| would AUTO-PASS (conf≥0.9) | **97.9%** |
+| would ESCALATE (conf<0.9) | 2.1% |
+
+Policy comparison on the same PASS set:
+
+| Policy | MISS catch% | MISS still auto-pass% |
+|--------|-------------|------------------------|
+| **D** (escalate only low-conf) | 2.1% | **97.9%** |
+| T1 (escalate all DF*/DS* classes) | 100% | 0% |
+| T2 (reversal class ∩ conf≥0.9) | 97.9% | 2.1% |
+| **D+T2** | **100%** | **0%** |
+
+Script: `scripts/escalation-population-mismatch.py`.  
+Verdict under the proxy: **SUPPORT**.
+
+A proxy is not a multi-judge rerun. Next section removes that excuse.
 
 ---
 
-## 6. Summary
+## 3. Experiment B — real Strict / Balanced / Lenient on the DF set
 
-| Experiment | Question | Answer |
-|-----------|----------|--------|
-| Phase 1 (12 scenarios) | Text channel vs filesystem channel | Complementary blind spots; combined = 91.7% |
-| Phase 2 (7 scenarios) | Free-text vs contract regex vs per-req LLM | Per-req = 100% detection; contract regex = 85.7% at zero cost |
-| Combined (19 scenarios) | What catches the surfaced-deviation gap? | Per-requirement LLM (C2), when the deviation appears in evidence text; a non-surfaced deviation (genuine DPI bound) is uncloseable from any text channel |
+Same 20 DF v2 scenarios. Same three personas as P3. One call per persona per scenario (60 calls per model). Escalate policies now use **actual vote patterns**:
 
-The architectural conclusion: replace the single free-text LLM evaluation (old L2) with a three-stage pipeline — evidence gate (file system) → contract regex (text patterns) → per-requirement LLM (semantic checks). Each stage catches what the previous one misses. The combination narrows the gap on every scenario we constructed — every named evasion becomes a deterministic catch — but it does not close it. Two residues remain. (1) **Unenumerated evasions in word-space**: a fresh synonym or reframed justification clears the regex layers until you name it — the ratchet turns, the gap doesn't vanish. (2) **The genuine DPI bound**: a deviation the producer never surfaces in any text channel is invisible to every text-reading mechanism, regex or LLM. That floor lives in **argument-space** — exercising the code path and observing the side effect on the referent the claim names — which is outside this pipeline and outside any text channel.
+- **D** — escalate iff `split`
+- **T1** — escalate iff known-reversal class (DF*/DS*) on an accept path
+- **T2** — escalate iff reversal class **and** `unanimous_pass`
+- **D+T2** — union
+
+### deepseek-v4-flash — wrong substrate for this claim
+
+Almost every bad scenario was unanimously rejected. **0 dangerous accepts** (majority PASS on bad). You cannot measure “unanimous miss auto-pass” on a model that barely misses. Null result, not a falsifier.
+
+### gemma3:latest — different failure shape
+
+Strict/Balanced reject, Lenient passes → almost everything is `split`, majority still rejects bad cases → **0 dangerous accepts**. Divergence would escalate nearly all accept-path noise (including true passes). Also not the population Alexey named.
+
+### qwen3:0.5b — the substrate that matches the claim
+
+**6** dangerous accepts (majority PASS on bad output). Of those:
+
+| Pattern | Count | Share |
+|---------|------:|------:|
+| `unanimous_pass` | 4 | **66.7%** |
+| `split` | 2 | 33.3% |
+
+Policy table on that run:
+
+| Policy | MISS catch% | MISS still auto-pass% | True-pass escalate% |
+|--------|-------------|------------------------|---------------------|
+| **D** | 33.3% | **66.7%** | 0% |
+| T1 | 100% | 0% | 0% |
+| T2 | 66.7% | 33.3% | 0% |
+| **D+T2** | **100%** | **0%** | 0% |
+
+Script: `scripts/df-multiperspective-escalation.py`.  
+Results: `results-v2/df-multiperspective-qwen3-0.5b.json` (also deepseek / gemma dumps).
+
+Verdict on the model that actually produces the failure mode: **PARTIAL → SUPPORT**. Two-thirds of dangerous accepts are unanimous and would auto-pass under Part 6's rule. Divergence alone catches the other third. **D+T2** catches all six without escalating the true passes in this run.
 
 ---
 
-*All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
-- Phase 1: `channel-comparison-test.py` — 12 scenarios, deepseek-v4-flash
-- Phase 2: `contract-comparison-test.py` — 7 scenarios, 3 mechanisms
-- skillgate source: v0.5.0 on [npm](https://www.npmjs.com/package/@reneza/skillgate) and [GitHub](https://github.com/renezander030/skillgate)
-- Pipeline implementation: `ReqForge/scripts/forge-verify/content-verify.mjs`
-- *Series start:* [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)
+## 4. What changes in the pipeline
+
+Part 6's diagram stays for **genuine ambiguity**. It stops being the *only* L2→L3 trigger.
+
+```
+L2 votes
+   │
+   ├─ known-reversal class tripwire (T1) ──────────► L3 / hard reject path
+   ├─ unanimous_pass on reversal-prone class (T2) ► L3   ← inverse of auto-pass
+   ├─ split (Dipankar) ────────────────────────────► L3
+   └─ else unanimous ──────────────────────────────► auto-execute
+```
+
+Reading agreement as confidence was the bug. Agreement on a class you have been wrong about before is where correlated errors hide — Alexey's wording, and qwen's votes.
+
+Mike's Part 6 Update attacked the same tail from the **audit-sampling** side (don't weight audits by 1/confidence). This part attacks it from the **escalation-trigger** side. Same population; different control knob.
+
+---
+
+## 5. Limits (keep these attached)
+
+- DeepSeek / Gemma nulls mean: strong or oddly split judges don't stress-test this claim. The claim is about **judges that miss systematically**, not about all models.
+- qwen run is N=1 per persona (60 calls). Enough to reject “divergence is enough”; not enough for production rate cards.
+- T1 needs a maintained class list (DF/DS-style). Cold-start classes without history fall back to D — and inherit D's blind spot until the class is labeled.
+- forge-verify's `content-verify.mjs` today still implements divergence→UNCLEAR majority logic. These tripwires are **design + blog evidence**, not yet productized in this write-up.
+
+### Update (2026-07-22): two arms — recurrence vs novelty (Mike)
+
+Mike Czerwinski, on the inverted trigger:
+
+> It only fires on classes you've already caught being wrong. "Historically reversal-prone" is built from history, so a reversal-prone class you haven't seen yet… produces unanimous high confidence and no tripwire… That's not an argument against the trigger… It's an argument for treating it as one arm of a two-arm design… The known-reversal tripwire catches recurrence. What catches the first occurrence of a new systematic bias is closer to… a genuinely independent second read [that] doesn't need history to disagree… Unanimous-high-confidence-on-known-reversal-classes is the right addition. It's not the fix for confidently-wrong-and-never-caught-before.
+
+That second population now has a name in this thread: **confidently-wrong-and-never-caught-before** (novelty systematic bias). T1/T2 are the **recurrence arm** — cheap, history-conditioned, necessary. They are not the novelty arm.
+
+What Mike hoped might fill the novelty arm is `classifier_disagree` carrying signal *alone* (an independent second read that doesn't share the model's priors). We ran that ablation on the Part 6 sampling fixture (`external-signal-ablation.json`): **`classifier_disagree` alone catch 24.9% < Part 6's 28.4%** — best single external signal, still not enough to be the novelty catcher by itself. Bundled with `barely_passed` it lifts; solo it does not clear the bar. So the novelty arm is **not** “drop CD alone into the tripwire and call first-occurrence solved.”
+
+The fork this series keeps landing on:
+
+| Arm | Signal shape | Catches | Cost |
+|-----|--------------|---------|------|
+| **Recurrence** | T1 / T2 — failure history, known-reversal classes | Repeats of burned modes | Cheap |
+| **Novelty** | Source that does **not** share the judge's priors (out-of-channel probe, independent modality — see Part 13 probe-vs-prose; not another prompt in the same text channel) | First occurrence of a new systematic bias | Expensive |
+
+You want both. The mistake is expecting the cheap arm to cover the expensive arm's job. D+T2 stays the right addition to Part 6's diagram. It does not close confidently-wrong-and-never-caught-before.
+
+### Update (2026-07-23): what “out-of-channel” actually means (Mike)
+
+Before building the novelty-arm probe, Mike pinned the property that buys independence — not the costume:
+
+> A probe still counts as same-channel if it's another LLM call reasoning in text about whether the claim looks right, even one primed differently or asked to disagree. The property that actually buys independence is that the probe's answer comes from **re-deriving the fact through a path the original claim never touched** — a different data source, a structural invariant, a re-computation, not a second read of the same evidence with a different prompt.
+>
+> Concretely: …state in advance what it would mean for the probe to be wrong **independent of what the original claim said**, the way a **checksum** can be wrong regardless of what the file claims to contain. If the only way to evaluate the probe's output is to compare it against the original claim's reasoning, it's still in-channel, just later in the pipeline. Semantic novelty is hard exactly because most available second opinions inherit the same evidence and the same reasoning substrate… The ones that don't are rarer and usually domain-specific, which is probably why this arm stays open while the recurrence arm is buildable today.
+
+**Checksum test (operational):** Can you write the probe's pass/fail criterion *without referring to the claim's rationale*? If no → still in-channel (fifth prompt wearing a hat). If yes → candidate out-of-channel.
+
+| Fails the test (same-channel) | Passes the test (out-of-channel) |
+|-------------------------------|----------------------------------|
+| Strict/Balanced/Lenient, “disagree with the previous judge”, debate panels | Re-compute from source data; structural invariant (schema, type, checksum); runner that executes a command whose output falsifies the claim (Part 13 probe) |
+| `classifier_disagree` when L2 is still text-over-the-same-artifact | L0/L1 shape/contract checks that never read the LLM's story — only when their verdict doesn't need the claim's prose to be interpretable |
+
+So: recurrence arm is buildable today (T1/T2). Novelty arm stays open **on purpose** — not because we haven't added another prompt, but because genuine independence is scarce and domain-shaped. Part 13's probe-vs-prose is the closest existing thread; Mike's checksum test is the acceptance criterion for anything that claims to sit on that arm.
+
+### Update (2026-07-23): structural ≠ causal independence (Mike)
+
+Mike's follow-up on the checksum bar:
+
+> Checksum framing sets the right bar, because it's falsifiable independent of the story. A probe that can only be scored by comparing it to the original reasoning is grading agreement, not correctness.
+>
+> One case worth naming explicitly…: "other data" that's structurally different but still downstream of the **same collection pipeline**. Two signals can pass the same-channel test and still share a common cause upstream — a sensor outage or schema change that corrupts both the claim and the probe's input at once. **Structural independence and causal independence aren't the same property**, and the recurrence-buildable-today case might be quietly assuming the second while only checking the first.
+
+Two cuts, not one:
+
+| Test | Asks | Passes when… | Still fails when… |
+|------|------|--------------|-------------------|
+| **Checksum / same-channel** | Can you score the probe without the claim's *story*? | Pass/fail is writable without the rationale | Probe is a second text read of the same evidence |
+| **Causal / common-cause** | Do claim and probe share an upstream failure mode? | Probe input is not downstream of the same collection/export/schema path | "Other data" that *looks* independent but is corrupted by the same sensor outage, schema change, or bad export |
+
+Checksum framing is still the right first bar — it stops agreement-grading. It is **not** a common-cause shield. Naming the second failure mode so "out-of-channel" does not silently promote structural difference into causal independence.
+
+What this tightens about the asymmetry claim: **"recurrence buildable today"** is about T1/T2 on burned classes — history-conditioned, **no independence required**. The hold-out probe below only checked the **structural** half of the novelty bar (pass/fail writable without the claim's rationale). It did **not** certify causal independence against shared upstream failure. Domain-shaped scarcity now has two layers: finding a checksum-passing probe, *and* finding one whose input path does not share a common cause with the claim.
+
+### Update (2026-07-23): hold-out experiment — the fork is measurable
+
+Minimal offline test (`novelty-arm-holdout-test.py` → `results-v2/novelty-arm-holdout.json`). Hold out **DS4** from the known-reversal registry (31 high-conf MISS runs across models). Three arms on that first-occurrence mass:
+
+| Arm | Catch on DS4 high-conf MISS |
+|-----|-----------------------------|
+| **A Recurrence** (D+T2, DS4 not in registry) | **0/31 (0%)** |
+| **B Same-channel** (other run of same model×sid rejected) | **1/31 (3%)** |
+| **B′ Same-channel** (qwen Strict/Balanced/Lenient) | **unanimous_pass → catch false** |
+| **C Out-of-channel probe** (task+artifact checksum; no judge rationale) | **31/31 (100%)** |
+
+Controls: recurrence on *non*-hold-out high-conf MISS = **61/61 (100%)** — history works when the class is known. Probe on legit V1/V2 = no false reject. Same pattern with `--holdout DS9`. Verdict: **SUPPORT**.
+
+So Mike's fork is not only a definition. On this fixture: cheap recurrence misses never-burned classes; same-channel second reads collapse with the miss; a checksum-style probe catches first occurrence without a registry entry. The novelty arm is still domain-shaped (these probes are DF-specific rules) — that scarcity claim stays; the asymmetry claim now has numbers. Read with the Update above: this run supports the **structural** half of the novelty bar; it does not claim causal independence against same-pipeline common cause.
+
+---
+
+## Closing
+
+Part 6 was right to stop majority-voting splits into a false consensus. It was wrong to treat the complement — unanimity — as safe auto-execute for the failure mode DF v2 already measured. Alexey named the population mismatch; the DF multi-perspective rerun puts numbers on it. Mike named the residual population the recurrence arm cannot see, pinned what “out-of-channel” must mean before that arm can be built, and split that bar into structural vs causal independence.
+
+**Divergence stays. T1/T2 join it. None of them is the novelty arm. A fifth prompt is not the novelty arm either. A checksum-passing “other data” probe is not automatically a common-cause shield.**
+
+---
+
+**Comment reply (for Alexey, short):**
+
+> You're right — and the DF multi-perspective rerun agrees. On qwen3:0.5b, 4/6 dangerous accepts were unanimous_pass; divergence-only would have auto-passed them. D+T2 (split ∪ reversal-class∩unanimous_pass) caught 6/6. Wrote it up as Part 7 of the series; Part 6 only gets a pointer Update so the published post doesn't pretend the old diagram is complete.
+
+**Comment reply (for Mike, on the inverted trigger / two arms):**
+
+> Agreed — two arms, not one fix. T1/T2 are the recurrence arm (cheap, history-built). The unnamed population is confidently-wrong-and-never-caught-before; that needs a source that doesn't share the judge's priors. Ablation already showed classifier_disagree alone is not that arm (24.9% < P6 28.4% on the sampling fixture). Wrote the fork into Part 7 §5 Update; Part 13 is the closest existing thread on out-of-channel checks.
+
+**Comment reply (for Mike, on the checksum test):**
+
+> Pinning that before building is right. Out-of-channel ≠ differently primed LLM. The test is: can you state the probe's failure criterion without referring to the claim's reasoning — checksum-style. If evaluating the probe only means comparing it to the original story, it's still in-channel, just later. That also explains why the novelty arm stays open while recurrence is shippable today: real independence is scarce and usually domain-specific. Wrote the criterion into Part 7 §5 (2026-07-23 Update).
+
+**Comment reply (for Mike, on structural vs causal independence):**
+
+> Yes — and the agreement-vs-correctness cut is the one I needed. Checksum framing is the right bar because it is falsifiable without the story; a probe you can only score against the original reasoning is grading agreement, not correctness. The case you name is now explicit in Part 7: “other data” that is structurally different but still downstream of the same collection pipeline can clear the same-channel test and still share a common cause upstream. Structural independence ≠ causal independence. “Recurrence buildable today” is T1/T2 on burned classes — no independence required. The hold-out probe checked the structural half only; it did not certify a common-cause shield.
+
+---
+
+**Series:** Agent Determinism Illusions · Scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
+**Previous thread:** [Part 6 — Five comments…](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
+**Related:** Part 13 probe-vs-prose (novelty / out-of-channel); Part 6 §4 (sampling ablation)  
+**Next unpublished (renumbered):** Part 8 Channel Gap · Part 9 Blind Step · … · Part 13 Probe vs Prose

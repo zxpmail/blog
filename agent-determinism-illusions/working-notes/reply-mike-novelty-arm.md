@@ -1,8 +1,8 @@
 # Reply draft — Mike on inverted trigger (recurrence vs novelty)
 
 Post: Part 6 thread (DEV.to).  
-Evidence: Part 13 §5 Update (repo; not assumed live); `external-signal-ablation.json`  
-Do not cite: Part 12 (unpublished). Prefer concept language (out-of-channel / probe).
+Evidence: Part 7 §5 Update (local draft — next to publish); xternal-signal-ablation.json  
+Do not hard-link unpublished DEV.to URLs; concept language OK (out-of-channel / probe).
 
 ---
 
@@ -16,6 +16,7 @@ The unnamed population is confidently-wrong-and-never-caught-before. The shape y
 
 ## 中文备忘
 
-- 公评不提 Part 12（未发）；不硬链未发 Part 编号
-- 复发臂 = T1/T2；新奇臂形状 = 不共享 priors 的第二读；CD 消融只否「采样夹具上单独够用」
+- 落 Part 7（本地下一发），不落 Part 6 主叙事（Part 6 可一句指针）
+- 公评不硬链未发 URL
+- 复发臂 = T1/T2；新奇臂 ≠ CD 单独（消融已否）
 - 新奇人口命名：confidently-wrong-and-never-caught-before

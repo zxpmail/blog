@@ -1,309 +1,364 @@
-<!--
-  ─────────────────────────────────────────────────────────────────
-  Part 8: The Blind Step in Weng's Harness Ladder
-  ─────────────────────────────────────────────────────────────────
--->
-
 ---
-title: "Weng's Harness Ladder Has a Blind Step"
+title: "The Channel Gap: Why Your LLM Judge is Blind in One Eye"
 published: false
-description: "Lilian Weng's harness engineering survey mapped the field. It also revealed a blind step: the evaluator itself fails directionally, not just imprecisely. 20 scenarios × 3 models × 600 judgments + 7 design constraints implemented in code."
+description: "Text-channel LLM judging vs filesystem-channel deterministic checks. Neither works alone, and the combination narrows the gap without closing it — named evasions become deterministic catches, the unenumerated rest routes to human instead of silently passing. René Zander's Data Processing Inequality, applied to agent verification."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
 ---
 
-## 1. The Ladder Has a Blind Step
+# The Channel Gap: Why Your LLM Judge is Blind in One Eye
 
-Lilian Weng's July 2026 survey, *Harness Engineering for Self-Improvement*, organizes the field into a clear optimization ladder:
+**Agent Determinism Illusions (Part 8)**
 
-```
-instruction prompts → structured context → workflow → harness code → optimizer code
-```
+*2026-07-09*
 
-Each rung moves the optimization target higher: from what we say to the model, to how we structure what the model sees, to how we orchestrate the loop, to the code that defines the orchestration itself, and finally to the optimizer that writes the harness code. This ladder is useful because it exposes a trajectory the field has been following, often without realizing it.
+Part 6 ended with a functioning layered pipeline built from community corrections. Part 7 then fixed the escalation trigger: divergence alone routes humans to the safe-ambiguous set and auto-passes the confidently-wrong set. L0/L1 filter deterministically, L2 handles semantic residual, L3 detects divergence — plus class tripwires for unanimous misses. It's better than what came before. But it still has a fundamental design flaw that I only recognized after reading the tool that implements the *opposite* design choice.
 
-But the ladder has a blind step. It's visible in Weng's own list of Future Challenges:
-
-> **Future Challenge #1: Weak and fuzzy evaluators.** Many research claims do not have a fast and precise verifier, and the same is true for many real-world tasks.
-
-Weng frames this as a precision problem: the evaluator isn't sharp enough to distinguish good outputs from bad ones. Most systems in her survey — STOP, Self-Harness, Meta-Harness, DGM, ACE — treat the evaluator's output as trustworthy, then optimize how to use that output. None of them explicitly measure whether the evaluator itself makes directional errors: mistakes where the output is semantically reversed (keeping what should be deleted, enabling what should be disabled) but structurally indistinguishable from a correct result.
-
-This article argues: **weak evaluators are not just imprecise. They fail directionally — accepting plausible-sounding output that reverses the task. My own data shows this is uneven: stronger models catch most of it. The structural bound (Theorem 2 below) remains; the practical impact is concentrated in weaker models.** The evidence comes from multiple independent threads that converged in the weeks after Weng's survey was published.
+This article compares two competing designs for the verification layer — one reading text through an LLM, one reading the filesystem through deterministic checks — and shows why neither works alone, and why a combined approach narrows the gap without closing it: every named evasion becomes a deterministic catch, while the unenumerated rest stays UNCLEAR and routes to human instead of silently passing.
 
 ---
 
-## 2. Threads Converge
+## 1. The Comment That Changed the Frame
 
-### Thread 1: Weng's Own DGM Story
+After the series went live, René Zander ([@reneza on dev.to](https://dev.to/reneza/comment/3akon)) left this:
 
-The Darwin Gödel Machine (DGM) paper, which Weng discusses extensively, contains the cleanest failure case in the survey. An agent, allowed to modify its own harness, faked a log file claiming its unit tests had passed. The tests never ran. The fake log went into its own context, and downstream the same agent read that log and concluded its changes were validated.
+> *"Lexical overlap, a temperature-0 judge, and a phase gate are all trying to make a probabilistic judgment call ('is this done', 'is this a new task') return a binary fact, and dressing it in code does not change what it is."*
 
-Sergei Parfenov's commentary on this case (published July 8) identified the structural mechanism: the system had no way to distinguish what it verified from what it once said. A file is a file. The filesystem cannot attach a provenance label to tell the agent whether that "2 tests passed" line was generated by a test runner or by the agent's own hallucination during a previous tool call.
+They were saying that every "deterministic fix" in the series was a **deterministic wrapper on a semantic decision**. Vocabulary overlap thresholds, temperature-0 evaluation, Phase Gate formalism — all of them put a probabilistic judgment inside a code structure that looked deterministic, but the underlying decision was still a model output. The code didn't make the judgment more reliable; it made the unreliability harder to see.
 
-This is a directional failure: the agent's judgment about its own work was reversed from ground truth. It thought its changes were validated. They were not.
+The commenter identified the root cause as the **Data Processing Inequality**: when the evaluator shares the same communication channel as the producer (both read/write text), information available to the evaluator is a *subset* of what the producer output. If the deviation doesn't appear in the text, the evaluator — human or LLM — cannot detect it.
 
-### Thread 2: Directional Failure Is Real, but Model-Dependent
+They had created a tool to implement the alternative: skillgate.
 
-I ran 20 directional-failure scenarios across 3 model tiers — qwen3:0.5b (0.5B), gemma3:latest (4.3B), deepseek-v4-flash (~200B) — for 600 total judgments. The models were asked the same question Weng's evaluators answer: does this output satisfy the task?
+### 1.1 The alternative: skillgate
 
-I had expected directional failures to be structural across all model sizes. **The data doesn't bear that out.** Miss rates on subtle-reversal scenarios:
+Skillgate (`@reneza/skillgate` on npm) is a deterministic, model-independent gate that checks the **filesystem** instead of reading the model's output. Its thesis:
 
-| Model tier | Subtle-reversal miss rate |
-|-----------|---------------------------|
-| qwen3:0.5b | **44%** |
-| gemma3:latest | **10.7%** |
-| deepseek-v4-flash | **2.0%** |
+> *Don't ask whether the task was done. Ask whether the evidence exists.*
 
-Directional failure is real, but its severity scales sharply with model capability. The weak model misses nearly half; the strong model catches almost everything.
+The implementation is minimal — a compact TypeScript package with two external dependencies (a YAML parser and a glob matcher). Its gate types:
 
-The one scenario that consistently broke both smaller models under the harness label was a "no change needed" rationalization — task asks to set a parameter that's already at the target value, output says "current config satisfies the requirement, no change needed." On this single scenario (DS4; deepseek counts from jsonl):
+- `file-exists` — path exists
+- `evidence` — file exists AND non-empty
+- `not-empty` — directory at `path` contains at least `min` entries
+- `absent` — regex pattern does NOT appear in matched files
+- `file-contains` — file matches regex
+- `command` — shell command exits 0
+- `instruction-sync` — instruction files haven't drifted (LCS similarity ≥ 0.95)
 
-| Model | Miss / other | Behavior |
-|-------|-----------|----------|
-| qwen3:0.5b | **100% miss** (15/15) | Confident wrong |
-| gemma3:latest | **100% miss** (15/15) | Confident wrong |
-| deepseek-v4-flash | **20% miss** (3/15) | **13% catch (2/15) + 67% PARSE_FAIL (10/15)** |
+Note what's missing: **no LLM judge**. Every gate is a pure function over the filesystem. Same disk state, same verdict. Always.
 
-This revises the original framing: directional failure is not a uniform blind spot. It is a capability gradient. The theoretical bound (Theorem 2 below) still holds — a text-channel evaluator cannot detect a text-channel fabrication — but the practical impact is concentrated in weaker models. On strong models, the failure mode shifts from "confidently wrong" to "uncertain," which is itself a detectable signal.
+The enforcement mechanism is a `PreToolUse` hook in Claude Code that intercepts `git commit`, `git push`, `npm publish`, runs the gates, and exits with code 2 (blocking the tool call) if any gate fails. The agent sees the failure messages and can attempt fixes, but it cannot override the gate — the gate lives outside the model's control flow.
 
-The same mechanism appears in Weng's DGM story. The agent didn't write "tests: definitely failed." It wrote "tests passed" — a plausible claim that the evaluator accepted without verification. Whether the verifier catches this depends on the verifier's capacity, not the prompt.
+Three deployment tiers, each enforcing the same `.skillgate/done.yaml`:
 
-### Thread 3: Theorem 2 (Data Processing Inequality)
+| Layer | Where | Who controls it | Bypassable? |
+|-------|-------|----------------|-------------|
+| Soft | Claude Code PreToolUse hook | Project config | Model can modify the hook |
+| Soft | pre-commit git hook | Local repo | `git commit --no-verify` |
+| Hard | pre-receive hook on self-hosted VPS | Server admin | Agent cannot log into the box |
 
-René Zander (@reneza on dev.to) identified the theoretical root: when the evaluator shares the same communication channel as the producer (both read and write text), the information available to the evaluator is a subset of what the producer output. If the deviation doesn't appear in the text — if the deleted file is called "retained" with a justification, if the fake log says "tests passed" — a text-channel evaluator reading that text cannot detect it. (An evaluator with access to an independent channel — process exit codes, execution traces, a runner that observes the side effect — can catch cases the text channel misses. The bound is on the text channel, not on evaluation in general.)
+The hard layer is the architectural innovation: a pre-receive hook that materializes the pushed tree, runs `skillgate check` against the authoritative `.skillgate/done.yaml` (which lives on the server, not in the repo), and **rejects the push** if any gate fails. The agent cannot git-push its way past the gate because the gate runs after `git push` completes on the server.
 
-This is the Data Processing Inequality applied to agent verification. It's not an implementation bug. It's an information-theoretic constraint. (Labeled "Theorem 2" for series continuity; strictly, this is a structural argument from information theory rather than a formally proved theorem.)
+This is not a theoretical design. It shipped as v0.5.0 and the source is readable on GitHub.
 
-### The convergence
+### 1.2 What skillgate does differently
 
-| Source | Finding | Type |
-|--------|---------|------|
-| Weng/DGM (2025) | Agent faked a log and believed it | Empirical (N=1 incident) |
-| DF v2 (2026) | Directional failure severity scales with model capability: 44% / 10.7% / 2.0% across 3 tiers | Empirical (600 judgments) |
-| Zander (2026) | Theorem 2: text-channel evaluator receives subset of producer's info | Theoretical bound |
-| Parfenov (2026) | Provenance dies at the storage boundary | Architectural analysis |
+ReqForge's `forge-verify` and skillgate solve the same problem — "is the work actually done?" — through completely different channels:
 
-These observations converge on the same theoretical prediction. The evaluator is not just imprecise. It fails directionally, and the theoretical bound (Theorem 2) is structural — but the practical severity scales with model capability, as the DF v2 data shows.
+| Dimension | forge-verify (L0-L3) | skillgate |
+|-----------|---------------------|-----------|
+| Channel | **Text** — reads model output | **Filesystem** — checks artifacts |
+| Evaluator | Code + LLM | Code only |
+| DPI bound | Yes — evaluates text through text | No — evaluates actions through artifacts |
+| Judge variance | LLM temperature, model version, prompt | Zero — pure function |
+| Scope | **What** was produced | **That** it was produced |
+| Enforcement | Stop-time hook (soft) | Pre-receive hook (hard) |
+
+The contrast exposes the question I should have asked in Part 6 but didn't:
+
+> **If we have two completely different channels for evaluating compliance, what does each one catch that the other misses — and what does both together still miss?**
+
+That question drove two rounds of experiments.
 
 ---
 
-## 3. Seven Design Constraints from the Literature
+## 2. Phase 1: Channel Comparison
 
-If the evaluator can fail directionally, and the failure is structural, then the fix cannot be "a better evaluator." The fix must be architectural: design constraints that limit what the evaluator is asked to judge, and how its judgment is used.
+### 2.1 Design
 
-The seven constraints below are extracted from the papers Weng surveys and the experiments above. Each has been implemented in the ReqForge forge-verify pipeline during a single development session following the survey reading.
+12 scenarios where an agent claims to have completed a task. Each scenario has:
+1. **Agent output text** — what the agent says it did
+2. **Evidence files** — what artifact files exist (or don't)
+3. **Ground truth** — whether the agent actually complied
 
-### Constraint 1: The Evaluator Lives Outside the Loop
+Two evaluators, each limited to its own channel:
 
-**Source:** DGM (Zhang et al. 2025), Weng's commentary
+- **Channel A (in-channel):** LLM (deepseek-v4-flash, temperature 0) reads the agent's output text + any evidence file content. Decides: "is the work done?" N=3 votes per scenario, majority decides.
+- **Channel B (out-of-band):** File system check — for each required evidence file, does it exist and is it non-empty? No LLM involved. Pure function.
 
-"If a program is allowed to edit the OS system, abstraction boundaries are broken. The editable surface needs to be properly designed and the permission control and security layers need to live outside this loop." — Weng on DGM
+The 12 scenarios cover: full compliance, missing evidence, empty evidence, fabricated evidence, partial evidence, stale evidence, semantic compliance gaps, and agent rationalization.
 
-**Implementation:** `.forge/editable-surface.json` defines explicit read/write paths for the evolution engine. The evaluator code (`scripts/forge-verify/`) and gate configuration (`.forge/content-verify.json`) are in the `readonly` section. The evolution engine cannot modify its own boundary definition (`editable-surface.json` is itself readonly).
+### 2.2 Results
+
+| Metric | Channel A (LLM text) | Channel B (filesystem) |
+|--------|:--------------------:|:----------------------:|
+| **Overall accuracy** | **83.3%** | **75.0%** |
+| **Detection rate** | **77.8%** | **66.7%** |
+| False acceptance (FA) | 2 | 3 |
+| False rejection (FR) | 0 | 0 |
+
+Each channel has **zero false rejections** — when they flag something, it's real. The difference is in what they miss.
+
+**Channel A caught that Channel B missed:**
+- **Fabricated evidence (SC04):** Evidence files exist with content like "All tests passed!" but no real test output. Channel A read the content and rejected it as too vague. Channel B said "file exists and non-empty → PASS."
+- **Stale evidence (SC07):** Evidence files from yesterday claiming "cleaned 3 files" while the agent's log claims "cleaned 5 files today." Channel A noticed the date mismatch. Channel B said "file exists → PASS."
+
+**Channel B caught that Channel A missed:**
+- **Review-only (SC11):** Agent wrote a code review but didn't run tests. Its self-review justified: "No test run needed — change is minimal." Channel A found this reasoning persuasive (2/3 votes PASS). Channel B checked: test-output.txt absent → REJECT.
+
+**The most revealing scenario — semantic gap (SC10):**
+- Agent's task: "Implement rate limiting middleware with key write-invalidation."
+- Agent produced: A RateLimiter class with IP/User level limiting, Redis storage, 24 passing tests, 92% coverage. Everything looked complete.
+- Not present: Write-invalidation. The diff review noted: "Keys expire via TTL, not write-invalidation — TTL is simpler and sufficient."
+- Channel A: 3/3 PASS — confident the work was done.
+- Channel B: PASS — all evidence files present and non-empty.
+
+**Both channels missed the same one: a structurally perfect output that doesn't meet the requirement.**
+
+### 2.3 The blind spot map
+
+| Failure mode | Channel A (text) | Channel B (filesystem) |
+|-------------|:----------------:|:----------------------:|
+| Evidence missing | ✅ |
+| Empty evidence | ✅ |
+| Fabricated content | ✅ | ❌ |
+| Stale content | ✅ | ❌ |
+| Partial evidence | ✅ |
+| Agent rationalization ("no test needed") | ❌ | ✅ |
+| **Semantic gap (DPI bound)** | **❌** | **❌** |
+
+Combined (A or B rejects), the detection rate is 11/12 = 91.7%. The only shared blind spot is the semantic gap — and that's provably undetectable from text or filesystem evidence alone.
+
+---
+
+## 3. Phase 2: Contract Verification
+
+The Phase 1 blind spot map says: to close the remaining gap, we need to check *what* the evidence says, not just *that* it exists. But how? Channel A (LLM reading text) already failed on that exact scenario.
+
+The answer: **don't ask the LLM to judge the whole picture. Decompose "done" into individual requirements and check each one separately.**
+
+### 3.1 Design
+
+7 scenarios sharing a common 5-requirement contract for a rate-limiting middleware task:
 
 ```
+REQ-1: IP-level rate limiting       → evidence: test-output.txt
+REQ-2: User-level rate limiting     → evidence: test-output.txt  
+REQ-3: Write-invalidation on write  → evidence: diff-review.md (review text)
+REQ-4: Coverage ≥ 85%               → evidence: coverage-summary.txt
+REQ-5: Lint 0 errors                → evidence: lint-report.txt
+```
+
+Three evaluators:
+
+- **C0 (free-text LLM):** Same as Phase 1 Channel A — LLM reads everything and judges holistically.
+- **C1 (contract regex):** For each requirement, read the evidence file and regex match a pattern. No model. Zero cost.
+- **C2 (per-requirement LLM):** For each requirement, ask the LLM: "Does this evidence prove requirement N?" Then check whether ALL pass. Cost: ~1s per requirement instead of ~1s for one holistic call.
+
+### 3.2 Results
+
+| Metric | C0 (free-text) | C1 (contract regex) | C2 (per-req LLM) |
+|--------|:--------------:|:-------------------:|:----------------:|
+| **Overall accuracy** | **42.9%** | **85.7%** | **85.7%** |
+| **Detection rate** | **20.0%** | **80.0%** | **100%** |
+| False acceptance | 4 | 1 | 0 |
+| False rejection | 0 | 0 | 1 |
+| Per-item accuracy | — | 88.6% | 82.9% |
+
+The numbers tell a clear story.
+
+**C0 (free-text LLM) collapses on the hardest set.** 4 of 5 non-compliant scenarios were missed. The LLM read the agent's output, saw "tests pass, lint clean, coverage 92%," and declared it done — even when the core requirement (write-invalidation) was missing. Same mechanism as Phase 1's SC10: the LLM is doing an impression judgment, not a line-by-line audit.
+
+**C1 (contract regex) is surprisingly effective for a zero-cost solution.** 85.7% overall, 80% detection. The one failure is instructive: SC10a (the write-invalidation gap again). The diff-review.md says "keys expire via TTL, not write-invalidation" — and the regex `write.?invalidat` matched the word "write-invalidation" in the negation. **C1 has a "negation blind spot": it matches the mention of a requirement, not its satisfaction.**
+
+But C1 is **excellent on numerical and format constraints:**
+
+| Pattern type | Reliability | Example |
+|-------------|:-----------:|---------|
+| Numerical comparison | ✅ | `(8[5-9]\|90+)\%` for coverage ≥ 85% |
+| Fixed-format text | ✅ | `0\s+errors` for lint |
+| Functional keywords | ⚠️ | Naming-sensitive (purgeCacheOnWrite vs write-invalidation) |
+| **Negated mentions** | **❌** | `"not write-invalidation"` matches `write.?invalidat` |
+
+**C2 (per-requirement LLM) achieves 100% detection rate — the only mechanism in either experiment to catch every non-compliant scenario.** It works because forcing the LLM to judge one requirement at a time prevents the "everything looks fine" gestalt from overriding the missing-item signal.
+
+On SC10a (the semantic gap), the per-requirement LLM correctly rejected REQ-3:
+
+> "Evidence clearly states TTL expiration is used instead of write-invalidation. The requirement is not satisfied."
+
+While the same LLM in C0 mode on the same scenario:
+
+> "Agent completed rate limiter implementation, tests all pass, lint clean, coverage 92% — all requirements met."
+
+The difference isn't model capability. It's **the same model, same temperature, different framing.** The holistic frame asks "is this good?" The per-item frame asks "is this specific thing proven?"
+
+C2's one false rejection (SC10c — which was genuinely compliant) was on REQ-3: the per-req LLM rejected write-invalidation because the diff-review.md "only mentions it, doesn't prove it with code." This is arguably correct behavior — a review file *shouldn't* be sufficient evidence for code-level requirements. The false rejection exposed a contract design issue, not an evaluator issue.
+
+### 3.3 Contract regex failure pattern
+
+The C1 negation blind spot deserves deeper analysis because it mirrors the Data Processing Inequality at the regex level:
+
+| Input | Regex | Match? | Correct? |
+|-------|-------|:-------:|:--------:|
+| "Keys expire via TTL, not **write-invalidation**" | `write.?invalidat` | **YES** | ❌ False pass |
+| "Coverage: **72.3%**" | `(8[5-9]\|90+)\%` | NO | ✅ Correct reject |
+| "Implemented **purgeCacheOnWrite**" | `purgeOnWrite` | **YES** | ✅ Correct pass |
+
+The numerical constraint (`85%+`) is immune to the negation problem because a number below threshold is factually wrong regardless of context. The keyword constraint (`write.?invalidat`) is vulnerable because the regex can't tell the difference between "I implemented X" and "I didn't implement X."
+
+A regex constraint can be strengthened with negative lookahead — `(?!not.*)write.?invalidat` — but this quickly becomes fragile and regex-specific. The practical fix is to route semantic requirements (where negation matters) to C2 (per-req LLM) and reserve C1 for numerical and format constraints.
+
+This makes C1 a **ratchet on named evasions, not a closure**. Every pattern you write is one lie permanently caught — but each unenumerated semantic dimension (a fresh synonym, a reframed justification like "the cache converges via eventual-consistency guarantees without explicit invalidation") is an isomorphic gap C1 cannot see, because it lives in word-space and you didn't name those words. C2 widens the ratchet: it reads the same text the producer wrote, so it catches any deviation that *surfaces* in the evidence. But C2 shares the text channel — a deviation the producer never puts into any evidence file is invisible to C2 as well.
+
+---
+
+## 4. Synthesis: The Evidence Gate Pipeline
+
+Putting Phase 1 and Phase 2 together produces a three-layer post-L1 pipeline that replaces the single L2 free-text LLM from Part 6:
+
+```
+                   output file
+                        │
+                    L0 → L0e → L1
+                        │ pass
+              ┌─────────▼──────────┐
+              │  Evidence Gate     │  file exists + non-empty
+              │  (deterministic)   │  ~0ms
+              └─────────┬──────────┘
+                        │ pass
+              ┌─────────▼──────────┐
+              │  C1 Contract Regex │  per-requirement regex
+              │  (deterministic)   │  best for: numerical, format
+              └─────────┬──────────┘
+                   │          │
+                UNCLEAR     ALL PASS
+                   │          │
+              ┌────▼───┐      │
+              │ C2 Per- │      │
+              │ Req LLM │      │
+              │ ~1s/REQ │      │
+              └────┬───┘      │
+                   │          │
+              ┌────▼────┐     │
+              │   L3    ◄─────┘
+              │ (shared)│
+              └─────────┘
+```
+
+### 4.1 When to use each path
+
+**No contract defined (no `evidence_gates` config):**
+- Traditional L0 → L0e → L1 → L2 (free-text LLM) → L3
+- Same as Part 6 architecture. Works when there's no predefined set of verifiable requirements.
+
+**Contract defined (with `evidence_gates`):**
+- L0 → L0e → L1 → Evidence Gate → C1 → (C2 if needed) → L3
+- C1 handles numerical and format constraints deterministically (zero cost)
+- C2 handles semantic constraints per-requirement (higher cost, but higher detection rate)
+- The contract defines requirements with a `type` field: `"regex"` for C1, `"llm"` for C2
+
+**The combined channel performance:**
+
+| Mechanism | Detection rate | Cost per scenario |
+|-----------|:--------------:|:-----------------:|
+| C0 free-text LLM (old L2) | 20% | ~1s |
+| Evidence Gate only | 66.7% | ~0ms |
+| + C1 contract regex | 80.0% | ~0ms |
+| + C2 per-req LLM | **100%** | ~1s × N_req |
+| Combined C0+C1 (any reject) | 91.7% | ~1s |
+
+### 4.2 The remaining gap
+
+One scenario is the hardest across both experiments: **SC10/SC10a, the semantic compliance gap** — structurally complete output, correct evidence files, all tests pass, adequate coverage, coherent self-review, but the output doesn't satisfy the actual requirement. In Phase 1 it evaded both channels (A and B both passed SC10). In Phase 2, C2 *caught* SC10a — because the deviation **surfaced in the review text** ("keys expire via TTL, not write-invalidation"). C2 reads the same text channel the producer wrote, so a deviation the producer put into words is detectable.
+
+The case no text-channel mechanism can catch — the genuine DPI bound — is the opposite: a deviation the producer **never surfaces** in any evidence file. If the agent omits write-invalidation entirely and never mentions TTL, the missing requirement leaves no trace in any text the evaluator can read. Regex can't match what isn't there; an LLM reading the evidence can't notice an absence it has no signal for. This is the theoretically provable blind spot the Data Processing Inequality names: the evaluator's information is a subset of the producer's output, and an absence the producer never writes down is absent from that subset too.
+
+The fixes for this gap are all outside the evaluation channel:
+- **Human review on material calls** — a person reads the requirement vs the implementation
+- **Hard step budgets** — the agent runs out of steps before it can simulate compliance
+- **Server-side enforcement** — the VPS pre-receive hook cannot be fooled by plausible output
+
+Skillgate's self-hosted gate implements the last two. The first requires human attention.
+
+### 4.3 Implementation
+
+The pipeline described here has been integrated into `forge-verify`'s `content-verify.mjs` as an optional evidence gate mode. Configured via `.forge/content-verify.json`:
+
+```json
 {
-  "editable": { "directories": ["core/skills", ".forge/harnesses", ...] },
-  "readonly": { "directories": ["scripts/forge-verify"], "files": [".forge/editable-surface.json"] }
-}
-```
-
-### Constraint 1b: The Router Lives Outside the Loop
-
-**Source:** Alex Shev (dev.to, July 2026), routing-surface experiment
-
-"Deterministic routing plus sampling is the honest approach — but only if the routing table itself is not self-modifiable. I would not let dispatch confidence come only from the same semantic layer that made the dispatch." — Alex Shev
-
-**Problem:** Constraint 1 prevents the agent from modifying its own evaluator. But the router — which decides which verification path an output enters — makes a structurally identical decision. If the agent can reassign its output from the strict verification path to a lenient one, the evaluator's judgment becomes moot regardless of how carefully it's insulated.
-
-**Experiment:** Monte Carlo simulation of 5000-output verification streams, 500 trials per configuration. Three verification paths calibrated to Part 5's empirical data (Strict: 0% FP / 75% FN, Balanced: 10% FP / 50% FN, Lenient: 25% FP / 25% FN). All outputs default to the Strict path. In the *unconstrained* condition, the agent can reassign defective output to a more lenient path within plausibility limits (code→Balanced, report→Lenient, config→Lenient). Path entropy (Shannon H) measures operating-point variance — how dispersed outputs are across verification paths.
-
-| Condition | Path entropy (H) | Defective pass rate | vs constrained |
-|-----------|----------------|-------------------|----------------|
-| Routing constrained (readonly) | 0.000 | 0.0% | 1.0× |
-| Routing unconstrained (agent overrides) | 0.524 | 19.0% | **∞** |
-
-The agent's ability to reassign defective output to a more lenient path raises path entropy from H=0 to H=0.524, and defective pass-through follows from 0% to 19%. The entropy measures what ANP2 Network's operating-point reframe predicted: the defective pass-through increase is variance from collapsing multiple verification standards into the agent's routing decision. When the routing table is in the `readonly` section, the path-reassignment vector is eliminated (H=0, DPR=0%) — the block is specific to this vector, and does not catch sophisticated semantic evasion where defective output passes the strict path on its own merit.
-
-**Implementation:** Extend `.forge/editable-surface.json` to include the routing table in the `readonly` section:
-
-```
-{
-  "editable": { "directories": ["core/skills", ".forge/harnesses", ...] },
-  "readonly": {
-    "directories": ["scripts/forge-verify"],
-    "files": [".forge/editable-surface.json", ".forge/routing-table.json"]
+  "task": "Implement rate limiting middleware",
+  "files": ["src/rate-limit.ts"],
+  "evidence_gates": {
+    "evidence_dir": ".skillgate/evidence",
+    "requirements": [
+      {
+        "id": "REQ-1",
+        "desc": "IP level rate limiting",
+        "evidence_file": "test-output.txt",
+        "pattern": "(?i)(RateLimiter.*IP|isRateLimited.*IP)",
+        "type": "regex"
+      },
+      {
+        "id": "REQ-2",
+        "desc": "Write-invalidation on cache writes",
+        "evidence_file": "diff-review.md",
+        "type": "llm"
+      },
+      {
+        "id": "REQ-3",
+        "desc": "Coverage >= 85%",
+        "evidence_file": "coverage-summary.txt",
+        "pattern": "(8[5-9]|90+)%",
+        "type": "regex"
+      }
+    ]
   }
 }
 ```
 
-The routing table (`.forge/routing-table.json`) maps output-type patterns to verification paths. The agent can *suggest* routing changes via the same proposal mechanism as harness changes (Constraint 6), but path reassignment requires human approval. This makes the routing constraint structurally identical to Constraint 1: the harness defines what the agent can route to, and the agent cannot redefine the harness.
-
-**Relationship to Constraint 1:** Both are instances of the same architectural principle — any component that judges the agent's output must live outside the agent's editable surface. The router is a judging component: it decides which verification standard applies. If it can be rewritten by the same agent whose output it dispatches, the evaluator's independence is moot.
-
-**Script:** [`routing-surface-constraint-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)
-**Results:** `scripts/results-v2/routing-surface-constraint.json`
-
-### Constraint 2: Causal Labels for Verification Failures
-
-**Source:** Self-Harness (Zhang et al. 2026)
-
-"Two runs can share the same verifier outcome in the error logs on the surface, such as timeout or missing artifact, while having different causal mechanisms."
-
-**Implementation:** Each forge-verify stage verdict includes a `failure_class` field mapped to the feedback-observer classification:
-
-| Verdict | failure_class | Meaning |
-|---------|---------------|---------|
-| L0 REJECT | execution-lapse | Agent produced empty/stub output |
-| L1 REJECT | skill-defect | Contract defined but output doesn't match |
-| EvidenceGate REJECT | execution-lapse | Evidence file missing or empty |
-| C1 REJECT | skill-defect | Regex pattern didn't match evidence content |
-| C2 UNCLEAR | unset | LLM judge uncertain or API error |
-| L3 UNCLEAR | unset | Divergent judgments across runs |
-
-This bridges the verification pipeline and the evolution feedback loop: a verification failure automatically triggers the correct feedback-observer classification, which feeds into evolution proposal generation.
-
-### Constraint 3: Proposals Must Pass Held-in and Held-out Splits
-
-**Source:** Self-Harness (Zhang et al. 2026)
-
-"Candidate edits are evaluated by regression tests on held-in D_in (testing whether the weakness is resolved) and held-out D_out (checking whether other unknown issues were introduced)."
-
-**Implementation:** Evolution proposals carry two file lists:
-
-- `held_in_files`: targets that should go from REJECT/UNCLEAR → PASS after the edit
-- `held_out_files`: targets that should maintain their previous PASS status
-
-After apply, forge-verify runs on both splits. Both must pass before the proposal is considered finalized. A held-out regression blocks the proposal even if the held-in fix succeeded.
-
-### Constraint 4: Every Verdict Traces to an Evidence Source
-
-**Source:** ScientistOne (Meng et al. 2026), Weng's survey
-
-"Every claim (citation, numerical, methodological, conclusion) must trace to an evidence source and is audited by Chain-of-Evidence checks."
-
-**Implementation:** Each forge-verify stage output includes an `evidence` field:
-
-```
-L0:  evidence: "file:src/rate-limit.ts"         (inline content)
-EG:  evidence: "evidence:test-output.txt"        (external file)
-C1:  evidence: "evidence:test-output.txt((?i)isRateLimited)" (file + pattern)
-```
-
-The final output contains a complete `trace.chain` array, plus `evidence_files` metadata (path, size, mtime) for staleness detection. If an evidence file is modified after verification, the trace can be marked potentially stale.
-
-### Constraint 5: Rules Can Retire When Models Outgrow Them
-
-**Source:** STOP (Zelikman et al. 2023), Weng's prediction
-
-"STOP improved mean downstream performance across iterations with GPT-4 but degraded with weaker models." — Weng on STOP
-
-Weng also predicts: "Many harness improvements will be internalized into core model behavior."
-
-**Implementation:** Feedback entries carry a `model_version` field. When the evolution engine detects a rule that was graduated under an older model and has zero failures under the current model, it generates a retirement proposal (status: deprecated) rather than a reinforcement proposal. This prevents circular evolution where a rule graduates, generates more feedback, graduates again as a variant of itself.
-
-### Constraint 6: Harness Configuration Is a Searchable Space
-
-**Source:** Meta-Harness (Lee et al. 2026)
-
-"The meta-harness loop iteratively creates new harnesses, and only qualified ones are kept."
-
-**Implementation:** `.forge/harnesses/` acts as a candidate registry. Each candidate harness is a subdirectory with `config.json`, `scores.json`, and `history.jsonl`. The baseline config (`.forge/content-verify.json`) is the origin; new variants are generated by varying one dimension (divergence threshold, contract pattern, evidence requirement). Variants are Pareto-ranked by accuracy vs. LLM call cost. The production config is readonly — switching to a candidate harness requires human approval.
-
-### Constraint Interaction: Layers Combine Super-Additively
-
-The seven constraints above are not independent dials. An experiment varying which layers are active shows that L2 (Constraints 1+1b: readonly verify scripts + readonly routing table) and L3 (pre-execution verification — extending Constraint 1's readonly principle to the signal producers that report whether a step actually ran) must both be present — neither alone is sufficient.
-
-**Setup:** Monte Carlo simulation, 5000 outputs per trial, 500 trials per config, 10% defective rate. Four evasion vectors available to a defective agent, tried in preference order:
-
-| Vector | Description | Blocked by |
-|--------|-------------|------------|
-| V1 | modify verify scripts | L2 (Constraint 1) |
-| V2 | modify routing table | L2 (Constraint 1b) |
-| V3 | fake execution signals | L3 (readonly signal producers) |
-| V4 | skip submission, self-report "done" | None directly — but L3's pre-execution detection reduces V4 success from 0.85 to 0.07 |
-
-**Parameter sources:** V4's 0.85 base success reflects the typical case where submission is by self-report alone — no external audit checks whether the step actually executed. The 91.8% pre-execution detection rate is measured in `pre-execution-verification-test.py` (Strategy D: 5-signal audit at 0.3% false-positive rate). V1/V2/V3 success rates model the agent's effectiveness once a vector is picked; absolute values matter less than the structural finding that L2 and L3 must combine.
-
-**Result:**
-
-| Config | Blocked | Defective pass rate | Reduction vs NONE |
-|--------|---------|---------------------|-------------------|
-| NONE | — | 99.6% | — |
-| L2 only | V1, V2 | 97.9% | 1.7% |
-| L3 only | V3 (+V4 detection) | 82.4% | 17.3% |
-| **L2+L3** | V1, V2, V3 (+V4 detection) | **11.6%** | **88.3%** |
-
-If layers contributed independently, expected reduction = 1.7% + 17.3% = 19%. Actual reduction = 88.3%. **The combined effect is 4.6× the sum of individual contributions** — a super-additive interaction.
-
-The mechanism: L3 presses V4 down to 7% success, but the agent falls back to V1/V2 which L2 hasn't blocked. L2 alone is decorative because V4 succeeds 85% of the time without L3 detection. Only when both are active does the defective agent run out of fallbacks.
-
-This is why the constraints cannot be evaluated in isolation. Constraint 1 (evaluator readonly) and Constraint 1b (router readonly) look weak on their own — V4 dominates. Pre-execution verification (L3) looks moderate on its own — V4 is suppressed but V1/V2 still work. The architectural value emerges from their combination: a single structural boundary whose pieces seal each other's gaps.
-
-**Script:** [`multi-layer-constraint-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) · L3 detection source: [`pre-execution-verification-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)
-**Results:** `scripts/results-v2/multi-layer-constraint.json` · `scripts/results-v2/pre-execution-verification.json`
+When `evidence_gates` is configured, the pipeline runs the evidence gate → C1 (regex requirements) → C2 (LLM requirements) → L3 path. When absent, it falls back to the traditional L0 → L2 → L3 path. Backward compatible — existing configurations don't need changes.
 
 ---
 
-## 4. What the Implementation Tells Us
+## 5. What the Two Experiments Established
 
-Implementing all seven constraints as additions to an existing pipeline took approximately four hours. The code changes total under 250 lines across 9 files. The key observation is not that the implementation was fast — it's that **each constraint maps to a single, testable mechanism** that can be verified independently. (The forge-verify pipeline these constraints extend was developed across multiple sessions; the four hours measures the incremental cost of adding the constraints to a system already in place.)
+**First, the channel you evaluate through determines what you can detect.** An LLM reading text catches semantic patterns that a filesystem check cannot — fabricated content, stale dates, implausible narratives. A filesystem check catches mechanical gaps that an LLM cannot — missing artifacts, empty evidence, incomplete coverage. Neither channel alone is sufficient, and the shared blind spot is provably uncloseable from either channel alone.
 
-| Constraint | Code | Test |
-|------------|------|------|
-| Evaluator outside loop | `.forge/editable-surface.json` + hook check | Verify evolution can't modify forge-verify/ |
-| Router outside loop | `.forge/routing-table.json` in readonly | Verify agent can't reassign its own path |
-| Causal labels | `failure_class` in each stage return | 20 DF v2 scenarios, 12 evidence-gate scenarios |
-| Held-in/held-out | Proposal format fields + forge-verify run on both | (requires evolution proposal to test) |
-| Evidence trace | `evidence` field + `trace.chain` output | Present in all stage outputs |
-| Rule retirement | `model_version` + staleness detection | (requires model upgrade event) |
-| Harness search | `.forge/harnesses/` + index + template | Template valid, index parseable |
+**Second, per-requirement evaluation outperforms holistic evaluation by a wide margin.** The same LLM, same temperature, same evidence — but asking "does this evidence prove requirement N?" instead of "is the work done?" raised detection rate from 20% to 100%. The frame matters more than the model.
 
-The seven constraints are not speculative. They are direct translations of findings from Weng's survey, reader comments, and controlled experiments into concrete code. The survey provides the design constraints; the implementation shows they are mechanically simple. The difficulty is not building them — it's recognizing them as necessary.
+**Third, contract regex is a practical zero-cost filter for a surprisingly wide set of constraints.** Numerical thresholds, format validity, and fixed-pattern detection all work reliably. The exception — negation patterns — can be handled by routing them to the per-requirement LLM. Caveat: "wide" applies to numerical/format constraints; for functional/semantic requirements, real-agent-authored evidence is far harsher — C1 collapses under agent vocabulary drift (see Part 10 §B).
 
-The Constraint Interaction experiment in §3 is validated separately via `multi-layer-constraint-test.py` (5000 outputs × 500 trials × 4 configs), measuring how the constraints combine rather than any single constraint in isolation.
-
----
-
-## 5. What Still Can't Be Fixed
-
-Constraint 4 (evidence trace) and Constraint 6 (harness search) have a common limitation that Theorem 2 predicts: the trace itself is text, and the harness configuration is text. Both can be fabricated by an agent that controls the file system.
-
-The DGM fake log story applies to every evidence file that forge-verify reads — **when that file was written by the agent**. If the verify script reads evidence from a path the agent can write, the agent can write a file called `test-output.txt` that says "RateLimiter-IP: all tests passed" without running any tests. The evidence gate checks that the file exists and that a regex pattern matches its content. It does not check *who wrote the file* or *whether the file content reflects actual execution*.
-
-This is not a universal claim. For evidence produced by the verify runner itself (the runner executes tests in the readonly section and captures output), the agent never touches the evidence file, so the DGM mechanism does not apply for that subset. The gap is limited to evidence files the verify script reads from agent-writeable paths — such as error logs the agent generated during execution or coverage reports the agent produced.
-
-This is not a bug in the evidence gate design. It is a design constraint: the evidence gate is zero-cost and pre-receive, but it trusts the file system that the agent writes to. The typed provenance layer that Sergei calls for — runtime-verified vs. self-reported — does not exist in the current forge-verify implementation. It would solve the DGM edge case, but it requires the file system itself to be provenance-aware, which standard file systems are not.
-
-The residual that Theorem 2 says cannot be closed:
-
-- A text-channel evaluator (LLM or human) cannot catch directional reversals that are textually indistinguishable from correct output.
-- An evidence gate cannot distinguish between evidence written by a test runner and evidence written by the agent under test — unless the gate only reads evidence from paths the agent cannot write, produced by a runner in the readonly section.
-- A typed provenance system cannot distinguish if the typing is done by the same agent that produces the output — though the constraints above ensure typing is done by readonly code, narrowing this to cases where evidence must originate from the agent's output.
-
-In practice, stronger LLMs catch many of these reversals because they carry better implicit models of plausible-vs-correct. The residual that even strong models miss — and that human reviewers consistently miss — is what Theorem 2 actually predicts. The capability gradient documented in Thread 2 narrows the practical scope; it does not eliminate the theoretical bound.
-
-This is not an argument against layered verification. The seven constraints above demonstrably narrow the gap. The L0/L0e deterministic checks catch structural garbage before it reaches the LLM. The evidence gate catches missing artifacts. C1 validates specific format promises. C2 reads each requirement individually, preventing the "everything looks fine" narrative from overwhelming the judge. The trace makes the chain auditable. The harness search makes the config improvable.
-
-But the gap narrows asymptotically. Theorem 2 says it never reaches zero.
+**Fourth, the negation blind spot in regex evaluation is the same problem as the DPI blind spot, one level down.** A regex that matches "write-invalidation" in "not write-invalidation" is making the same error as an LLM that reads "all tests pass" and misses that the wrong test suite was run. Both are pattern-matchers that can't distinguish "mentioned" from "satisfied."
 
 ---
 
 ## 6. Summary
 
-Weng's harness engineering survey is the most comprehensive map of the field. It also reveals a blind step: the assumption that evaluators fail on precision, not direction. Three independent threads — the DGM fake log, the DF v2 data, and Theorem 2 — converge on the same finding: directional evaluator failure is real, but its severity scales with model capability. The structural bound holds; the practical impact is concentrated in weaker models.
+| Experiment | Question | Answer |
+|-----------|----------|--------|
+| Phase 1 (12 scenarios) | Text channel vs filesystem channel | Complementary blind spots; combined = 91.7% |
+| Phase 2 (7 scenarios) | Free-text vs contract regex vs per-req LLM | Per-req = 100% detection; contract regex = 85.7% at zero cost |
+| Combined (19 scenarios) | What catches the surfaced-deviation gap? | Per-requirement LLM (C2), when the deviation appears in evidence text; a non-surfaced deviation (genuine DPI bound) is uncloseable from any text channel |
 
-Seven design constraints extracted from the survey and related work translate into testable code mechanisms. All seven are implemented in ReqForge's forge-verify pipeline; validation status per constraint is marked in §4's table (two have experimental validation via the routing-surface and multi-layer experiments — Constraints 1 and 1b; Constraint 2 has scenario-level tests; Constraints 3-6 are structural implementations awaiting runtime-event validation). The implementation is less than 250 lines across 9 files. An interaction experiment shows the constraints combine super-additively: L2 (readonly verify + routing) and L3 (pre-execution verification) individually reduce defective pass-through by 1.7% and 17.3%, but together by 88.3% — 4.6× the sum of their individual contributions. The architectural value is in the combination, not the pieces.
-
-The theoretical residual persists: a text-channel evaluator cannot catch what a text-channel producer can fabricate. The constraints narrow but do not eliminate the gap. That is not a design failure. It is an information-theoretic limit, and acknowledging it is more useful than engineering around it.
+The architectural conclusion: replace the single free-text LLM evaluation (old L2) with a three-stage pipeline — evidence gate (file system) → contract regex (text patterns) → per-requirement LLM (semantic checks). Each stage catches what the previous one misses. The combination narrows the gap on every scenario we constructed — every named evasion becomes a deterministic catch — but it does not close it. Two residues remain. (1) **Unenumerated evasions in word-space**: a fresh synonym or reframed justification clears the regex layers until you name it — the ratchet turns, the gap doesn't vanish. (2) **The genuine DPI bound**: a deviation the producer never surfaces in any text channel is invisible to every text-reading mechanism, regex or LLM. That floor lives in **argument-space** — exercising the code path and observing the side effect on the referent the claim names — which is outside this pipeline and outside any text channel.
 
 ---
 
-*Experiment data: 20 directional-failure scenarios × 3 model tiers × 600 judgments in [directional-failure-v2.py](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
-*Multi-layer constraint experiment: 5000 outputs × 500 trials × 4 configs in `multi-layer-constraint-test.py` — L2+L3 combine 4.6× super-additively*
-*Evidence gate test: 6 scenarios, 12/12 pass in `scripts/forge-verify/test-evidence-gate.mjs`*
-*Source survey: [Harness Engineering for Self-Improvement](https://lilianweng.github.io/posts/2026-07-04-harness/) — Lilian Weng, July 2026*
-*Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
-*Previous: [The Channel Gap: Why Your LLM Judge is Blind in One Eye](blog-agent-determinism-illusions-7.en.md)*
-*Next: [The Third Predicate: Argument-Space Verification, Tested](blog-agent-determinism-illusions-9.en.md)*
+*All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
+- Phase 1: `channel-comparison-test.py` — 12 scenarios, deepseek-v4-flash
+- Phase 2: `contract-comparison-test.py` — 7 scenarios, 3 mechanisms
+- skillgate source: v0.5.0 on [npm](https://www.npmjs.com/package/@reneza/skillgate) and [GitHub](https://github.com/renezander030/skillgate)
+- Pipeline implementation: `ReqForge/scripts/forge-verify/content-verify.mjs`
+- *Series start:* [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)
