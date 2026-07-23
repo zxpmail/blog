@@ -1,0 +1,469 @@
+{
+  "question": "Does out-of-channel probe catch rate stay stable as task complexity increases? Is there a threshold where structural invariants become too expensive relative to the task?",
+  "source": "Xiao Man comment on Part 7 (2026-07-23)",
+  "n_per_cell": 40,
+  "seed": 7,
+  "axes": {
+    "T": {
+      "T1": {
+        "depth": 1,
+        "leaves": 1,
+        "cross": 0
+      },
+      "T2": {
+        "depth": 1,
+        "leaves": 3,
+        "cross": 0
+      },
+      "T3": {
+        "depth": 2,
+        "leaves": 8,
+        "cross": 0
+      },
+      "T4": {
+        "depth": 3,
+        "leaves": 10,
+        "cross": 2
+      }
+    },
+    "P": {
+      "P1": "single scalar / first nested peek",
+      "P2": "all top-level / shallow ports+names",
+      "P3": "full nested leaf walk",
+      "P4": "P3 + cross-field + fingerprint"
+    }
+  },
+  "catch_matrix": {
+    "T1": {
+      "P1": 1.0,
+      "P2": 1.0,
+      "P3": 1.0,
+      "P4": 1.0
+    },
+    "T2": {
+      "P1": 0.475,
+      "P2": 1.0,
+      "P3": 1.0,
+      "P4": 1.0
+    },
+    "T3": {
+      "P1": 0.45,
+      "P2": 0.35,
+      "P3": 1.0,
+      "P4": 1.0
+    },
+    "T4": {
+      "P1": 0.225,
+      "P2": 0.3,
+      "P3": 0.7,
+      "P4": 1.0
+    }
+  },
+  "cost_ratio_matrix": {
+    "T1": {
+      "P1": 0.2335,
+      "P2": 0.155,
+      "P3": 0.1547,
+      "P4": 0.4642
+    },
+    "T2": {
+      "P1": 0.0882,
+      "P2": 0.1441,
+      "P3": 0.1485,
+      "P4": 0.2596
+    },
+    "T3": {
+      "P1": 0.0662,
+      "P2": 0.1083,
+      "P3": 0.1963,
+      "P4": 0.2394
+    },
+    "T4": {
+      "P1": 0.0392,
+      "P2": 0.0644,
+      "P3": 0.1219,
+      "P4": 0.1898
+    }
+  },
+  "grid": [
+    {
+      "T": "T1",
+      "P": "P1",
+      "relation": "matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 3.0,
+      "mean_task_ops": 12.85,
+      "cost_ratio": 0.2335,
+      "miss_kinds": {},
+      "schema": {
+        "depth": 1,
+        "leaves": 1,
+        "cross": 0
+      }
+    },
+    {
+      "T": "T1",
+      "P": "P2",
+      "relation": "over_spec",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 2.0,
+      "mean_task_ops": 12.9,
+      "cost_ratio": 0.155,
+      "miss_kinds": {},
+      "schema": {
+        "depth": 1,
+        "leaves": 1,
+        "cross": 0
+      }
+    },
+    {
+      "T": "T1",
+      "P": "P3",
+      "relation": "over_spec",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 2.0,
+      "mean_task_ops": 12.93,
+      "cost_ratio": 0.1547,
+      "miss_kinds": {},
+      "schema": {
+        "depth": 1,
+        "leaves": 1,
+        "cross": 0
+      }
+    },
+    {
+      "T": "T1",
+      "P": "P4",
+      "relation": "over_spec",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 6.0,
+      "mean_task_ops": 12.93,
+      "cost_ratio": 0.4642,
+      "miss_kinds": {},
+      "schema": {
+        "depth": 1,
+        "leaves": 1,
+        "cross": 0
+      }
+    },
+    {
+      "T": "T2",
+      "P": "P1",
+      "relation": "under_spec",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.475,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 3.0,
+      "mean_task_ops": 34.0,
+      "cost_ratio": 0.0882,
+      "miss_kinds": {
+        "scalar_retries": 10,
+        "scalar_timeout_ms": 11
+      },
+      "schema": {
+        "depth": 1,
+        "leaves": 3,
+        "cross": 0
+      }
+    },
+    {
+      "T": "T2",
+      "P": "P2",
+      "relation": "matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 4.9,
+      "mean_task_ops": 34.0,
+      "cost_ratio": 0.1441,
+      "miss_kinds": {},
+      "schema": {
+        "depth": 1,
+        "leaves": 3,
+        "cross": 0
+      }
+    },
+    {
+      "T": "T2",
+      "P": "P3",
+      "relation": "over_spec",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 5.05,
+      "mean_task_ops": 34.0,
+      "cost_ratio": 0.1485,
+      "miss_kinds": {},
+      "schema": {
+        "depth": 1,
+        "leaves": 3,
+        "cross": 0
+      }
+    },
+    {
+      "T": "T2",
+      "P": "P4",
+      "relation": "over_spec",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 8.82,
+      "mean_task_ops": 34.0,
+      "cost_ratio": 0.2596,
+      "miss_kinds": {},
+      "schema": {
+        "depth": 1,
+        "leaves": 3,
+        "cross": 0
+      }
+    },
+    {
+      "T": "T3",
+      "P": "P1",
+      "relation": "under_spec",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.45,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 6.0,
+      "mean_task_ops": 90.7,
+      "cost_ratio": 0.0662,
+      "miss_kinds": {
+        "wrong_port": 10,
+        "missing_leaf": 12
+      },
+      "schema": {
+        "depth": 2,
+        "leaves": 8,
+        "cross": 0
+      }
+    },
+    {
+      "T": "T3",
+      "P": "P2",
+      "relation": "under_spec",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.35,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 9.82,
+      "mean_task_ops": 90.72,
+      "cost_ratio": 0.1083,
+      "miss_kinds": {
+        "missing_leaf": 11,
+        "nested_limit": 15
+      },
+      "schema": {
+        "depth": 2,
+        "leaves": 8,
+        "cross": 0
+      }
+    },
+    {
+      "T": "T3",
+      "P": "P3",
+      "relation": "matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 17.8,
+      "mean_task_ops": 90.7,
+      "cost_ratio": 0.1963,
+      "miss_kinds": {},
+      "schema": {
+        "depth": 2,
+        "leaves": 8,
+        "cross": 0
+      }
+    },
+    {
+      "T": "T3",
+      "P": "P4",
+      "relation": "over_spec",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 21.75,
+      "mean_task_ops": 90.85,
+      "cost_ratio": 0.2394,
+      "miss_kinds": {},
+      "schema": {
+        "depth": 2,
+        "leaves": 8,
+        "cross": 0
+      }
+    },
+    {
+      "T": "T4",
+      "P": "P1",
+      "relation": "under_spec",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.225,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 6.0,
+      "mean_task_ops": 153.0,
+      "cost_ratio": 0.0392,
+      "miss_kinds": {
+        "nested_under_t4": 11,
+        "cross_port_unique": 10,
+        "cross_fingerprint": 10
+      },
+      "schema": {
+        "depth": 3,
+        "leaves": 10,
+        "cross": 2
+      }
+    },
+    {
+      "T": "T4",
+      "P": "P2",
+      "relation": "under_spec",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.3,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 9.85,
+      "mean_task_ops": 153.0,
+      "cost_ratio": 0.0644,
+      "miss_kinds": {
+        "cross_fingerprint": 9,
+        "cross_budget": 11,
+        "nested_under_t4": 8
+      },
+      "schema": {
+        "depth": 3,
+        "leaves": 10,
+        "cross": 2
+      }
+    },
+    {
+      "T": "T4",
+      "P": "P3",
+      "relation": "under_spec",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.7,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 18.65,
+      "mean_task_ops": 153.0,
+      "cost_ratio": 0.1219,
+      "miss_kinds": {
+        "cross_fingerprint": 12
+      },
+      "schema": {
+        "depth": 3,
+        "leaves": 10,
+        "cross": 2
+      }
+    },
+    {
+      "T": "T4",
+      "P": "P4",
+      "relation": "matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 29.04,
+      "mean_task_ops": 153.0,
+      "cost_ratio": 0.1898,
+      "miss_kinds": {},
+      "schema": {
+        "depth": 3,
+        "leaves": 10,
+        "cross": 2
+      }
+    }
+  ],
+  "claims": {
+    "C1_matched_catch_stable": {
+      "pass": true,
+      "threshold": 0.95,
+      "matched_catch": {
+        "T1": 1.0,
+        "T2": 1.0,
+        "T3": 1.0,
+        "T4": 1.0
+      },
+      "detail": "each matched (Ti,Pi) catch_rate >= 0.95"
+    },
+    "C2_under_spec_drops_catch": {
+      "pass": true,
+      "mean_under_catch": 0.4167,
+      "detail": "mean under-spec catch < 0.80"
+    },
+    "C3_deeper_probe_costs_more": {
+      "pass": true,
+      "mean_cost_ratio_P1": 0.1068,
+      "mean_cost_ratio_P4": 0.2883,
+      "detail": "mean cost_ratio(P4) > mean cost_ratio(P1)"
+    },
+    "C4_relative_cost_threshold": {
+      "pass": true,
+      "first_matched_cost_ratio_ge_1": null,
+      "matched_cost_ratio": {
+        "T1": 0.2335,
+        "T2": 0.1441,
+        "T3": 0.1963,
+        "T4": 0.1898
+      },
+      "detail": "first matched Ti where probe_ops >= task_ops (ratio>=1)"
+    },
+    "C5_over_spec_waste": {
+      "pass": true,
+      "cells": [
+        {
+          "T": "T1",
+          "matched_P": "P1",
+          "over_P": "P4",
+          "catch_matched": 1.0,
+          "catch_over": 1.0,
+          "cost_matched": 0.2335,
+          "cost_over": 0.4642,
+          "ok": true
+        },
+        {
+          "T": "T2",
+          "matched_P": "P2",
+          "over_P": "P4",
+          "catch_matched": 1.0,
+          "catch_over": 1.0,
+          "cost_matched": 0.1441,
+          "cost_over": 0.2596,
+          "ok": true
+        },
+        {
+          "T": "T3",
+          "matched_P": "P3",
+          "over_P": "P4",
+          "catch_matched": 1.0,
+          "catch_over": 1.0,
+          "cost_matched": 0.1963,
+          "cost_over": 0.2394,
+          "ok": true
+        }
+      ],
+      "detail": "over-spec keeps catch ≈ matched but raises cost_ratio"
+    }
+  },
+  "answer_for_xiao_man": "On matched probes, catch stayed high across T1–T4 (100%, 100%, 100%, 100%). Under-specified probes lost catch — depth must track the schema, not just 'have a checksum'. No matched cell hit cost_ratio≥1 (ratios=0.23, 0.14, 0.20, 0.19); threshold not crossed under this cost model. Caveat: fixture demonstration with instrumented ops, not production timings; structural half of novelty bar only."
+}

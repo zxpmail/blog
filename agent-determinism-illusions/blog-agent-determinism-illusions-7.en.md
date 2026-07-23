@@ -223,13 +223,49 @@ Controls: recurrence on *non*-hold-out high-conf MISS = **61/61 (100%)** — his
 
 So Mike's fork is not only a definition. On this fixture: cheap recurrence misses never-burned classes; same-channel second reads collapse with the miss; a checksum-style probe *can* catch first occurrence without a registry entry — when you already know how to write the criterion. The novelty arm is still domain-shaped; that scarcity claim stays. Read with the Update above: this run supports the **structural** half of the novelty bar; it does not claim causal independence against same-pipeline common cause.
 
+### Update (2026-07-24): catch vs cost as complexity rises (Xiao Man)
+
+Xiao Man, on the T1/T2 vs novelty framing and the out-of-channel checksum:
+
+> I've been thinking about this as cheap recurrence detection vs expensive novelty detection… The checksum/structural probe that doesn't need the rationale to be interpretable — that's the real boundary. Question: have you tested whether the out-of-channel probe catch rate stays stable as the task complexity increases? I'm wondering if there's a complexity threshold where even structural invariants become too expensive to compute relative to the task itself.
+
+Dual-axis offline test (`probe-complexity-dual-axis.py` → `results-v2/probe-complexity-dual-axis.json`, n=40/cell, seed=7). Rows = task/artifact depth T1–T4; columns = probe depth P1–P4. Checksum-style only (pass/fail from schema+artifact; never from judge rationale). Matched pairs: (T1,P1)…(T4,P4).
+
+**Catch matrix (share of bad artifacts rejected):**
+
+|  | P1 | P2 | P3 | P4 |
+|--|----|----|----|-----|
+| T1 | 1.00 | 1.00 | 1.00 | 1.00 |
+| T2 | 0.48 | **1.00** | 1.00 | 1.00 |
+| T3 | 0.45 | 0.35 | **1.00** | 1.00 |
+| T4 | 0.23 | 0.30 | 0.70 | **1.00** |
+
+(Bold = matched depth.)
+
+**Cost-ratio matrix** (instrumented probe ops ÷ task ops; task ops = schema leaves + artifact size):
+
+|  | P1 | P2 | P3 | P4 |
+|--|----|----|----|-----|
+| T1 | 0.23 | 0.15 | 0.15 | 0.46 |
+| T2 | 0.09 | 0.14 | 0.15 | 0.26 |
+| T3 | 0.07 | 0.11 | 0.20 | 0.24 |
+| T4 | 0.04 | 0.06 | 0.12 | 0.19 |
+
+Reading:
+
+1. **Catch stays stable when matched** — 100% across T1–T4. On this fixture, out-of-channel catch does *not* degrade just because the task got deeper.
+2. **The cliff is under-specification, not task size** — same T4 bad mass: P1 23% → P2 30% → P3 70% → P4 100%. Misses are exactly the nested/cross-field rules the shallow probe never looks at. “Have a checksum” ≠ cover the failure surface.
+3. **Relative-cost threshold not crossed under this execution model** — matched cost_ratio stayed below 1 (≈0.23 / 0.14 / 0.20 / 0.19). Deeper probes cost more (mean P4 > mean P1); over-spec keeps catch while raising cost (waste, not safety). A model that priced *authoring* the invariant, or re-running the whole task, would cross earlier; this one prices *executing* it.
+
+Same caveats as the hold-out: fixture demonstration; structural half of the novelty bar only; not production wall-clock; not causal independence. Xiao Man's question splits cleanly: catch stability is a matching problem; expense threshold is a cost-model problem — and under execution cost, we did not hit it here.
+
 ---
 
 ## Closing
 
-Part 6 was right to stop majority-voting splits into a false consensus. It was wrong to treat the complement — unanimity — as safe auto-execute for the failure mode DF v2 already measured. Alexey named the population mismatch; the DF multi-perspective rerun puts numbers on it. Mike named the residual population the recurrence arm cannot see, pinned what “out-of-channel” must mean before that arm can be built, and split that bar into structural vs causal independence.
+Part 6 was right to stop majority-voting splits into a false consensus. It was wrong to treat the complement — unanimity — as safe auto-execute for the failure mode DF v2 already measured. Alexey named the population mismatch; the DF multi-perspective rerun puts numbers on it. Mike named the residual population the recurrence arm cannot see, pinned what “out-of-channel” must mean before that arm can be built, and split that bar into structural vs causal independence. Xiao Man asked whether catch and relative cost survive rising complexity; the dual-axis run says catch survives when depth matches, and execution-cost ratio stayed under 1 on this fixture.
 
-**Divergence stays. T1/T2 join it. None of them is the novelty arm. A fifth prompt is not the novelty arm either. A checksum-passing “other data” probe is not automatically a common-cause shield.**
+**Divergence stays. T1/T2 join it. None of them is the novelty arm. A fifth prompt is not the novelty arm either. A checksum-passing “other data” probe is not automatically a common-cause shield. Matched depth keeps catch; under-spec is the cliff.**
 
 ---
 
