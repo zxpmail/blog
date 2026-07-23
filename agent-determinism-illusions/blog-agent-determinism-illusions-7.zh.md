@@ -221,7 +221,4 @@ Checksum 仍是正确的第一道门槛——拦住「打一致性分」。它**
 ---
 
 **系列：** Agent Determinism Illusions · 脚本：[GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
-**前回：** [第 6 篇](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
-**相关：** [第 13 篇 probe-vs-prose](blog-agent-determinism-illusions-13.zh.md)（新奇 / 出信道）；第 6 篇 §4（采样消融）  
-**后续未发（已重排）：** 第 8 篇 Channel Gap · 第 9 篇 Blind Step · … · 第 13 篇 Probe vs Prose  
-**评论粘贴稿：** `working-notes/reply-alexey-part7.md`、`working-notes/reply-mike-part7-thread.md`
+**前回：** [第 6 篇 — Five comments…](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)

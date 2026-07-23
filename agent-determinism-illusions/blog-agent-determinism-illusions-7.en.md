@@ -234,7 +234,4 @@ Part 6 was right to stop majority-voting splits into a false consensus. It was w
 ---
 
 **Series:** Agent Determinism Illusions · Scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
-**Previous thread:** [Part 6 — Five comments…](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
-**Related:** [Part 13 probe-vs-prose](blog-agent-determinism-illusions-13.en.md) (novelty / out-of-channel); Part 6 §4 (sampling ablation)  
-**Next unpublished (renumbered):** Part 8 Channel Gap · Part 9 Blind Step · … · Part 13 Probe vs Prose  
-**Comment paste drafts:** `working-notes/reply-alexey-part7.md`, `working-notes/reply-mike-part7-thread.md`
+**Previous:** [Part 6 — Five comments that redesigned my LLM verification pipeline](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)
