@@ -51,29 +51,31 @@ That is the claim under test. Not “divergence is useless,” but “divergence
 
 ## 2. Experiment A — offline proxy on DF v2 (no new API)
 
-Part 6's Mike Update already showed: of 96 DF v2 MISS runs, **95.8%** sat at self-reported confidence ≥ 0.9 (avg 0.969). P2 showed ~0 within-model divergence on identical input. So as a first cut:
+Part 6's Mike Update already showed: of 96 DF v2 MISS runs, **95.8%** sat at self-reported confidence ≥ 0.9 (avg 0.969). That mass is concentrated — Part 6 also reported ~80% of MISS runs from qwen3:0.5b — so the headline is a concentration fact, not a three-model universal law. P2 (same-prompt N=10; no frozen `results-v2` dump here) showed ~0 within-model divergence on identical input. So as a first cut:
 
-- `conf ≥ 0.9` ≈ *unanimous-channel* → would **auto-pass** under Part 6's Dipankar rule  
+- `conf ≥ 0.9` ≈ *unanimous-channel proxy* → would **auto-pass** under Part 6's Dipankar rule  
 - `conf < 0.9` ≈ *divergence-proxy* → would **escalate**
 
-Among PASS decisions that are MISS (accepted a bad output):
+Among PASS decisions that are MISS, after dropping **2** deepseek DS4 runs with `confidence: null` (policy table needs a scalar conf). Denominator for the table below is therefore **n=94**, not the Part 6 headline n=96:
 
-| Bucket under divergence-proxy | Share of MISS |
-|-------------------------------|---------------|
-| would AUTO-PASS (conf≥0.9) | **97.9%** |
-| would ESCALATE (conf<0.9) | 2.1% |
+| Bucket under divergence-proxy | Share of MISS (n=94) |
+|-------------------------------|----------------------|
+| would AUTO-PASS (conf≥0.9) | **97.9%** (92/94) |
+| would ESCALATE (conf<0.9) | 2.1% (2/94) |
 
 Policy comparison on the same PASS set:
 
 | Policy | MISS catch% | MISS still auto-pass% |
 |--------|-------------|------------------------|
 | **D** (escalate only low-conf) | 2.1% | **97.9%** |
-| T1 (escalate all DF*/DS* classes) | 100% | 0% |
+| T1 (escalate all DF*/DS* classes) | 100%† | 0% |
 | T2 (reversal class ∩ conf≥0.9) | 97.9% | 2.1% |
 | **D+T2** | **100%** | **0%** |
 
+†**T1 is a class-list upper bound on this fixture, not an independent discovery.** Every DF v2 MISS sid is already DF*/DS*; “escalate all reversal classes” therefore catches 100% of MISS by definition. Read T1 as the oracle ceiling; the deployable claim is **D+T2**.
+
 Script: `scripts/escalation-population-mismatch.py`.  
-Verdict under the proxy: **SUPPORT**.
+Verdict under the proxy (for D vs D+T2, not for T1 alone): **SUPPORT**.
 
 A proxy is not a multi-judge rerun. Next section removes that excuse.
 
@@ -110,14 +112,16 @@ Policy table on that run:
 | Policy | MISS catch% | MISS still auto-pass% | True-pass escalate% |
 |--------|-------------|------------------------|---------------------|
 | **D** | 33.3% | **66.7%** | 0% |
-| T1 | 100% | 0% | 0% |
+| T1 | 100%† | 0% | 0% |
 | T2 | 66.7% | 33.3% | 0% |
 | **D+T2** | **100%** | **0%** | 0% |
+
+†Same caveat as §2: all six dangerous accepts sit on reversal-class sids, so T1's 100% is the class-list ceiling. The load-bearing row is **D+T2**.
 
 Script: `scripts/df-multiperspective-escalation.py`.  
 Results: `results-v2/df-multiperspective-qwen3-0.5b.json` (also deepseek / gemma dumps).
 
-Verdict on the model that actually produces the failure mode: **PARTIAL → SUPPORT**. Two-thirds of dangerous accepts are unanimous and would auto-pass under Part 6's rule. Divergence alone catches the other third. **D+T2** catches all six without escalating the true passes in this run.
+Verdict on the model that actually produces the failure mode: **PARTIAL → SUPPORT**. Two-thirds of dangerous accepts are unanimous and would auto-pass under Part 6's rule. Divergence alone catches the other third. **D+T2** catches all six without escalating the true passes in this run. DeepSeek/Gemma nulls mean this is a **substrate-conditioned** result (judges that miss systematically), not a claim about all models.
 
 ---
 
@@ -155,7 +159,7 @@ Mike Czerwinski, on the inverted trigger:
 
 That second population now has a name in this thread: **confidently-wrong-and-never-caught-before** (novelty systematic bias). T1/T2 are the **recurrence arm** — cheap, history-conditioned, necessary. They are not the novelty arm.
 
-What Mike hoped might fill the novelty arm is `classifier_disagree` carrying signal *alone* (an independent second read that doesn't share the model's priors). We ran that ablation on the Part 6 sampling fixture (`external-signal-ablation.json`): **`classifier_disagree` alone catch 24.9% < Part 6's 28.4%** — best single external signal, still not enough to be the novelty catcher by itself. Bundled with `barely_passed` it lifts; solo it does not clear the bar. So the novelty arm is **not** “drop CD alone into the tripwire and call first-occurrence solved.”
+What Mike hoped might fill the novelty arm is `classifier_disagree` carrying signal *alone* (an independent second read that doesn't share the model's priors). We ran that ablation on the Part 6 sampling fixture (`external-signal-ablation.json`): **`classifier_disagree` alone catch 25.1% < Part 6's 28.4%** — best single external signal, still not enough to be the novelty catcher by itself. Bundled with `barely_passed` it lifts; solo it does not clear the bar. So the novelty arm is **not** “drop CD alone into the tripwire and call first-occurrence solved.”
 
 The fork this series keeps landing on:
 
@@ -204,18 +208,20 @@ What this tightens about the asymmetry claim: **"recurrence buildable today"** i
 
 ### Update (2026-07-23): hold-out experiment — the fork is measurable
 
-Minimal offline test (`novelty-arm-holdout-test.py` → `results-v2/novelty-arm-holdout.json`). Hold out **DS4** from the known-reversal registry (31 high-conf MISS runs across models). Three arms on that first-occurrence mass:
+Minimal offline test (`novelty-arm-holdout-test.py` → `results-v2/novelty-arm-holdout.json`, frozen with `--holdout DS4`). Hold out **DS4** from the known-reversal registry (31 high-conf MISS runs across models). Three arms on that first-occurrence mass:
 
 | Arm | Catch on DS4 high-conf MISS |
 |-----|-----------------------------|
 | **A Recurrence** (D+T2, DS4 not in registry) | **0/31 (0%)** |
 | **B Same-channel** (other run of same model×sid rejected) | **1/31 (3%)** |
 | **B′ Same-channel** (qwen Strict/Balanced/Lenient) | **unanimous_pass → catch false** |
-| **C Out-of-channel probe** (task+artifact checksum; no judge rationale) | **31/31 (100%)** |
+| **C Out-of-channel probe** (task+artifact checksum; no judge rationale) | **31/31 (100%)‡** |
 
-Controls: recurrence on *non*-hold-out high-conf MISS = **61/61 (100%)** — history works when the class is known. Probe on legit V1/V2 = no false reject. Same pattern with `--holdout DS9`. Verdict: **SUPPORT**.
+‡**Arm C is a fixture demonstration, not blind generalization.** `probe_fail()` encodes per-sid / task-constraint rules (including DS4); hold-out removes DS4 from the *recurrence registry only*. The probe still knows the artifact shape. Read 31/31 as “a checksum-style criterion *can* catch first occurrence without a class history entry,” not as “we discovered a probe without looking at the failure.” Same shape with `--holdout DS9` (re-run overwrites the JSON; default freeze is DS4).
 
-So Mike's fork is not only a definition. On this fixture: cheap recurrence misses never-burned classes; same-channel second reads collapse with the miss; a checksum-style probe catches first occurrence without a registry entry. The novelty arm is still domain-shaped (these probes are DF-specific rules) — that scarcity claim stays; the asymmetry claim now has numbers. Read with the Update above: this run supports the **structural** half of the novelty bar; it does not claim causal independence against same-pipeline common cause.
+Controls: recurrence on *non*-hold-out high-conf MISS = **61/61 (100%)** — history works when the class is known. Probe on legit V1/V2 = no false reject. Verdict: **SUPPORT** for the asymmetry shape (A misses novelty / B collapses / C can catch under oracle rules); **not** a claim that Arm C is production-ready or causally independent.
+
+So Mike's fork is not only a definition. On this fixture: cheap recurrence misses never-burned classes; same-channel second reads collapse with the miss; a checksum-style probe *can* catch first occurrence without a registry entry — when you already know how to write the criterion. The novelty arm is still domain-shaped; that scarcity claim stays. Read with the Update above: this run supports the **structural** half of the novelty bar; it does not claim causal independence against same-pipeline common cause.
 
 ---
 
@@ -227,25 +233,8 @@ Part 6 was right to stop majority-voting splits into a false consensus. It was w
 
 ---
 
-**Comment reply (for Alexey, short):**
-
-> You're right — and the DF multi-perspective rerun agrees. On qwen3:0.5b, 4/6 dangerous accepts were unanimous_pass; divergence-only would have auto-passed them. D+T2 (split ∪ reversal-class∩unanimous_pass) caught 6/6. Wrote it up as Part 7 of the series; Part 6 only gets a pointer Update so the published post doesn't pretend the old diagram is complete.
-
-**Comment reply (for Mike, on the inverted trigger / two arms):**
-
-> Agreed — two arms, not one fix. T1/T2 are the recurrence arm (cheap, history-built). The unnamed population is confidently-wrong-and-never-caught-before; that needs a source that doesn't share the judge's priors. Ablation already showed classifier_disagree alone is not that arm (24.9% < P6 28.4% on the sampling fixture). Wrote the fork into Part 7 §5 Update; Part 13 is the closest existing thread on out-of-channel checks.
-
-**Comment reply (for Mike, on the checksum test):**
-
-> Pinning that before building is right. Out-of-channel ≠ differently primed LLM. The test is: can you state the probe's failure criterion without referring to the claim's reasoning — checksum-style. If evaluating the probe only means comparing it to the original story, it's still in-channel, just later. That also explains why the novelty arm stays open while recurrence is shippable today: real independence is scarce and usually domain-specific. Wrote the criterion into Part 7 §5 (2026-07-23 Update).
-
-**Comment reply (for Mike, on structural vs causal independence):**
-
-> Yes — and the agreement-vs-correctness cut is the one I needed. Checksum framing is the right bar because it is falsifiable without the story; a probe you can only score against the original reasoning is grading agreement, not correctness. The case you name is now explicit in Part 7: “other data” that is structurally different but still downstream of the same collection pipeline can clear the same-channel test and still share a common cause upstream. Structural independence ≠ causal independence. “Recurrence buildable today” is T1/T2 on burned classes — no independence required. The hold-out probe checked the structural half only; it did not certify a common-cause shield.
-
----
-
 **Series:** Agent Determinism Illusions · Scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
 **Previous thread:** [Part 6 — Five comments…](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
-**Related:** Part 13 probe-vs-prose (novelty / out-of-channel); Part 6 §4 (sampling ablation)  
-**Next unpublished (renumbered):** Part 8 Channel Gap · Part 9 Blind Step · … · Part 13 Probe vs Prose
+**Related:** [Part 13 probe-vs-prose](blog-agent-determinism-illusions-13.en.md) (novelty / out-of-channel); Part 6 §4 (sampling ablation)  
+**Next unpublished (renumbered):** Part 8 Channel Gap · Part 9 Blind Step · … · Part 13 Probe vs Prose  
+**Comment paste drafts:** `working-notes/reply-alexey-part7.md`, `working-notes/reply-mike-part7-thread.md`

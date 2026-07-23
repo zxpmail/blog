@@ -24,10 +24,16 @@ Method (offline, no new API):
         deterministic re-derivation from task + artifact only
         (checksum test: criterion never reads judge rationale)
         → escalate iff probe says FAIL.
+        NOTE: probe_fail() encodes known sid/task rules — Arm C is a
+        *fixture demonstration* (oracle criterion), not blind discovery.
+        Hold-out removes H from the recurrence registry only.
 
   3. Controls:
      - Non-hold-out high-conf MISS: recurrence arm should catch (history works).
      - Legit V1/V2: probe should PASS (no false fire).
+
+Default freeze: --holdout DS4 → results-v2/novelty-arm-holdout.json
+(Re-running with --holdout DS9 overwrites that file.)
 
 Falsifier:
   If recurrence arm still catches hold-out H at high rate → hold-out failed.

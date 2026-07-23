@@ -42,27 +42,29 @@ L2 多视角投票
 
 ## 2. 实验 A — DF v2 离线代理（不新烧 API）
 
-第 6 篇 Mike Update 已报：96 次 MISS 里 **95.8%** 自报自信 ≥0.9（均值 0.969）。P2：同输入几乎 0 分歧。故第一刀：
+第 6 篇 Mike Update 已报：96 次 MISS 里 **95.8%** 自报自信 ≥0.9（均值 0.969）。该质量是集中的——第 6 篇亦报约 **80%** MISS 来自 qwen3:0.5b——所以 headline 是集中度事实，不是三模型通律。P2（同 prompt N=10；此处无冻结 `results-v2` 落盘）显示同输入几乎 0 分歧。故第一刀：
 
-- `conf ≥ 0.9` ≈ 同信道全票 → 按第 6 篇规则会**自动过**  
-- `conf < 0.9` ≈ 分歧代理 → 会**升级**
+- `conf ≥ 0.9` ≈ *同信道全票代理* → 按第 6 篇规则会**自动过**  
+- `conf < 0.9` ≈ *分歧代理* → 会**升级**
 
-在「判官 PASS 且实际是 MISS」的集合里：
+在「判官 PASS 且实际是 MISS」的集合里，丢掉 **2** 条 deepseek DS4、`confidence: null` 的 run（策略表需要标量 conf）。下表分母因此是 **n=94**，不是第 6 篇 headline 的 n=96：
 
-| 分歧代理下的桶 | 占 MISS |
-|----------------|---------|
-| 会自动过（conf≥0.9） | **97.9%** |
-| 会升级（conf<0.9） | 2.1% |
+| 分歧代理下的桶 | 占 MISS（n=94） |
+|----------------|-----------------|
+| 会自动过（conf≥0.9） | **97.9%**（92/94） |
+| 会升级（conf<0.9） | 2.1%（2/94） |
 
 | 策略 | MISS 捞到% | MISS 仍自动过% |
 |------|------------|----------------|
 | **D**（只升低自信） | 2.1% | **97.9%** |
-| T1（升所有 DF*/DS* 类） | 100% | 0% |
+| T1（升所有 DF*/DS* 类） | 100%† | 0% |
 | T2（反转类 ∩ conf≥0.9） | 97.9% | 2.1% |
 | **D+T2** | **100%** | **0%** |
 
+†**T1 在本 fixture 上是类清单上界，不是独立发现。** DF v2 每一次 MISS 的 sid 都已是 DF*/DS*；「凡反转类即升」对 MISS 抓 100% 由定义保证。把 T1 当 oracle 天花板读；可部署主张是 **D+T2**。
+
 脚本：`scripts/escalation-population-mismatch.py`。  
-代理口径下：**SUPPORT**。
+代理口径（针对 D vs D+T2，不单独吹 T1）：**SUPPORT**。
 
 代理不是真三视角。下一节去掉这个借口。
 
@@ -97,14 +99,16 @@ Strict/Balanced 拒、Lenient 过 → 几乎全是 `split`，多数仍拒坏案 
 | 策略 | MISS 捞到% | MISS 仍自动过% | 真通过被升级% |
 |------|------------|----------------|---------------|
 | **D** | 33.3% | **66.7%** | 0% |
-| T1 | 100% | 0% | 0% |
+| T1 | 100%† | 0% | 0% |
 | T2 | 66.7% | 33.3% | 0% |
 | **D+T2** | **100%** | **0%** | 0% |
 
-脚本：`scripts/df-multiperspective-escalation.py`  
-结果：`results-v2/df-multiperspective-qwen3-0.5b.json`
+†同 §2：六个 dangerous accept 全在反转类 sid 上，T1 的 100% 是类清单天花板。承重行是 **D+T2**。
 
-在真会产生该失败模式的模型上：**PARTIAL → SUPPORT**。危险放过里约三分之二是全票，按第 6 篇规则会自动过；分歧只捞到另外三分之一。**D+T2** 六个全捞到，且本 run 未误升真通过。
+脚本：`scripts/df-multiperspective-escalation.py`  
+结果：`results-v2/df-multiperspective-qwen3-0.5b.json`（另有 deepseek / gemma 落盘）
+
+在真会产生该失败模式的模型上：**PARTIAL → SUPPORT**。危险放过里约三分之二是全票，按第 6 篇规则会自动过；分歧只捞到另外三分之一。**D+T2** 六个全捞到，且本 run 未误升真通过。DeepSeek/Gemma 空结果意味着这是**底物条件**结果（会系统性漏放的法官），不是对所有模型的通律。
 
 ---
 
@@ -142,7 +146,7 @@ Mike Czerwinski 对反向扳机：
 
 第二种人在本线有了名字：**confidently-wrong-and-never-caught-before**（新奇系统偏差）。T1/T2 是**复发臂**——便宜、依赖历史、必要。它们不是新奇臂。
 
-Mike 希望新奇臂可能由单独的 `classifier_disagree` 承担（不共享模型先验的独立第二读）。我们在第 6 篇采样 fixture 上跑过消融（`external-signal-ablation.json`）：**`classifier_disagree` 单独捕获 24.9% < Part 6 的 28.4%**——外部单信号里最好，仍不够当新奇捕手。和 `barely_passed` 捆绑才抬升；单独过不了线。所以新奇臂**不是**「把 CD 单独塞进 tripwire 就当首次出现已解决」。
+Mike 希望新奇臂可能由单独的 `classifier_disagree` 承担（不共享模型先验的独立第二读）。我们在第 6 篇采样 fixture 上跑过消融（`external-signal-ablation.json`）：**`classifier_disagree` 单独捕获 25.1% < Part 6 的 28.4%**——外部单信号里最好，仍不够当新奇捕手。和 `barely_passed` 捆绑才抬升；单独过不了线。所以新奇臂**不是**「把 CD 单独塞进 tripwire 就当首次出现已解决」。
 
 本系列反复落到的分叉：
 
@@ -191,18 +195,20 @@ Checksum 仍是正确的第一道门槛——拦住「打一致性分」。它**
 
 ### Update (2026-07-23)：hold-out 实验——分叉可测
 
-最小离线实验（`novelty-arm-holdout-test.py` → `results-v2/novelty-arm-holdout.json`）。从已知反转登记里 **hold-out DS4**（跨模型 31 次高置信 MISS）。三臂打这批「首次」质量：
+最小离线实验（`novelty-arm-holdout-test.py` → `results-v2/novelty-arm-holdout.json`，冻结为 `--holdout DS4`）。从已知反转登记里 **hold-out DS4**（跨模型 31 次高置信 MISS）。三臂打这批「首次」质量：
 
 | 臂 | DS4 高置信 MISS 捕获 |
 |----|----------------------|
 | **A 复发**（D+T2，登记表无 DS4） | **0/31（0%）** |
 | **B 同信道**（同 model×sid 其他 run 是否拒过） | **1/31（3%）** |
 | **B′ 同信道**（qwen Strict/Balanced/Lenient） | **unanimous_pass → 不捕获** |
-| **C 出信道 probe**（任务+产物 checksum；不读法官说理） | **31/31（100%）** |
+| **C 出信道 probe**（任务+产物 checksum；不读法官说理） | **31/31（100%）‡** |
 
-对照：非 hold-out 高置信 MISS 上复发臂 **61/61（100%）**——类已知时历史管用。V1/V2 合法产物 probe 无误拒。`--holdout DS9` 同形。判决：**SUPPORT**。
+‡**Arm C 是 fixture 演示，不是盲测泛化。** `probe_fail()` 按 sid / 任务约束编码规则（含 DS4）；hold-out 只从*复发登记表*去掉 DS4，probe 仍认识产物形状。把 31/31 读成「checksum 式准则*可以*在无类历史条目时抓住首次」，不是「我们没看过失败就发现了 probe」。`--holdout DS9` 同形（重跑会覆盖 JSON；默认冻结为 DS4）。
 
-因此 Mike 的分叉不只是定义。在本 fixture：便宜复发臂漏从未烧过的类；同信道第二读跟 miss 一起塌；checksum 式 probe 不靠登记表也能抓首次。新奇臂仍按领域长成（这些 probe 是 DF 专用规则）——稀缺主张保留；不对称主张现在有数字。请与上一则 Update 合读：本跑支持新奇门槛的**结构**半边；不声称对同管道共因已有因果独立。
+对照：非 hold-out 高置信 MISS 上复发臂 **61/61（100%）**——类已知时历史管用。V1/V2 合法产物 probe 无误拒。判决：**SUPPORT** 不对称形状（A 漏新奇 / B 塌陷 / C 在 oracle 规则下可抓）；**不**声称 Arm C 已可上生产或已因果独立。
+
+因此 Mike 的分叉不只是定义。在本 fixture：便宜复发臂漏从未烧过的类；同信道第二读跟 miss 一起塌；checksum 式 probe 在你*已经会写准则*时可无登记表抓首次。新奇臂仍按领域长成；稀缺主张保留。请与上一则 Update 合读：本跑支持新奇门槛的**结构**半边；不声称对同管道共因已有因果独立。
 
 ---
 
@@ -216,5 +222,6 @@ Checksum 仍是正确的第一道门槛——拦住「打一致性分」。它**
 
 **系列：** Agent Determinism Illusions · 脚本：[GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
 **前回：** [第 6 篇](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
-**相关：** 第 13 篇 probe-vs-prose（新奇 / 出信道）；第 6 篇 §4（采样消融）  
-**后续未发（已重排）：** 第 8 篇 Channel Gap · 第 9 篇 Blind Step · … · 第 13 篇 Probe vs Prose
+**相关：** [第 13 篇 probe-vs-prose](blog-agent-determinism-illusions-13.zh.md)（新奇 / 出信道）；第 6 篇 §4（采样消融）  
+**后续未发（已重排）：** 第 8 篇 Channel Gap · 第 9 篇 Blind Step · … · 第 13 篇 Probe vs Prose  
+**评论粘贴稿：** `working-notes/reply-alexey-part7.md`、`working-notes/reply-mike-part7-thread.md`
