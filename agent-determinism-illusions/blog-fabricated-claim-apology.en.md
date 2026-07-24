@@ -133,7 +133,7 @@ Five patterns emerge from the data.
 
 DS9 is the clean case: a "no change needed" rationalization on a real directional failure. The parameter actually needs to change (1000 → 100), the output claims "current is sufficient, no reduction needed," and the model accepts the rationale rather than checking whether the action was executed. The output's parameter value (1000) does not match the requested value (100), and a deterministic value check catches this.
 
-DS4 is messier. The original framing (in this apology and in Part 8) called it a directional failure with "current limit of 50" — **that was wrong**. The actual scenario output is "旧值: 10, 新值: 10 (no change)" — the task asks to set the parameter to a value it already has. Strictly speaking, the output is correct; a judge that accepts it is making a defensible call. DS4 is closer to task-design ambiguity than a directional failure.
+DS4 is messier. The original framing in an earlier draft of this apology called it a directional failure with "current limit of 50" — **that was wrong**. The actual scenario output is "旧值: 10, 新值: 10 (no change)" — the task asks to set the parameter to a value it already has. Strictly speaking, the output is correct; a judge that accepts it is making a defensible call. DS4 is closer to task-design ambiguity than a directional failure.
 
 **Scoring caveat (read this before the 0% cells):** the v2 harness still labels DS4 `is_legit=False`, so "accept" is counted as a miss in the tables above. That is a **label choice from the original protocol**, not a claim that accepting is objectively wrong. The 100% miss on weak models is real *under that label*; the post-hoc reinterpretation is that the label itself was too harsh. Numbers and narrative both stay — they answer different questions (what the harness scored vs. what the scenario actually tests).
 
@@ -333,5 +333,5 @@ Part 6's original appendix argued: explicit DFs are easy, subtle DFs are hard, s
 *First version script: `directional-failure-test.py` — 10 scenarios, N=5/N=3*
 *All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
 *Series: [Agent Determinism Illusions on dev.to/zxpmail](https://dev.to/zxpmail)*
-*Companion: Part 6 — *Five Comments That Redesigned My LLM Verification Pipeline* (publish alongside or after this aside)*
+*Companion: [Part 6 — Five Comments That Redesigned My LLM Verification Pipeline](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)*
 *Series start: [Four experiments…](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)*

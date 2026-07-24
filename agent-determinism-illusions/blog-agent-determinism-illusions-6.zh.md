@@ -547,7 +547,7 @@ v2 结论是：**弱模型连显式矛盾都不能信任。强模型在显式反
 5. *[六个对抗验证实验——75% 那堵墙没动过](blog-agent-determinism-illusions-5.zh.md)*
 - *附注：[红线法则:生产级 Agent 的收敛条件](blog-redline-principle.zh.md)*
 6. *五条评论，一张我没画出来的架构图（本文）*
-- *附注（待发独立篇）：[我编造了一篇关于 LLM 判据的结论——然后跑了一场"道歉实验"](blog-fabricated-claim-apology.zh.md)*（本文附录仍保留完整数据；独立篇为英文 dev.to 侧链）
+- *附注（独立篇，英文稿待发 DEV.to）：[我编造了一篇关于 LLM 判据的结论——然后跑了一场"道歉实验"](blog-fabricated-claim-apology.zh.md)*（本文附录仍保留完整数据；发后把英文 live URL 回填到 Part 6 英文版）
 
 *注：Parts 2–4 仅英文版（dev.to）；中文从主文跳到 Part 5/6。*
 

@@ -1,0 +1,345 @@
+{
+  "trials_per_cell": 400,
+  "error_rate": 0.1,
+  "cells": [
+    {
+      "dist": "uniform",
+      "quality": "low",
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "drop_first_by_unique": "input_unusual",
+      "keep_first_by_unique": "classifier_disagree",
+      "cd_unique_share": 0.291,
+      "iu_unique_share": 0.116,
+      "cd_over_iu_share": 2.51,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.1456,
+          "unique": 0.0227,
+          "share": 0.156
+        },
+        "classifier_disagree": {
+          "solo": 0.1925,
+          "unique": 0.0561,
+          "share": 0.291
+        },
+        "input_unusual": {
+          "solo": 0.1322,
+          "unique": 0.0153,
+          "share": 0.116
+        },
+        "barely_passed": {
+          "solo": 0.1616,
+          "unique": 0.0326,
+          "share": 0.202
+        }
+      }
+    },
+    {
+      "dist": "uniform",
+      "quality": "medium",
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "drop_first_by_unique": "input_unusual",
+      "keep_first_by_unique": "classifier_disagree",
+      "cd_unique_share": 0.233,
+      "iu_unique_share": 0.095,
+      "cd_over_iu_share": 2.46,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.1748,
+          "unique": 0.0184,
+          "share": 0.105
+        },
+        "classifier_disagree": {
+          "solo": 0.2511,
+          "unique": 0.0585,
+          "share": 0.233
+        },
+        "input_unusual": {
+          "solo": 0.1612,
+          "unique": 0.0152,
+          "share": 0.095
+        },
+        "barely_passed": {
+          "solo": 0.2069,
+          "unique": 0.0327,
+          "share": 0.158
+        }
+      }
+    },
+    {
+      "dist": "uniform",
+      "quality": "high",
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "drop_first_by_unique": "input_unusual",
+      "keep_first_by_unique": "classifier_disagree",
+      "cd_unique_share": 0.15,
+      "iu_unique_share": 0.056,
+      "cd_over_iu_share": 2.67,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.2056,
+          "unique": 0.0132,
+          "share": 0.064
+        },
+        "classifier_disagree": {
+          "solo": 0.2968,
+          "unique": 0.0446,
+          "share": 0.15
+        },
+        "input_unusual": {
+          "solo": 0.1886,
+          "unique": 0.0106,
+          "share": 0.056
+        },
+        "barely_passed": {
+          "solo": 0.2486,
+          "unique": 0.0254,
+          "share": 0.102
+        }
+      }
+    },
+    {
+      "dist": "burst",
+      "quality": "low",
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "drop_first_by_unique": "input_unusual",
+      "keep_first_by_unique": "classifier_disagree",
+      "cd_unique_share": 0.289,
+      "iu_unique_share": 0.106,
+      "cd_over_iu_share": 2.74,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.1462,
+          "unique": 0.0227,
+          "share": 0.155
+        },
+        "classifier_disagree": {
+          "solo": 0.1917,
+          "unique": 0.0554,
+          "share": 0.289
+        },
+        "input_unusual": {
+          "solo": 0.1306,
+          "unique": 0.0138,
+          "share": 0.106
+        },
+        "barely_passed": {
+          "solo": 0.1614,
+          "unique": 0.0325,
+          "share": 0.201
+        }
+      }
+    },
+    {
+      "dist": "burst",
+      "quality": "medium",
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "drop_first_by_unique": "input_unusual",
+      "keep_first_by_unique": "classifier_disagree",
+      "cd_unique_share": 0.232,
+      "iu_unique_share": 0.092,
+      "cd_over_iu_share": 2.53,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.1739,
+          "unique": 0.0192,
+          "share": 0.11
+        },
+        "classifier_disagree": {
+          "solo": 0.2487,
+          "unique": 0.0578,
+          "share": 0.232
+        },
+        "input_unusual": {
+          "solo": 0.1606,
+          "unique": 0.0147,
+          "share": 0.092
+        },
+        "barely_passed": {
+          "solo": 0.2042,
+          "unique": 0.0323,
+          "share": 0.158
+        }
+      }
+    },
+    {
+      "dist": "burst",
+      "quality": "high",
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "drop_first_by_unique": "input_unusual",
+      "keep_first_by_unique": "classifier_disagree",
+      "cd_unique_share": 0.154,
+      "iu_unique_share": 0.053,
+      "cd_over_iu_share": 2.88,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.2045,
+          "unique": 0.013,
+          "share": 0.063
+        },
+        "classifier_disagree": {
+          "solo": 0.2954,
+          "unique": 0.0455,
+          "share": 0.154
+        },
+        "input_unusual": {
+          "solo": 0.1897,
+          "unique": 0.0101,
+          "share": 0.053
+        },
+        "barely_passed": {
+          "solo": 0.2497,
+          "unique": 0.0241,
+          "share": 0.097
+        }
+      }
+    },
+    {
+      "dist": "mixed",
+      "quality": "low",
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "drop_first_by_unique": "input_unusual",
+      "keep_first_by_unique": "classifier_disagree",
+      "cd_unique_share": 0.297,
+      "iu_unique_share": 0.108,
+      "cd_over_iu_share": 2.74,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.1444,
+          "unique": 0.0231,
+          "share": 0.16
+        },
+        "classifier_disagree": {
+          "solo": 0.191,
+          "unique": 0.0568,
+          "share": 0.297
+        },
+        "input_unusual": {
+          "solo": 0.1279,
+          "unique": 0.0139,
+          "share": 0.108
+        },
+        "barely_passed": {
+          "solo": 0.1588,
+          "unique": 0.0317,
+          "share": 0.2
+        }
+      }
+    },
+    {
+      "dist": "mixed",
+      "quality": "medium",
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "drop_first_by_unique": "input_unusual",
+      "keep_first_by_unique": "classifier_disagree",
+      "cd_unique_share": 0.237,
+      "iu_unique_share": 0.087,
+      "cd_over_iu_share": 2.74,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.1739,
+          "unique": 0.0194,
+          "share": 0.112
+        },
+        "classifier_disagree": {
+          "solo": 0.2513,
+          "unique": 0.0597,
+          "share": 0.237
+        },
+        "input_unusual": {
+          "solo": 0.1586,
+          "unique": 0.0137,
+          "share": 0.087
+        },
+        "barely_passed": {
+          "solo": 0.2061,
+          "unique": 0.0333,
+          "share": 0.161
+        }
+      }
+    },
+    {
+      "dist": "mixed",
+      "quality": "high",
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "drop_first_by_unique": "input_unusual",
+      "keep_first_by_unique": "classifier_disagree",
+      "cd_unique_share": 0.149,
+      "iu_unique_share": 0.05,
+      "cd_over_iu_share": 2.96,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.205,
+          "unique": 0.0128,
+          "share": 0.063
+        },
+        "classifier_disagree": {
+          "solo": 0.2959,
+          "unique": 0.0442,
+          "share": 0.149
+        },
+        "input_unusual": {
+          "solo": 0.189,
+          "unique": 0.0095,
+          "share": 0.05
+        },
+        "barely_passed": {
+          "solo": 0.2488,
+          "unique": 0.024,
+          "share": 0.097
+        }
+      }
+    }
+  ],
+  "drop_first_counts": {
+    "input_unusual": 9
+  },
+  "keep_first_counts": {
+    "classifier_disagree": 9
+  }
+}

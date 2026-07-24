@@ -463,7 +463,7 @@ Layer 0/1 checks are zero-cost code. Layer 2 only runs on the residual. Layer 3 
 
 ## A Side Note: An Apology Experiment
 
-An earlier draft appended a long apology for a fabricated “directional failure” claim in a Part 3 comment. That thread became its own experiment (20×3×600) and then a correction stack (comment wrong → apology v1 wrong on DS4 → v2 numbers). Under the harness label, DS4 still 100% misses on qwen3/gemma3; deepseek is 13%/67%/20% catch/PARSE/miss. Post-hoc, DS4 is partly task ambiguity (10→10); clean L0/L1 wins remain DF6/DS9 value mismatch. Full write-up: forthcoming aside. Scripts: `directional-failure-v2.py` / `scripts/results-v2/`.
+An earlier draft appended a long apology for a fabricated “directional failure” claim in a Part 3 comment. That thread became its own experiment (20×3×600) and then a correction stack (comment wrong → apology v1 wrong on DS4 → v2 numbers). Under the harness label, DS4 still 100% misses on qwen3/gemma3; deepseek is 13%/67%/20% catch/PARSE/miss. Post-hoc, DS4 is partly task ambiguity (10→10); clean L0/L1 wins remain DF6/DS9 value mismatch. Full write-up: [I Fabricated a Claim About LLM Judges. Then I Ran the Apology Experiment.](blog-fabricated-claim-apology.en.md) (swap in the live DEV.to URL after that aside publishes). Scripts: `directional-failure-v2.py` / `scripts/results-v2/`.
 
 ---
 
