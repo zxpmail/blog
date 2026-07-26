@@ -19,10 +19,21 @@ Xiao Man — yes on the phase-transition read, and thanks for the routing questi
 
 Wrote both runs into Part 7 Update (2026-07-27). Same caveats as the dual-axis: fixture, structural half, instrumented ops.
 
+Scripts / results:
+https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/probe-cascade-routing-test.py
+https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/probe-cascade-routing.json
+https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/probe-artifact-shape-routing-test.py
+https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/probe-artifact-shape-routing.json
+
+Part 7 (local body; sync DEV.to Update if the live post is behind):
+https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent-determinism-illusions-7.en.md
+Thread:
+https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513
+
 ---
 
 中文备忘（一般贴英文评论即可）：
 - 失败才加深：T4 捕获 23%，跨字段漏 22/31，还更便宜 → 陷阱
 - 按产物形状：诚实线索 ≈ 固定匹配；删线索 / 诱饵嵌套会欠规格或误路由
 - 结论：P 跟 schema 深度；不是跟浅层失败信号
-- 已写入 Part 7 Update 2026-07-27
+- 已写入 Part 7 Update 2026-07-27；回复末尾带 GitHub 链接
