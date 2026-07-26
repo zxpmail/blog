@@ -259,13 +259,47 @@ Reading:
 
 Same caveats as the hold-out: fixture demonstration; structural half of the novelty bar only; not production wall-clock; not causal independence. Xiao Man's question splits cleanly: catch stability is a matching problem; expense threshold is a cost-model problem — and under execution cost, we did not hit it here.
 
+### Update (2026-07-27): fixed depth vs fail-signal vs artifact shape (Xiao Man)
+
+Xiao Man, on the P1→P4 cliff and over-spec = waste:
+
+> The P1→P4 progression is the part that stuck with me. 23% → 30% → 70% → 100% — that's not gradual improvement, that's phase transitions at specific schema coverage thresholds. The 'over-spec = waste not safety' point is sharp… Question on the probe selection: in your setup, is the P-level fixed per task type, or do you escalate dynamically based on artifact characteristics? Wondering if there's a cheap pre-check that routes to P3/P4 only when P1/P2 signal potential cross-field issues.
+
+Two offline follow-ups on the same checksum fixture (n=40, seed=7).
+
+**1. Cascade / fail-signal routing** (`probe-cascade-routing-test.py` → `results-v2/probe-cascade-routing.json`)
+
+Three policies on identical artifacts:
+
+| Policy | Rule | T4 catch | T4 cost_ratio |
+|--------|------|----------|---------------|
+| `fixed_matched` | know Ti → run matched Pi | **1.00** | 0.19 |
+| `fail_escalate` | P1 PASS → accept; P1 FAIL → jump to matched Pi | **0.23** | **0.05** |
+| `schema_cap` | even on PASS, continue up to matched Pi | **1.00** | 0.36 |
+
+`fail_escalate` is the cheap pre-check. On T4 it under-catches to the dual-axis P1 floor (23%); cross-field misses **22/31**. Shallow probes often *pass* on budget / port-unique / fingerprint breaks, so the cascade never fires. It also *looks* cheaper (≈7 vs ≈30 ops) — that is the trap, not the win. `schema_cap` recovers catch, but its ceiling is still schema-matched depth: a re-skinned fixed match, not a savings policy.
+
+**2. Artifact-shape routing** (`probe-artifact-shape-routing-test.py` → `results-v2/probe-artifact-shape-routing.json`)
+
+Infer `(T̂, P̂)` from keys only: `budget` → T4/P4; `services[]` → T3/P3; `timeout_ms`/`retries` → T2/P2; else T1/P1. (Fingerprint is a P4 *payload* check, not a routing cue.)
+
+| Population | fixed catch | shape catch | Note |
+|------------|-------------|-------------|------|
+| Normal T1–T4 | 1.00 | **1.00** | honest cues ≈ task label |
+| Cue-erase (strip `budget`, wrong fingerprint residual) | 1.00 | **0.82** | under-spec; P4-only misses |
+| Decoy-nest (T2 + decorative `services[]`) | 1.00 | **0.00** | misroute; 5 → 24 ops |
+
+So: artifact characteristics *can* set P-level when they encode schema depth and stay honest — that is still matched-depth routing with a different label source. They are not a substitute for “deepen only when P1/P2 fail.” Delete the depth cue, or inject a decoy nest, and shape routing under-specs or looks at the wrong layer.
+
+Same caveats: fixture; structural half only; instrumented ops, not wall-clock. Direct answer: **in this setup P-level is fixed by schema depth** (task type, or an honest shape proxy for it). **Dynamic deepen-on-fail is not a cheap path to P3/P4 for cross-field issues** — those issues are exactly the ones the cheap pre-check does not signal.
+
 ---
 
 ## Closing
 
-Part 6 was right to stop majority-voting splits into a false consensus. It was wrong to treat the complement — unanimity — as safe auto-execute for the failure mode DF v2 already measured. Alexey named the population mismatch; the DF multi-perspective rerun puts numbers on it. Mike named the residual population the recurrence arm cannot see, pinned what “out-of-channel” must mean before that arm can be built, and split that bar into structural vs causal independence. Xiao Man asked whether catch and relative cost survive rising complexity; the dual-axis run says catch survives when depth matches, and execution-cost ratio stayed under 1 on this fixture.
+Part 6 was right to stop majority-voting splits into a false consensus. It was wrong to treat the complement — unanimity — as safe auto-execute for the failure mode DF v2 already measured. Alexey named the population mismatch; the DF multi-perspective rerun puts numbers on it. Mike named the residual population the recurrence arm cannot see, pinned what “out-of-channel” must mean before that arm can be built, and split that bar into structural vs causal independence. Xiao Man asked whether catch and relative cost survive rising complexity, then whether P-depth can be a fail-signal or artifact-shape cascade; matched depth holds, fail-escalate does not, and shape works only as an honest schema proxy.
 
-**Divergence stays. T1/T2 join it. None of them is the novelty arm. A fifth prompt is not the novelty arm either. A checksum-passing “other data” probe is not automatically a common-cause shield. Matched depth keeps catch; under-spec is the cliff.**
+**Divergence stays. T1/T2 join it. None of them is the novelty arm. A fifth prompt is not the novelty arm either. A checksum-passing “other data” probe is not automatically a common-cause shield. Matched depth keeps catch; under-spec is the cliff; deepen-on-fail is not a shortcut around it.**
 
 ---
 

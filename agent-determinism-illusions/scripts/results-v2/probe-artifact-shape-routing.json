@@ -1,0 +1,357 @@
+{
+  "question": "Can P-level be chosen from artifact characteristics (shape) instead of a fixed task-type label?",
+  "source": "Xiao Man comment on Part 7 (2026-07-26) — artifact-characteristics fork",
+  "predecessor": "probe-cascade-routing-test.py",
+  "n_per_cell": 40,
+  "seed": 7,
+  "shape_rule": {
+    "T4/P4": "budget key present (fingerprint is payload, not cue)",
+    "T3/P3": "services list present",
+    "T2/P2": "timeout_ms or retries present",
+    "T1/P1": "else"
+  },
+  "populations": {
+    "normal": "unmodified T1–T4",
+    "cue_erase": "T4; strip budget cue; force wrong fingerprint residual",
+    "decoy_nest": "T2; inject decorative services[]"
+  },
+  "normal_catch_table": {
+    "T1": {
+      "fixed_matched": 1.0,
+      "artifact_shape": 1.0
+    },
+    "T2": {
+      "fixed_matched": 1.0,
+      "artifact_shape": 1.0
+    },
+    "T3": {
+      "fixed_matched": 1.0,
+      "artifact_shape": 1.0
+    },
+    "T4": {
+      "fixed_matched": 1.0,
+      "artifact_shape": 1.0
+    }
+  },
+  "cue_erase": {
+    "fixed_matched": {
+      "population": "cue_erase",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 1.0,
+      "mean_probe_ops": 27.8,
+      "mean_task_ops": 154.0,
+      "cost_ratio": 0.1805,
+      "miss_kinds": {},
+      "route_histogram": {
+        "T4/P4": 80
+      }
+    },
+    "artifact_shape": {
+      "population": "cue_erase",
+      "policy": "artifact_shape",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.825,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 20.4,
+      "mean_task_ops": 154.0,
+      "cost_ratio": 0.1325,
+      "miss_kinds": {
+        "cross_fingerprint+cue_erase": 7
+      },
+      "route_histogram": {
+        "T3/P3": 80
+      }
+    }
+  },
+  "decoy_nest": {
+    "fixed_matched": {
+      "population": "decoy_nest",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 5.08,
+      "mean_task_ops": 45.0,
+      "cost_ratio": 0.1128,
+      "miss_kinds": {},
+      "route_histogram": {
+        "T2/P2": 80
+      }
+    },
+    "artifact_shape": {
+      "population": "decoy_nest",
+      "policy": "artifact_shape",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 24.0,
+      "mean_task_ops": 45.0,
+      "cost_ratio": 0.5333,
+      "miss_kinds": {
+        "scalar_max_connections+decoy": 14,
+        "scalar_retries+decoy": 17,
+        "scalar_timeout_ms+decoy": 9
+      },
+      "route_histogram": {
+        "T3/P3": 80
+      }
+    }
+  },
+  "cells": [
+    {
+      "population": "normal",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 3.0,
+      "mean_task_ops": 12.93,
+      "cost_ratio": 0.2321,
+      "miss_kinds": {},
+      "route_histogram": {
+        "T1/P1": 80
+      },
+      "T": "T1"
+    },
+    {
+      "population": "normal",
+      "policy": "artifact_shape",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 6.0,
+      "mean_task_ops": 12.93,
+      "cost_ratio": 0.4642,
+      "miss_kinds": {},
+      "route_histogram": {
+        "T1/P1": 80
+      },
+      "T": "T1"
+    },
+    {
+      "population": "normal",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 5.0,
+      "mean_task_ops": 34.0,
+      "cost_ratio": 0.1471,
+      "miss_kinds": {},
+      "route_histogram": {
+        "T2/P2": 80
+      },
+      "T": "T2"
+    },
+    {
+      "population": "normal",
+      "policy": "artifact_shape",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 8.0,
+      "mean_task_ops": 34.0,
+      "cost_ratio": 0.2353,
+      "miss_kinds": {},
+      "route_histogram": {
+        "T2/P2": 80
+      },
+      "T": "T2"
+    },
+    {
+      "population": "normal",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 17.43,
+      "mean_task_ops": 90.67,
+      "cost_ratio": 0.1922,
+      "miss_kinds": {},
+      "route_histogram": {
+        "T3/P3": 80
+      },
+      "T": "T3"
+    },
+    {
+      "population": "normal",
+      "policy": "artifact_shape",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 19.43,
+      "mean_task_ops": 90.67,
+      "cost_ratio": 0.2142,
+      "miss_kinds": {},
+      "route_histogram": {
+        "T3/P3": 80
+      },
+      "T": "T3"
+    },
+    {
+      "population": "normal",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 29.81,
+      "mean_task_ops": 153.0,
+      "cost_ratio": 0.1949,
+      "miss_kinds": {},
+      "route_histogram": {
+        "T4/P4": 80
+      },
+      "T": "T4"
+    },
+    {
+      "population": "normal",
+      "policy": "artifact_shape",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 30.81,
+      "mean_task_ops": 153.0,
+      "cost_ratio": 0.2014,
+      "miss_kinds": {},
+      "route_histogram": {
+        "T4/P4": 80
+      },
+      "T": "T4"
+    },
+    {
+      "population": "cue_erase",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 1.0,
+      "mean_probe_ops": 27.8,
+      "mean_task_ops": 154.0,
+      "cost_ratio": 0.1805,
+      "miss_kinds": {},
+      "route_histogram": {
+        "T4/P4": 80
+      }
+    },
+    {
+      "population": "cue_erase",
+      "policy": "artifact_shape",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.825,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 20.4,
+      "mean_task_ops": 154.0,
+      "cost_ratio": 0.1325,
+      "miss_kinds": {
+        "cross_fingerprint+cue_erase": 7
+      },
+      "route_histogram": {
+        "T3/P3": 80
+      }
+    },
+    {
+      "population": "decoy_nest",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 5.08,
+      "mean_task_ops": 45.0,
+      "cost_ratio": 0.1128,
+      "miss_kinds": {},
+      "route_histogram": {
+        "T2/P2": 80
+      }
+    },
+    {
+      "population": "decoy_nest",
+      "policy": "artifact_shape",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 24.0,
+      "mean_task_ops": 45.0,
+      "cost_ratio": 0.5333,
+      "miss_kinds": {
+        "scalar_max_connections+decoy": 14,
+        "scalar_retries+decoy": 17,
+        "scalar_timeout_ms+decoy": 9
+      },
+      "route_histogram": {
+        "T3/P3": 80
+      }
+    }
+  ],
+  "claims": {
+    "C1_shape_matches_fixed_on_honest_cues": {
+      "pass": true,
+      "cells": [
+        {
+          "T": "T1",
+          "catch_fixed": 1.0,
+          "catch_shape": 1.0,
+          "ok": true
+        },
+        {
+          "T": "T2",
+          "catch_fixed": 1.0,
+          "catch_shape": 1.0,
+          "ok": true
+        },
+        {
+          "T": "T3",
+          "catch_fixed": 1.0,
+          "catch_shape": 1.0,
+          "ok": true
+        },
+        {
+          "T": "T4",
+          "catch_fixed": 1.0,
+          "catch_shape": 1.0,
+          "ok": true
+        }
+      ],
+      "detail": "normal population: |catch_shape - catch_fixed| <= 0.05 per Ti"
+    },
+    "C2_cue_erase_undercatches": {
+      "pass": true,
+      "catch_fixed": 1.0,
+      "catch_shape": 0.825,
+      "miss_kinds_shape": {
+        "cross_fingerprint+cue_erase": 7
+      },
+      "detail": "cue_erase: shape catch < fixed - 0.15"
+    },
+    "C3_decoy_misroutes": {
+      "pass": true,
+      "ops_fixed": 5.08,
+      "ops_shape": 24.0,
+      "catch_fixed": 1.0,
+      "catch_shape": 0.0,
+      "miss_kinds_shape": {
+        "scalar_max_connections+decoy": 14,
+        "scalar_retries+decoy": 17,
+        "scalar_timeout_ms+decoy": 9
+      },
+      "detail": "decoy_nest on T2: shape costs more AND catch drops > 0.15"
+    }
+  },
+  "answer_for_xiao_man": "When routing cues stay honest, artifact-shape routing matches fixed task-type depth on catch — shape is a schema proxy, not a failure-signal cascade. Cue erasure (strip budget cue, wrong fingerprint residual): fixed=100% vs shape=82% — depth cues are load-bearing. Decoy nesting on T2: fixed catch=100% (5.1 ops) vs shape catch=0% (24.0 ops) — misroute, not just waste. Answer fork: artifact characteristics can set P-level *if they encode schema depth and are not agent-writable escape hatches*. That is still matched-depth routing, not 'cheap pre-check on P1/P2 fail'."
+}

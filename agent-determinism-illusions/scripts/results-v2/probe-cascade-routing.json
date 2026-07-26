@@ -1,0 +1,366 @@
+{
+  "question": "Is P-level fixed per task type, or escalate dynamically? Can a cheap P1/P2 pre-check route to P3/P4 only when shallow probes signal potential cross-field issues?",
+  "source": "Xiao Man comment on Part 7 (2026-07-26)",
+  "predecessor": "probe-complexity-dual-axis.py",
+  "n_per_cell": 40,
+  "seed": 7,
+  "policies": {
+    "fixed_matched": "know Ti → run matched Pi once",
+    "fail_escalate": "P1 pre-check; PASS→accept; FAIL→jump to matched Pi",
+    "schema_cap": "P1→… continue on PASS up to matched Pi"
+  },
+  "catch_table": {
+    "T1": {
+      "fixed_matched": 1.0,
+      "fail_escalate": 1.0,
+      "schema_cap": 1.0
+    },
+    "T2": {
+      "fixed_matched": 1.0,
+      "fail_escalate": 0.3,
+      "schema_cap": 1.0
+    },
+    "T3": {
+      "fixed_matched": 1.0,
+      "fail_escalate": 0.4,
+      "schema_cap": 1.0
+    },
+    "T4": {
+      "fixed_matched": 1.0,
+      "fail_escalate": 0.225,
+      "schema_cap": 1.0
+    }
+  },
+  "cost_ratio_table": {
+    "T1": {
+      "fixed_matched": 0.2321,
+      "fail_escalate": 0.3482,
+      "schema_cap": 0.2321
+    },
+    "T2": {
+      "fixed_matched": 0.1471,
+      "fail_escalate": 0.0971,
+      "schema_cap": 0.2265
+    },
+    "T3": {
+      "fixed_matched": 0.1922,
+      "fail_escalate": 0.0882,
+      "schema_cap": 0.2957
+    },
+    "T4": {
+      "fixed_matched": 0.1949,
+      "fail_escalate": 0.0466,
+      "schema_cap": 0.3593
+    }
+  },
+  "mean_stop_rank_table": {
+    "T1": {
+      "fixed_matched": 1.0,
+      "fail_escalate": 1.0,
+      "schema_cap": 1.0
+    },
+    "T2": {
+      "fixed_matched": 2.0,
+      "fail_escalate": 1.15,
+      "schema_cap": 1.85
+    },
+    "T3": {
+      "fixed_matched": 3.0,
+      "fail_escalate": 1.4,
+      "schema_cap": 2.462
+    },
+    "T4": {
+      "fixed_matched": 4.0,
+      "fail_escalate": 1.337,
+      "schema_cap": 3.275
+    }
+  },
+  "cells": [
+    {
+      "T": "T1",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 3.0,
+      "mean_task_ops": 12.93,
+      "cost_ratio": 0.2321,
+      "mean_stop_rank": 1.0,
+      "miss_kinds": {},
+      "cross_field_total": 0,
+      "cross_field_miss": 0,
+      "cross_field_miss_rate": null,
+      "matched_P": "P1",
+      "paired": true
+    },
+    {
+      "T": "T1",
+      "policy": "fail_escalate",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 4.5,
+      "mean_task_ops": 12.93,
+      "cost_ratio": 0.3482,
+      "mean_stop_rank": 1.0,
+      "miss_kinds": {},
+      "cross_field_total": 0,
+      "cross_field_miss": 0,
+      "cross_field_miss_rate": null,
+      "matched_P": "P1",
+      "paired": true
+    },
+    {
+      "T": "T1",
+      "policy": "schema_cap",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 3.0,
+      "mean_task_ops": 12.93,
+      "cost_ratio": 0.2321,
+      "mean_stop_rank": 1.0,
+      "miss_kinds": {},
+      "cross_field_total": 0,
+      "cross_field_miss": 0,
+      "cross_field_miss_rate": null,
+      "matched_P": "P1",
+      "paired": true
+    },
+    {
+      "T": "T2",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 5.0,
+      "mean_task_ops": 34.0,
+      "cost_ratio": 0.1471,
+      "mean_stop_rank": 2.0,
+      "miss_kinds": {},
+      "cross_field_total": 0,
+      "cross_field_miss": 0,
+      "cross_field_miss_rate": null,
+      "matched_P": "P2",
+      "paired": true
+    },
+    {
+      "T": "T2",
+      "policy": "fail_escalate",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.3,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 3.3,
+      "mean_task_ops": 34.0,
+      "cost_ratio": 0.0971,
+      "mean_stop_rank": 1.15,
+      "miss_kinds": {
+        "scalar_retries": 12,
+        "scalar_timeout_ms": 16
+      },
+      "cross_field_total": 0,
+      "cross_field_miss": 0,
+      "cross_field_miss_rate": null,
+      "matched_P": "P2",
+      "paired": true
+    },
+    {
+      "T": "T2",
+      "policy": "schema_cap",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 7.7,
+      "mean_task_ops": 34.0,
+      "cost_ratio": 0.2265,
+      "mean_stop_rank": 1.85,
+      "miss_kinds": {},
+      "cross_field_total": 0,
+      "cross_field_miss": 0,
+      "cross_field_miss_rate": null,
+      "matched_P": "P2",
+      "paired": true
+    },
+    {
+      "T": "T3",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 17.43,
+      "mean_task_ops": 90.67,
+      "cost_ratio": 0.1922,
+      "mean_stop_rank": 3.0,
+      "miss_kinds": {},
+      "cross_field_total": 0,
+      "cross_field_miss": 0,
+      "cross_field_miss_rate": null,
+      "matched_P": "P3",
+      "paired": true
+    },
+    {
+      "T": "T3",
+      "policy": "fail_escalate",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.4,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 8.0,
+      "mean_task_ops": 90.67,
+      "cost_ratio": 0.0882,
+      "mean_stop_rank": 1.4,
+      "miss_kinds": {
+        "wrong_port": 11,
+        "missing_leaf": 13
+      },
+      "cross_field_total": 0,
+      "cross_field_miss": 0,
+      "cross_field_miss_rate": null,
+      "matched_P": "P3",
+      "paired": true
+    },
+    {
+      "T": "T3",
+      "policy": "schema_cap",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 26.81,
+      "mean_task_ops": 90.67,
+      "cost_ratio": 0.2957,
+      "mean_stop_rank": 2.462,
+      "miss_kinds": {},
+      "cross_field_total": 0,
+      "cross_field_miss": 0,
+      "cross_field_miss_rate": null,
+      "matched_P": "P3",
+      "paired": true
+    },
+    {
+      "T": "T4",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 29.81,
+      "mean_task_ops": 153.0,
+      "cost_ratio": 0.1949,
+      "mean_stop_rank": 4.0,
+      "miss_kinds": {},
+      "cross_field_total": 31,
+      "cross_field_miss": 0,
+      "cross_field_miss_rate": 0.0,
+      "matched_P": "P4",
+      "paired": true
+    },
+    {
+      "T": "T4",
+      "policy": "fail_escalate",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 0.225,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 7.12,
+      "mean_task_ops": 153.0,
+      "cost_ratio": 0.0466,
+      "mean_stop_rank": 1.337,
+      "miss_kinds": {
+        "cross_port_unique": 11,
+        "cross_fingerprint": 11,
+        "nested_under_t4": 9
+      },
+      "cross_field_total": 31,
+      "cross_field_miss": 22,
+      "cross_field_miss_rate": 0.7097,
+      "matched_P": "P4",
+      "paired": true
+    },
+    {
+      "T": "T4",
+      "policy": "schema_cap",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 54.98,
+      "mean_task_ops": 153.0,
+      "cost_ratio": 0.3593,
+      "mean_stop_rank": 3.275,
+      "miss_kinds": {},
+      "cross_field_total": 31,
+      "cross_field_miss": 0,
+      "cross_field_miss_rate": 0.0,
+      "matched_P": "P4",
+      "paired": true
+    }
+  ],
+  "claims": {
+    "C1_fail_escalate_undercatches_T4": {
+      "pass": true,
+      "catch_A_T4": 1.0,
+      "catch_B_T4": 0.225,
+      "cross_miss_B_T4": 22,
+      "cross_total_B_T4": 31,
+      "detail": "fail_escalate catch on T4 < fixed_matched - 0.15"
+    },
+    "C2_schema_cap_recovers_catch": {
+      "pass": true,
+      "catch_C_T4": 1.0,
+      "detail": "schema_cap catch on T4 >= 0.95"
+    },
+    "C3_fail_escalate_looks_cheaper": {
+      "pass": true,
+      "ops_A_T4": 29.81,
+      "ops_B_T4": 7.12,
+      "detail": "fail_escalate mean_probe_ops < fixed_matched on T4"
+    },
+    "C4_schema_cap_matches_fixed_catch": {
+      "pass": true,
+      "cells": [
+        {
+          "T": "T1",
+          "catch_A": 1.0,
+          "catch_C": 1.0,
+          "ops_A": 3.0,
+          "ops_C": 3.0,
+          "ok": true
+        },
+        {
+          "T": "T2",
+          "catch_A": 1.0,
+          "catch_C": 1.0,
+          "ops_A": 5.0,
+          "ops_C": 7.7,
+          "ok": true
+        },
+        {
+          "T": "T3",
+          "catch_A": 1.0,
+          "catch_C": 1.0,
+          "ops_A": 17.43,
+          "ops_C": 26.81,
+          "ok": true
+        },
+        {
+          "T": "T4",
+          "catch_A": 1.0,
+          "catch_C": 1.0,
+          "ops_A": 29.81,
+          "ops_C": 54.98,
+          "ok": true
+        }
+      ],
+      "detail": "schema_cap catch ≈ fixed_matched on every Ti; cost ≥ fixed"
+    }
+  },
+  "answer_for_xiao_man": "On T4, fixed_matched catch=100%, fail_escalate=22% (cross-field miss 22/31), schema_cap=100%. Cheap pre-check that deepens only on P1/P2 fail misses the cross-field population — those artifacts pass shallow probes, so the cascade never fires. Cascade is fine if the ceiling is schema-matched depth (continue on pass up to Pi), not failure-signal-driven. fail_escalate looks cheaper (7.1 vs 29.8 ops) — that is the trap, not the win. Answer: P-level is fixed by task/schema type in this setup; dynamic deepen-on-fail is not a substitute for matched depth. Fixture + instrumented ops, same caveats as dual-axis."
+}
