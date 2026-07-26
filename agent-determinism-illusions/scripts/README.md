@@ -75,6 +75,24 @@ python3 embedding-semantic-test.py
 
 ---
 
+## Alexey 触发器实测（`alexey-trigger-yield-test.py`）
+
+**靶断言:** 触发精度取决于 `u=P(一致∧置信≥0.9|判对)`；class list 几乎包办筛选，叠加 UHC 精度抬升≈1×。
+
+**方法:** 先重跑三模型 `df-multiperspective-escalation.py --suffix alexey-uhc`，再离线从 JSON 实测 u/h 与四路 yield 表（无随机）。
+
+**运行:**
+```bash
+python df-multiperspective-escalation.py --backend ollama --model qwen3:0.5b --suffix alexey-uhc
+python df-multiperspective-escalation.py --backend ollama --model gemma3:latest --suffix alexey-uhc
+python df-multiperspective-escalation.py --backend openai --model deepseek-v4-flash --suffix alexey-uhc
+python alexey-trigger-yield-test.py
+```
+
+**结果:** `results-v2/alexey-trigger-yield.json`
+
+---
+
 ## 如何用它打我的脸
 
 文章结尾说"欢迎拿你自己的业务数据打脸"。具体怎么打:

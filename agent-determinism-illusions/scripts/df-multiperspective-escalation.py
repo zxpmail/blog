@@ -63,21 +63,18 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 
 def _load_scenarios():
+    """用 AST 抽取 SCENARIOS，避免 exec directional-failure-v2 时弄坏 stdout。"""
+    import ast
+
     path = Path(__file__).parent / "directional-failure-v2.py"
-    ns: dict = {}
-    code = path.read_text(encoding="utf-8")
-    # Truncate before get_n / API to avoid executing network helpers unnecessarily
-    # Still need SCENARIOS list only — exec full module is fine (no main call).
-    compiled = compile(code, str(path), "exec")
-    # Avoid stdout reconfigure issues on some hosts
-    old_name = __name__
-    try:
-        ns["__name__"] = "dfv2_scenarios"
-        ns["__file__"] = str(path)
-        exec(compiled, ns)
-    finally:
-        pass
-    return ns["SCENARIOS"]
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    for node in tree.body:
+        if not isinstance(node, ast.Assign):
+            continue
+        for target in node.targets:
+            if isinstance(target, ast.Name) and target.id == "SCENARIOS":
+                return ast.literal_eval(node.value)
+    raise RuntimeError(f"SCENARIOS not found in {path}")
 
 
 PERSONAS = [
@@ -464,6 +461,11 @@ def main():
     )
     ap.add_argument("--model", default="", help="Override model name (required for ollama)")
     ap.add_argument("--base-url", default="", help="Override base URL")
+    ap.add_argument(
+        "--suffix",
+        default="",
+        help="Optional filename suffix, e.g. alexey-uhc → df-multiperspective-{slug}-alexey-uhc.json",
+    )
     args = ap.parse_args()
 
     scenarios = _load_scenarios()
@@ -563,7 +565,9 @@ def main():
     }
     # redact nothing sensitive; no keys in file
     slug = cred["model"].replace(":", "-").replace("/", "-")
-    path = OUT_DIR / f"df-multiperspective-{slug}.json"
+    suffix = (args.suffix or "").strip().lstrip("-")
+    fname = f"df-multiperspective-{slug}-{suffix}.json" if suffix else f"df-multiperspective-{slug}.json"
+    path = OUT_DIR / fname
     # redact nothing sensitive; no keys in file
     path.write_text(json.dumps(out, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"\nWrote {path} ({n_calls} calls)")

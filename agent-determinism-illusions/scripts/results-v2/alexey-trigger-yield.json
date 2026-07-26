@@ -1,0 +1,100 @@
+{
+  "n_rows": 60,
+  "n_miss": 7,
+  "n_right": 47,
+  "n_other": 6,
+  "traffic_miss_plus_right": 54,
+  "pi": 0.12962962962962962,
+  "h": 0.5714285714285714,
+  "u": 0.40425531914893614,
+  "rm": 1.0,
+  "ro": 0.7659574468085106,
+  "counts": {
+    "uhc_miss": 4,
+    "uhc_right": 19,
+    "class_miss": 7,
+    "class_right": 36,
+    "div_miss": 2,
+    "div_right": 21,
+    "uhc_class_miss": 4,
+    "uhc_class_right": 14
+  },
+  "streams": {
+    "divergence": {
+      "fire_n": 23,
+      "fire_miss": 2,
+      "fire_right": 21,
+      "fire_rate": 0.42592592592592593,
+      "precision": 0.08695652173913043,
+      "miss_capture": 0.2857142857142857
+    },
+    "class_list_alone": {
+      "fire_n": 43,
+      "fire_miss": 7,
+      "fire_right": 36,
+      "fire_rate": 0.7962962962962963,
+      "precision": 0.16279069767441862,
+      "miss_capture": 1.0
+    },
+    "uhc_alone": {
+      "fire_n": 23,
+      "fire_miss": 4,
+      "fire_right": 19,
+      "fire_rate": 0.42592592592592593,
+      "precision": 0.17391304347826086,
+      "miss_capture": 0.5714285714285714
+    },
+    "uhc_and_class": {
+      "fire_n": 18,
+      "fire_miss": 4,
+      "fire_right": 14,
+      "fire_rate": 0.3333333333333333,
+      "precision": 0.2222222222222222,
+      "miss_capture": 0.5714285714285714
+    }
+  },
+  "precision_lift_uhc_on_class": 1.365079365079365,
+  "class_cut_share_of_uhc_volume": 0.21739130434782605,
+  "per_model": {
+    "deepseek-v4-flash": {
+      "n_miss": 0,
+      "n_right": 20,
+      "n_other": 0,
+      "h": null,
+      "u": 0.9,
+      "rm": null,
+      "ro": 0.8
+    },
+    "gemma3:latest": {
+      "n_miss": 0,
+      "n_right": 20,
+      "n_other": 0,
+      "h": null,
+      "u": 0.0,
+      "rm": null,
+      "ro": 0.8
+    },
+    "qwen3:0.5b": {
+      "n_miss": 7,
+      "n_right": 7,
+      "n_other": 6,
+      "h": 0.5714285714285714,
+      "u": 0.14285714285714285,
+      "rm": 1.0,
+      "ro": 0.5714285714285714
+    }
+  },
+  "definition": {
+    "MISS": "dangerous_accept (majority PASS on is_legit=False)",
+    "RIGHT": "true_pass OR true_reject",
+    "UHC": "pattern in {unanimous_pass,unanimous_rej} AND all persona mean conf>=0.9",
+    "class": "reversal_class (id startswith DF or DS)",
+    "divergence": "pattern == split",
+    "joint": "uhc_and_class counted jointly (no independence assumption)"
+  },
+  "inputs": [
+    "df-multiperspective-qwen3-0.5b-alexey-uhc.json",
+    "df-multiperspective-gemma3-latest-alexey-uhc.json",
+    "df-multiperspective-deepseek-v4-flash-alexey-uhc.json"
+  ]
+}
