@@ -115,4 +115,4 @@ canonical_url: ""
 
 ---
 
-*姊妹篇：[判的疲惫](blog-essay-judging-fatigue.zh.md) · [从 "show me your code" 到 "show me your idea"](blog-essay-show-idea.zh.md) · [镜子照不到思想](blog-essay-mirror-no-thought.zh.md)*
+*姊妹篇：[判的疲惫](blog-essay-judging-fatigue.zh.md) · [从 "show me your code" 到 "show me your idea"](blog-essay-show-idea.zh.md) · [镜子照不到思想](blog-essay-mirror-no-thought.zh.md) · [一次审稿里被钉了六处](blog-essay-six-defense-lines.zh.md)*

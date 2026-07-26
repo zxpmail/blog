@@ -115,4 +115,4 @@ The above comes out of a discussion with a reader about an Alibaba Cloud article
 
 ---
 
-*Companion essays: [Judging Fatigue — From Verifying AI to Verifying Myself](blog-essay-judging-fatigue.en.md) · [From "show me your code" to "show me your idea"](blog-essay-show-idea.en.md) · [The Mirror Cannot Reflect Thought](blog-essay-mirror-no-thought.en.md)*
+*Companion essays: [Judging Fatigue — From Verifying AI to Verifying Myself](blog-essay-judging-fatigue.en.md) · [From "show me your code" to "show me your idea"](blog-essay-show-idea.en.md) · [The Mirror Cannot Reflect Thought](blog-essay-mirror-no-thought.en.md) · [A Reviewer Nailed Me in Six Places](blog-essay-six-defense-lines.en.md)*

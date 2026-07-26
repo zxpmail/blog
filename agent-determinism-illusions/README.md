@@ -8,7 +8,7 @@
 
 1. **[红线法则](/agent-determinism-illusions/blog-redline-principle.zh.md)**——独立文章,不依赖系列。3 组核心实验,结论:生产级 Agent 需要客观收敛信号,不是更聪明的循环设计
 2. **Agent Determinism Illusions 系列**(技术主线)——从拆靶子到给替代方案,一条完整弧线
-3. **Judging vs. Building in the AI Era**(程序员视角 essay)——三姊妹篇,从"判的疲惫"到"工具的边界"
+3. **Judging vs. Building in the AI Era**(程序员视角 essay)——五篇,从"判的疲惫"到"论证怎么辩护"
 
 ## 文章索引(按类型)
 
@@ -37,13 +37,15 @@
 
 > 第 5–13 篇文件见仓库 `blog-agent-determinism-illusions-{n}.{zh,en}.md`（部分未上架索引表）。
 
-### 2. Judging vs. Building in the AI Era(三姊妹 essay)
+### 2. Judging vs. Building in the AI Era(essay 系列)
 
 | # | 中文 | 英文 | 核心 |
 |---|------|------|------|
 | 1 | [判的疲惫](blog-essay-judging-fatigue.zh.md) | [Judging Fatigue](blog-essay-judging-fatigue.en.md) | 验证系统到底是什么用——解释了一种说不清的疲惫 |
 | 2 | [从 "show me your code" 到 "show me your idea"](blog-essay-show-idea.zh.md) | [From "show me your code" to "show me your idea"](blog-essay-show-idea.en.md) | code 失去裁判功能,idea 没有裁判 |
 | 3 | [镜子照不到思想](blog-essay-mirror-no-thought.zh.md) | [The Mirror Cannot Reflect Thought](blog-essay-mirror-no-thought.en.md) | 工具只能照见惯性,照不到思想 |
+| 4 | [Harness 的边界](blog-essay-harness-border.zh.md) | [The Boundary of the Harness](blog-essay-harness-border.en.md) | 兜底层不能被 prompt 化 |
+| 5 | [一次审稿里被钉了六处](blog-essay-six-defense-lines.zh.md) | [A Reviewer Nailed Me in Six Places](blog-essay-six-defense-lines.en.md) | 零实验立场文：声称与举证责任怎么对齐 |
 
 ### 3. 红线法则(独立方法论)
 
