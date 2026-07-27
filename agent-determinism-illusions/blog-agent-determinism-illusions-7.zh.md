@@ -210,7 +210,22 @@ Mike 在结构≠因果之后的下一刀：实践修法不是更强的独立性
 
 本网格工作点：τ=0.03（FAR≤5% 且检出≥90%，再取最小延迟）。
 
-**结论：** checksum / 已测上游 = 事先章；联合失败 excess = 剩余告警。监视器不制造因果独立，也不替代已经能跑的上游测试——它让尚未盖章的那截变得可听见。
+**结论：** checksum / 已测上游 = 事先章；联合失败 excess = 剩余告警。监视器不制造因果独立，也不替代已经能跑的上游测试——它让尚未盖章的那截变得可听见。寿命 vs 延迟（对活停电是否太慢）：[准确 vs 延迟 Update](#joint-failure-monitor-duration-mike)。
+
+<a id="joint-failure-monitor-duration-mike"></a>
+
+### Update (2026-07-27)：准确 vs 延迟——停电寿命对抗检测延迟（Mike）
+
+Mike 对 τ 表的跟进：通常抬阈值是用检出换误报。这里 τ=0.03→0.05 时 FAR 降、检出升——共因尖峰离独立噪声底很远——真正代价是延迟（≈9 → ≈15）。旋钮是**准确 vs 延迟**，不是准确 vs 噪声。操作问题：这延迟相对一次传感器中断能撑多久够不够短？短命停电可能在告警过线前就结束。
+
+离线扫（[`joint-failure-monitor-duration-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/joint-failure-monitor-duration-test.py) → [`joint-failure-monitor-duration.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/joint-failure-monitor-duration.json)）：同 W=200 / K=3；单次长度 L 的停电；**live_catch** = 停电仍在时首次告警；**late_only** = 结束后才告警（残渣仍在滚动窗里）；**miss** = 无告警。
+
+| τ | 父实验平均延迟 | live≥90% 的 L | any≥90% 的 L | L ≈ 延迟时 |
+|---|----------------|---------------|--------------|------------|
+| 0.03 | ≈9 | **15** | **9** | L=9 → live **25%** / late **65%** / miss 6% |
+| 0.05 | ≈15 | **20** | **15** | L=15 → live **37%** / late **62%** / miss 1% |
+
+**结论：** 停电寿命 ≤ 检测延迟时，监视器常在*活*故障期间沉默，只在窗残渣上事后响——法医有用，拦不住进行中的中断。对 live 捕获，有用下限是 L ≳ delay（要 ≥90% live 还得略高于平均延迟），不是「任何最终能推动 excess 的 L」。上一则监视 Update：[盖章 / 剩余告警](#joint-failure-monitor-mike)。
 
 ### Update (2026-07-23)：hold-out 实验——分叉可测
 

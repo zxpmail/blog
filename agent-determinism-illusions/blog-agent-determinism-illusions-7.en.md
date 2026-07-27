@@ -225,7 +225,22 @@ Offline sim ([`joint-failure-monitor-test.py`](https://github.com/zxpmail/blog/b
 
 Operating point on this grid: τ=0.03 (FAR≤5% and detection≥90%, then min delay).
 
-**Takeaway:** checksum / tested upstream = the advance stamp. Joint-failure excess = the residual alarm. This monitor does not create causal independence and does not replace tests you can already run — it makes the unstamped remainder audible.
+**Takeaway:** checksum / tested upstream = the advance stamp. Joint-failure excess = the residual alarm. This monitor does not create causal independence and does not replace tests you can already run — it makes the unstamped remainder audible. Lifespan vs delay (when too slow for a live outage): [accuracy-vs-latency Update](#joint-failure-monitor-duration-mike).
+
+<a id="joint-failure-monitor-duration-mike"></a>
+
+### Update (2026-07-27): accuracy-vs-latency — outage lifespan vs delay (Mike)
+
+Mike's follow-up on the τ table: normally raising a threshold trades detection for FAR. Here FAR falls and detection rises together from τ=0.03→0.05 — the common-cause spike sits clear of the independent floor — so the *real* cost is latency (delay ≈9 → ≈15). The dial is **accuracy-versus-latency**, not accuracy-versus-noise. Operational question: is that delay short enough relative to how long a sensor outage runs? A short-lived outage can end before the alert crosses threshold.
+
+Offline sweep ([`joint-failure-monitor-duration-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/joint-failure-monitor-duration-test.py) → [`joint-failure-monitor-duration.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/joint-failure-monitor-duration.json)): same W=200 / K=3 monitor; single outage of length L; **live_catch** = first alert while outage still active; **late_only** = first alert only after it ended (residue still inside the rolling window); **miss** = no alert.
+
+| τ | Parent mean delay | L for live≥90% | L for any-alert≥90% | At L ≈ delay |
+|---|-------------------|----------------|---------------------|--------------|
+| 0.03 | ≈9 | **15** | **9** | L=9 → live **25%** / late **65%** / miss 6% |
+| 0.05 | ≈15 | **20** | **15** | L=15 → live **37%** / late **62%** / miss 1% |
+
+**Takeaway:** when outage lifespan sits at or under the detection delay, the monitor often stays silent *during* the live failure and rings only on window residue afterward — forensics, not interruption. Usefulness floor for a *live* catch is L ≳ delay (a bit above mean delay for ≥90% live), not “any L that eventually moves excess.” Prior monitor Update: [stamp / residual alarm](#joint-failure-monitor-mike).
 
 ### Update (2026-07-23): hold-out experiment — the fork is measurable
 

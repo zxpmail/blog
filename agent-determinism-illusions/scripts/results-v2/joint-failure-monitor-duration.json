@@ -1,0 +1,427 @@
+{
+  "experiment": "joint-failure-monitor-duration",
+  "claim": "Monitor usefulness vs outage lifespan: live catch collapses when L is shorter than detection runway (accuracy–latency dial)",
+  "parent": "joint-failure-monitor-test.py (τ=0.03 delay~9, τ=0.05 delay~15)",
+  "params": {
+    "T": 3000,
+    "W": 200,
+    "K": 3,
+    "p_c": 0.12,
+    "p_p": 0.1,
+    "outage_onset": 1000,
+    "taus": [
+      0.03,
+      0.05
+    ],
+    "outage_lengths": [
+      3,
+      5,
+      8,
+      9,
+      10,
+      12,
+      15,
+      20,
+      30,
+      50,
+      75,
+      100,
+      150,
+      200,
+      250
+    ],
+    "trials": 100,
+    "seed": 20260727
+  },
+  "definitions": {
+    "live_catch": "first alert while outage still active",
+    "late_only": "first alert only after outage ended (W still holds residue)",
+    "miss": "no alert"
+  },
+  "by_tau": {
+    "0.03": [
+      {
+        "tau": 0.03,
+        "outage_length": 3,
+        "trials": 100,
+        "live_catch_rate": 0.0,
+        "late_only_rate": 0.04,
+        "miss_rate": 0.95,
+        "early_false_rate": 0.01,
+        "mean_delay_live": null,
+        "mean_delay_any": 349.75,
+        "any_alert_rate": 0.04
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 5,
+        "trials": 100,
+        "live_catch_rate": 0.0,
+        "late_only_rate": 0.24,
+        "miss_rate": 0.76,
+        "early_false_rate": 0.0,
+        "mean_delay_live": null,
+        "mean_delay_any": 71.66666666666667,
+        "any_alert_rate": 0.24
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 8,
+        "trials": 100,
+        "live_catch_rate": 0.15,
+        "late_only_rate": 0.7,
+        "miss_rate": 0.14,
+        "early_false_rate": 0.01,
+        "mean_delay_live": 6.333333333333333,
+        "mean_delay_any": 42.78823529411765,
+        "any_alert_rate": 0.85
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 9,
+        "trials": 100,
+        "live_catch_rate": 0.25,
+        "late_only_rate": 0.65,
+        "miss_rate": 0.06,
+        "early_false_rate": 0.04,
+        "mean_delay_live": 7.0,
+        "mean_delay_any": 22.033333333333335,
+        "any_alert_rate": 0.9
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 10,
+        "trials": 100,
+        "live_catch_rate": 0.45,
+        "late_only_rate": 0.52,
+        "miss_rate": 0.01,
+        "early_false_rate": 0.02,
+        "mean_delay_live": 7.911111111111111,
+        "mean_delay_any": 14.22680412371134,
+        "any_alert_rate": 0.97
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 12,
+        "trials": 100,
+        "live_catch_rate": 0.89,
+        "late_only_rate": 0.11,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 9.348314606741573,
+        "mean_delay_any": 9.68,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 15,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 9.2,
+        "mean_delay_any": 9.2,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 20,
+        "trials": 100,
+        "live_catch_rate": 0.99,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.01,
+        "mean_delay_live": 9.505050505050505,
+        "mean_delay_any": 9.505050505050505,
+        "any_alert_rate": 0.99
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 30,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 9.3,
+        "mean_delay_any": 9.3,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 50,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 9.33,
+        "mean_delay_any": 9.33,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 75,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 9.07,
+        "mean_delay_any": 9.07,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 100,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 9.36,
+        "mean_delay_any": 9.36,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 150,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 9.59,
+        "mean_delay_any": 9.59,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 200,
+        "trials": 100,
+        "live_catch_rate": 0.97,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.03,
+        "mean_delay_live": 9.494845360824742,
+        "mean_delay_any": 9.494845360824742,
+        "any_alert_rate": 0.97
+      },
+      {
+        "tau": 0.03,
+        "outage_length": 250,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 9.43,
+        "mean_delay_any": 9.43,
+        "any_alert_rate": 1.0
+      }
+    ],
+    "0.05": [
+      {
+        "tau": 0.05,
+        "outage_length": 3,
+        "trials": 100,
+        "live_catch_rate": 0.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 1.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": null,
+        "mean_delay_any": null,
+        "any_alert_rate": 0.0
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 5,
+        "trials": 100,
+        "live_catch_rate": 0.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 1.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": null,
+        "mean_delay_any": null,
+        "any_alert_rate": 0.0
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 8,
+        "trials": 100,
+        "live_catch_rate": 0.0,
+        "late_only_rate": 0.04,
+        "miss_rate": 0.96,
+        "early_false_rate": 0.0,
+        "mean_delay_live": null,
+        "mean_delay_any": 54.25,
+        "any_alert_rate": 0.04
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 9,
+        "trials": 100,
+        "live_catch_rate": 0.0,
+        "late_only_rate": 0.06,
+        "miss_rate": 0.94,
+        "early_false_rate": 0.0,
+        "mean_delay_live": null,
+        "mean_delay_any": 57.166666666666664,
+        "any_alert_rate": 0.06
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 10,
+        "trials": 100,
+        "live_catch_rate": 0.0,
+        "late_only_rate": 0.12,
+        "miss_rate": 0.88,
+        "early_false_rate": 0.0,
+        "mean_delay_live": null,
+        "mean_delay_any": 84.33333333333333,
+        "any_alert_rate": 0.12
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 12,
+        "trials": 100,
+        "live_catch_rate": 0.03,
+        "late_only_rate": 0.53,
+        "miss_rate": 0.44,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 10.666666666666666,
+        "mean_delay_any": 55.517857142857146,
+        "any_alert_rate": 0.56
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 15,
+        "trials": 100,
+        "live_catch_rate": 0.37,
+        "late_only_rate": 0.62,
+        "miss_rate": 0.01,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 13.162162162162161,
+        "mean_delay_any": 23.737373737373737,
+        "any_alert_rate": 0.99
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 20,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 14.91,
+        "mean_delay_any": 14.91,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 30,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 15.14,
+        "mean_delay_any": 15.14,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 50,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 14.81,
+        "mean_delay_any": 14.81,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 75,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 15.14,
+        "mean_delay_any": 15.14,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 100,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 15.2,
+        "mean_delay_any": 15.2,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 150,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 15.3,
+        "mean_delay_any": 15.3,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 200,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 15.21,
+        "mean_delay_any": 15.21,
+        "any_alert_rate": 1.0
+      },
+      {
+        "tau": 0.05,
+        "outage_length": 250,
+        "trials": 100,
+        "live_catch_rate": 1.0,
+        "late_only_rate": 0.0,
+        "miss_rate": 0.0,
+        "early_false_rate": 0.0,
+        "mean_delay_live": 15.23,
+        "mean_delay_any": 15.23,
+        "any_alert_rate": 1.0
+      }
+    ]
+  },
+  "summary": {
+    "0.03": {
+      "L_star_live_90": 15,
+      "L_star_live_50": 12,
+      "L_star_any_90": 9,
+      "L_star_any_50": 8
+    },
+    "0.05": {
+      "L_star_live_90": 20,
+      "L_star_live_50": 20,
+      "L_star_any_90": 15,
+      "L_star_any_50": 12
+    }
+  },
+  "interpretation": [
+    "Dial confirmation: on the long-outage parent sim, τ trades delay not FAR. This sweep asks when delay exceeds outage lifespan.",
+    "τ=0.03: live_catch ≥90% needs L≥15; ≥50% needs L≥12. Any-alert (incl. late residue in W) ≥90% at L≥9.",
+    "τ=0.05: live_catch ≥90% needs L≥20; ≥50% needs L≥20. Any-alert (incl. late residue in W) ≥90% at L≥15.",
+    "If L*_live ≈ published mean delay (≈9 at τ=0.03, ≈15 at τ=0.05), Mike's cut holds: short-lived outages finish before a live alert. If L*_any ≪ L*_live, window residue still 'hears' the outage after it ends — useful for forensics, not for interrupting a live failure."
+  ]
+}
