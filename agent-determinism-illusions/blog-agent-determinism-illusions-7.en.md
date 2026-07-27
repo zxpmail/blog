@@ -208,6 +208,21 @@ Checksum framing is still the right first bar — it stops agreement-grading. It
 
 What this tightens about the asymmetry claim: **"recurrence buildable today"** is about T1/T2 on burned classes — history-conditioned, **no independence required**. The hold-out probe below only checked the **structural** half of the novelty bar (pass/fail writable without the claim's rationale). It did **not** certify causal independence against shared upstream failure. Domain-shaped scarcity now has two layers: finding a checksum-passing probe, *and* finding one whose input path does not share a common cause with the claim.
 
+### Update (2026-07-27): joint-failure monitor — notice when you didn't have it (Mike)
+
+Mike's next cut after structural≠causal: the practical fix is not a stronger *definition* of independence — it is a **monitor**. Track the joint failure rate of claim and probe over time; treat a correlated-failure spike as its own alert. You cannot certify causal independence up front. You can notice when it turns out you didn't have it.
+
+Offline sim ([`joint-failure-monitor-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/joint-failure-monitor-test.py) → [`joint-failure-monitor.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/joint-failure-monitor.json)): stream of `(claim_fail, probe_fail)`; rolling W=200 **excess** = ĵ − ĉ·p̂; alert if excess ≥ τ for K=3 consecutive windows. Two regimes — pure independence (p_c=0.12, p_p=0.10) vs the same baseline plus scheduled common-cause outage windows (both forced fail; sensor-outage shape). Checksum still only grades structural pass/fail; the monitor never peeks at claim rationale.
+
+| τ | Independent false-alert rate | Common-cause detection | Mean delay after first outage |
+|---|------------------------------|--------------------------|-------------------------------|
+| 0.03 | **2%** | **99%** | **~9** steps |
+| 0.05 | **0%** | **100%** | **~15** steps |
+
+Operating point on this grid: τ=0.03 (FAR≤5% and detection≥90%, then min delay).
+
+**Takeaway:** checksum remains the advance bar for same-channel. Causal independence stays post-hoc — the joint-failure spike *is* the available check. This monitor does not create causal independence; it makes losing it audible.
+
 ### Update (2026-07-23): hold-out experiment — the fork is measurable
 
 Minimal offline test (`novelty-arm-holdout-test.py` → `results-v2/novelty-arm-holdout.json`, frozen with `--holdout DS4`). Hold out **DS4** from the known-reversal registry (31 high-conf MISS runs across models). Three arms on that first-occurrence mass:

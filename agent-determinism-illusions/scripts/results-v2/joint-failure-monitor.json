@@ -1,0 +1,831 @@
+{
+  "experiment": "joint-failure-monitor",
+  "claim": "Rolling joint-failure excess (ĵ − ĉ·p̂) alerts on common-cause spikes that structural checksum cannot certify against upfront",
+  "params": {
+    "T": 5000,
+    "W": 200,
+    "K": 3,
+    "p_c": 0.12,
+    "p_p": 0.1,
+    "outage_episodes": [
+      {
+        "start": 1200,
+        "length": 250
+      },
+      {
+        "start": 3200,
+        "length": 300
+      }
+    ],
+    "taus": [
+      0.01,
+      0.02,
+      0.03,
+      0.05,
+      0.08,
+      0.1
+    ],
+    "trials": 100,
+    "seed": 20260727
+  },
+  "monitor_definition": "excess = rate(claim∧probe fail) − rate(claim fail)·rate(probe fail) over rolling W; alert if excess≥τ for K=3 consecutive windows",
+  "sweep": [
+    {
+      "tau": 0.01,
+      "independent": {
+        "regime": "independent",
+        "tau": 0.01,
+        "trials": 100,
+        "alert_trial_rate": 1.0,
+        "mean_max_excess": 0.020300000000000002,
+        "mean_mean_excess": 0.0002484123620079171
+      },
+      "common_cause": {
+        "regime": "common_cause",
+        "tau": 0.01,
+        "trials": 100,
+        "alert_trial_rate": 1.0,
+        "mean_max_excess": 0.2115895,
+        "mean_mean_excess": 0.02209869870860239,
+        "outage_episodes": [
+          {
+            "start": 1200,
+            "length": 250
+          },
+          {
+            "start": 3200,
+            "length": 300
+          }
+        ],
+        "detection_rate": 0.34,
+        "early_false_before_outage_rate": 0.66,
+        "mean_detection_delay": 4.4411764705882355,
+        "median_detection_delay": 5
+      }
+    },
+    {
+      "tau": 0.02,
+      "independent": {
+        "regime": "independent",
+        "tau": 0.02,
+        "trials": 100,
+        "alert_trial_rate": 0.48,
+        "mean_max_excess": 0.020300000000000002,
+        "mean_mean_excess": 0.0002484123620079171
+      },
+      "common_cause": {
+        "regime": "common_cause",
+        "tau": 0.02,
+        "trials": 100,
+        "alert_trial_rate": 1.0,
+        "mean_max_excess": 0.2115895,
+        "mean_mean_excess": 0.02209869870860239,
+        "outage_episodes": [
+          {
+            "start": 1200,
+            "length": 250
+          },
+          {
+            "start": 3200,
+            "length": 300
+          }
+        ],
+        "detection_rate": 0.87,
+        "early_false_before_outage_rate": 0.13,
+        "mean_detection_delay": 6.758620689655173,
+        "median_detection_delay": 7
+      }
+    },
+    {
+      "tau": 0.03,
+      "independent": {
+        "regime": "independent",
+        "tau": 0.03,
+        "trials": 100,
+        "alert_trial_rate": 0.02,
+        "mean_max_excess": 0.020300000000000002,
+        "mean_mean_excess": 0.0002484123620079171
+      },
+      "common_cause": {
+        "regime": "common_cause",
+        "tau": 0.03,
+        "trials": 100,
+        "alert_trial_rate": 1.0,
+        "mean_max_excess": 0.2115895,
+        "mean_mean_excess": 0.02209869870860239,
+        "outage_episodes": [
+          {
+            "start": 1200,
+            "length": 250
+          },
+          {
+            "start": 3200,
+            "length": 300
+          }
+        ],
+        "detection_rate": 0.99,
+        "early_false_before_outage_rate": 0.01,
+        "mean_detection_delay": 9.363636363636363,
+        "median_detection_delay": 9
+      }
+    },
+    {
+      "tau": 0.05,
+      "independent": {
+        "regime": "independent",
+        "tau": 0.05,
+        "trials": 100,
+        "alert_trial_rate": 0.0,
+        "mean_max_excess": 0.020300000000000002,
+        "mean_mean_excess": 0.0002484123620079171
+      },
+      "common_cause": {
+        "regime": "common_cause",
+        "tau": 0.05,
+        "trials": 100,
+        "alert_trial_rate": 1.0,
+        "mean_max_excess": 0.2115895,
+        "mean_mean_excess": 0.02209869870860239,
+        "outage_episodes": [
+          {
+            "start": 1200,
+            "length": 250
+          },
+          {
+            "start": 3200,
+            "length": 300
+          }
+        ],
+        "detection_rate": 1.0,
+        "early_false_before_outage_rate": 0.0,
+        "mean_detection_delay": 15.01,
+        "median_detection_delay": 15
+      }
+    },
+    {
+      "tau": 0.08,
+      "independent": {
+        "regime": "independent",
+        "tau": 0.08,
+        "trials": 100,
+        "alert_trial_rate": 0.0,
+        "mean_max_excess": 0.020300000000000002,
+        "mean_mean_excess": 0.0002484123620079171
+      },
+      "common_cause": {
+        "regime": "common_cause",
+        "tau": 0.08,
+        "trials": 100,
+        "alert_trial_rate": 1.0,
+        "mean_max_excess": 0.2115895,
+        "mean_mean_excess": 0.02209869870860239,
+        "outage_episodes": [
+          {
+            "start": 1200,
+            "length": 250
+          },
+          {
+            "start": 3200,
+            "length": 300
+          }
+        ],
+        "detection_rate": 1.0,
+        "early_false_before_outage_rate": 0.0,
+        "mean_detection_delay": 24.28,
+        "median_detection_delay": 24
+      }
+    },
+    {
+      "tau": 0.1,
+      "independent": {
+        "regime": "independent",
+        "tau": 0.1,
+        "trials": 100,
+        "alert_trial_rate": 0.0,
+        "mean_max_excess": 0.020300000000000002,
+        "mean_mean_excess": 0.0002484123620079171
+      },
+      "common_cause": {
+        "regime": "common_cause",
+        "tau": 0.1,
+        "trials": 100,
+        "alert_trial_rate": 1.0,
+        "mean_max_excess": 0.2115895,
+        "mean_mean_excess": 0.02209869870860239,
+        "outage_episodes": [
+          {
+            "start": 1200,
+            "length": 250
+          },
+          {
+            "start": 3200,
+            "length": 300
+          }
+        ],
+        "detection_rate": 1.0,
+        "early_false_before_outage_rate": 0.0,
+        "mean_detection_delay": 30.98,
+        "median_detection_delay": 31
+      }
+    }
+  ],
+  "operating_point": {
+    "rule": "FAR≤0.05 and detection≥0.90, then min mean delay",
+    "tau": 0.03,
+    "independent_FAR": 0.02,
+    "detection_rate": 0.99,
+    "mean_detection_delay": 9.363636363636363
+  },
+  "example_series_at_op_tau": {
+    "first_alert_t": 1209,
+    "max_excess": 0.2153,
+    "excess_sample": [
+      {
+        "t_end": 199,
+        "joint": 0.015,
+        "indep_baseline": 0.014,
+        "excess": 0.001
+      },
+      {
+        "t_end": 249,
+        "joint": 0.01,
+        "indep_baseline": 0.0132,
+        "excess": -0.0032
+      },
+      {
+        "t_end": 299,
+        "joint": 0.005,
+        "indep_baseline": 0.0092,
+        "excess": -0.0042
+      },
+      {
+        "t_end": 349,
+        "joint": 0.0,
+        "indep_baseline": 0.0095,
+        "excess": -0.0095
+      },
+      {
+        "t_end": 399,
+        "joint": 0.0,
+        "indep_baseline": 0.007225,
+        "excess": -0.007225
+      },
+      {
+        "t_end": 449,
+        "joint": 0.0,
+        "indep_baseline": 0.0095,
+        "excess": -0.0095
+      },
+      {
+        "t_end": 499,
+        "joint": 0.005,
+        "indep_baseline": 0.01125,
+        "excess": -0.00625
+      },
+      {
+        "t_end": 549,
+        "joint": 0.015,
+        "indep_baseline": 0.0154,
+        "excess": -0.0004
+      },
+      {
+        "t_end": 599,
+        "joint": 0.02,
+        "indep_baseline": 0.01885,
+        "excess": 0.00115
+      },
+      {
+        "t_end": 649,
+        "joint": 0.02,
+        "indep_baseline": 0.0174,
+        "excess": 0.0026
+      },
+      {
+        "t_end": 699,
+        "joint": 0.015,
+        "indep_baseline": 0.01365,
+        "excess": 0.00135
+      },
+      {
+        "t_end": 749,
+        "joint": 0.005,
+        "indep_baseline": 0.00935,
+        "excess": -0.00435
+      },
+      {
+        "t_end": 799,
+        "joint": 0.005,
+        "indep_baseline": 0.00935,
+        "excess": -0.00435
+      },
+      {
+        "t_end": 849,
+        "joint": 0.005,
+        "indep_baseline": 0.0085,
+        "excess": -0.0035
+      },
+      {
+        "t_end": 899,
+        "joint": 0.005,
+        "indep_baseline": 0.00855,
+        "excess": -0.00355
+      },
+      {
+        "t_end": 949,
+        "joint": 0.01,
+        "indep_baseline": 0.011025,
+        "excess": -0.001025
+      },
+      {
+        "t_end": 999,
+        "joint": 0.01,
+        "indep_baseline": 0.01,
+        "excess": -0.0
+      },
+      {
+        "t_end": 1049,
+        "joint": 0.01,
+        "indep_baseline": 0.0095,
+        "excess": 0.0005
+      },
+      {
+        "t_end": 1099,
+        "joint": 0.01,
+        "indep_baseline": 0.009975,
+        "excess": 2.5e-05
+      },
+      {
+        "t_end": 1149,
+        "joint": 0.01,
+        "indep_baseline": 0.0075,
+        "excess": 0.0025
+      },
+      {
+        "t_end": 1199,
+        "joint": 0.01,
+        "indep_baseline": 0.0085,
+        "excess": 0.0015
+      },
+      {
+        "t_end": 1249,
+        "joint": 0.26,
+        "indep_baseline": 0.10395,
+        "excess": 0.15605
+      },
+      {
+        "t_end": 1299,
+        "joint": 0.51,
+        "indep_baseline": 0.30525,
+        "excess": 0.20475
+      },
+      {
+        "t_end": 1349,
+        "joint": 0.755,
+        "indep_baseline": 0.608375,
+        "excess": 0.146625
+      },
+      {
+        "t_end": 1399,
+        "joint": 1.0,
+        "indep_baseline": 1.0,
+        "excess": 0.0
+      },
+      {
+        "t_end": 1449,
+        "joint": 1.0,
+        "indep_baseline": 1.0,
+        "excess": 0.0
+      },
+      {
+        "t_end": 1499,
+        "joint": 0.75,
+        "indep_baseline": 0.58905,
+        "excess": 0.16095
+      },
+      {
+        "t_end": 1549,
+        "joint": 0.5,
+        "indep_baseline": 0.286125,
+        "excess": 0.213875
+      },
+      {
+        "t_end": 1599,
+        "joint": 0.255,
+        "indep_baseline": 0.10695,
+        "excess": 0.14805
+      },
+      {
+        "t_end": 1649,
+        "joint": 0.005,
+        "indep_baseline": 0.013,
+        "excess": -0.008
+      },
+      {
+        "t_end": 1699,
+        "joint": 0.01,
+        "indep_baseline": 0.015225,
+        "excess": -0.005225
+      },
+      {
+        "t_end": 1749,
+        "joint": 0.015,
+        "indep_baseline": 0.0208,
+        "excess": -0.0058
+      },
+      {
+        "t_end": 1799,
+        "joint": 0.03,
+        "indep_baseline": 0.022275,
+        "excess": 0.007725
+      },
+      {
+        "t_end": 1849,
+        "joint": 0.03,
+        "indep_baseline": 0.016275,
+        "excess": 0.013725
+      },
+      {
+        "t_end": 1899,
+        "joint": 0.03,
+        "indep_baseline": 0.01575,
+        "excess": 0.01425
+      },
+      {
+        "t_end": 1949,
+        "joint": 0.025,
+        "indep_baseline": 0.01215,
+        "excess": 0.01285
+      },
+      {
+        "t_end": 1999,
+        "joint": 0.01,
+        "indep_baseline": 0.006825,
+        "excess": 0.003175
+      },
+      {
+        "t_end": 2049,
+        "joint": 0.02,
+        "indep_baseline": 0.009,
+        "excess": 0.011
+      },
+      {
+        "t_end": 2099,
+        "joint": 0.02,
+        "indep_baseline": 0.009975,
+        "excess": 0.010025
+      },
+      {
+        "t_end": 2149,
+        "joint": 0.02,
+        "indep_baseline": 0.011,
+        "excess": 0.009
+      },
+      {
+        "t_end": 2199,
+        "joint": 0.015,
+        "indep_baseline": 0.01125,
+        "excess": 0.00375
+      },
+      {
+        "t_end": 2249,
+        "joint": 0.005,
+        "indep_baseline": 0.0135,
+        "excess": -0.0085
+      },
+      {
+        "t_end": 2299,
+        "joint": 0.0,
+        "indep_baseline": 0.014,
+        "excess": -0.014
+      },
+      {
+        "t_end": 2349,
+        "joint": 0.0,
+        "indep_baseline": 0.0147,
+        "excess": -0.0147
+      },
+      {
+        "t_end": 2399,
+        "joint": 0.0,
+        "indep_baseline": 0.015,
+        "excess": -0.015
+      },
+      {
+        "t_end": 2449,
+        "joint": 0.0,
+        "indep_baseline": 0.009025,
+        "excess": -0.009025
+      },
+      {
+        "t_end": 2499,
+        "joint": 0.0,
+        "indep_baseline": 0.008,
+        "excess": -0.008
+      },
+      {
+        "t_end": 2549,
+        "joint": 0.0,
+        "indep_baseline": 0.007875,
+        "excess": -0.007875
+      },
+      {
+        "t_end": 2599,
+        "joint": 0.0,
+        "indep_baseline": 0.0115,
+        "excess": -0.0115
+      },
+      {
+        "t_end": 2649,
+        "joint": 0.0,
+        "indep_baseline": 0.016875,
+        "excess": -0.016875
+      },
+      {
+        "t_end": 2699,
+        "joint": 0.005,
+        "indep_baseline": 0.0196,
+        "excess": -0.0146
+      },
+      {
+        "t_end": 2749,
+        "joint": 0.005,
+        "indep_baseline": 0.019575,
+        "excess": -0.014575
+      },
+      {
+        "t_end": 2799,
+        "joint": 0.005,
+        "indep_baseline": 0.0133,
+        "excess": -0.0083
+      },
+      {
+        "t_end": 2849,
+        "joint": 0.005,
+        "indep_baseline": 0.01015,
+        "excess": -0.00515
+      },
+      {
+        "t_end": 2899,
+        "joint": 0.01,
+        "indep_baseline": 0.009,
+        "excess": 0.001
+      },
+      {
+        "t_end": 2949,
+        "joint": 0.015,
+        "indep_baseline": 0.0084,
+        "excess": 0.0066
+      },
+      {
+        "t_end": 2999,
+        "joint": 0.02,
+        "indep_baseline": 0.0081,
+        "excess": 0.0119
+      },
+      {
+        "t_end": 3049,
+        "joint": 0.02,
+        "indep_baseline": 0.0072,
+        "excess": 0.0128
+      },
+      {
+        "t_end": 3099,
+        "joint": 0.015,
+        "indep_baseline": 0.007225,
+        "excess": 0.007775
+      },
+      {
+        "t_end": 3149,
+        "joint": 0.015,
+        "indep_baseline": 0.0081,
+        "excess": 0.0069
+      },
+      {
+        "t_end": 3199,
+        "joint": 0.015,
+        "indep_baseline": 0.011025,
+        "excess": 0.003975
+      },
+      {
+        "t_end": 3249,
+        "joint": 0.265,
+        "indep_baseline": 0.112225,
+        "excess": 0.152775
+      },
+      {
+        "t_end": 3299,
+        "joint": 0.51,
+        "indep_baseline": 0.3136,
+        "excess": 0.1964
+      },
+      {
+        "t_end": 3349,
+        "joint": 0.755,
+        "indep_baseline": 0.6084,
+        "excess": 0.1466
+      },
+      {
+        "t_end": 3399,
+        "joint": 1.0,
+        "indep_baseline": 1.0,
+        "excess": 0.0
+      },
+      {
+        "t_end": 3449,
+        "joint": 1.0,
+        "indep_baseline": 1.0,
+        "excess": 0.0
+      },
+      {
+        "t_end": 3499,
+        "joint": 1.0,
+        "indep_baseline": 1.0,
+        "excess": 0.0
+      },
+      {
+        "t_end": 3549,
+        "joint": 0.75,
+        "indep_baseline": 0.58905,
+        "excess": 0.16095
+      },
+      {
+        "t_end": 3599,
+        "joint": 0.5,
+        "indep_baseline": 0.2915,
+        "excess": 0.2085
+      },
+      {
+        "t_end": 3649,
+        "joint": 0.255,
+        "indep_baseline": 0.096,
+        "excess": 0.159
+      },
+      {
+        "t_end": 3699,
+        "joint": 0.005,
+        "indep_baseline": 0.0057,
+        "excess": -0.0007
+      },
+      {
+        "t_end": 3749,
+        "joint": 0.005,
+        "indep_baseline": 0.0072,
+        "excess": -0.0022
+      },
+      {
+        "t_end": 3799,
+        "joint": 0.005,
+        "indep_baseline": 0.0072,
+        "excess": -0.0022
+      },
+      {
+        "t_end": 3849,
+        "joint": 0.0,
+        "indep_baseline": 0.0075,
+        "excess": -0.0075
+      },
+      {
+        "t_end": 3899,
+        "joint": 0.01,
+        "indep_baseline": 0.0091,
+        "excess": 0.0009
+      },
+      {
+        "t_end": 3949,
+        "joint": 0.015,
+        "indep_baseline": 0.013,
+        "excess": 0.002
+      },
+      {
+        "t_end": 3999,
+        "joint": 0.02,
+        "indep_baseline": 0.0175,
+        "excess": 0.0025
+      },
+      {
+        "t_end": 4049,
+        "joint": 0.02,
+        "indep_baseline": 0.0189,
+        "excess": 0.0011
+      },
+      {
+        "t_end": 4099,
+        "joint": 0.015,
+        "indep_baseline": 0.0161,
+        "excess": -0.0011
+      },
+      {
+        "t_end": 4149,
+        "joint": 0.01,
+        "indep_baseline": 0.01105,
+        "excess": -0.00105
+      },
+      {
+        "t_end": 4199,
+        "joint": 0.005,
+        "indep_baseline": 0.0108,
+        "excess": -0.0058
+      },
+      {
+        "t_end": 4249,
+        "joint": 0.005,
+        "indep_baseline": 0.0116,
+        "excess": -0.0066
+      },
+      {
+        "t_end": 4299,
+        "joint": 0.005,
+        "indep_baseline": 0.0116,
+        "excess": -0.0066
+      },
+      {
+        "t_end": 4349,
+        "joint": 0.005,
+        "indep_baseline": 0.01265,
+        "excess": -0.00765
+      },
+      {
+        "t_end": 4399,
+        "joint": 0.015,
+        "indep_baseline": 0.0095,
+        "excess": 0.0055
+      },
+      {
+        "t_end": 4449,
+        "joint": 0.02,
+        "indep_baseline": 0.00935,
+        "excess": 0.01065
+      },
+      {
+        "t_end": 4499,
+        "joint": 0.015,
+        "indep_baseline": 0.01035,
+        "excess": 0.00465
+      },
+      {
+        "t_end": 4549,
+        "joint": 0.015,
+        "indep_baseline": 0.009425,
+        "excess": 0.005575
+      },
+      {
+        "t_end": 4599,
+        "joint": 0.005,
+        "indep_baseline": 0.01125,
+        "excess": -0.00625
+      },
+      {
+        "t_end": 4649,
+        "joint": 0.0,
+        "indep_baseline": 0.0096,
+        "excess": -0.0096
+      },
+      {
+        "t_end": 4699,
+        "joint": 0.01,
+        "indep_baseline": 0.00975,
+        "excess": 0.00025
+      },
+      {
+        "t_end": 4749,
+        "joint": 0.015,
+        "indep_baseline": 0.01035,
+        "excess": 0.00465
+      },
+      {
+        "t_end": 4799,
+        "joint": 0.015,
+        "indep_baseline": 0.0108,
+        "excess": 0.0042
+      },
+      {
+        "t_end": 4849,
+        "joint": 0.02,
+        "indep_baseline": 0.0117,
+        "excess": 0.0083
+      },
+      {
+        "t_end": 4899,
+        "joint": 0.01,
+        "indep_baseline": 0.0096,
+        "excess": 0.0004
+      },
+      {
+        "t_end": 4949,
+        "joint": 0.005,
+        "indep_baseline": 0.008125,
+        "excess": -0.003125
+      },
+      {
+        "t_end": 4999,
+        "joint": 0.005,
+        "indep_baseline": 0.008775,
+        "excess": -0.003775
+      }
+    ]
+  },
+  "interpretation": [
+    "SUPPORT: at τ=0.03, independent FAR=0.020 while common-cause detection=0.990 (mean delay 9.363636363636363 steps after first outage onset). Joint-failure excess is an actionable post-hoc alert for lost causal independence — without requiring an upfront certificate.",
+    "Checksum still only buys structural independence. This monitor does not create causal independence — it notices when joint failures exceed the ĉ·p̂ baseline."
+  ]
+}

@@ -193,6 +193,21 @@ Checksum 仍是正确的第一道门槛——拦住「打一致性分」。它**
 
 这收紧了不对称主张：**「复发今天可建」**说的是已烧过类上的 T1/T2——依赖历史，**不要求独立性**。下面的 hold-out probe 只测了新奇门槛的**结构**半边（可不引用主张说理写出过/不过）。它**没有**对共享上游失效做因果独立背书。领域稀缺现在有两层：找到过 checksum 的 probe，*以及*找到输入路径不与主张共因的那一个。
 
+### Update (2026-07-27)：联合失败监视——发现你其实没有因果独立（Mike）
+
+Mike 在结构≠因果之后的下一刀：实践修法不是更强的独立性*定义*——是**监视器**。跟踪主张与 probe 的联合失败率；把相关失败尖峰当成独立告警。因果独立无法事先认证；可以事后发现原来没有。
+
+离线仿真（[`joint-failure-monitor-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/joint-failure-monitor-test.py) → [`joint-failure-monitor.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/joint-failure-monitor.json)）：`(claim_fail, probe_fail)` 流；滚动窗 W=200 **excess** = ĵ − ĉ·p̂；excess ≥ τ 连续 K=3 窗则告警。两体制——纯独立（p_c=0.12, p_p=0.10）vs 同基线加日程化共因停电窗（双强制失败；传感器中断形）。Checksum 仍只打结构过/不过；监视器从不看主张说理。
+
+| τ | 独立体制误报率 | 共因检出率 | 首次停电后平均延迟 |
+|---|---------------|------------|-------------------|
+| 0.03 | **2%** | **99%** | **~9** 步 |
+| 0.05 | **0%** | **100%** | **~15** 步 |
+
+本网格工作点：τ=0.03（FAR≤5% 且检出≥90%，再取最小延迟）。
+
+**结论：** checksum 仍是同信道的事先门槛。因果独立仍是事后量——联合失败尖峰*就是*可跑的检查。监视器不制造因果独立；它让丢掉因果独立变得可听见。
+
 ### Update (2026-07-23)：hold-out 实验——分叉可测
 
 最小离线实验（`novelty-arm-holdout-test.py` → `results-v2/novelty-arm-holdout.json`，冻结为 `--holdout DS4`）。从已知反转登记里 **hold-out DS4**（跨模型 31 次高置信 MISS）。三臂打这批「首次」质量：
