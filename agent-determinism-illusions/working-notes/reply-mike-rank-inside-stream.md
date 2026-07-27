@@ -2,9 +2,9 @@
 
 Post: https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f  
 Parent: Mike on floor-volume / rank-inside-stream (`#comment-3c0cm`)  
-Publish plan: post this **today**; swap in Part 15 DEV.to URL **tomorrow** after the article goes live.
+Publish plan: post the short ack **today or with Part 15**; Part 15 → DEV.to **2026-07-28**; then swap live URL into the Mike thread + sync Part 6/7 Updates on DEV.to.
 
-Also sync Part 6/7 Updates on DEV.to when Part 15 is live (local drafts already point at `blog-agent-determinism-illusions-15.*.md`).
+Also sync Part 6/7 Updates on DEV.to when Part 15 is live (repo pointers already use GitHub draft URLs).
 
 ---
 

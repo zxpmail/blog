@@ -351,7 +351,7 @@ Alexey Spinov 对本篇的跟评拧的是另一颗旋钮：不是高自信区*�
 
 ### Update (2026-07-27)：进队之后——谁被看见（指针）
 
-本线程里 Alexey 后续网格（floor volume、arrival vs 精度序）与 Mike 的 reframe（开放问题是 rank-inside-stream）落在第 7 篇进队策略**之后**。**[第 15 篇](blog-agent-determinism-illusions-15.zh.md)**（《D+T2 只决定谁进门；预算决定谁被看见》——本地草稿）承载离线套件：稀释队列验收、特征×时间压力、Trigger∥Rank / Shadow∥Enforce。编号跳到 15，是为了不挪动第 8–14 篇的其他弧；本论证线的发布顺序是 7 → 15。
+本线程里 Alexey 后续网格（floor volume、arrival vs 精度序）与 Mike 的 reframe（开放问题是 rank-inside-stream）落在第 7 篇进队策略**之后**。**[第 15 篇](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent-determinism-illusions-15.zh.md)**（《D+T2 只决定谁进门；预算决定谁被看见》——仓库草稿；DEV.to 上线后换正式 URL）承载离线套件：稀释队列验收、特征×时间压力、Trigger∥Rank / Shadow∥Enforce。编号跳到 15，是为了不挪动第 8–14 篇的其他弧；本论证线的发布顺序是 7 → 15。Mike 同线程后续收口：三件套（进队 / 预算 / 可降级排序）比上游争哪条流更干净。
 
 ---
 

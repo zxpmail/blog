@@ -324,10 +324,10 @@ Xiao Man 在 P1→P4 悬崖与「过规格 = 浪费不是安全」之后追问�
 
 ### Update (2026-07-27)：谁进门 ≠ 谁被看见（指针）
 
-第 6 篇线程里 Alexey/Mike 把问题从 tripwire 选择推到 floor volume 与硬预算下的 rank-inside-stream。那是 D+T2 之后的下一控制面——不是又一个 novelty 臂 prompt。离线套件 + 双线运维形态：**[第 15 篇](blog-agent-determinism-illusions-15.zh.md)**（《D+T2 只决定谁进门；预算决定谁被看见》）。编号跳到 15，为保住第 8–14 篇其他弧；本论证线发布顺序是 7 → 15。
+第 6 篇线程里 Alexey/Mike 把问题从 tripwire 选择推到 floor volume 与硬预算下的 rank-inside-stream。那是 D+T2 之后的下一控制面——不是又一个 novelty 臂 prompt。离线套件 + 双线运维形态：**[第 15 篇](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent-determinism-illusions-15.zh.md)**（《D+T2 只决定谁进门；预算决定谁被看见》——仓库草稿）。编号跳到 15，为保住第 8–14 篇其他弧；本论证线发布顺序是 7 → 15。
 
 ---
 
 **系列：** Agent Determinism Illusions · 脚本：[GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
 **上一篇：** [第 6 篇](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
-**本弧下一篇：** [第 15 篇 — D+T2 只决定谁进门；预算决定谁被看见](blog-agent-determinism-illusions-15.zh.md)
+**本弧下一篇：** [第 15 篇 — D+T2 只决定谁进门；预算决定谁被看见](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent-determinism-illusions-15.zh.md)

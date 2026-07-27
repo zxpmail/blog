@@ -339,10 +339,10 @@ Part 6 was right to stop majority-voting splits into a false consensus. It was w
 
 ### Update (2026-07-27): who enters ≠ who gets seen (pointer)
 
-Alexey/Mike on the Part 6 thread pushed past tripwire choice to floor volume and rank-inside-stream under a hard human budget. That is the next control plane after D+T2 — not another novelty-arm prompt. Offline suite + dual-line ops shape: **[Part 15](blog-agent-determinism-illusions-15.en.md)** (*D+T2 names who enters; budget names who gets seen*). Numbering skips to 15 so Parts 8–14 keep other arcs; argument publish order is 7 → 15.
+Alexey/Mike on the Part 6 thread pushed past tripwire choice to floor volume and rank-inside-stream under a hard human budget. That is the next control plane after D+T2 — not another novelty-arm prompt. Offline suite + dual-line ops shape: **[Part 15](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent-determinism-illusions-15.en.md)** (*D+T2 names who enters; budget names who gets seen* — repo draft). Numbering skips to 15 so Parts 8–14 keep other arcs; argument publish order is 7 → 15.
 
 ---
 
 **Series:** Agent Determinism Illusions · Scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
 **Previous:** [Part 6 — Five comments that redesigned my LLM verification pipeline](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
-**Next (this arc):** [Part 15 — D+T2 names who enters; budget names who gets seen](blog-agent-determinism-illusions-15.en.md)
+**Next (this arc):** [Part 15 — D+T2 names who enters; budget names who gets seen](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent-determinism-illusions-15.en.md)

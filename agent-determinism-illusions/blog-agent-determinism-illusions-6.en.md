@@ -411,7 +411,7 @@ Alexey Spinov's follow-up on this post pushes a different knob than Mike's: not 
 
 ### Update (2026-07-27): after who enters — who gets seen (pointer)
 
-Alexey's later grid on this thread (floor volume, arrival vs precision order) and Mike's reframe (rank-inside-stream is the open problem) sit *after* Part 7's entry policy. **[Part 15](blog-agent-determinism-illusions-15.en.md)** (*D+T2 names who enters; budget names who gets seen* — local draft) holds the offline suite: diluted-queue acceptance, feature×time stress, Trigger∥Rank / Shadow∥Enforce. Numbering jumps to 15 so Parts 8–14 keep their other arcs; publish order on this argument line is 7 → 15.
+Alexey's later grid on this thread (floor volume, arrival vs precision order) and Mike's reframe (rank-inside-stream is the open problem) sit *after* Part 7's entry policy. **[Part 15](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent-determinism-illusions-15.en.md)** (*D+T2 names who enters; budget names who gets seen* — repo draft; DEV.to URL after publish) holds the offline suite: diluted-queue acceptance, feature×time stress, Trigger∥Rank / Shadow∥Enforce. Numbering jumps to 15 so Parts 8–14 keep their other arcs; publish order on this argument line is 7 → 15. Mike's later cut on the same thread: the three-part split (entry / budget / degradable rank) is the cleaner landing.
 
 ---
 
