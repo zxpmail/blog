@@ -383,7 +383,26 @@ Three offline arms on the same coupled-Uniform unique-catch definition (burst/me
 2. **Co-occurrence labels** ([`unique-catch-cooccur-labels-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/unique-catch-cooccur-labels-test.py)): each defective draws a latent class → signature fires at `p_sig=0.90`. Under `mike_half` (π(`route_cd`)=0.5), middle **does** flip (`route > barely`; stable at N=2000). Extremes still hold. Result: [`unique-catch-cooccur-labels.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/unique-catch-cooccur-labels.json).
 3. **Dose** ([`unique-catch-cooccur-dose-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/unique-catch-cooccur-dose-test.py)): π*(`route_cd`)≈**0.50** (anti-flicker). Single-class doses of `barely_route` / `cd_barely` never flip middle. At π(`route_cd`)=1 extremes also break (route overtakes CD) — only under that extreme. Result: [`unique-catch-cooccur-dose.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/unique-catch-cooccur-dose.json).
 
-**Prune takeaway:** drop `input_unusual` first / keep CD last survives these sims; **do not lock** `barely` vs `route` without an estimate of real co-occurrence-label mass on route∧CD. π here is invented — a production trace's labels remain the lock condition.
+**Prune takeaway:** drop `input_unusual` first / keep CD last survives these sims; **do not lock** `barely` vs `route` without an estimate of real co-occurrence-label mass on route∧CD. π here is invented — a production trace's labels remain the lock condition. Cheaper gate before rerunning: [defect-class concentration histogram](#defect-class-concentration-mike).
+
+<a id="defect-class-concentration-mike"></a>
+
+### Update (2026-07-27): π as class concentration — histogram before rerunning (Mike)
+
+Mike's follow-up on the hair-flip: pair-force not moving order, and label-concentration moving it a hair, is more informative than a clean flip — it locates the mechanism. Forcing two signals to co-fire still leaves each defective independently labeled; from CD's seat a co-forced row looks like any other catch. The generative version changes *what the defective is* (a class whose signature is route∧CD), not just how signals respond.
+
+That makes π(`route_cd`) a real-world question: what fraction of the defect population is one class where route and CD are both diagnostic of the same cause. π*≈0.50 flips middle; π=1 breaks ends — fragile in a **narrow high-concentration** regime. Cheaper next step: histogram how concentrated actual defect classes are before rerunning the fixture.
+
+Offline gate on the taxonomy this repo already has ([`defect-class-concentration-histogram.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/defect-class-concentration-histogram.py) → [`defect-class-concentration-histogram.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/defect-class-concentration-histogram.json)): DF v2 MISS runs (N=96), **not** generative `route_cd` labels on the sampling sim (caveat load-bearing).
+
+| Taxonomy | Max share | vs π*=0.50 fragile band |
+|----------|-----------|-------------------------|
+| `scenario_id` | DS4 **34.4%** (HHI=0.18) | **below** |
+| `model\|scenario` | **15.6%** | below |
+| `model` | qwen **80.2%** | different axis (already on-page; not π_route_cd) |
+
+**Takeaway:** on this available miss taxonomy, concentration alone does not put you in the dose flip regime. Middle prune still isn't locked for a real external-signal / production trace where the class *is* “route and CD same cause” — but the gate is cheap: histogram first; only rerun if a dominant class sits near ~0.5+. Prior co-occur Update above.
+
 ### Update (2026-07-22): escalation tripwire ≠ audit weighting — next part
 
 Alexey Spinov's follow-up on this post pushes a different knob than Mike's: not *how often* to audit the high-confidence region, but *whether unanimous L2 votes should auto-execute at all* when the failure mode is correlated. That incompleteness in the Part 6 diagram is real — divergence-only escalation is not enough for the failure mode DF v2 already measured.

@@ -1,0 +1,200 @@
+{
+  "experiment": "defect-class-concentration-histogram",
+  "claim": "Histogram available defect-class concentration and compare to unique-catch dose π*≈0.50 fragile middle band (Mike cheaper step)",
+  "pi_star_middle": 0.5,
+  "pi_extreme_ends": 1.0,
+  "source": "DF v2 MISS runs from results-v2/*.jsonl",
+  "caveat": "scenario_id/model ≠ generative route_cd co-occurrence class on the sampling fixture",
+  "by_scenario_id": {
+    "n": 96,
+    "n_classes": 13,
+    "max_class": "DS4",
+    "max_share": 0.34375,
+    "hhi": 0.181207,
+    "in_fragile_middle_band": false,
+    "in_extreme_ends_band": false,
+    "top": [
+      {
+        "id": "DS4",
+        "n": 33,
+        "share": 0.34375
+      },
+      {
+        "id": "DS9",
+        "n": 15,
+        "share": 0.15625
+      },
+      {
+        "id": "DS5",
+        "n": 13,
+        "share": 0.135417
+      },
+      {
+        "id": "DS6",
+        "n": 8,
+        "share": 0.083333
+      },
+      {
+        "id": "DS7",
+        "n": 8,
+        "share": 0.083333
+      },
+      {
+        "id": "DF6",
+        "n": 5,
+        "share": 0.052083
+      },
+      {
+        "id": "DF1",
+        "n": 3,
+        "share": 0.03125
+      },
+      {
+        "id": "DS1",
+        "n": 3,
+        "share": 0.03125
+      },
+      {
+        "id": "DS10",
+        "n": 3,
+        "share": 0.03125
+      },
+      {
+        "id": "DF5",
+        "n": 2,
+        "share": 0.020833
+      }
+    ],
+    "all_shares": {
+      "DS4": 0.34375,
+      "DS9": 0.15625,
+      "DS5": 0.135417,
+      "DS6": 0.083333,
+      "DS7": 0.083333,
+      "DF6": 0.052083,
+      "DF1": 0.03125,
+      "DS1": 0.03125,
+      "DS10": 0.03125,
+      "DF5": 0.020833,
+      "DF4": 0.010417,
+      "DS3": 0.010417,
+      "DS8": 0.010417
+    }
+  },
+  "by_model": {
+    "n": 96,
+    "n_classes": 3,
+    "max_class": "qwen3-0-5b",
+    "max_share": 0.802083,
+    "hhi": 0.672092,
+    "in_fragile_middle_band": true,
+    "in_extreme_ends_band": false,
+    "top": [
+      {
+        "id": "qwen3-0-5b",
+        "n": 77,
+        "share": 0.802083
+      },
+      {
+        "id": "gemma3-latest",
+        "n": 16,
+        "share": 0.166667
+      },
+      {
+        "id": "deepseek-v4-flash",
+        "n": 3,
+        "share": 0.03125
+      }
+    ],
+    "all_shares": {
+      "qwen3-0-5b": 0.802083,
+      "gemma3-latest": 0.166667,
+      "deepseek-v4-flash": 0.03125
+    }
+  },
+  "by_model_scenario": {
+    "n": 96,
+    "n_classes": 16,
+    "max_class": "qwen3-0-5b|DS4",
+    "max_share": 0.15625,
+    "hhi": 0.112413,
+    "in_fragile_middle_band": false,
+    "in_extreme_ends_band": false,
+    "top": [
+      {
+        "id": "qwen3-0-5b|DS4",
+        "n": 15,
+        "share": 0.15625
+      },
+      {
+        "id": "qwen3-0-5b|DS9",
+        "n": 15,
+        "share": 0.15625
+      },
+      {
+        "id": "gemma3-latest|DS4",
+        "n": 15,
+        "share": 0.15625
+      },
+      {
+        "id": "qwen3-0-5b|DS5",
+        "n": 13,
+        "share": 0.135417
+      },
+      {
+        "id": "qwen3-0-5b|DS6",
+        "n": 8,
+        "share": 0.083333
+      },
+      {
+        "id": "qwen3-0-5b|DS7",
+        "n": 8,
+        "share": 0.083333
+      },
+      {
+        "id": "qwen3-0-5b|DF6",
+        "n": 5,
+        "share": 0.052083
+      },
+      {
+        "id": "qwen3-0-5b|DF1",
+        "n": 3,
+        "share": 0.03125
+      },
+      {
+        "id": "qwen3-0-5b|DS1",
+        "n": 3,
+        "share": 0.03125
+      },
+      {
+        "id": "deepseek-v4-flash|DS4",
+        "n": 3,
+        "share": 0.03125
+      }
+    ],
+    "all_shares": {
+      "qwen3-0-5b|DS4": 0.15625,
+      "qwen3-0-5b|DS9": 0.15625,
+      "gemma3-latest|DS4": 0.15625,
+      "qwen3-0-5b|DS5": 0.135417,
+      "qwen3-0-5b|DS6": 0.083333,
+      "qwen3-0-5b|DS7": 0.083333,
+      "qwen3-0-5b|DF6": 0.052083,
+      "qwen3-0-5b|DF1": 0.03125,
+      "qwen3-0-5b|DS1": 0.03125,
+      "deepseek-v4-flash|DS4": 0.03125,
+      "qwen3-0-5b|DF5": 0.020833,
+      "qwen3-0-5b|DS10": 0.020833,
+      "qwen3-0-5b|DF4": 0.010417,
+      "qwen3-0-5b|DS3": 0.010417,
+      "qwen3-0-5b|DS8": 0.010417,
+      "gemma3-latest|DS10": 0.010417
+    }
+  },
+  "interpretation": [
+    "Taxonomy here = DF v2 MISS runs (scenario / model), not route_cd labels on the external-signal sim — cheap histogram gate Mike asked for.",
+    "By scenario_id: max_share=0.344 (DS4) — BELOW π*=0.50 fragile band; on this proxy, concentration alone does not put you in the dose flip regime.",
+    "By model: max_share=0.802 (qwen3-0-5b) — model concentration is a different axis (already reported on Part 6); not π_route_cd.",
+    "Next real lock still needs a histogram where the class *is* 'route and CD diagnostic of the same cause' on a production / external-signal trace — this run only clears the cheaper gate on available miss taxonomy."
+  ]
+}

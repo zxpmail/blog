@@ -323,7 +323,26 @@ Mike 在独有捞获列之后的跟进：3×3（分布 × 信号质量）独立�
 2. **共现标签**（[`unique-catch-cooccur-labels-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/unique-catch-cooccur-labels-test.py)）：每个缺陷抽潜在类 → 签名以 `p_sig=0.90` 点火。`mike_half`（π(`route_cd`)=0.5）下中段**翻了**（`route > barely`；N=2000 仍稳）。两端仍持。结果：[`unique-catch-cooccur-labels.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/unique-catch-cooccur-labels.json)。
 3. **剂量**（[`unique-catch-cooccur-dose-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/unique-catch-cooccur-dose-test.py)）：π*(`route_cd`)≈**0.50**（防闪烁）。`barely_route` / `cd_barely` 单类剂量从不翻中段。π(`route_cd`)=1 时两端也会破（route 压过 CD）——只在这种极端。结果：[`unique-catch-cooccur-dose.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/unique-catch-cooccur-dose.json)。
 
-**裁剪结论：** 先砍 `input_unusual` / 最后留 CD，在这些仿真里站得住；**不要锁** `barely` vs `route`，除非有真实共现标签里 route∧CD 的质量估计。此处 π 是编的——生产 trace 的标签才是上锁条件。
+**裁剪结论：** 先砍 `input_unusual` / 最后留 CD，在这些仿真里站得住；**不要锁** `barely` vs `route`，除非有真实共现标签里 route∧CD 的质量估计。此处 π 是编的——生产 trace 的标签才是上锁条件。重跑 fixture 前的便宜门禁：[缺陷类浓度直方图](#defect-class-concentration-mike)。
+
+<a id="defect-class-concentration-mike"></a>
+
+### Update (2026-07-27)：π 即类浓度——先直方图再重跑（Mike）
+
+Mike 对「轻微翻转」的跟进：pair-force 不动序、标签浓度只动一根毛，比干净翻盘更有信息——它定位了机制。强制两信号共火时，每个缺陷仍是独立标注的；在 CD 看来，共火行和其他捞获没区别。生成式版本改的是*缺陷是什么*（签名为 route∧CD 的类），不只是信号怎么响应。
+
+于是 π(`route_cd`) 成了现实问题：缺陷总体里，有多大比例是「route 与 CD 同诊同一因」的一类。π*≈0.50 翻中段；π=1 破两端——只在**窄的高浓度**体制脆弱。更便宜的下一步：重跑 fixture 前，先直方图真实缺陷类有多集中。
+
+对本仓已有分类做离线门禁（[`defect-class-concentration-histogram.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/defect-class-concentration-histogram.py) → [`defect-class-concentration-histogram.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/defect-class-concentration-histogram.json)）：DF v2 MISS（N=96），**不是**采样仿真上的生成式 `route_cd` 标签（caveat 承重）。
+
+| 分类轴 | 最大份额 | vs π*=0.50 脆弱带 |
+|--------|----------|-------------------|
+| `scenario_id` | DS4 **34.4%**（HHI=0.18） | **低于** |
+| `model\|scenario` | **15.6%** | 低于 |
+| `model` | qwen **80.2%** | 另一轴（正文已写；不是 π_route_cd） |
+
+**结论：** 在这份可用 miss 分类上，单靠浓度进不了剂量翻转带。真实外部信号 / 生产 trace 上若类就是「route 与 CD 同因」，中段仍不能锁——但门禁便宜：先直方图；只有主导类靠近 ~0.5+ 再重跑。上一则共现 Update 见上。
+
 ### Update (2026-07-22)：升级 tripwire ≠ 审计加权——系列下篇
 
 Alexey Spinov 对本篇的跟评拧的是另一颗旋钮：不是高自信区*审计多勤*，而是当失败模式相关时，L2 **全票**是否还该自动执行。第 6 篇管线图缺这层，是真缺——只靠分歧升级，对不上 DF v2 已测到的失败模式。
