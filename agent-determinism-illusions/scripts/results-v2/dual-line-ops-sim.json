@@ -1,0 +1,852 @@
+{
+  "claim": "Dual-line ops: Trigger∥Rank knobs under budget; Shadow∥Enforce with fail-closed fallback.",
+  "dilution": 0.35,
+  "budgets": [
+    0.02,
+    0.05
+  ],
+  "factorial": [
+    {
+      "holdout": "stratified",
+      "n_train": 408,
+      "n_test": 177,
+      "n_miss_test": 29,
+      "diluted_n": 83,
+      "diluted_miss_rate": 0.3493975903614458,
+      "cells": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "D",
+          "ranker": "arrival",
+          "queue_n": 1,
+          "queue_miss": 1,
+          "caught": 1,
+          "oracle": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "D",
+          "ranker": "R_hist",
+          "queue_n": 1,
+          "queue_miss": 1,
+          "caught": 1,
+          "oracle": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "D",
+          "ranker": "conf_desc",
+          "queue_n": 1,
+          "queue_miss": 1,
+          "caught": 1,
+          "oracle": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "class",
+          "ranker": "arrival",
+          "queue_n": 164,
+          "queue_miss": 29,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": false
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "class",
+          "ranker": "R_hist",
+          "queue_n": 164,
+          "queue_miss": 29,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "class",
+          "ranker": "conf_desc",
+          "queue_n": 164,
+          "queue_miss": 29,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "T2",
+          "ranker": "arrival",
+          "queue_n": 28,
+          "queue_miss": 28,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": false
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "T2",
+          "ranker": "R_hist",
+          "queue_n": 28,
+          "queue_miss": 28,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "T2",
+          "ranker": "conf_desc",
+          "queue_n": 28,
+          "queue_miss": 28,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "D+T2",
+          "ranker": "arrival",
+          "queue_n": 29,
+          "queue_miss": 29,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": false
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "D+T2",
+          "ranker": "R_hist",
+          "queue_n": 29,
+          "queue_miss": 29,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "D+T2",
+          "ranker": "conf_desc",
+          "queue_n": 29,
+          "queue_miss": 29,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "diluted",
+          "ranker": "arrival",
+          "queue_n": 83,
+          "queue_miss": 29,
+          "caught": 0,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "diluted",
+          "ranker": "R_hist",
+          "queue_n": 83,
+          "queue_miss": 29,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "diluted",
+          "ranker": "conf_desc",
+          "queue_n": 83,
+          "queue_miss": 29,
+          "caught": 0,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "D",
+          "ranker": "arrival",
+          "queue_n": 1,
+          "queue_miss": 1,
+          "caught": 1,
+          "oracle": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "D",
+          "ranker": "R_hist",
+          "queue_n": 1,
+          "queue_miss": 1,
+          "caught": 1,
+          "oracle": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "D",
+          "ranker": "conf_desc",
+          "queue_n": 1,
+          "queue_miss": 1,
+          "caught": 1,
+          "oracle": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "class",
+          "ranker": "arrival",
+          "queue_n": 164,
+          "queue_miss": 29,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "class",
+          "ranker": "R_hist",
+          "queue_n": 164,
+          "queue_miss": 29,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "class",
+          "ranker": "conf_desc",
+          "queue_n": 164,
+          "queue_miss": 29,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "T2",
+          "ranker": "arrival",
+          "queue_n": 28,
+          "queue_miss": 28,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "T2",
+          "ranker": "R_hist",
+          "queue_n": 28,
+          "queue_miss": 28,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "T2",
+          "ranker": "conf_desc",
+          "queue_n": 28,
+          "queue_miss": 28,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "D+T2",
+          "ranker": "arrival",
+          "queue_n": 29,
+          "queue_miss": 29,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "D+T2",
+          "ranker": "R_hist",
+          "queue_n": 29,
+          "queue_miss": 29,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "D+T2",
+          "ranker": "conf_desc",
+          "queue_n": 29,
+          "queue_miss": 29,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "diluted",
+          "ranker": "arrival",
+          "queue_n": 83,
+          "queue_miss": 29,
+          "caught": 0,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "diluted",
+          "ranker": "R_hist",
+          "queue_n": 83,
+          "queue_miss": 29,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "diluted",
+          "ranker": "conf_desc",
+          "queue_n": 83,
+          "queue_miss": 29,
+          "caught": 0,
+          "oracle": 8,
+          "headroom": true
+        }
+      ],
+      "readouts": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "best_trigger_only": {
+            "stream": "class",
+            "caught": 3
+          },
+          "best_rank_only_on_diluted": {
+            "ranker": "R_hist",
+            "caught": 3
+          },
+          "diluted_arrival": 0,
+          "diluted_R_hist": 3,
+          "rank_lift_on_fixed_diluted": 3,
+          "trigger_lift_vs_diluted_arrival": 3,
+          "rank_knob_wins": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "best_trigger_only": {
+            "stream": "class",
+            "caught": 8
+          },
+          "best_rank_only_on_diluted": {
+            "ranker": "R_hist",
+            "caught": 8
+          },
+          "diluted_arrival": 0,
+          "diluted_R_hist": 8,
+          "rank_lift_on_fixed_diluted": 8,
+          "trigger_lift_vs_diluted_arrival": 8,
+          "rank_knob_wins": true
+        }
+      ]
+    },
+    {
+      "holdout": "within_model_temporal",
+      "n_train": 409,
+      "n_test": 176,
+      "n_miss_test": 27,
+      "diluted_n": 77,
+      "diluted_miss_rate": 0.35064935064935066,
+      "cells": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "D",
+          "ranker": "arrival",
+          "queue_n": 94,
+          "queue_miss": 1,
+          "caught": 0,
+          "oracle": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "D",
+          "ranker": "R_hist",
+          "queue_n": 94,
+          "queue_miss": 1,
+          "caught": 0,
+          "oracle": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "D",
+          "ranker": "conf_desc",
+          "queue_n": 94,
+          "queue_miss": 1,
+          "caught": 0,
+          "oracle": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "class",
+          "ranker": "arrival",
+          "queue_n": 176,
+          "queue_miss": 27,
+          "caught": 2,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "class",
+          "ranker": "R_hist",
+          "queue_n": 176,
+          "queue_miss": 27,
+          "caught": 0,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "class",
+          "ranker": "conf_desc",
+          "queue_n": 176,
+          "queue_miss": 27,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "T2",
+          "ranker": "arrival",
+          "queue_n": 26,
+          "queue_miss": 26,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": false
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "T2",
+          "ranker": "R_hist",
+          "queue_n": 26,
+          "queue_miss": 26,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "T2",
+          "ranker": "conf_desc",
+          "queue_n": 26,
+          "queue_miss": 26,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "D+T2",
+          "ranker": "arrival",
+          "queue_n": 120,
+          "queue_miss": 27,
+          "caught": 2,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "D+T2",
+          "ranker": "R_hist",
+          "queue_n": 120,
+          "queue_miss": 27,
+          "caught": 0,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "D+T2",
+          "ranker": "conf_desc",
+          "queue_n": 120,
+          "queue_miss": 27,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "diluted",
+          "ranker": "arrival",
+          "queue_n": 77,
+          "queue_miss": 27,
+          "caught": 0,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "diluted",
+          "ranker": "R_hist",
+          "queue_n": 77,
+          "queue_miss": 27,
+          "caught": 0,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.02,
+          "k": 3,
+          "stream": "diluted",
+          "ranker": "conf_desc",
+          "queue_n": 77,
+          "queue_miss": 27,
+          "caught": 3,
+          "oracle": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "D",
+          "ranker": "arrival",
+          "queue_n": 94,
+          "queue_miss": 1,
+          "caught": 0,
+          "oracle": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "D",
+          "ranker": "R_hist",
+          "queue_n": 94,
+          "queue_miss": 1,
+          "caught": 0,
+          "oracle": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "D",
+          "ranker": "conf_desc",
+          "queue_n": 94,
+          "queue_miss": 1,
+          "caught": 0,
+          "oracle": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "class",
+          "ranker": "arrival",
+          "queue_n": 176,
+          "queue_miss": 27,
+          "caught": 4,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "class",
+          "ranker": "R_hist",
+          "queue_n": 176,
+          "queue_miss": 27,
+          "caught": 0,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "class",
+          "ranker": "conf_desc",
+          "queue_n": 176,
+          "queue_miss": 27,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "T2",
+          "ranker": "arrival",
+          "queue_n": 26,
+          "queue_miss": 26,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "T2",
+          "ranker": "R_hist",
+          "queue_n": 26,
+          "queue_miss": 26,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "T2",
+          "ranker": "conf_desc",
+          "queue_n": 26,
+          "queue_miss": 26,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "D+T2",
+          "ranker": "arrival",
+          "queue_n": 120,
+          "queue_miss": 27,
+          "caught": 4,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "D+T2",
+          "ranker": "R_hist",
+          "queue_n": 120,
+          "queue_miss": 27,
+          "caught": 0,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "D+T2",
+          "ranker": "conf_desc",
+          "queue_n": 120,
+          "queue_miss": 27,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "diluted",
+          "ranker": "arrival",
+          "queue_n": 77,
+          "queue_miss": 27,
+          "caught": 0,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "diluted",
+          "ranker": "R_hist",
+          "queue_n": 77,
+          "queue_miss": 27,
+          "caught": 0,
+          "oracle": 8,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "stream": "diluted",
+          "ranker": "conf_desc",
+          "queue_n": 77,
+          "queue_miss": 27,
+          "caught": 8,
+          "oracle": 8,
+          "headroom": true
+        }
+      ],
+      "readouts": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "best_trigger_only": {
+            "stream": "T2",
+            "caught": 3
+          },
+          "best_rank_only_on_diluted": {
+            "ranker": "conf_desc",
+            "caught": 3
+          },
+          "diluted_arrival": 0,
+          "diluted_R_hist": 0,
+          "rank_lift_on_fixed_diluted": 0,
+          "trigger_lift_vs_diluted_arrival": 3,
+          "rank_knob_wins": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "best_trigger_only": {
+            "stream": "T2",
+            "caught": 8
+          },
+          "best_rank_only_on_diluted": {
+            "ranker": "conf_desc",
+            "caught": 8
+          },
+          "diluted_arrival": 0,
+          "diluted_R_hist": 0,
+          "rank_lift_on_fixed_diluted": 0,
+          "trigger_lift_vs_diluted_arrival": 8,
+          "rank_knob_wins": false
+        }
+      ]
+    }
+  ],
+  "shadow_enforce": [
+    {
+      "holdout": "stratified",
+      "n_test": 177,
+      "n_miss_test": 29,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "enforce_arrival": 0,
+          "shadow_R_hist": 3,
+          "shadow_conf_desc": 0,
+          "oracle": 3,
+          "lift_hist": 3,
+          "lift_conf": 0,
+          "safe_enforce_hist": 3,
+          "safe_hist_mode": "shadow",
+          "safe_enforce_conf": 0,
+          "safe_conf_mode": "fallback_arrival",
+          "safe_hist_noninferior": true,
+          "safe_conf_noninferior": true,
+          "raw_hist_would_hurt": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "enforce_arrival": 0,
+          "shadow_R_hist": 8,
+          "shadow_conf_desc": 0,
+          "oracle": 8,
+          "lift_hist": 8,
+          "lift_conf": 0,
+          "safe_enforce_hist": 8,
+          "safe_hist_mode": "shadow",
+          "safe_enforce_conf": 0,
+          "safe_conf_mode": "fallback_arrival",
+          "safe_hist_noninferior": true,
+          "safe_conf_noninferior": true,
+          "raw_hist_would_hurt": false
+        }
+      ],
+      "shadow_lifts_on_budgets": 2,
+      "safe_hist_noninferior_all": true,
+      "verdict": "SUPPORT shadow dual-publish"
+    },
+    {
+      "holdout": "within_model_temporal",
+      "n_test": 176,
+      "n_miss_test": 27,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "enforce_arrival": 0,
+          "shadow_R_hist": 0,
+          "shadow_conf_desc": 3,
+          "oracle": 3,
+          "lift_hist": 0,
+          "lift_conf": 3,
+          "safe_enforce_hist": 0,
+          "safe_hist_mode": "fallback_arrival",
+          "safe_enforce_conf": 3,
+          "safe_conf_mode": "shadow",
+          "safe_hist_noninferior": true,
+          "safe_conf_noninferior": true,
+          "raw_hist_would_hurt": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "enforce_arrival": 0,
+          "shadow_R_hist": 0,
+          "shadow_conf_desc": 8,
+          "oracle": 8,
+          "lift_hist": 0,
+          "lift_conf": 8,
+          "safe_enforce_hist": 0,
+          "safe_hist_mode": "fallback_arrival",
+          "safe_enforce_conf": 8,
+          "safe_conf_mode": "shadow",
+          "safe_hist_noninferior": true,
+          "safe_conf_noninferior": true,
+          "raw_hist_would_hurt": false
+        }
+      ],
+      "shadow_lifts_on_budgets": 0,
+      "safe_hist_noninferior_all": true,
+      "verdict": "SUPPORT fallback-only (no lift, safe)"
+    }
+  ]
+}

@@ -1,0 +1,4227 @@
+{
+  "candidate": "R_hist",
+  "gates_pre_registered": [
+    "G0_holdout_miss_mass",
+    "G1_vs_arrival",
+    "G2_vs_best_single_arrival",
+    "G3_merge_noninferior",
+    "G4_lomo_G1",
+    "G5_cold_start_noninferior",
+    "G6_ranking_headroom"
+  ],
+  "overall_verdict": "SHIP",
+  "ship_decisive": "df_proxy/stratified+diluted_queue",
+  "target_queue_miss_rate": 0.35,
+  "protocols": [
+    {
+      "fixture": "df_proxy",
+      "split": "stratified",
+      "diluted_queue": true,
+      "n_traffic": 585,
+      "train_frac": 0.7,
+      "gate_primary": "diluted_queue",
+      "budgets_gate": [
+        0.02,
+        0.05
+      ],
+      "holdout": {
+        "n_train": 408,
+        "n_test": 177,
+        "n_miss_test": 29,
+        "n_classes_train": 20,
+        "global_prior": 0.15931372549019607,
+        "cold_start": false,
+        "gate_primary": "diluted_queue",
+        "diluted_queue": {
+          "n": 83,
+          "n_miss": 29,
+          "miss_rate": 0.3493975903614458,
+          "target_miss_rate": 0.35
+        },
+        "cells": [
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "diluted_queue",
+            "stream_n": 83,
+            "stream_miss": 29,
+            "arrival_caught": 0,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 1,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "D",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "class",
+            "stream_n": 164,
+            "stream_miss": 29,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 28,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "UHC∧class",
+            "stream_n": 163,
+            "stream_miss": 28,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "T2",
+            "stream_n": 28,
+            "stream_miss": 28,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "D+T2",
+            "stream_n": 29,
+            "stream_miss": 29,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "diluted_queue",
+            "stream_n": 83,
+            "stream_miss": 29,
+            "arrival_caught": 0,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 3,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "D",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "class",
+            "stream_n": 164,
+            "stream_miss": 29,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 2,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 28,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 2,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "UHC∧class",
+            "stream_n": 163,
+            "stream_miss": 28,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 2,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "T2",
+            "stream_n": 28,
+            "stream_miss": 28,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 3,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "D+T2",
+            "stream_n": 29,
+            "stream_miss": 29,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 3,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "diluted_queue",
+            "stream_n": 83,
+            "stream_miss": 29,
+            "arrival_caught": 0,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 5,
+            "conf_desc_caught": 0,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 8,
+            "max_single_arrival": 5,
+            "R_hist_minus_max_single_arrival": 3
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "D",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "class",
+            "stream_n": 164,
+            "stream_miss": 29,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 7,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 28,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 7,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "UHC∧class",
+            "stream_n": 163,
+            "stream_miss": 28,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 7,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "T2",
+            "stream_n": 28,
+            "stream_miss": 28,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 8,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "D+T2",
+            "stream_n": 29,
+            "stream_miss": 29,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 8,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          }
+        ],
+        "merge_cells": [
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "T2",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "T2",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "T2",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          }
+        ]
+      },
+      "cold_start": {
+        "n_train": 408,
+        "n_test": 177,
+        "n_miss_test": 29,
+        "n_classes_train": 0,
+        "global_prior": 0.15931372549019607,
+        "cold_start": true,
+        "gate_primary": "diluted_queue",
+        "diluted_queue": {
+          "n": 83,
+          "n_miss": 29,
+          "miss_rate": 0.3493975903614458,
+          "target_miss_rate": 0.35
+        },
+        "cells": [
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "diluted_queue",
+            "stream_n": 83,
+            "stream_miss": 29,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": -1
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "D",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "class",
+            "stream_n": 164,
+            "stream_miss": 29,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 28,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "UHC∧class",
+            "stream_n": 163,
+            "stream_miss": 28,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "T2",
+            "stream_n": 28,
+            "stream_miss": 28,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "D+T2",
+            "stream_n": 29,
+            "stream_miss": 29,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "diluted_queue",
+            "stream_n": 83,
+            "stream_miss": 29,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": -1
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "D",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "class",
+            "stream_n": 164,
+            "stream_miss": 29,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 2,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 28,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 2,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "UHC∧class",
+            "stream_n": 163,
+            "stream_miss": 28,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 2,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "T2",
+            "stream_n": 28,
+            "stream_miss": 28,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 3,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "D+T2",
+            "stream_n": 29,
+            "stream_miss": 29,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 3,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "diluted_queue",
+            "stream_n": 83,
+            "stream_miss": 29,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 5,
+            "conf_desc_caught": 0,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 5,
+            "R_hist_minus_max_single_arrival": -5
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "D",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "class",
+            "stream_n": 164,
+            "stream_miss": 29,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 7,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 28,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 7,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "UHC∧class",
+            "stream_n": 163,
+            "stream_miss": 28,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 7,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "T2",
+            "stream_n": 28,
+            "stream_miss": 28,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 8,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "D+T2",
+            "stream_n": 29,
+            "stream_miss": 29,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 8,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          }
+        ],
+        "merge_cells": [
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "T2",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "T2",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "T2",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          }
+        ]
+      },
+      "gates": {
+        "G1_vs_arrival": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "R_hist": 3,
+              "arrival": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "R_hist": 8,
+              "arrival": 0,
+              "pass": true
+            }
+          ]
+        },
+        "G2_vs_best_single_arrival": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "R_hist": 3,
+              "max_single_arrival": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "R_hist": 8,
+              "max_single_arrival": 5,
+              "pass": true
+            }
+          ]
+        },
+        "G3_merge_noninferior": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "added_stream": "class",
+              "merged": 3,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.02,
+              "added_stream": "UHC",
+              "merged": 3,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.02,
+              "added_stream": "UHC∧class",
+              "merged": 3,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.02,
+              "added_stream": "T2",
+              "merged": 3,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "class",
+              "merged": 8,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "UHC",
+              "merged": 8,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "UHC∧class",
+              "merged": 8,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "T2",
+              "merged": 8,
+              "D_alone": 1,
+              "pass": true
+            }
+          ]
+        },
+        "G0_holdout_miss_mass": {
+          "pass": true,
+          "n_miss_test": 29,
+          "min_required": 15
+        },
+        "G5_cold_start_noninferior": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "R_hist_cold": 0,
+              "arrival": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "R_hist_cold": 0,
+              "arrival": 0,
+              "pass": true
+            }
+          ]
+        },
+        "G6_ranking_headroom": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "arrival": 0,
+              "oracle": 3,
+              "headroom": true
+            },
+            {
+              "budget": 0.05,
+              "arrival": 0,
+              "oracle": 8,
+              "headroom": true
+            }
+          ]
+        },
+        "G4_lomo_G1": {
+          "pass": true,
+          "folds_passed": 2,
+          "folds_eligible": 2,
+          "folds_total": 3,
+          "min_frac_required": 0.67,
+          "diluted": true,
+          "folds": [
+            {
+              "held_out_model": "deepseek-v4-flash",
+              "n_train": 400,
+              "n_test": 185,
+              "n_miss_test": 1,
+              "G0_eligible": false,
+              "G1_pass": true,
+              "G1_rows": [
+                {
+                  "budget": 0.02,
+                  "R_hist": 1,
+                  "arrival": 1,
+                  "pass": true
+                },
+                {
+                  "budget": 0.05,
+                  "R_hist": 1,
+                  "arrival": 1,
+                  "pass": true
+                }
+              ],
+              "G2_pass": true,
+              "G3_pass": true,
+              "diluted_queue": {
+                "n": 3,
+                "n_miss": 1,
+                "miss_rate": 0.3333333333333333,
+                "target_miss_rate": 0.35
+              }
+            },
+            {
+              "held_out_model": "gemma3-latest",
+              "n_train": 385,
+              "n_test": 200,
+              "n_miss_test": 16,
+              "G0_eligible": true,
+              "G1_pass": true,
+              "G1_rows": [
+                {
+                  "budget": 0.02,
+                  "R_hist": 4,
+                  "arrival": 0,
+                  "pass": true
+                },
+                {
+                  "budget": 0.05,
+                  "R_hist": 10,
+                  "arrival": 0,
+                  "pass": true
+                }
+              ],
+              "G2_pass": true,
+              "G3_pass": true,
+              "diluted_queue": {
+                "n": 46,
+                "n_miss": 16,
+                "miss_rate": 0.34782608695652173,
+                "target_miss_rate": 0.35
+              }
+            },
+            {
+              "held_out_model": "qwen3-0-5b",
+              "n_train": 385,
+              "n_test": 200,
+              "n_miss_test": 77,
+              "G0_eligible": true,
+              "G1_pass": true,
+              "G1_rows": [
+                {
+                  "budget": 0.02,
+                  "R_hist": 4,
+                  "arrival": 0,
+                  "pass": true
+                },
+                {
+                  "budget": 0.05,
+                  "R_hist": 10,
+                  "arrival": 0,
+                  "pass": true
+                }
+              ],
+              "G2_pass": true,
+              "G3_pass": true,
+              "diluted_queue": {
+                "n": 200,
+                "n_miss": 77,
+                "miss_rate": 0.385,
+                "target_miss_rate": 0.35
+              }
+            }
+          ]
+        }
+      },
+      "ship_eligible": true,
+      "verdict": "SHIP"
+    },
+    {
+      "fixture": "df_proxy",
+      "split": "stratified",
+      "diluted_queue": false,
+      "n_traffic": 585,
+      "train_frac": 0.7,
+      "gate_primary": "D+T2",
+      "budgets_gate": [
+        0.02,
+        0.05
+      ],
+      "holdout": {
+        "n_train": 408,
+        "n_test": 177,
+        "n_miss_test": 29,
+        "n_classes_train": 20,
+        "global_prior": 0.15931372549019607,
+        "cold_start": false,
+        "gate_primary": "D+T2",
+        "diluted_queue": null,
+        "cells": [
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "D",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "class",
+            "stream_n": 164,
+            "stream_miss": 29,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 28,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "UHC∧class",
+            "stream_n": 163,
+            "stream_miss": 28,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "T2",
+            "stream_n": 28,
+            "stream_miss": 28,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "D+T2",
+            "stream_n": 29,
+            "stream_miss": 29,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "D",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "class",
+            "stream_n": 164,
+            "stream_miss": 29,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 2,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 28,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 2,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "UHC∧class",
+            "stream_n": 163,
+            "stream_miss": 28,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 2,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "T2",
+            "stream_n": 28,
+            "stream_miss": 28,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 3,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "D+T2",
+            "stream_n": 29,
+            "stream_miss": 29,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 3,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "D",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "class",
+            "stream_n": 164,
+            "stream_miss": 29,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 7,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 28,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 7,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "UHC∧class",
+            "stream_n": 163,
+            "stream_miss": 28,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 7,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "T2",
+            "stream_n": 28,
+            "stream_miss": 28,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 8,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "D+T2",
+            "stream_n": 29,
+            "stream_miss": 29,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 8,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": 0
+          }
+        ],
+        "merge_cells": [
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "T2",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "T2",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "T2",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          }
+        ]
+      },
+      "cold_start": {
+        "n_train": 408,
+        "n_test": 177,
+        "n_miss_test": 29,
+        "n_classes_train": 0,
+        "global_prior": 0.15931372549019607,
+        "cold_start": true,
+        "gate_primary": "D+T2",
+        "diluted_queue": null,
+        "cells": [
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "D",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "class",
+            "stream_n": 164,
+            "stream_miss": 29,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 28,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "UHC∧class",
+            "stream_n": 163,
+            "stream_miss": 28,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "T2",
+            "stream_n": 28,
+            "stream_miss": 28,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "D+T2",
+            "stream_n": 29,
+            "stream_miss": 29,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "D",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "class",
+            "stream_n": 164,
+            "stream_miss": 29,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 2,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 28,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 2,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "UHC∧class",
+            "stream_n": 163,
+            "stream_miss": 28,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 2,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "T2",
+            "stream_n": 28,
+            "stream_miss": 28,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 3,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "D+T2",
+            "stream_n": 29,
+            "stream_miss": 29,
+            "arrival_caught": 3,
+            "R_hist_caught": 3,
+            "conf_asc_caught": 3,
+            "conf_desc_caught": 3,
+            "oracle_caught": 3,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 3,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "D",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "class",
+            "stream_n": 164,
+            "stream_miss": 29,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 7,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 28,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 7,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "UHC∧class",
+            "stream_n": 163,
+            "stream_miss": 28,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 7,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "T2",
+            "stream_n": 28,
+            "stream_miss": 28,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 8,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "D+T2",
+            "stream_n": 29,
+            "stream_miss": 29,
+            "arrival_caught": 8,
+            "R_hist_caught": 8,
+            "conf_asc_caught": 8,
+            "conf_desc_caught": 8,
+            "oracle_caught": 8,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 8,
+            "R_hist_minus_max_single_arrival": 0
+          }
+        ],
+        "merge_cells": [
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "T2",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 1,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "T2",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 3,
+            "delta": 2
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "T2",
+            "D_R_hist_caught": 1,
+            "merged_R_hist_caught": 8,
+            "delta": 7
+          }
+        ]
+      },
+      "gates": {
+        "G1_vs_arrival": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "R_hist": 3,
+              "arrival": 3,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "R_hist": 8,
+              "arrival": 8,
+              "pass": true
+            }
+          ]
+        },
+        "G2_vs_best_single_arrival": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "R_hist": 3,
+              "max_single_arrival": 3,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "R_hist": 8,
+              "max_single_arrival": 8,
+              "pass": true
+            }
+          ]
+        },
+        "G3_merge_noninferior": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "added_stream": "class",
+              "merged": 3,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.02,
+              "added_stream": "UHC",
+              "merged": 3,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.02,
+              "added_stream": "UHC∧class",
+              "merged": 3,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.02,
+              "added_stream": "T2",
+              "merged": 3,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "class",
+              "merged": 8,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "UHC",
+              "merged": 8,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "UHC∧class",
+              "merged": 8,
+              "D_alone": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "T2",
+              "merged": 8,
+              "D_alone": 1,
+              "pass": true
+            }
+          ]
+        },
+        "G0_holdout_miss_mass": {
+          "pass": true,
+          "n_miss_test": 29,
+          "min_required": 15
+        },
+        "G5_cold_start_noninferior": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "R_hist_cold": 3,
+              "arrival": 3,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "R_hist_cold": 8,
+              "arrival": 8,
+              "pass": true
+            }
+          ]
+        },
+        "G6_ranking_headroom": {
+          "pass": false,
+          "rows": [
+            {
+              "budget": 0.02,
+              "arrival": 3,
+              "oracle": 3,
+              "headroom": false
+            },
+            {
+              "budget": 0.05,
+              "arrival": 8,
+              "oracle": 8,
+              "headroom": false
+            }
+          ]
+        },
+        "G4_lomo_G1": {
+          "pass": true,
+          "folds_passed": 2,
+          "folds_eligible": 2,
+          "folds_total": 3,
+          "min_frac_required": 0.67,
+          "diluted": false,
+          "folds": [
+            {
+              "held_out_model": "deepseek-v4-flash",
+              "n_train": 400,
+              "n_test": 185,
+              "n_miss_test": 1,
+              "G0_eligible": false,
+              "G1_pass": true,
+              "G1_rows": [
+                {
+                  "budget": 0.02,
+                  "R_hist": 1,
+                  "arrival": 1,
+                  "pass": true
+                },
+                {
+                  "budget": 0.05,
+                  "R_hist": 1,
+                  "arrival": 1,
+                  "pass": true
+                }
+              ],
+              "G2_pass": true,
+              "G3_pass": true,
+              "diluted_queue": null
+            },
+            {
+              "held_out_model": "gemma3-latest",
+              "n_train": 385,
+              "n_test": 200,
+              "n_miss_test": 16,
+              "G0_eligible": true,
+              "G1_pass": true,
+              "G1_rows": [
+                {
+                  "budget": 0.02,
+                  "R_hist": 4,
+                  "arrival": 0,
+                  "pass": true
+                },
+                {
+                  "budget": 0.05,
+                  "R_hist": 10,
+                  "arrival": 0,
+                  "pass": true
+                }
+              ],
+              "G2_pass": true,
+              "G3_pass": true,
+              "diluted_queue": null
+            },
+            {
+              "held_out_model": "qwen3-0-5b",
+              "n_train": 385,
+              "n_test": 200,
+              "n_miss_test": 77,
+              "G0_eligible": true,
+              "G1_pass": true,
+              "G1_rows": [
+                {
+                  "budget": 0.02,
+                  "R_hist": 4,
+                  "arrival": 2,
+                  "pass": true
+                },
+                {
+                  "budget": 0.05,
+                  "R_hist": 10,
+                  "arrival": 3,
+                  "pass": true
+                }
+              ],
+              "G2_pass": true,
+              "G3_pass": true,
+              "diluted_queue": null
+            }
+          ]
+        }
+      },
+      "ship_eligible": false,
+      "verdict": "INCONCLUSIVE"
+    },
+    {
+      "fixture": "df_proxy",
+      "split": "temporal",
+      "diluted_queue": false,
+      "n_traffic": 585,
+      "train_frac": 0.7,
+      "gate_primary": "D+T2",
+      "budgets_gate": [
+        0.02,
+        0.05
+      ],
+      "holdout": {
+        "n_train": 409,
+        "n_test": 176,
+        "n_miss_test": 1,
+        "n_classes_train": 20,
+        "global_prior": 0.2273838630806846,
+        "cold_start": false,
+        "gate_primary": "D+T2",
+        "diluted_queue": null,
+        "cells": [
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "D",
+            "stream_n": 0,
+            "stream_miss": 0,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "class",
+            "stream_n": 157,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "UHC∧class",
+            "stream_n": 157,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "T2",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "D+T2",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "D",
+            "stream_n": 0,
+            "stream_miss": 0,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "class",
+            "stream_n": 157,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 1,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 1,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "UHC∧class",
+            "stream_n": 157,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 1,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "T2",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "D+T2",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "D",
+            "stream_n": 0,
+            "stream_miss": 0,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "class",
+            "stream_n": 157,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 1,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 1,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "UHC∧class",
+            "stream_n": 157,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 1,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "T2",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "D+T2",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": 0
+          }
+        ],
+        "merge_cells": [
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "T2",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 1,
+            "delta": 1
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 1,
+            "delta": 1
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 1,
+            "delta": 1
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 1,
+            "delta": 1
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "T2",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 1,
+            "delta": 1
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 1,
+            "delta": 1
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 1,
+            "delta": 1
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 1,
+            "delta": 1
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "T2",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 1,
+            "delta": 1
+          }
+        ]
+      },
+      "cold_start": {
+        "n_train": 409,
+        "n_test": 176,
+        "n_miss_test": 1,
+        "n_classes_train": 0,
+        "global_prior": 0.2273838630806846,
+        "cold_start": true,
+        "gate_primary": "D+T2",
+        "diluted_queue": null,
+        "cells": [
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "D",
+            "stream_n": 0,
+            "stream_miss": 0,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "class",
+            "stream_n": 157,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "UHC∧class",
+            "stream_n": 157,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "T2",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "stream": "D+T2",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "D",
+            "stream_n": 0,
+            "stream_miss": 0,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "class",
+            "stream_n": 157,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "UHC∧class",
+            "stream_n": 157,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "T2",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "stream": "D+T2",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "D",
+            "stream_n": 0,
+            "stream_miss": 0,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "class",
+            "stream_n": 157,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "UHC",
+            "stream_n": 176,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "UHC∧class",
+            "stream_n": 157,
+            "stream_miss": 1,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 0,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "T2",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "stream": "D+T2",
+            "stream_n": 1,
+            "stream_miss": 1,
+            "arrival_caught": 1,
+            "R_hist_caught": 1,
+            "conf_asc_caught": 1,
+            "conf_desc_caught": 1,
+            "oracle_caught": 1,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 1,
+            "R_hist_minus_max_single_arrival": 0
+          }
+        ],
+        "merge_cells": [
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 1,
+            "added_stream": "T2",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 1,
+            "delta": 1
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 3,
+            "added_stream": "T2",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 1,
+            "delta": 1
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 8,
+            "added_stream": "T2",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 1,
+            "delta": 1
+          }
+        ]
+      },
+      "gates": {
+        "G1_vs_arrival": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "R_hist": 1,
+              "arrival": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "R_hist": 1,
+              "arrival": 1,
+              "pass": true
+            }
+          ]
+        },
+        "G2_vs_best_single_arrival": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "R_hist": 1,
+              "max_single_arrival": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "R_hist": 1,
+              "max_single_arrival": 1,
+              "pass": true
+            }
+          ]
+        },
+        "G3_merge_noninferior": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "added_stream": "class",
+              "merged": 1,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.02,
+              "added_stream": "UHC",
+              "merged": 1,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.02,
+              "added_stream": "UHC∧class",
+              "merged": 1,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.02,
+              "added_stream": "T2",
+              "merged": 1,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "class",
+              "merged": 1,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "UHC",
+              "merged": 1,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "UHC∧class",
+              "merged": 1,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "T2",
+              "merged": 1,
+              "D_alone": 0,
+              "pass": true
+            }
+          ]
+        },
+        "G0_holdout_miss_mass": {
+          "pass": false,
+          "n_miss_test": 1,
+          "min_required": 15
+        },
+        "G5_cold_start_noninferior": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "R_hist_cold": 1,
+              "arrival": 1,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "R_hist_cold": 1,
+              "arrival": 1,
+              "pass": true
+            }
+          ]
+        },
+        "G6_ranking_headroom": {
+          "pass": false,
+          "rows": [
+            {
+              "budget": 0.02,
+              "arrival": 1,
+              "oracle": 1,
+              "headroom": false
+            },
+            {
+              "budget": 0.05,
+              "arrival": 1,
+              "oracle": 1,
+              "headroom": false
+            }
+          ]
+        },
+        "G4_lomo_G1": {
+          "pass": true,
+          "folds_passed": 2,
+          "folds_eligible": 2,
+          "folds_total": 3,
+          "min_frac_required": 0.67,
+          "diluted": false,
+          "folds": [
+            {
+              "held_out_model": "deepseek-v4-flash",
+              "n_train": 400,
+              "n_test": 185,
+              "n_miss_test": 1,
+              "G0_eligible": false,
+              "G1_pass": true,
+              "G1_rows": [
+                {
+                  "budget": 0.02,
+                  "R_hist": 1,
+                  "arrival": 1,
+                  "pass": true
+                },
+                {
+                  "budget": 0.05,
+                  "R_hist": 1,
+                  "arrival": 1,
+                  "pass": true
+                }
+              ],
+              "G2_pass": true,
+              "G3_pass": true,
+              "diluted_queue": null
+            },
+            {
+              "held_out_model": "gemma3-latest",
+              "n_train": 385,
+              "n_test": 200,
+              "n_miss_test": 16,
+              "G0_eligible": true,
+              "G1_pass": true,
+              "G1_rows": [
+                {
+                  "budget": 0.02,
+                  "R_hist": 4,
+                  "arrival": 0,
+                  "pass": true
+                },
+                {
+                  "budget": 0.05,
+                  "R_hist": 10,
+                  "arrival": 0,
+                  "pass": true
+                }
+              ],
+              "G2_pass": true,
+              "G3_pass": true,
+              "diluted_queue": null
+            },
+            {
+              "held_out_model": "qwen3-0-5b",
+              "n_train": 385,
+              "n_test": 200,
+              "n_miss_test": 77,
+              "G0_eligible": true,
+              "G1_pass": true,
+              "G1_rows": [
+                {
+                  "budget": 0.02,
+                  "R_hist": 4,
+                  "arrival": 2,
+                  "pass": true
+                },
+                {
+                  "budget": 0.05,
+                  "R_hist": 10,
+                  "arrival": 3,
+                  "pass": true
+                }
+              ],
+              "G2_pass": true,
+              "G3_pass": true,
+              "diluted_queue": null
+            }
+          ]
+        }
+      },
+      "ship_eligible": false,
+      "verdict": "INCONCLUSIVE"
+    },
+    {
+      "fixture": "multiperspective",
+      "split": "stratified",
+      "diluted_queue": true,
+      "n_traffic": 60,
+      "train_frac": 0.7,
+      "gate_primary": "diluted_queue",
+      "budgets_gate": [
+        0.02,
+        0.05
+      ],
+      "holdout": {
+        "n_train": 41,
+        "n_test": 19,
+        "n_miss_test": 2,
+        "n_classes_train": 20,
+        "global_prior": 0.0975609756097561,
+        "cold_start": false,
+        "gate_primary": "diluted_queue",
+        "diluted_queue": {
+          "n": 6,
+          "n_miss": 2,
+          "miss_rate": 0.3333333333333333,
+          "target_miss_rate": 0.35
+        },
+        "cells": [
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "diluted_queue",
+            "stream_n": 6,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "D",
+            "stream_n": 2,
+            "stream_miss": 0,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "class",
+            "stream_n": 15,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "UHC",
+            "stream_n": 3,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "UHC∧class",
+            "stream_n": 2,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "T2",
+            "stream_n": 2,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "D+T2",
+            "stream_n": 4,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "diluted_queue",
+            "stream_n": 6,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "D",
+            "stream_n": 2,
+            "stream_miss": 0,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "class",
+            "stream_n": 15,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "UHC",
+            "stream_n": 3,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "UHC∧class",
+            "stream_n": 2,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "T2",
+            "stream_n": 2,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "D+T2",
+            "stream_n": 4,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "diluted_queue",
+            "stream_n": 6,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "D",
+            "stream_n": 2,
+            "stream_miss": 0,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "class",
+            "stream_n": 15,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "UHC",
+            "stream_n": 3,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "UHC∧class",
+            "stream_n": 2,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "T2",
+            "stream_n": 2,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "D+T2",
+            "stream_n": 4,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          }
+        ],
+        "merge_cells": [
+          {
+            "budget": 0.01,
+            "k": 0,
+            "added_stream": "class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "added_stream": "T2",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "added_stream": "class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "added_stream": "T2",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "added_stream": "class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "added_stream": "T2",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          }
+        ]
+      },
+      "cold_start": {
+        "n_train": 41,
+        "n_test": 19,
+        "n_miss_test": 2,
+        "n_classes_train": 0,
+        "global_prior": 0.0975609756097561,
+        "cold_start": true,
+        "gate_primary": "diluted_queue",
+        "diluted_queue": {
+          "n": 6,
+          "n_miss": 2,
+          "miss_rate": 0.3333333333333333,
+          "target_miss_rate": 0.35
+        },
+        "cells": [
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "diluted_queue",
+            "stream_n": 6,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "D",
+            "stream_n": 2,
+            "stream_miss": 0,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "class",
+            "stream_n": 15,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "UHC",
+            "stream_n": 3,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "UHC∧class",
+            "stream_n": 2,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "T2",
+            "stream_n": 2,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "stream": "D+T2",
+            "stream_n": 4,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "diluted_queue",
+            "stream_n": 6,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "D",
+            "stream_n": 2,
+            "stream_miss": 0,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "class",
+            "stream_n": 15,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "UHC",
+            "stream_n": 3,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "UHC∧class",
+            "stream_n": 2,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "T2",
+            "stream_n": 2,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "stream": "D+T2",
+            "stream_n": 4,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "diluted_queue",
+            "stream_n": 6,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "D",
+            "stream_n": 2,
+            "stream_miss": 0,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "class",
+            "stream_n": 15,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "UHC",
+            "stream_n": 3,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "UHC∧class",
+            "stream_n": 2,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "T2",
+            "stream_n": 2,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "stream": "D+T2",
+            "stream_n": 4,
+            "stream_miss": 2,
+            "arrival_caught": 0,
+            "R_hist_caught": 0,
+            "conf_asc_caught": 0,
+            "conf_desc_caught": 0,
+            "oracle_caught": 0,
+            "R_hist_minus_arrival": 0,
+            "max_single_arrival": 0,
+            "R_hist_minus_max_single_arrival": null
+          }
+        ],
+        "merge_cells": [
+          {
+            "budget": 0.01,
+            "k": 0,
+            "added_stream": "class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.01,
+            "k": 0,
+            "added_stream": "T2",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "added_stream": "class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.02,
+            "k": 0,
+            "added_stream": "T2",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "added_stream": "class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "added_stream": "UHC",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "added_stream": "UHC∧class",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          },
+          {
+            "budget": 0.05,
+            "k": 0,
+            "added_stream": "T2",
+            "D_R_hist_caught": 0,
+            "merged_R_hist_caught": 0,
+            "delta": 0
+          }
+        ]
+      },
+      "gates": {
+        "G1_vs_arrival": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "R_hist": 0,
+              "arrival": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "R_hist": 0,
+              "arrival": 0,
+              "pass": true
+            }
+          ]
+        },
+        "G2_vs_best_single_arrival": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "R_hist": 0,
+              "max_single_arrival": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "R_hist": 0,
+              "max_single_arrival": 0,
+              "pass": true
+            }
+          ]
+        },
+        "G3_merge_noninferior": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "added_stream": "class",
+              "merged": 0,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.02,
+              "added_stream": "UHC",
+              "merged": 0,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.02,
+              "added_stream": "UHC∧class",
+              "merged": 0,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.02,
+              "added_stream": "T2",
+              "merged": 0,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "class",
+              "merged": 0,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "UHC",
+              "merged": 0,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "UHC∧class",
+              "merged": 0,
+              "D_alone": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "added_stream": "T2",
+              "merged": 0,
+              "D_alone": 0,
+              "pass": true
+            }
+          ]
+        },
+        "G0_holdout_miss_mass": {
+          "pass": false,
+          "n_miss_test": 2,
+          "min_required": 15
+        },
+        "G5_cold_start_noninferior": {
+          "pass": true,
+          "rows": [
+            {
+              "budget": 0.02,
+              "R_hist_cold": 0,
+              "arrival": 0,
+              "pass": true
+            },
+            {
+              "budget": 0.05,
+              "R_hist_cold": 0,
+              "arrival": 0,
+              "pass": true
+            }
+          ]
+        },
+        "G6_ranking_headroom": {
+          "pass": false,
+          "rows": [
+            {
+              "budget": 0.02,
+              "arrival": 0,
+              "oracle": 0,
+              "headroom": false
+            },
+            {
+              "budget": 0.05,
+              "arrival": 0,
+              "oracle": 0,
+              "headroom": false
+            }
+          ]
+        },
+        "G4_lomo_G1": {
+          "pass": false,
+          "folds_passed": 0,
+          "folds_eligible": 0,
+          "folds_total": 3,
+          "min_frac_required": 0.67,
+          "diluted": true,
+          "folds": [
+            {
+              "held_out_model": "deepseek-v4-flash",
+              "n_train": 40,
+              "n_test": 20,
+              "n_miss_test": 0,
+              "G0_eligible": false,
+              "G1_pass": true,
+              "G1_rows": [
+                {
+                  "budget": 0.02,
+                  "R_hist": 0,
+                  "arrival": 0,
+                  "pass": true
+                },
+                {
+                  "budget": 0.05,
+                  "R_hist": 0,
+                  "arrival": 0,
+                  "pass": true
+                }
+              ],
+              "G2_pass": true,
+              "G3_pass": true,
+              "diluted_queue": {
+                "n": 0,
+                "n_miss": 0,
+                "miss_rate": 0.0,
+                "target_miss_rate": 0.35
+              }
+            },
+            {
+              "held_out_model": "gemma3:latest",
+              "n_train": 40,
+              "n_test": 20,
+              "n_miss_test": 0,
+              "G0_eligible": false,
+              "G1_pass": true,
+              "G1_rows": [
+                {
+                  "budget": 0.02,
+                  "R_hist": 0,
+                  "arrival": 0,
+                  "pass": true
+                },
+                {
+                  "budget": 0.05,
+                  "R_hist": 0,
+                  "arrival": 0,
+                  "pass": true
+                }
+              ],
+              "G2_pass": true,
+              "G3_pass": true,
+              "diluted_queue": {
+                "n": 0,
+                "n_miss": 0,
+                "miss_rate": 0.0,
+                "target_miss_rate": 0.35
+              }
+            },
+            {
+              "held_out_model": "qwen3:0.5b",
+              "n_train": 40,
+              "n_test": 20,
+              "n_miss_test": 6,
+              "G0_eligible": false,
+              "G1_pass": true,
+              "G1_rows": [
+                {
+                  "budget": 0.02,
+                  "R_hist": 0,
+                  "arrival": 0,
+                  "pass": true
+                },
+                {
+                  "budget": 0.05,
+                  "R_hist": 0,
+                  "arrival": 0,
+                  "pass": true
+                }
+              ],
+              "G2_pass": true,
+              "G3_pass": true,
+              "diluted_queue": {
+                "n": 17,
+                "n_miss": 6,
+                "miss_rate": 0.35294117647058826,
+                "target_miss_rate": 0.35
+              }
+            }
+          ]
+        }
+      },
+      "ship_eligible": false,
+      "verdict": "INCONCLUSIVE"
+    }
+  ]
+}

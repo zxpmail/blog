@@ -1,0 +1,6863 @@
+{
+  "claim": "Sweep features × dilution × holdout; locate where R_hist (and alternates) fall off SHIP.",
+  "candidates": [
+    "R_hist",
+    "R_hist_conf",
+    "R_conf_asc",
+    "R_conf_desc",
+    "R_reversal",
+    "R_uhc"
+  ],
+  "protocols": [
+    "stratified",
+    "within_model_temporal",
+    "global_temporal"
+  ],
+  "dilution_rates": [
+    0.15,
+    0.25,
+    0.35,
+    0.5,
+    0.65,
+    0.8,
+    0.95
+  ],
+  "summary": {
+    "by_candidate_protocol": [
+      {
+        "protocol": "stratified",
+        "candidate": "R_hist",
+        "ship_dilutions": [
+          0.15,
+          0.25,
+          0.35,
+          0.5,
+          0.65,
+          0.8,
+          0.95
+        ],
+        "n_ship": 7,
+        "lowest_ship_miss_rate": 0.15,
+        "drops_below_miss_rate": null,
+        "natural_verdict": "INCONCLUSIVE"
+      },
+      {
+        "protocol": "stratified",
+        "candidate": "R_hist_conf",
+        "ship_dilutions": [
+          0.15,
+          0.25,
+          0.35,
+          0.5,
+          0.65,
+          0.8,
+          0.95
+        ],
+        "n_ship": 7,
+        "lowest_ship_miss_rate": 0.15,
+        "drops_below_miss_rate": null,
+        "natural_verdict": "INCONCLUSIVE"
+      },
+      {
+        "protocol": "stratified",
+        "candidate": "R_conf_asc",
+        "ship_dilutions": [
+          0.15,
+          0.25,
+          0.35,
+          0.5,
+          0.65,
+          0.8
+        ],
+        "n_ship": 6,
+        "lowest_ship_miss_rate": 0.15,
+        "drops_below_miss_rate": null,
+        "natural_verdict": "INCONCLUSIVE"
+      },
+      {
+        "protocol": "stratified",
+        "candidate": "R_conf_desc",
+        "ship_dilutions": [
+          0.95
+        ],
+        "n_ship": 1,
+        "lowest_ship_miss_rate": 0.95,
+        "drops_below_miss_rate": 0.95,
+        "natural_verdict": "INCONCLUSIVE"
+      },
+      {
+        "protocol": "stratified",
+        "candidate": "R_reversal",
+        "ship_dilutions": [
+          0.8,
+          0.95
+        ],
+        "n_ship": 2,
+        "lowest_ship_miss_rate": 0.8,
+        "drops_below_miss_rate": 0.8,
+        "natural_verdict": "INCONCLUSIVE"
+      },
+      {
+        "protocol": "stratified",
+        "candidate": "R_uhc",
+        "ship_dilutions": [],
+        "n_ship": 0,
+        "lowest_ship_miss_rate": null,
+        "drops_below_miss_rate": null,
+        "natural_verdict": "INCONCLUSIVE"
+      },
+      {
+        "protocol": "within_model_temporal",
+        "candidate": "R_hist",
+        "ship_dilutions": [
+          0.8,
+          0.95
+        ],
+        "n_ship": 2,
+        "lowest_ship_miss_rate": 0.8,
+        "drops_below_miss_rate": 0.8,
+        "natural_verdict": "NO_SHIP"
+      },
+      {
+        "protocol": "within_model_temporal",
+        "candidate": "R_hist_conf",
+        "ship_dilutions": [
+          0.8,
+          0.95
+        ],
+        "n_ship": 2,
+        "lowest_ship_miss_rate": 0.8,
+        "drops_below_miss_rate": 0.8,
+        "natural_verdict": "NO_SHIP"
+      },
+      {
+        "protocol": "within_model_temporal",
+        "candidate": "R_conf_asc",
+        "ship_dilutions": [],
+        "n_ship": 0,
+        "lowest_ship_miss_rate": null,
+        "drops_below_miss_rate": null,
+        "natural_verdict": "NO_SHIP"
+      },
+      {
+        "protocol": "within_model_temporal",
+        "candidate": "R_conf_desc",
+        "ship_dilutions": [
+          0.25,
+          0.35,
+          0.5,
+          0.65,
+          0.8,
+          0.95
+        ],
+        "n_ship": 6,
+        "lowest_ship_miss_rate": 0.25,
+        "drops_below_miss_rate": 0.25,
+        "natural_verdict": "SHIP"
+      },
+      {
+        "protocol": "within_model_temporal",
+        "candidate": "R_reversal",
+        "ship_dilutions": [],
+        "n_ship": 0,
+        "lowest_ship_miss_rate": null,
+        "drops_below_miss_rate": null,
+        "natural_verdict": "NO_SHIP"
+      },
+      {
+        "protocol": "within_model_temporal",
+        "candidate": "R_uhc",
+        "ship_dilutions": [
+          0.25,
+          0.35,
+          0.5,
+          0.65,
+          0.8,
+          0.95
+        ],
+        "n_ship": 6,
+        "lowest_ship_miss_rate": 0.25,
+        "drops_below_miss_rate": 0.25,
+        "natural_verdict": "SHIP"
+      },
+      {
+        "protocol": "global_temporal",
+        "candidate": "R_hist",
+        "ship_dilutions": [],
+        "n_ship": 0,
+        "lowest_ship_miss_rate": null,
+        "drops_below_miss_rate": null,
+        "natural_verdict": "INCONCLUSIVE"
+      },
+      {
+        "protocol": "global_temporal",
+        "candidate": "R_hist_conf",
+        "ship_dilutions": [],
+        "n_ship": 0,
+        "lowest_ship_miss_rate": null,
+        "drops_below_miss_rate": null,
+        "natural_verdict": "INCONCLUSIVE"
+      },
+      {
+        "protocol": "global_temporal",
+        "candidate": "R_conf_asc",
+        "ship_dilutions": [],
+        "n_ship": 0,
+        "lowest_ship_miss_rate": null,
+        "drops_below_miss_rate": null,
+        "natural_verdict": "INCONCLUSIVE"
+      },
+      {
+        "protocol": "global_temporal",
+        "candidate": "R_conf_desc",
+        "ship_dilutions": [],
+        "n_ship": 0,
+        "lowest_ship_miss_rate": null,
+        "drops_below_miss_rate": null,
+        "natural_verdict": "INCONCLUSIVE"
+      },
+      {
+        "protocol": "global_temporal",
+        "candidate": "R_reversal",
+        "ship_dilutions": [],
+        "n_ship": 0,
+        "lowest_ship_miss_rate": null,
+        "drops_below_miss_rate": null,
+        "natural_verdict": "INCONCLUSIVE"
+      },
+      {
+        "protocol": "global_temporal",
+        "candidate": "R_uhc",
+        "ship_dilutions": [],
+        "n_ship": 0,
+        "lowest_ship_miss_rate": null,
+        "drops_below_miss_rate": null,
+        "natural_verdict": "INCONCLUSIVE"
+      }
+    ]
+  },
+  "cells": [
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist",
+      "dilution": 0.15,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 177,
+      "queue_miss_rate": 0.1638418079096045,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 6,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist",
+      "dilution": 0.25,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 116,
+      "queue_miss_rate": 0.25,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 6,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist",
+      "dilution": 0.35,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 83,
+      "queue_miss_rate": 0.3493975903614458,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist",
+      "dilution": 0.5,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 58,
+      "queue_miss_rate": 0.5,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist",
+      "dilution": 0.65,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 45,
+      "queue_miss_rate": 0.6444444444444445,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist",
+      "dilution": 0.8,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 36,
+      "queue_miss_rate": 0.8055555555555556,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 4,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist",
+      "dilution": 0.95,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 31,
+      "queue_miss_rate": 0.9354838709677419,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 6,
+          "oracle": 8,
+          "conf_asc": 6,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist",
+      "dilution": "natural_D+T2",
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 29,
+      "queue_miss_rate": 1.0,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 3,
+          "oracle": 3,
+          "conf_asc": 3,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 8,
+          "oracle": 8,
+          "conf_asc": 8,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist_conf",
+      "dilution": 0.15,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 177,
+      "queue_miss_rate": 0.1638418079096045,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 6,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist_conf",
+      "dilution": 0.25,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 116,
+      "queue_miss_rate": 0.25,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 6,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist_conf",
+      "dilution": 0.35,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 83,
+      "queue_miss_rate": 0.3493975903614458,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist_conf",
+      "dilution": 0.5,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 58,
+      "queue_miss_rate": 0.5,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist_conf",
+      "dilution": 0.65,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 45,
+      "queue_miss_rate": 0.6444444444444445,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist_conf",
+      "dilution": 0.8,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 36,
+      "queue_miss_rate": 0.8055555555555556,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 4,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist_conf",
+      "dilution": 0.95,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 31,
+      "queue_miss_rate": 0.9354838709677419,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 6,
+          "oracle": 8,
+          "conf_asc": 6,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_hist_conf",
+      "dilution": "natural_D+T2",
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 29,
+      "queue_miss_rate": 1.0,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 3,
+          "oracle": 3,
+          "conf_asc": 3,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 8,
+          "oracle": 8,
+          "conf_asc": 8,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_asc",
+      "dilution": 0.15,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 177,
+      "queue_miss_rate": 0.1638418079096045,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_asc",
+      "dilution": 0.25,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 116,
+      "queue_miss_rate": 0.25,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_asc",
+      "dilution": 0.35,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 83,
+      "queue_miss_rate": 0.3493975903614458,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 5,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_asc",
+      "dilution": 0.5,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 58,
+      "queue_miss_rate": 0.5,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 5,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_asc",
+      "dilution": 0.65,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 45,
+      "queue_miss_rate": 0.6444444444444445,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 5,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_asc",
+      "dilution": 0.8,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 36,
+      "queue_miss_rate": 0.8055555555555556,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 4,
+          "candidate": 5,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_asc",
+      "dilution": 0.95,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 31,
+      "queue_miss_rate": 0.9354838709677419,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 3,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 6,
+          "oracle": 8,
+          "conf_asc": 6,
+          "conf_desc": 8,
+          "candidate": 6,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_asc",
+      "dilution": "natural_D+T2",
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 29,
+      "queue_miss_rate": 1.0,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": false,
+      "G4_detail": {
+        "passed": 1,
+        "eligible": 2,
+        "frac": 0.5
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 3,
+          "oracle": 3,
+          "conf_asc": 3,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 8,
+          "oracle": 8,
+          "conf_asc": 8,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_desc",
+      "dilution": 0.15,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 177,
+      "queue_miss_rate": 0.1638418079096045,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_desc",
+      "dilution": 0.25,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 116,
+      "queue_miss_rate": 0.25,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_desc",
+      "dilution": 0.35,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 83,
+      "queue_miss_rate": 0.3493975903614458,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_desc",
+      "dilution": 0.5,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 58,
+      "queue_miss_rate": 0.5,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_desc",
+      "dilution": 0.65,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 45,
+      "queue_miss_rate": 0.6444444444444445,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_desc",
+      "dilution": 0.8,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 36,
+      "queue_miss_rate": 0.8055555555555556,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 4,
+          "candidate": 4,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_desc",
+      "dilution": 0.95,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 31,
+      "queue_miss_rate": 0.9354838709677419,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 6,
+          "oracle": 8,
+          "conf_asc": 6,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_conf_desc",
+      "dilution": "natural_D+T2",
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 29,
+      "queue_miss_rate": 1.0,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 3,
+          "oracle": 3,
+          "conf_asc": 3,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 8,
+          "oracle": 8,
+          "conf_asc": 8,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_reversal",
+      "dilution": 0.15,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 177,
+      "queue_miss_rate": 0.1638418079096045,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_reversal",
+      "dilution": 0.25,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 116,
+      "queue_miss_rate": 0.25,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_reversal",
+      "dilution": 0.35,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 83,
+      "queue_miss_rate": 0.3493975903614458,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_reversal",
+      "dilution": 0.5,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 58,
+      "queue_miss_rate": 0.5,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_reversal",
+      "dilution": 0.65,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 45,
+      "queue_miss_rate": 0.6444444444444445,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 5,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_reversal",
+      "dilution": 0.8,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 36,
+      "queue_miss_rate": 0.8055555555555556,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 4,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_reversal",
+      "dilution": 0.95,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 31,
+      "queue_miss_rate": 0.9354838709677419,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 6,
+          "oracle": 8,
+          "conf_asc": 6,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_reversal",
+      "dilution": "natural_D+T2",
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 29,
+      "queue_miss_rate": 1.0,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 3,
+          "oracle": 3,
+          "conf_asc": 3,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 8,
+          "oracle": 8,
+          "conf_asc": 8,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_uhc",
+      "dilution": 0.15,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 177,
+      "queue_miss_rate": 0.1638418079096045,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_uhc",
+      "dilution": 0.25,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 116,
+      "queue_miss_rate": 0.25,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_uhc",
+      "dilution": 0.35,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 83,
+      "queue_miss_rate": 0.3493975903614458,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_uhc",
+      "dilution": 0.5,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 58,
+      "queue_miss_rate": 0.5,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_uhc",
+      "dilution": 0.65,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 45,
+      "queue_miss_rate": 0.6444444444444445,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_uhc",
+      "dilution": 0.8,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 36,
+      "queue_miss_rate": 0.8055555555555556,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 8,
+          "conf_asc": 5,
+          "conf_desc": 4,
+          "candidate": 1,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_uhc",
+      "dilution": 0.95,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2"
+      ],
+      "n_miss_test": 29,
+      "queue_n": 31,
+      "queue_miss_rate": 0.9354838709677419,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 3,
+          "conf_asc": 1,
+          "conf_desc": 3,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 6,
+          "oracle": 8,
+          "conf_asc": 6,
+          "conf_desc": 8,
+          "candidate": 6,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "stratified",
+      "candidate": "R_uhc",
+      "dilution": "natural_D+T2",
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 29,
+      "queue_n": 29,
+      "queue_miss_rate": 1.0,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 3,
+          "oracle": 3,
+          "conf_asc": 3,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 8,
+          "oracle": 8,
+          "conf_asc": 8,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.15,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 176,
+      "queue_miss_rate": 0.1534090909090909,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.25,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 108,
+      "queue_miss_rate": 0.25,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.35,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 77,
+      "queue_miss_rate": 0.35064935064935066,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.5,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 54,
+      "queue_miss_rate": 0.5,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.65,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 42,
+      "queue_miss_rate": 0.6428571428571429,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.8,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 34,
+      "queue_miss_rate": 0.7941176470588235,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.95,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 28,
+      "queue_miss_rate": 0.9642857142857143,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 2,
+          "oracle": 3,
+          "conf_asc": 2,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 7,
+          "oracle": 8,
+          "conf_asc": 7,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist",
+      "dilution": "natural_D+T2",
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G1",
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 120,
+      "queue_miss_rate": 0.225,
+      "G0": true,
+      "G1": false,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 2,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 4,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.15,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 176,
+      "queue_miss_rate": 0.1534090909090909,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.25,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 108,
+      "queue_miss_rate": 0.25,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.35,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 77,
+      "queue_miss_rate": 0.35064935064935066,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.5,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 54,
+      "queue_miss_rate": 0.5,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.65,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 42,
+      "queue_miss_rate": 0.6428571428571429,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.8,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 34,
+      "queue_miss_rate": 0.7941176470588235,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.95,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 28,
+      "queue_miss_rate": 0.9642857142857143,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 2,
+          "oracle": 3,
+          "conf_asc": 2,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 7,
+          "oracle": 8,
+          "conf_asc": 7,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": "natural_D+T2",
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G1",
+        "G2",
+        "G5",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 120,
+      "queue_miss_rate": 0.225,
+      "G0": true,
+      "G1": false,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": false,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 2,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 4,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.15,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 176,
+      "queue_miss_rate": 0.1534090909090909,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.25,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 108,
+      "queue_miss_rate": 0.25,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.35,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 77,
+      "queue_miss_rate": 0.35064935064935066,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.5,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 54,
+      "queue_miss_rate": 0.5,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.65,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 42,
+      "queue_miss_rate": 0.6428571428571429,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.8,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 34,
+      "queue_miss_rate": 0.7941176470588235,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 8,
+          "candidate": 1,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.95,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 28,
+      "queue_miss_rate": 0.9642857142857143,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 2,
+          "oracle": 3,
+          "conf_asc": 2,
+          "conf_desc": 3,
+          "candidate": 2,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 7,
+          "oracle": 8,
+          "conf_asc": 7,
+          "conf_desc": 8,
+          "candidate": 7,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": "natural_D+T2",
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G1",
+        "G2",
+        "G4",
+        "G5",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 120,
+      "queue_miss_rate": 0.225,
+      "G0": true,
+      "G1": false,
+      "G2": false,
+      "G3": true,
+      "G4": false,
+      "G4_detail": {
+        "passed": 1,
+        "eligible": 2,
+        "frac": 0.5
+      },
+      "G5": false,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 2,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 4,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.15,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 176,
+      "queue_miss_rate": 0.1534090909090909,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.25,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 108,
+      "queue_miss_rate": 0.25,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.35,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 77,
+      "queue_miss_rate": 0.35064935064935066,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.5,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 54,
+      "queue_miss_rate": 0.5,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.65,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 42,
+      "queue_miss_rate": 0.6428571428571429,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.8,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 34,
+      "queue_miss_rate": 0.7941176470588235,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.95,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 28,
+      "queue_miss_rate": 0.9642857142857143,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 2,
+          "oracle": 3,
+          "conf_asc": 2,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 7,
+          "oracle": 8,
+          "conf_asc": 7,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": "natural_D+T2",
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 120,
+      "queue_miss_rate": 0.225,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 2,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 4,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.15,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 176,
+      "queue_miss_rate": 0.1534090909090909,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.25,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 108,
+      "queue_miss_rate": 0.25,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.35,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 77,
+      "queue_miss_rate": 0.35064935064935066,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.5,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 54,
+      "queue_miss_rate": 0.5,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.65,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 42,
+      "queue_miss_rate": 0.6428571428571429,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.8,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2",
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 34,
+      "queue_miss_rate": 0.7941176470588235,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 8,
+          "candidate": 1,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.95,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 28,
+      "queue_miss_rate": 0.9642857142857143,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 2,
+          "oracle": 3,
+          "conf_asc": 2,
+          "conf_desc": 3,
+          "candidate": 2,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 7,
+          "oracle": 8,
+          "conf_asc": 7,
+          "conf_desc": 8,
+          "candidate": 7,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_reversal",
+      "dilution": "natural_D+T2",
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G2"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 120,
+      "queue_miss_rate": 0.225,
+      "G0": true,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 2,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 2,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 4,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 4,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.15,
+      "verdict": "NO_SHIP",
+      "failed_gates": [
+        "G7"
+      ],
+      "n_miss_test": 27,
+      "queue_n": 176,
+      "queue_miss_rate": 0.1534090909090909,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.25,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 108,
+      "queue_miss_rate": 0.25,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.35,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 77,
+      "queue_miss_rate": 0.35064935064935066,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.5,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 54,
+      "queue_miss_rate": 0.5,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.65,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 42,
+      "queue_miss_rate": 0.6428571428571429,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 0,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.8,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 34,
+      "queue_miss_rate": 0.7941176470588235,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 8,
+          "conf_asc": 1,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.95,
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 28,
+      "queue_miss_rate": 0.9642857142857143,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 2,
+          "oracle": 3,
+          "conf_asc": 2,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 7,
+          "oracle": 8,
+          "conf_asc": 7,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "within_model_temporal",
+      "candidate": "R_uhc",
+      "dilution": "natural_D+T2",
+      "verdict": "SHIP",
+      "failed_gates": [],
+      "n_miss_test": 27,
+      "queue_n": 120,
+      "queue_miss_rate": 0.225,
+      "G0": true,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 2,
+          "oracle": 3,
+          "conf_asc": 0,
+          "conf_desc": 3,
+          "candidate": 3,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 4,
+          "oracle": 8,
+          "conf_asc": 0,
+          "conf_desc": 8,
+          "candidate": 8,
+          "headroom": true
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.15,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 7,
+      "queue_miss_rate": 0.14285714285714285,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.25,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 4,
+      "queue_miss_rate": 0.25,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.35,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 3,
+      "queue_miss_rate": 0.3333333333333333,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.5,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 2,
+      "queue_miss_rate": 0.5,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.65,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 2,
+      "queue_miss_rate": 0.5,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.8,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist",
+      "dilution": 0.95,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist",
+      "dilution": "natural_D+T2",
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.15,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 7,
+      "queue_miss_rate": 0.14285714285714285,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.25,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 4,
+      "queue_miss_rate": 0.25,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.35,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 3,
+      "queue_miss_rate": 0.3333333333333333,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.5,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 2,
+      "queue_miss_rate": 0.5,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.65,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 2,
+      "queue_miss_rate": 0.5,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.8,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": 0.95,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_hist_conf",
+      "dilution": "natural_D+T2",
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.15,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 7,
+      "queue_miss_rate": 0.14285714285714285,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.25,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 4,
+      "queue_miss_rate": 0.25,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 1,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.35,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 3,
+      "queue_miss_rate": 0.3333333333333333,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.5,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 2,
+      "queue_miss_rate": 0.5,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.65,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 2,
+      "queue_miss_rate": 0.5,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.8,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": 0.95,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_asc",
+      "dilution": "natural_D+T2",
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": false,
+      "G4_detail": {
+        "passed": 1,
+        "eligible": 2,
+        "frac": 0.5
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.15,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 7,
+      "queue_miss_rate": 0.14285714285714285,
+      "G0": false,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.25,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 4,
+      "queue_miss_rate": 0.25,
+      "G0": false,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.35,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 3,
+      "queue_miss_rate": 0.3333333333333333,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.5,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 2,
+      "queue_miss_rate": 0.5,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.65,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 2,
+      "queue_miss_rate": 0.5,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.8,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": 0.95,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_conf_desc",
+      "dilution": "natural_D+T2",
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.15,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 7,
+      "queue_miss_rate": 0.14285714285714285,
+      "G0": false,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.25,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 4,
+      "queue_miss_rate": 0.25,
+      "G0": false,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.35,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 3,
+      "queue_miss_rate": 0.3333333333333333,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.5,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 2,
+      "queue_miss_rate": 0.5,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.65,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 2,
+      "queue_miss_rate": 0.5,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.8,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_reversal",
+      "dilution": 0.95,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_reversal",
+      "dilution": "natural_D+T2",
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.15,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 7,
+      "queue_miss_rate": 0.14285714285714285,
+      "G0": false,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.25,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 4,
+      "queue_miss_rate": 0.25,
+      "G0": false,
+      "G1": true,
+      "G2": false,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": true,
+      "G7": false,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 0,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 0,
+          "candidate": 0,
+          "headroom": true
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.35,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 3,
+      "queue_miss_rate": 0.3333333333333333,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.5,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 2,
+      "queue_miss_rate": 0.5,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.65,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 2,
+      "queue_miss_rate": 0.5,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.8,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_uhc",
+      "dilution": 0.95,
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    },
+    {
+      "protocol": "global_temporal",
+      "candidate": "R_uhc",
+      "dilution": "natural_D+T2",
+      "verdict": "INCONCLUSIVE",
+      "failed_gates": [],
+      "n_miss_test": 1,
+      "queue_n": 1,
+      "queue_miss_rate": 1.0,
+      "G0": false,
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G4_detail": {
+        "passed": 2,
+        "eligible": 2,
+        "frac": 1.0
+      },
+      "G5": true,
+      "G6": false,
+      "G7": true,
+      "rows": [
+        {
+          "budget": 0.02,
+          "k": 3,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        },
+        {
+          "budget": 0.05,
+          "k": 8,
+          "arrival": 1,
+          "oracle": 1,
+          "conf_asc": 1,
+          "conf_desc": 1,
+          "candidate": 1,
+          "headroom": false
+        }
+      ]
+    }
+  ]
+}

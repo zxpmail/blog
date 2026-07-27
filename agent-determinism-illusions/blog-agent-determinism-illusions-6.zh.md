@@ -313,11 +313,27 @@ CD 按 solo 像弱环（24.9 vs P6 28.4），按独有捞获却是承重柱—�
 
 **95.8% 的集中度。** 96 次 MISS 里：**qwen3-0.5b = 77（80.2%）**，gemma3 = 16（16.7%），deepseek-v4-flash = 3（3.1%）。单场景 DS4 占 34.4%。所以这个比例部分是「qwen 漏得多，漏的时候又自信」——不是可当通用升级先验的均衡 3×20 性质。条件形态仍成立：给定 miss，qwen 75/77（97.4%）、gemma 16/16（100%）在 conf≥0.9；deepseek 几乎不 miss（1/3 高置信）。落盘：`results-v2/confidence-vs-miss-concentration.json`。
 
-### Update (2026-07-22)：升级 tripwire ≠ 审计加权——系列下篇（草稿）
+### Update (2026-07-27)：共现解锁中段；两端仍稳
+
+Mike 在独有捞获列之后的跟进：3×3（分布 × 信号质量）独立点火扫出来 unique-CR 序九格全同（`CD > barely > route > input`），但仍没测*独立性本身*——要强制两信号因同一缺陷类共火，看 `barely` 与 `route` 会不会换位。
+
+同一套耦合 Uniform 独有捞获定义（burst/medium、10% floor）三条离线臂：
+
+1. **强制共火对**（`unique-catch-cofire-test.py`）：对 ρ 比例的缺陷强制 `route_changed ∧ classifier_disagree`（ρ→0.8），再扫全 C(4,2)=6 对。共火下 unique *绝对值*塌；**序全程不动**。
+2. **共现标签**（`unique-catch-cooccur-labels-test.py`）：每个缺陷抽潜在类 → 签名以 `p_sig=0.90` 点火。`mike_half`（π(`route_cd`)=0.5）下中段**翻了**（`route > barely`；N=2000 仍稳）。两端仍持。
+3. **剂量**（`unique-catch-cooccur-dose-test.py`）：π*(`route_cd`)≈**0.50**（防闪烁）。`barely_route` / `cd_barely` 单类剂量从不翻中段。π(`route_cd`)=1 时两端也会破（route 压过 CD）——只在这种极端。
+
+**裁剪结论：** 先砍 `input_unusual` / 最后留 CD，在这些仿真里站得住；**不要锁** `barely` vs `route`，除非有真实共现标签里 route∧CD 的质量估计。此处 π 是编的——生产 trace 的标签才是上锁条件。落盘：`results-v2/unique-catch-cofire.json`、`unique-catch-cofire-pairs.json`、`unique-catch-cooccur-labels.json`、`unique-catch-cooccur-dose.json`。
+
+### Update (2026-07-22)：升级 tripwire ≠ 审计加权——系列下篇
 
 Alexey Spinov 对本篇的跟评拧的是另一颗旋钮：不是高自信区*审计多勤*，而是当失败模式相关时，L2 **全票**是否还该自动执行。第 6 篇管线图缺这层，是真缺——只靠分歧升级，对不上 DF v2 已测到的失败模式。
 
-**全文在 [第 7 篇](blog-agent-determinism-illusions-7.zh.md)**（《分歧升级捞错了人》——本地草稿，**尚未发到 DEV.to**）。此处只指路，避免已发表正文假装旧图完整。数字、D+T2、复发/新奇、结构≠因果独立、hold-out 都在该草稿里，不在本篇重复。
+**全文在 [第 7 篇](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513)**（《分歧升级捞错了人》）。此处只指路，避免已发表正文假装旧图完整。数字、D+T2、复发/新奇、结构≠因果独立、hold-out 都在那里，不在本篇重复。
+
+### Update (2026-07-27)：进队之后——谁被看见（指针）
+
+本线程里 Alexey 后续网格（floor volume、arrival vs 精度序）与 Mike 的 reframe（开放问题是 rank-inside-stream）落在第 7 篇进队策略**之后**。**[第 15 篇](blog-agent-determinism-illusions-15.zh.md)**（《D+T2 只决定谁进门；预算决定谁被看见》——本地草稿）承载离线套件：稀释队列验收、特征×时间压力、Trigger∥Rank / Shadow∥Enforce。编号跳到 15，是为了不挪动第 8–14 篇的其他弧；本论证线的发布顺序是 7 → 15。
 
 ---
 

@@ -24,6 +24,7 @@
 | 续篇三 | 把「架构画了」当「问题解决了」 | 六刀拆自己的 Harness 方案 |
 | 续篇四 | LLM 质量检查的替代方案:确定性路由 + 抽样 | 风险分流框架 + 三刀修正 |
 | [第 14 篇](blog-agent-determinism-illusions-14.zh.md) | Harness 不是编排壳：闸门先于编排——一份工程备忘录 | 运行时闸门 vs 稻草人编排；假接受↓ / 假拒绝有代价 |
+| [第 15 篇](blog-agent-determinism-illusions-15.zh.md) | D+T2 只决定谁进门；预算决定谁被看见 | 流内排序 / 验收门 / Trigger∥Rank·Shadow∥Enforce（接第 7 篇；编号跳号有意） |
 
 英文(4 篇 + 后续):
 
@@ -34,6 +35,7 @@
 | 3 | I designed a Harness to fix my agent's quality problem — then found 6 flaws in my own design | 6 flaws in a human-in-the-loop agent quality Harness |
 | 4 | An alternative to LLM quality gates: deterministic routing + sampling | Risk-based agent output quality: an alternative to LLM quality gates |
 | [14](blog-agent-determinism-illusions-14.en.md) | Harness Is a Gate, Not an Orchestrator — an engineering memo | Gates before orchestration; strawman ORCH contrast |
+| [15](blog-agent-determinism-illusions-15.en.md) | D+T2 names who enters; budget names who gets seen | Rank-inside-stream / dual-line ops (continues Part 7; skip numbering intentional) |
 
 > 第 5–13 篇文件见仓库 `blog-agent-determinism-illusions-{n}.{zh,en}.md`（部分未上架索引表）。
 

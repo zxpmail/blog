@@ -288,7 +288,12 @@ Xiao Man 在 P1→P4 悬崖与「过规格 = 浪费不是安全」之后追问�
 
 **分歧留下。T1/T2 加入。它们都不是新奇臂。第五个 prompt 也不是。过 checksum 的「其他数据」probe 也不自动是共因护盾。匹配深度保住捕获；欠规格才是悬崖；失败才加深不是绕开悬崖的捷径。**
 
+### Update (2026-07-27)：谁进门 ≠ 谁被看见（指针）
+
+第 6 篇线程里 Alexey/Mike 把问题从 tripwire 选择推到 floor volume 与硬预算下的 rank-inside-stream。那是 D+T2 之后的下一控制面——不是又一个 novelty 臂 prompt。离线套件 + 双线运维形态：**[第 15 篇](blog-agent-determinism-illusions-15.zh.md)**（《D+T2 只决定谁进门；预算决定谁被看见》）。编号跳到 15，为保住第 8–14 篇其他弧；本论证线发布顺序是 7 → 15。
+
 ---
 
 **系列：** Agent Determinism Illusions · 脚本：[GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
-**前回：** [第 6 篇 — Five comments…](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)
+**上一篇：** [第 6 篇](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
+**本弧下一篇：** [第 15 篇 — D+T2 只决定谁进门；预算决定谁被看见](blog-agent-determinism-illusions-15.zh.md)

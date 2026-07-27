@@ -1,0 +1,525 @@
+{
+  "experiment": "unique-catch-cooccur-labels",
+  "claim": "Under simulated co-occurrence labels (latent defect class → signal signature), does unique-CR prune order hold?",
+  "definition": "unique_catch = defective caught by solo-i under Alex(baseline+esc*s_i) with coupled Uniform draw, not caught by any other solo-j",
+  "generative_model": "defective ~ label L~π; signal in signature(L) fires @ p_sig; else @ SIGNAL_MEDIUM.tp; cleans independent FP",
+  "p_sig": 0.9,
+  "signatures": {
+    "independent": [],
+    "route_cd": [
+      "classifier_disagree",
+      "route_changed"
+    ],
+    "barely_route": [
+      "barely_passed",
+      "route_changed"
+    ],
+    "cd_barely": [
+      "barely_passed",
+      "classifier_disagree"
+    ],
+    "input_route": [
+      "input_unusual",
+      "route_changed"
+    ],
+    "cd_input": [
+      "classifier_disagree",
+      "input_unusual"
+    ],
+    "input_barely": [
+      "barely_passed",
+      "input_unusual"
+    ],
+    "triple_rcb": [
+      "barely_passed",
+      "classifier_disagree",
+      "route_changed"
+    ],
+    "all_four": [
+      "barely_passed",
+      "classifier_disagree",
+      "input_unusual",
+      "route_changed"
+    ]
+  },
+  "trials_per_mixture": 400,
+  "seed": 20260727,
+  "error_rate": 0.1,
+  "error_dist": "burst",
+  "baseline_rank": [
+    "classifier_disagree",
+    "barely_passed",
+    "route_changed",
+    "input_unusual"
+  ],
+  "any_middle_swap": true,
+  "any_extremes_break": false,
+  "cells": [
+    {
+      "mixture": "independent",
+      "pi": {
+        "independent": 1.0
+      },
+      "p_sig": 0.9,
+      "trials": 400,
+      "total_defective": 95975,
+      "label_mass_realized": {
+        "independent": 1.0
+      },
+      "pairwise_joint_rates": {
+        "route_changed∧classifier_disagree": 0.1264,
+        "route_changed∧input_unusual": 0.0509,
+        "route_changed∧barely_passed": 0.0883,
+        "classifier_disagree∧input_unusual": 0.1008,
+        "classifier_disagree∧barely_passed": 0.1755,
+        "input_unusual∧barely_passed": 0.071
+      },
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "middle_pair_order": "barely_passed > route_changed",
+      "extremes_hold": true,
+      "rank_equals_baseline": true,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.1754,
+          "unique": 0.0194,
+          "share": 0.11
+        },
+        "classifier_disagree": {
+          "solo": 0.2506,
+          "unique": 0.0585,
+          "share": 0.234
+        },
+        "input_unusual": {
+          "solo": 0.161,
+          "unique": 0.0155,
+          "share": 0.096
+        },
+        "barely_passed": {
+          "solo": 0.2056,
+          "unique": 0.0324,
+          "share": 0.157
+        }
+      },
+      "middle_swapped_vs_independent": false
+    },
+    {
+      "mixture": "mike_half",
+      "pi": {
+        "route_cd": 0.5,
+        "independent": 0.5
+      },
+      "p_sig": 0.9,
+      "trials": 400,
+      "total_defective": 96631,
+      "label_mass_realized": {
+        "route_cd": 0.5007,
+        "independent": 0.4993
+      },
+      "pairwise_joint_rates": {
+        "route_changed∧classifier_disagree": 0.4674,
+        "route_changed∧input_unusual": 0.1124,
+        "route_changed∧barely_passed": 0.2017,
+        "classifier_disagree∧input_unusual": 0.1377,
+        "classifier_disagree∧barely_passed": 0.2458,
+        "input_unusual∧barely_passed": 0.0692
+      },
+      "unique_rank": [
+        "classifier_disagree",
+        "route_changed",
+        "barely_passed",
+        "input_unusual"
+      ],
+      "middle_pair_order": "route_changed > barely_passed",
+      "extremes_hold": true,
+      "rank_equals_baseline": false,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.2728,
+          "unique": 0.0164,
+          "share": 0.06
+        },
+        "classifier_disagree": {
+          "solo": 0.3112,
+          "unique": 0.0369,
+          "share": 0.118
+        },
+        "input_unusual": {
+          "solo": 0.1602,
+          "unique": 0.0073,
+          "share": 0.046
+        },
+        "barely_passed": {
+          "solo": 0.2079,
+          "unique": 0.0163,
+          "share": 0.078
+        }
+      },
+      "middle_swapped_vs_independent": true
+    },
+    {
+      "mixture": "balanced_pairs",
+      "pi": {
+        "route_cd": 0.14285714285714285,
+        "barely_route": 0.14285714285714285,
+        "cd_barely": 0.14285714285714285,
+        "input_route": 0.14285714285714285,
+        "cd_input": 0.14285714285714285,
+        "input_barely": 0.14285714285714285,
+        "independent": 0.14285714285714285
+      },
+      "p_sig": 0.9,
+      "trials": 400,
+      "total_defective": 96125,
+      "label_mass_realized": {
+        "input_route": 0.1434,
+        "route_cd": 0.1431,
+        "cd_barely": 0.1431,
+        "cd_input": 0.1429,
+        "barely_route": 0.1429,
+        "independent": 0.1425,
+        "input_barely": 0.1421
+      },
+      "pairwise_joint_rates": {
+        "route_changed∧classifier_disagree": 0.3452,
+        "route_changed∧input_unusual": 0.2477,
+        "route_changed∧barely_passed": 0.2967,
+        "classifier_disagree∧input_unusual": 0.3265,
+        "classifier_disagree∧barely_passed": 0.3828,
+        "input_unusual∧barely_passed": 0.2774
+      },
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "middle_pair_order": "barely_passed > route_changed",
+      "extremes_hold": true,
+      "rank_equals_baseline": true,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.2576,
+          "unique": 0.0077,
+          "share": 0.03
+        },
+        "classifier_disagree": {
+          "solo": 0.3002,
+          "unique": 0.0147,
+          "share": 0.049
+        },
+        "input_unusual": {
+          "solo": 0.2499,
+          "unique": 0.0075,
+          "share": 0.03
+        },
+        "barely_passed": {
+          "solo": 0.2754,
+          "unique": 0.0098,
+          "share": 0.036
+        }
+      },
+      "middle_swapped_vs_independent": false
+    },
+    {
+      "mixture": "middle_attack",
+      "pi": {
+        "barely_route": 0.7,
+        "independent": 0.3
+      },
+      "p_sig": 0.9,
+      "trials": 400,
+      "total_defective": 96651,
+      "label_mass_realized": {
+        "barely_route": 0.7011,
+        "independent": 0.2989
+      },
+      "pairwise_joint_rates": {
+        "route_changed∧classifier_disagree": 0.3532,
+        "route_changed∧input_unusual": 0.1415,
+        "route_changed∧barely_passed": 0.5931,
+        "classifier_disagree∧input_unusual": 0.1001,
+        "classifier_disagree∧barely_passed": 0.3682,
+        "input_unusual∧barely_passed": 0.1477
+      },
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "middle_pair_order": "barely_passed > route_changed",
+      "extremes_hold": true,
+      "rank_equals_baseline": true,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.3136,
+          "unique": 0.0131,
+          "share": 0.042
+        },
+        "classifier_disagree": {
+          "solo": 0.2505,
+          "unique": 0.0178,
+          "share": 0.071
+        },
+        "input_unusual": {
+          "solo": 0.1606,
+          "unique": 0.0043,
+          "share": 0.027
+        },
+        "barely_passed": {
+          "solo": 0.3218,
+          "unique": 0.0168,
+          "share": 0.052
+        }
+      },
+      "middle_swapped_vs_independent": false
+    },
+    {
+      "mixture": "starve_barely",
+      "pi": {
+        "cd_barely": 0.7,
+        "independent": 0.3
+      },
+      "p_sig": 0.9,
+      "trials": 400,
+      "total_defective": 95546,
+      "label_mass_realized": {
+        "cd_barely": 0.7013,
+        "independent": 0.2987
+      },
+      "pairwise_joint_rates": {
+        "route_changed∧classifier_disagree": 0.1942,
+        "route_changed∧input_unusual": 0.0487,
+        "route_changed∧barely_passed": 0.183,
+        "classifier_disagree∧input_unusual": 0.1543,
+        "classifier_disagree∧barely_passed": 0.6195,
+        "input_unusual∧barely_passed": 0.1454
+      },
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "middle_pair_order": "barely_passed > route_changed",
+      "extremes_hold": true,
+      "rank_equals_baseline": true,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.1778,
+          "unique": 0.0062,
+          "share": 0.035
+        },
+        "classifier_disagree": {
+          "solo": 0.3358,
+          "unique": 0.0279,
+          "share": 0.083
+        },
+        "input_unusual": {
+          "solo": 0.1618,
+          "unique": 0.0051,
+          "share": 0.031
+        },
+        "barely_passed": {
+          "solo": 0.3241,
+          "unique": 0.0207,
+          "share": 0.064
+        }
+      },
+      "middle_swapped_vs_independent": false
+    },
+    {
+      "mixture": "cd_hub",
+      "pi": {
+        "route_cd": 0.25,
+        "cd_barely": 0.25,
+        "cd_input": 0.25,
+        "independent": 0.25
+      },
+      "p_sig": 0.9,
+      "trials": 400,
+      "total_defective": 95633,
+      "label_mass_realized": {
+        "independent": 0.252,
+        "cd_barely": 0.2505,
+        "cd_input": 0.2504,
+        "route_cd": 0.2472
+      },
+      "pairwise_joint_rates": {
+        "route_changed∧classifier_disagree": 0.3453,
+        "route_changed∧input_unusual": 0.1263,
+        "route_changed∧barely_passed": 0.1785,
+        "classifier_disagree∧input_unusual": 0.316,
+        "classifier_disagree∧barely_passed": 0.4016,
+        "input_unusual∧barely_passed": 0.1581
+      },
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "middle_pair_order": "barely_passed > route_changed",
+      "extremes_hold": true,
+      "rank_equals_baseline": true,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.2237,
+          "unique": 0.0086,
+          "share": 0.038
+        },
+        "classifier_disagree": {
+          "solo": 0.3391,
+          "unique": 0.0265,
+          "share": 0.078
+        },
+        "input_unusual": {
+          "solo": 0.2125,
+          "unique": 0.0074,
+          "share": 0.035
+        },
+        "barely_passed": {
+          "solo": 0.2452,
+          "unique": 0.0123,
+          "share": 0.05
+        }
+      },
+      "middle_swapped_vs_independent": false
+    },
+    {
+      "mixture": "triple_heavy",
+      "pi": {
+        "triple_rcb": 0.5,
+        "all_four": 0.3,
+        "independent": 0.2
+      },
+      "p_sig": 0.9,
+      "trials": 400,
+      "total_defective": 95944,
+      "label_mass_realized": {
+        "triple_rcb": 0.5006,
+        "all_four": 0.2993,
+        "independent": 0.2001
+      },
+      "pairwise_joint_rates": {
+        "route_changed∧classifier_disagree": 0.6733,
+        "route_changed∧input_unusual": 0.3419,
+        "route_changed∧barely_passed": 0.6666,
+        "classifier_disagree∧input_unusual": 0.3526,
+        "classifier_disagree∧barely_passed": 0.6828,
+        "input_unusual∧barely_passed": 0.3462
+      },
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "middle_pair_order": "barely_passed > route_changed",
+      "extremes_hold": true,
+      "rank_equals_baseline": true,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.3329,
+          "unique": 0.0053,
+          "share": 0.016
+        },
+        "classifier_disagree": {
+          "solo": 0.3471,
+          "unique": 0.0124,
+          "share": 0.036
+        },
+        "input_unusual": {
+          "solo": 0.2244,
+          "unique": 0.0033,
+          "share": 0.015
+        },
+        "barely_passed": {
+          "solo": 0.3386,
+          "unique": 0.0074,
+          "share": 0.022
+        }
+      },
+      "middle_swapped_vs_independent": false
+    },
+    {
+      "mixture": "chaos",
+      "pi": {
+        "route_cd": 0.12,
+        "barely_route": 0.12,
+        "cd_barely": 0.12,
+        "input_route": 0.1,
+        "cd_input": 0.1,
+        "input_barely": 0.1,
+        "triple_rcb": 0.14,
+        "all_four": 0.1,
+        "independent": 0.1
+      },
+      "p_sig": 0.9,
+      "trials": 400,
+      "total_defective": 95820,
+      "label_mass_realized": {
+        "triple_rcb": 0.14,
+        "barely_route": 0.1213,
+        "cd_barely": 0.1197,
+        "route_cd": 0.1192,
+        "independent": 0.1008,
+        "all_four": 0.1008,
+        "cd_input": 0.0999,
+        "input_barely": 0.0993,
+        "input_route": 0.0989
+      },
+      "pairwise_joint_rates": {
+        "route_changed∧classifier_disagree": 0.4679,
+        "route_changed∧input_unusual": 0.2892,
+        "route_changed∧barely_passed": 0.4304,
+        "classifier_disagree∧input_unusual": 0.3439,
+        "classifier_disagree∧barely_passed": 0.4953,
+        "input_unusual∧barely_passed": 0.3104
+      },
+      "unique_rank": [
+        "classifier_disagree",
+        "barely_passed",
+        "route_changed",
+        "input_unusual"
+      ],
+      "middle_pair_order": "barely_passed > route_changed",
+      "extremes_hold": true,
+      "rank_equals_baseline": true,
+      "by_signal": {
+        "route_changed": {
+          "solo": 0.2881,
+          "unique": 0.0061,
+          "share": 0.021
+        },
+        "classifier_disagree": {
+          "solo": 0.3187,
+          "unique": 0.0113,
+          "share": 0.036
+        },
+        "input_unusual": {
+          "solo": 0.242,
+          "unique": 0.005,
+          "share": 0.021
+        },
+        "barely_passed": {
+          "solo": 0.2989,
+          "unique": 0.008,
+          "share": 0.027
+        }
+      },
+      "middle_swapped_vs_independent": false
+    }
+  ],
+  "interpretation": [
+    "Middle flips under mixtures: mike_half (route_u=0.0164, barely_u=0.0163). Middle prune NOT locked under co-occurrence labels (even a tiny stable swap counts — pair-force alone missed this).",
+    "Extremes still held on every mixture (CD top / input bottom).",
+    "Rank moved under: mike_half",
+    "Still not a production lock: π and signatures are invented, not fit to a real trace's co-occurrence labels."
+  ]
+}

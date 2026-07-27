@@ -6,12 +6,14 @@
 -->
 
 ---
+
 title: "Divergence escalates the wrong population: unanimous misses auto-pass"
-published: false
+published: true
 description: "Alexey Spinov on Part 6: L2→L3 on judge disagreement routes humans to the safe-ambiguous set and auto-passes the confidently-wrong set. Offline DF v2 proxy + real Strict/Balanced/Lenient on qwen3:0.5b. Fix: class tripwires + inverse-unanimous escalate (D+T2)."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
+
 ---
 
 # Divergence escalates the wrong population: unanimous misses auto-pass
@@ -59,18 +61,18 @@ Part 6's Mike Update already showed: of 96 DF v2 MISS runs, **95.8%** sat at sel
 Among PASS decisions that are MISS, after dropping **2** deepseek DS4 runs with `confidence: null` (policy table needs a scalar conf). Denominator for the table below is therefore **n=94**, not the Part 6 headline n=96:
 
 | Bucket under divergence-proxy | Share of MISS (n=94) |
-|-------------------------------|----------------------|
-| would AUTO-PASS (conf≥0.9) | **97.9%** (92/94) |
-| would ESCALATE (conf<0.9) | 2.1% (2/94) |
+| ----------------------------- | -------------------- |
+| would AUTO-PASS (conf≥0.9)    | **97.9%** (92/94)    |
+| would ESCALATE (conf<0.9)     | 2.1% (2/94)          |
 
 Policy comparison on the same PASS set:
 
-| Policy | MISS catch% | MISS still auto-pass% |
-|--------|-------------|------------------------|
-| **D** (escalate only low-conf) | 2.1% | **97.9%** |
-| T1 (escalate all DF*/DS* classes) | 100%† | 0% |
-| T2 (reversal class ∩ conf≥0.9) | 97.9% | 2.1% |
-| **D+T2** | **100%** | **0%** |
+| Policy                            | MISS catch% | MISS still auto-pass% |
+| --------------------------------- | ----------- | --------------------- |
+| **D** (escalate only low-conf)    | 2.1%        | **97.9%**             |
+| T1 (escalate all DF*/DS* classes) | 100%†       | 0%                    |
+| T2 (reversal class ∩ conf≥0.9)    | 97.9%       | 2.1%                  |
+| **D+T2**                          | **100%**    | **0%**                |
 
 †**T1 is a class-list upper bound on this fixture, not an independent discovery.** Every DF v2 MISS sid is already DF*/DS*; “escalate all reversal classes” therefore catches 100% of MISS by definition. Read T1 as the oracle ceiling; the deployable claim is **D+T2**.
 
@@ -102,19 +104,19 @@ Strict/Balanced reject, Lenient passes → almost everything is `split`, majorit
 
 **6** dangerous accepts (majority PASS on bad output). Of those:
 
-| Pattern | Count | Share |
-|---------|------:|------:|
-| `unanimous_pass` | 4 | **66.7%** |
-| `split` | 2 | 33.3% |
+| Pattern          | Count | Share     |
+| ---------------- | -----:| ---------:|
+| `unanimous_pass` | 4     | **66.7%** |
+| `split`          | 2     | 33.3%     |
 
 Policy table on that run:
 
-| Policy | MISS catch% | MISS still auto-pass% | True-pass escalate% |
-|--------|-------------|------------------------|---------------------|
-| **D** | 33.3% | **66.7%** | 0% |
-| T1 | 100%† | 0% | 0% |
-| T2 | 66.7% | 33.3% | 0% |
-| **D+T2** | **100%** | **0%** | 0% |
+| Policy   | MISS catch% | MISS still auto-pass% | True-pass escalate% |
+| -------- | ----------- | --------------------- | ------------------- |
+| **D**    | 33.3%       | **66.7%**             | 0%                  |
+| T1       | 100%†       | 0%                    | 0%                  |
+| T2       | 66.7%       | 33.3%                 | 0%                  |
+| **D+T2** | **100%**    | **0%**                | 0%                  |
 
 †Same caveat as §2: all six dangerous accepts sit on reversal-class sids, so T1's 100% is the class-list ceiling. The load-bearing row is **D+T2**.
 
@@ -163,10 +165,10 @@ What Mike hoped might fill the novelty arm is `classifier_disagree` carrying sig
 
 The fork this series keeps landing on:
 
-| Arm | Signal shape | Catches | Cost |
-|-----|--------------|---------|------|
-| **Recurrence** | T1 / T2 — failure history, known-reversal classes | Repeats of burned modes | Cheap |
-| **Novelty** | Source that does **not** share the judge's priors (out-of-channel probe, independent modality — see Part 13 probe-vs-prose; not another prompt in the same text channel) | First occurrence of a new systematic bias | Expensive |
+| Arm            | Signal shape                                                                                                                                                             | Catches                                   | Cost      |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- | --------- |
+| **Recurrence** | T1 / T2 — failure history, known-reversal classes                                                                                                                        | Repeats of burned modes                   | Cheap     |
+| **Novelty**    | Source that does **not** share the judge's priors (out-of-channel probe, independent modality — see Part 13 probe-vs-prose; not another prompt in the same text channel) | First occurrence of a new systematic bias | Expensive |
 
 You want both. The mistake is expecting the cheap arm to cover the expensive arm's job. D+T2 stays the right addition to Part 6's diagram. It does not close confidently-wrong-and-never-caught-before.
 
@@ -175,15 +177,15 @@ You want both. The mistake is expecting the cheap arm to cover the expensive arm
 Before building the novelty-arm probe, Mike pinned the property that buys independence — not the costume:
 
 > A probe still counts as same-channel if it's another LLM call reasoning in text about whether the claim looks right, even one primed differently or asked to disagree. The property that actually buys independence is that the probe's answer comes from **re-deriving the fact through a path the original claim never touched** — a different data source, a structural invariant, a re-computation, not a second read of the same evidence with a different prompt.
->
+> 
 > Concretely: …state in advance what it would mean for the probe to be wrong **independent of what the original claim said**, the way a **checksum** can be wrong regardless of what the file claims to contain. If the only way to evaluate the probe's output is to compare it against the original claim's reasoning, it's still in-channel, just later in the pipeline. Semantic novelty is hard exactly because most available second opinions inherit the same evidence and the same reasoning substrate… The ones that don't are rarer and usually domain-specific, which is probably why this arm stays open while the recurrence arm is buildable today.
 
 **Checksum test (operational):** Can you write the probe's pass/fail criterion *without referring to the claim's rationale*? If no → still in-channel (fifth prompt wearing a hat). If yes → candidate out-of-channel.
 
-| Fails the test (same-channel) | Passes the test (out-of-channel) |
-|-------------------------------|----------------------------------|
+| Fails the test (same-channel)                                              | Passes the test (out-of-channel)                                                                                                                            |
+| -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Strict/Balanced/Lenient, “disagree with the previous judge”, debate panels | Re-compute from source data; structural invariant (schema, type, checksum); runner that executes a command whose output falsifies the claim (Part 13 probe) |
-| `classifier_disagree` when L2 is still text-over-the-same-artifact | L0/L1 shape/contract checks that never read the LLM's story — only when their verdict doesn't need the claim's prose to be interpretable |
+| `classifier_disagree` when L2 is still text-over-the-same-artifact         | L0/L1 shape/contract checks that never read the LLM's story — only when their verdict doesn't need the claim's prose to be interpretable                    |
 
 So: recurrence arm is buildable today (T1/T2). Novelty arm stays open **on purpose** — not because we haven't added another prompt, but because genuine independence is scarce and domain-shaped. Part 13's probe-vs-prose is the closest existing thread; Mike's checksum test is the acceptance criterion for anything that claims to sit on that arm.
 
@@ -192,15 +194,15 @@ So: recurrence arm is buildable today (T1/T2). Novelty arm stays open **on purpo
 Mike's follow-up on the checksum bar:
 
 > Checksum framing sets the right bar, because it's falsifiable independent of the story. A probe that can only be scored by comparing it to the original reasoning is grading agreement, not correctness.
->
+> 
 > One case worth naming explicitly…: "other data" that's structurally different but still downstream of the **same collection pipeline**. Two signals can pass the same-channel test and still share a common cause upstream — a sensor outage or schema change that corrupts both the claim and the probe's input at once. **Structural independence and causal independence aren't the same property**, and the recurrence-buildable-today case might be quietly assuming the second while only checking the first.
 
 Two cuts, not one:
 
-| Test | Asks | Passes when… | Still fails when… |
-|------|------|--------------|-------------------|
-| **Checksum / same-channel** | Can you score the probe without the claim's *story*? | Pass/fail is writable without the rationale | Probe is a second text read of the same evidence |
-| **Causal / common-cause** | Do claim and probe share an upstream failure mode? | Probe input is not downstream of the same collection/export/schema path | "Other data" that *looks* independent but is corrupted by the same sensor outage, schema change, or bad export |
+| Test                        | Asks                                                 | Passes when…                                                            | Still fails when…                                                                                              |
+| --------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Checksum / same-channel** | Can you score the probe without the claim's *story*? | Pass/fail is writable without the rationale                             | Probe is a second text read of the same evidence                                                               |
+| **Causal / common-cause**   | Do claim and probe share an upstream failure mode?   | Probe input is not downstream of the same collection/export/schema path | "Other data" that *looks* independent but is corrupted by the same sensor outage, schema change, or bad export |
 
 Checksum framing is still the right first bar — it stops agreement-grading. It is **not** a common-cause shield. Naming the second failure mode so "out-of-channel" does not silently promote structural difference into causal independence.
 
@@ -210,12 +212,12 @@ What this tightens about the asymmetry claim: **"recurrence buildable today"** i
 
 Minimal offline test (`novelty-arm-holdout-test.py` → `results-v2/novelty-arm-holdout.json`, frozen with `--holdout DS4`). Hold out **DS4** from the known-reversal registry (31 high-conf MISS runs across models). Three arms on that first-occurrence mass:
 
-| Arm | Catch on DS4 high-conf MISS |
-|-----|-----------------------------|
-| **A Recurrence** (D+T2, DS4 not in registry) | **0/31 (0%)** |
-| **B Same-channel** (other run of same model×sid rejected) | **1/31 (3%)** |
-| **B′ Same-channel** (qwen Strict/Balanced/Lenient) | **unanimous_pass → catch false** |
-| **C Out-of-channel probe** (task+artifact checksum; no judge rationale) | **31/31 (100%)‡** |
+| Arm                                                                     | Catch on DS4 high-conf MISS      |
+| ----------------------------------------------------------------------- | -------------------------------- |
+| **A Recurrence** (D+T2, DS4 not in registry)                            | **0/31 (0%)**                    |
+| **B Same-channel** (other run of same model×sid rejected)               | **1/31 (3%)**                    |
+| **B′ Same-channel** (qwen Strict/Balanced/Lenient)                      | **unanimous_pass → catch false** |
+| **C Out-of-channel probe** (task+artifact checksum; no judge rationale) | **31/31 (100%)‡**                |
 
 ‡**Arm C is a fixture demonstration, not blind generalization.** `probe_fail()` encodes per-sid / task-constraint rules (including DS4); hold-out removes DS4 from the *recurrence registry only*. The probe still knows the artifact shape. Read 31/31 as “a checksum-style criterion *can* catch first occurrence without a class history entry,” not as “we discovered a probe without looking at the failure.” Same shape with `--holdout DS9` (re-run overwrites the JSON; default freeze is DS4).
 
@@ -233,23 +235,23 @@ Dual-axis offline test (`probe-complexity-dual-axis.py` → `results-v2/probe-co
 
 **Catch matrix (share of bad artifacts rejected):**
 
-|  | P1 | P2 | P3 | P4 |
-|--|----|----|----|-----|
-| T1 | 1.00 | 1.00 | 1.00 | 1.00 |
-| T2 | 0.48 | **1.00** | 1.00 | 1.00 |
-| T3 | 0.45 | 0.35 | **1.00** | 1.00 |
-| T4 | 0.23 | 0.30 | 0.70 | **1.00** |
+|     | P1   | P2       | P3       | P4       |
+| --- | ---- | -------- | -------- | -------- |
+| T1  | 1.00 | 1.00     | 1.00     | 1.00     |
+| T2  | 0.48 | **1.00** | 1.00     | 1.00     |
+| T3  | 0.45 | 0.35     | **1.00** | 1.00     |
+| T4  | 0.23 | 0.30     | 0.70     | **1.00** |
 
 (Bold = matched depth.)
 
 **Cost-ratio matrix** (instrumented probe ops ÷ task ops; task ops = schema leaves + artifact size):
 
-|  | P1 | P2 | P3 | P4 |
-|--|----|----|----|-----|
-| T1 | 0.23 | 0.15 | 0.15 | 0.46 |
-| T2 | 0.09 | 0.14 | 0.15 | 0.26 |
-| T3 | 0.07 | 0.11 | 0.20 | 0.24 |
-| T4 | 0.04 | 0.06 | 0.12 | 0.19 |
+|     | P1   | P2   | P3   | P4   |
+| --- | ---- | ---- | ---- | ---- |
+| T1  | 0.23 | 0.15 | 0.15 | 0.46 |
+| T2  | 0.09 | 0.14 | 0.15 | 0.26 |
+| T3  | 0.07 | 0.11 | 0.20 | 0.24 |
+| T4  | 0.04 | 0.06 | 0.12 | 0.19 |
 
 Reading:
 
@@ -301,7 +303,12 @@ Part 6 was right to stop majority-voting splits into a false consensus. It was w
 
 **Divergence stays. T1/T2 join it. None of them is the novelty arm. A fifth prompt is not the novelty arm either. A checksum-passing “other data” probe is not automatically a common-cause shield. Matched depth keeps catch; under-spec is the cliff; deepen-on-fail is not a shortcut around it.**
 
+### Update (2026-07-27): who enters ≠ who gets seen (pointer)
+
+Alexey/Mike on the Part 6 thread pushed past tripwire choice to floor volume and rank-inside-stream under a hard human budget. That is the next control plane after D+T2 — not another novelty-arm prompt. Offline suite + dual-line ops shape: **[Part 15](blog-agent-determinism-illusions-15.en.md)** (*D+T2 names who enters; budget names who gets seen*). Numbering skips to 15 so Parts 8–14 keep other arcs; argument publish order is 7 → 15.
+
 ---
 
 **Series:** Agent Determinism Illusions · Scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
-**Previous:** [Part 6 — Five comments that redesigned my LLM verification pipeline](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)
+**Previous:** [Part 6 — Five comments that redesigned my LLM verification pipeline](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
+**Next (this arc):** [Part 15 — D+T2 names who enters; budget names who gets seen](blog-agent-determinism-illusions-15.en.md)

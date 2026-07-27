@@ -1,0 +1,2317 @@
+{
+  "experiment": "unique-catch-cofire-pairs",
+  "claim": "Does ANY forced single-pair co-fire among the four signals reorder unique-CR (esp. middle barely vs route)?",
+  "definition": "unique_catch = defective caught by solo-i under Alex(baseline+esc*s_i) with coupled Uniform draw, and not caught by any other solo-j",
+  "injection": "After independent SIGNAL_MEDIUM fires, with probability ρ force the named pair = 1 on defective outputs only",
+  "trials_per_cell": 400,
+  "seed": 20260727,
+  "error_rate": 0.1,
+  "error_dist": "burst",
+  "signal_quality": "medium",
+  "rhos": [
+    0.0,
+    0.2,
+    0.4,
+    0.6,
+    0.8
+  ],
+  "baseline_rank": [
+    "classifier_disagree",
+    "barely_passed",
+    "route_changed",
+    "input_unusual"
+  ],
+  "any_middle_swap_any_pair": false,
+  "any_extremes_break_any_pair": false,
+  "pair_results": [
+    {
+      "cofire_pair": [
+        "route_changed",
+        "classifier_disagree"
+      ],
+      "any_middle_swap": false,
+      "any_rank_change": false,
+      "all_extremes_hold": true,
+      "cells": [
+        {
+          "cofire_pair": [
+            "route_changed",
+            "classifier_disagree"
+          ],
+          "rho": 0.0,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95674,
+          "mean_joint_rate": 0.125,
+          "mean_forced_fraction": 0.0,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1771,
+              "unique": 0.0193,
+              "share": 0.109
+            },
+            "classifier_disagree": {
+              "solo": 0.2517,
+              "unique": 0.0581,
+              "share": 0.231
+            },
+            "input_unusual": {
+              "solo": 0.1613,
+              "unique": 0.0149,
+              "share": 0.092
+            },
+            "barely_passed": {
+              "solo": 0.2068,
+              "unique": 0.0312,
+              "share": 0.151
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.17706,
+              "unique_catch_rate": 0.019284,
+              "unique_share_of_solo": 0.1089
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.251698,
+              "unique_catch_rate": 0.058124,
+              "unique_share_of_solo": 0.2309
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.161308,
+              "unique_catch_rate": 0.014853,
+              "unique_share_of_solo": 0.0921
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.206754,
+              "unique_catch_rate": 0.03121,
+              "unique_share_of_solo": 0.151
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "route_changed",
+            "classifier_disagree"
+          ],
+          "rho": 0.2,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96052,
+          "mean_joint_rate": 0.2994,
+          "mean_forced_fraction": 0.1996,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.2203,
+              "unique": 0.0159,
+              "share": 0.072
+            },
+            "classifier_disagree": {
+              "solo": 0.2792,
+              "unique": 0.0468,
+              "share": 0.168
+            },
+            "input_unusual": {
+              "solo": 0.1592,
+              "unique": 0.0117,
+              "share": 0.073
+            },
+            "barely_passed": {
+              "solo": 0.2048,
+              "unique": 0.0247,
+              "share": 0.121
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.220277,
+              "unique_catch_rate": 0.015898,
+              "unique_share_of_solo": 0.0722
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.279161,
+              "unique_catch_rate": 0.046798,
+              "unique_share_of_solo": 0.1676
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.159153,
+              "unique_catch_rate": 0.01166,
+              "unique_share_of_solo": 0.0733
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.204754,
+              "unique_catch_rate": 0.024695,
+              "unique_share_of_solo": 0.1206
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "route_changed",
+            "classifier_disagree"
+          ],
+          "rho": 0.4,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96656,
+          "mean_joint_rate": 0.4731,
+          "mean_forced_fraction": 0.398,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.2653,
+              "unique": 0.012,
+              "share": 0.045
+            },
+            "classifier_disagree": {
+              "solo": 0.3102,
+              "unique": 0.0355,
+              "share": 0.115
+            },
+            "input_unusual": {
+              "solo": 0.1607,
+              "unique": 0.0092,
+              "share": 0.057
+            },
+            "barely_passed": {
+              "solo": 0.203,
+              "unique": 0.0183,
+              "share": 0.09
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.265312,
+              "unique_catch_rate": 0.012043,
+              "unique_share_of_solo": 0.0454
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.310224,
+              "unique_catch_rate": 0.035528,
+              "unique_share_of_solo": 0.1145
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.160745,
+              "unique_catch_rate": 0.009198,
+              "unique_share_of_solo": 0.0572
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.202957,
+              "unique_catch_rate": 0.018343,
+              "unique_share_of_solo": 0.0904
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "route_changed",
+            "classifier_disagree"
+          ],
+          "rho": 0.6,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96638,
+          "mean_joint_rate": 0.6523,
+          "mean_forced_fraction": 0.602,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.3122,
+              "unique": 0.0076,
+              "share": 0.024
+            },
+            "classifier_disagree": {
+              "solo": 0.3435,
+              "unique": 0.0236,
+              "share": 0.069
+            },
+            "input_unusual": {
+              "solo": 0.1612,
+              "unique": 0.0057,
+              "share": 0.035
+            },
+            "barely_passed": {
+              "solo": 0.2059,
+              "unique": 0.0125,
+              "share": 0.061
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.312237,
+              "unique_catch_rate": 0.007564,
+              "unique_share_of_solo": 0.0242
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.343509,
+              "unique_catch_rate": 0.023552,
+              "unique_share_of_solo": 0.0686
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.161158,
+              "unique_catch_rate": 0.005691,
+              "unique_share_of_solo": 0.0353
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.205892,
+              "unique_catch_rate": 0.01248,
+              "unique_share_of_solo": 0.0606
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "route_changed",
+            "classifier_disagree"
+          ],
+          "rho": 0.8,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96236,
+          "mean_joint_rate": 0.8277,
+          "mean_forced_fraction": 0.8023,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.3547,
+              "unique": 0.0037,
+              "share": 0.01
+            },
+            "classifier_disagree": {
+              "solo": 0.3689,
+              "unique": 0.011,
+              "share": 0.03
+            },
+            "input_unusual": {
+              "solo": 0.1609,
+              "unique": 0.0029,
+              "share": 0.018
+            },
+            "barely_passed": {
+              "solo": 0.2046,
+              "unique": 0.0063,
+              "share": 0.031
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.35468,
+              "unique_catch_rate": 0.00372,
+              "unique_share_of_solo": 0.0105
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.368854,
+              "unique_catch_rate": 0.011025,
+              "unique_share_of_solo": 0.0299
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.160855,
+              "unique_catch_rate": 0.002858,
+              "unique_share_of_solo": 0.0178
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.204601,
+              "unique_catch_rate": 0.006307,
+              "unique_share_of_solo": 0.0308
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        }
+      ]
+    },
+    {
+      "cofire_pair": [
+        "route_changed",
+        "input_unusual"
+      ],
+      "any_middle_swap": false,
+      "any_rank_change": false,
+      "all_extremes_hold": true,
+      "cells": [
+        {
+          "cofire_pair": [
+            "route_changed",
+            "input_unusual"
+          ],
+          "rho": 0.0,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95716,
+          "mean_joint_rate": 0.0501,
+          "mean_forced_fraction": 0.0,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1756,
+              "unique": 0.0195,
+              "share": 0.111
+            },
+            "classifier_disagree": {
+              "solo": 0.2494,
+              "unique": 0.0573,
+              "share": 0.23
+            },
+            "input_unusual": {
+              "solo": 0.1617,
+              "unique": 0.0147,
+              "share": 0.091
+            },
+            "barely_passed": {
+              "solo": 0.2058,
+              "unique": 0.0316,
+              "share": 0.153
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.175613,
+              "unique_catch_rate": 0.019464,
+              "unique_share_of_solo": 0.1108
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.249425,
+              "unique_catch_rate": 0.057305,
+              "unique_share_of_solo": 0.2297
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.161749,
+              "unique_catch_rate": 0.01471,
+              "unique_share_of_solo": 0.0909
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.205807,
+              "unique_catch_rate": 0.031573,
+              "unique_share_of_solo": 0.1534
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "route_changed",
+            "input_unusual"
+          ],
+          "rho": 0.2,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95701,
+          "mean_joint_rate": 0.2432,
+          "mean_forced_fraction": 0.2027,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.2198,
+              "unique": 0.0159,
+              "share": 0.072
+            },
+            "classifier_disagree": {
+              "solo": 0.2475,
+              "unique": 0.0466,
+              "share": 0.188
+            },
+            "input_unusual": {
+              "solo": 0.2079,
+              "unique": 0.0116,
+              "share": 0.056
+            },
+            "barely_passed": {
+              "solo": 0.2041,
+              "unique": 0.0252,
+              "share": 0.123
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.21982,
+              "unique_catch_rate": 0.015904,
+              "unique_share_of_solo": 0.0723
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.24751,
+              "unique_catch_rate": 0.046624,
+              "unique_share_of_solo": 0.1884
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.207918,
+              "unique_catch_rate": 0.011578,
+              "unique_share_of_solo": 0.0557
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.204073,
+              "unique_catch_rate": 0.025172,
+              "unique_share_of_solo": 0.1233
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "route_changed",
+            "input_unusual"
+          ],
+          "rho": 0.4,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96261,
+          "mean_joint_rate": 0.4294,
+          "mean_forced_fraction": 0.3996,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.2662,
+              "unique": 0.012,
+              "share": 0.045
+            },
+            "classifier_disagree": {
+              "solo": 0.2508,
+              "unique": 0.0349,
+              "share": 0.139
+            },
+            "input_unusual": {
+              "solo": 0.2569,
+              "unique": 0.0088,
+              "share": 0.034
+            },
+            "barely_passed": {
+              "solo": 0.2051,
+              "unique": 0.0191,
+              "share": 0.093
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.266203,
+              "unique_catch_rate": 0.011957,
+              "unique_share_of_solo": 0.0449
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.250839,
+              "unique_catch_rate": 0.034905,
+              "unique_share_of_solo": 0.1392
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.256885,
+              "unique_catch_rate": 0.008841,
+              "unique_share_of_solo": 0.0344
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.205088,
+              "unique_catch_rate": 0.019146,
+              "unique_share_of_solo": 0.0934
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "route_changed",
+            "input_unusual"
+          ],
+          "rho": 0.6,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95617,
+          "mean_joint_rate": 0.6221,
+          "mean_forced_fraction": 0.6016,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.3116,
+              "unique": 0.0079,
+              "share": 0.025
+            },
+            "classifier_disagree": {
+              "solo": 0.2511,
+              "unique": 0.0239,
+              "share": 0.095
+            },
+            "input_unusual": {
+              "solo": 0.3057,
+              "unique": 0.0058,
+              "share": 0.019
+            },
+            "barely_passed": {
+              "solo": 0.2063,
+              "unique": 0.0127,
+              "share": 0.061
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.31165,
+              "unique_catch_rate": 0.007854,
+              "unique_share_of_solo": 0.0252
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.251127,
+              "unique_catch_rate": 0.023856,
+              "unique_share_of_solo": 0.095
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.305678,
+              "unique_catch_rate": 0.005825,
+              "unique_share_of_solo": 0.0191
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.206323,
+              "unique_catch_rate": 0.012676,
+              "unique_share_of_solo": 0.0614
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "route_changed",
+            "input_unusual"
+          ],
+          "rho": 0.8,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95775,
+          "mean_joint_rate": 0.8091,
+          "mean_forced_fraction": 0.799,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.3545,
+              "unique": 0.0037,
+              "share": 0.011
+            },
+            "classifier_disagree": {
+              "solo": 0.2494,
+              "unique": 0.0123,
+              "share": 0.049
+            },
+            "input_unusual": {
+              "solo": 0.3522,
+              "unique": 0.003,
+              "share": 0.008
+            },
+            "barely_passed": {
+              "solo": 0.2042,
+              "unique": 0.0064,
+              "share": 0.031
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.354456,
+              "unique_catch_rate": 0.003748,
+              "unique_share_of_solo": 0.0106
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.249397,
+              "unique_catch_rate": 0.012289,
+              "unique_share_of_solo": 0.0493
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.35218,
+              "unique_catch_rate": 0.002955,
+              "unique_share_of_solo": 0.0084
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.204208,
+              "unique_catch_rate": 0.0064,
+              "unique_share_of_solo": 0.0313
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        }
+      ]
+    },
+    {
+      "cofire_pair": [
+        "route_changed",
+        "barely_passed"
+      ],
+      "any_middle_swap": false,
+      "any_rank_change": false,
+      "all_extremes_hold": true,
+      "cells": [
+        {
+          "cofire_pair": [
+            "route_changed",
+            "barely_passed"
+          ],
+          "rho": 0.0,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96402,
+          "mean_joint_rate": 0.0874,
+          "mean_forced_fraction": 0.0,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1733,
+              "unique": 0.019,
+              "share": 0.11
+            },
+            "classifier_disagree": {
+              "solo": 0.2485,
+              "unique": 0.0585,
+              "share": 0.235
+            },
+            "input_unusual": {
+              "solo": 0.1594,
+              "unique": 0.0146,
+              "share": 0.091
+            },
+            "barely_passed": {
+              "solo": 0.2043,
+              "unique": 0.0311,
+              "share": 0.152
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.173337,
+              "unique_catch_rate": 0.019045,
+              "unique_share_of_solo": 0.1099
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.248543,
+              "unique_catch_rate": 0.058474,
+              "unique_share_of_solo": 0.2353
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.159364,
+              "unique_catch_rate": 0.014564,
+              "unique_share_of_solo": 0.0914
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.204311,
+              "unique_catch_rate": 0.031109,
+              "unique_share_of_solo": 0.1523
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "route_changed",
+            "barely_passed"
+          ],
+          "rho": 0.2,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96418,
+          "mean_joint_rate": 0.2689,
+          "mean_forced_fraction": 0.1988,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.2185,
+              "unique": 0.0159,
+              "share": 0.073
+            },
+            "classifier_disagree": {
+              "solo": 0.2497,
+              "unique": 0.0471,
+              "share": 0.189
+            },
+            "input_unusual": {
+              "solo": 0.1594,
+              "unique": 0.0115,
+              "share": 0.072
+            },
+            "barely_passed": {
+              "solo": 0.2421,
+              "unique": 0.0243,
+              "share": 0.1
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.218476,
+              "unique_catch_rate": 0.015889,
+              "unique_share_of_solo": 0.0727
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.249684,
+              "unique_catch_rate": 0.047107,
+              "unique_share_of_solo": 0.1887
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.159379,
+              "unique_catch_rate": 0.011481,
+              "unique_share_of_solo": 0.072
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.242133,
+              "unique_catch_rate": 0.024332,
+              "unique_share_of_solo": 0.1005
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "route_changed",
+            "barely_passed"
+          ],
+          "rho": 0.4,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95850,
+          "mean_joint_rate": 0.4546,
+          "mean_forced_fraction": 0.4018,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.266,
+              "unique": 0.0118,
+              "share": 0.044
+            },
+            "classifier_disagree": {
+              "solo": 0.2501,
+              "unique": 0.0351,
+              "share": 0.14
+            },
+            "input_unusual": {
+              "solo": 0.1582,
+              "unique": 0.0089,
+              "share": 0.056
+            },
+            "barely_passed": {
+              "solo": 0.2817,
+              "unique": 0.0173,
+              "share": 0.061
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.265968,
+              "unique_catch_rate": 0.011831,
+              "unique_share_of_solo": 0.0445
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.25011,
+              "unique_catch_rate": 0.035138,
+              "unique_share_of_solo": 0.1405
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.158164,
+              "unique_catch_rate": 0.008868,
+              "unique_share_of_solo": 0.0561
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.281732,
+              "unique_catch_rate": 0.017267,
+              "unique_share_of_solo": 0.0613
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "route_changed",
+            "barely_passed"
+          ],
+          "rho": 0.6,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96127,
+          "mean_joint_rate": 0.6355,
+          "mean_forced_fraction": 0.6004,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.3109,
+              "unique": 0.0081,
+              "share": 0.026
+            },
+            "classifier_disagree": {
+              "solo": 0.2495,
+              "unique": 0.0233,
+              "share": 0.093
+            },
+            "input_unusual": {
+              "solo": 0.1606,
+              "unique": 0.0061,
+              "share": 0.038
+            },
+            "barely_passed": {
+              "solo": 0.3234,
+              "unique": 0.0128,
+              "share": 0.04
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.310922,
+              "unique_catch_rate": 0.008052,
+              "unique_share_of_solo": 0.0259
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.249503,
+              "unique_catch_rate": 0.023292,
+              "unique_share_of_solo": 0.0934
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.160631,
+              "unique_catch_rate": 0.006127,
+              "unique_share_of_solo": 0.0381
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.323385,
+              "unique_catch_rate": 0.012837,
+              "unique_share_of_solo": 0.0397
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "route_changed",
+            "barely_passed"
+          ],
+          "rho": 0.8,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95809,
+          "mean_joint_rate": 0.8187,
+          "mean_forced_fraction": 0.8012,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.3553,
+              "unique": 0.0037,
+              "share": 0.01
+            },
+            "classifier_disagree": {
+              "solo": 0.2497,
+              "unique": 0.0114,
+              "share": 0.046
+            },
+            "input_unusual": {
+              "solo": 0.1598,
+              "unique": 0.0029,
+              "share": 0.018
+            },
+            "barely_passed": {
+              "solo": 0.3614,
+              "unique": 0.0061,
+              "share": 0.017
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.35529,
+              "unique_catch_rate": 0.003674,
+              "unique_share_of_solo": 0.0103
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.249747,
+              "unique_catch_rate": 0.011429,
+              "unique_share_of_solo": 0.0458
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.159787,
+              "unique_catch_rate": 0.002902,
+              "unique_share_of_solo": 0.0182
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.361365,
+              "unique_catch_rate": 0.006085,
+              "unique_share_of_solo": 0.0168
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        }
+      ]
+    },
+    {
+      "cofire_pair": [
+        "classifier_disagree",
+        "input_unusual"
+      ],
+      "any_middle_swap": false,
+      "any_rank_change": false,
+      "all_extremes_hold": true,
+      "cells": [
+        {
+          "cofire_pair": [
+            "classifier_disagree",
+            "input_unusual"
+          ],
+          "rho": 0.0,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95742,
+          "mean_joint_rate": 0.1003,
+          "mean_forced_fraction": 0.0,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1745,
+              "unique": 0.0199,
+              "share": 0.114
+            },
+            "classifier_disagree": {
+              "solo": 0.249,
+              "unique": 0.0583,
+              "share": 0.234
+            },
+            "input_unusual": {
+              "solo": 0.1594,
+              "unique": 0.0154,
+              "share": 0.096
+            },
+            "barely_passed": {
+              "solo": 0.2045,
+              "unique": 0.032,
+              "share": 0.157
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.1745,
+              "unique_catch_rate": 0.019929,
+              "unique_share_of_solo": 0.1142
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.249023,
+              "unique_catch_rate": 0.05825,
+              "unique_share_of_solo": 0.2339
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.159418,
+              "unique_catch_rate": 0.015364,
+              "unique_share_of_solo": 0.0964
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.204529,
+              "unique_catch_rate": 0.032013,
+              "unique_share_of_solo": 0.1565
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "classifier_disagree",
+            "input_unusual"
+          ],
+          "rho": 0.2,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95069,
+          "mean_joint_rate": 0.2796,
+          "mean_forced_fraction": 0.2,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.173,
+              "unique": 0.0154,
+              "share": 0.089
+            },
+            "classifier_disagree": {
+              "solo": 0.2797,
+              "unique": 0.0477,
+              "share": 0.171
+            },
+            "input_unusual": {
+              "solo": 0.207,
+              "unique": 0.0114,
+              "share": 0.055
+            },
+            "barely_passed": {
+              "solo": 0.2036,
+              "unique": 0.0252,
+              "share": 0.124
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.172959,
+              "unique_catch_rate": 0.01541,
+              "unique_share_of_solo": 0.0891
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.279702,
+              "unique_catch_rate": 0.047734,
+              "unique_share_of_solo": 0.1707
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.207018,
+              "unique_catch_rate": 0.011434,
+              "unique_share_of_solo": 0.0552
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.20361,
+              "unique_catch_rate": 0.025161,
+              "unique_share_of_solo": 0.1236
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "classifier_disagree",
+            "input_unusual"
+          ],
+          "rho": 0.4,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95798,
+          "mean_joint_rate": 0.4585,
+          "mean_forced_fraction": 0.3989,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1761,
+              "unique": 0.0118,
+              "share": 0.067
+            },
+            "classifier_disagree": {
+              "solo": 0.3128,
+              "unique": 0.0355,
+              "share": 0.114
+            },
+            "input_unusual": {
+              "solo": 0.2589,
+              "unique": 0.0089,
+              "share": 0.034
+            },
+            "barely_passed": {
+              "solo": 0.2071,
+              "unique": 0.0187,
+              "share": 0.09
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.176079,
+              "unique_catch_rate": 0.011837,
+              "unique_share_of_solo": 0.0672
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.312814,
+              "unique_catch_rate": 0.035544,
+              "unique_share_of_solo": 0.1136
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.258941,
+              "unique_catch_rate": 0.008894,
+              "unique_share_of_solo": 0.0343
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.207071,
+              "unique_catch_rate": 0.018675,
+              "unique_share_of_solo": 0.0902
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "classifier_disagree",
+            "input_unusual"
+          ],
+          "rho": 0.6,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96546,
+          "mean_joint_rate": 0.6386,
+          "mean_forced_fraction": 0.5982,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1747,
+              "unique": 0.0081,
+              "share": 0.046
+            },
+            "classifier_disagree": {
+              "solo": 0.3388,
+              "unique": 0.0239,
+              "share": 0.071
+            },
+            "input_unusual": {
+              "solo": 0.3019,
+              "unique": 0.0057,
+              "share": 0.019
+            },
+            "barely_passed": {
+              "solo": 0.2062,
+              "unique": 0.0128,
+              "share": 0.062
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.174725,
+              "unique_catch_rate": 0.008069,
+              "unique_share_of_solo": 0.0462
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.338782,
+              "unique_catch_rate": 0.023906,
+              "unique_share_of_solo": 0.0706
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.301908,
+              "unique_catch_rate": 0.005738,
+              "unique_share_of_solo": 0.019
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.206202,
+              "unique_catch_rate": 0.012802,
+              "unique_share_of_solo": 0.0621
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "classifier_disagree",
+            "input_unusual"
+          ],
+          "rho": 0.8,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96528,
+          "mean_joint_rate": 0.8206,
+          "mean_forced_fraction": 0.8011,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.175,
+              "unique": 0.004,
+              "share": 0.023
+            },
+            "classifier_disagree": {
+              "solo": 0.37,
+              "unique": 0.0118,
+              "share": 0.032
+            },
+            "input_unusual": {
+              "solo": 0.352,
+              "unique": 0.0028,
+              "share": 0.008
+            },
+            "barely_passed": {
+              "solo": 0.2046,
+              "unique": 0.0062,
+              "share": 0.03
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.175048,
+              "unique_catch_rate": 0.003957,
+              "unique_share_of_solo": 0.0226
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.370007,
+              "unique_catch_rate": 0.011779,
+              "unique_share_of_solo": 0.0318
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.35197,
+              "unique_catch_rate": 0.002818,
+              "unique_share_of_solo": 0.008
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.204552,
+              "unique_catch_rate": 0.006174,
+              "unique_share_of_solo": 0.0302
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        }
+      ]
+    },
+    {
+      "cofire_pair": [
+        "classifier_disagree",
+        "barely_passed"
+      ],
+      "any_middle_swap": false,
+      "any_rank_change": false,
+      "all_extremes_hold": true,
+      "cells": [
+        {
+          "cofire_pair": [
+            "classifier_disagree",
+            "barely_passed"
+          ],
+          "rho": 0.0,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95659,
+          "mean_joint_rate": 0.1774,
+          "mean_forced_fraction": 0.0,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1739,
+              "unique": 0.019,
+              "share": 0.11
+            },
+            "classifier_disagree": {
+              "solo": 0.2503,
+              "unique": 0.0587,
+              "share": 0.234
+            },
+            "input_unusual": {
+              "solo": 0.1599,
+              "unique": 0.0146,
+              "share": 0.092
+            },
+            "barely_passed": {
+              "solo": 0.2061,
+              "unique": 0.0316,
+              "share": 0.153
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.173909,
+              "unique_catch_rate": 0.019047,
+              "unique_share_of_solo": 0.1095
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.250348,
+              "unique_catch_rate": 0.058688,
+              "unique_share_of_solo": 0.2344
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.159901,
+              "unique_catch_rate": 0.014646,
+              "unique_share_of_solo": 0.0916
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.206086,
+              "unique_catch_rate": 0.031612,
+              "unique_share_of_solo": 0.1534
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "classifier_disagree",
+            "barely_passed"
+          ],
+          "rho": 0.2,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96447,
+          "mean_joint_rate": 0.3401,
+          "mean_forced_fraction": 0.2007,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1759,
+              "unique": 0.0159,
+              "share": 0.09
+            },
+            "classifier_disagree": {
+              "solo": 0.2819,
+              "unique": 0.0467,
+              "share": 0.166
+            },
+            "input_unusual": {
+              "solo": 0.1602,
+              "unique": 0.0111,
+              "share": 0.069
+            },
+            "barely_passed": {
+              "solo": 0.2453,
+              "unique": 0.0252,
+              "share": 0.103
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.175931,
+              "unique_catch_rate": 0.015874,
+              "unique_share_of_solo": 0.0902
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.281916,
+              "unique_catch_rate": 0.04671,
+              "unique_share_of_solo": 0.1657
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.160202,
+              "unique_catch_rate": 0.011084,
+              "unique_share_of_solo": 0.0692
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.245264,
+              "unique_catch_rate": 0.025216,
+              "unique_share_of_solo": 0.1028
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "classifier_disagree",
+            "barely_passed"
+          ],
+          "rho": 0.4,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96228,
+          "mean_joint_rate": 0.5044,
+          "mean_forced_fraction": 0.4003,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1752,
+              "unique": 0.0119,
+              "share": 0.068
+            },
+            "classifier_disagree": {
+              "solo": 0.3097,
+              "unique": 0.0346,
+              "share": 0.112
+            },
+            "input_unusual": {
+              "solo": 0.1591,
+              "unique": 0.0086,
+              "share": 0.054
+            },
+            "barely_passed": {
+              "solo": 0.283,
+              "unique": 0.0189,
+              "share": 0.067
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.175188,
+              "unique_catch_rate": 0.011909,
+              "unique_share_of_solo": 0.068
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.309702,
+              "unique_catch_rate": 0.034553,
+              "unique_share_of_solo": 0.1116
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.159112,
+              "unique_catch_rate": 0.008563,
+              "unique_share_of_solo": 0.0538
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.282953,
+              "unique_catch_rate": 0.018851,
+              "unique_share_of_solo": 0.0666
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "classifier_disagree",
+            "barely_passed"
+          ],
+          "rho": 0.6,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96137,
+          "mean_joint_rate": 0.6685,
+          "mean_forced_fraction": 0.5986,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.174,
+              "unique": 0.008,
+              "share": 0.046
+            },
+            "classifier_disagree": {
+              "solo": 0.3378,
+              "unique": 0.0244,
+              "share": 0.072
+            },
+            "input_unusual": {
+              "solo": 0.1588,
+              "unique": 0.0058,
+              "share": 0.036
+            },
+            "barely_passed": {
+              "solo": 0.3193,
+              "unique": 0.0125,
+              "share": 0.039
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.173991,
+              "unique_catch_rate": 0.007989,
+              "unique_share_of_solo": 0.0459
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.337778,
+              "unique_catch_rate": 0.024423,
+              "unique_share_of_solo": 0.0723
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.158805,
+              "unique_catch_rate": 0.005763,
+              "unique_share_of_solo": 0.0363
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.319274,
+              "unique_catch_rate": 0.012534,
+              "unique_share_of_solo": 0.0393
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "classifier_disagree",
+            "barely_passed"
+          ],
+          "rho": 0.8,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95722,
+          "mean_joint_rate": 0.8367,
+          "mean_forced_fraction": 0.8016,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1748,
+              "unique": 0.0036,
+              "share": 0.021
+            },
+            "classifier_disagree": {
+              "solo": 0.3694,
+              "unique": 0.0118,
+              "share": 0.032
+            },
+            "input_unusual": {
+              "solo": 0.1579,
+              "unique": 0.0029,
+              "share": 0.018
+            },
+            "barely_passed": {
+              "solo": 0.3608,
+              "unique": 0.0064,
+              "share": 0.018
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.174819,
+              "unique_catch_rate": 0.003625,
+              "unique_share_of_solo": 0.0207
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.369361,
+              "unique_catch_rate": 0.011784,
+              "unique_share_of_solo": 0.0319
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.157916,
+              "unique_catch_rate": 0.002862,
+              "unique_share_of_solo": 0.0181
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.360763,
+              "unique_catch_rate": 0.006414,
+              "unique_share_of_solo": 0.0178
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        }
+      ]
+    },
+    {
+      "cofire_pair": [
+        "input_unusual",
+        "barely_passed"
+      ],
+      "any_middle_swap": false,
+      "any_rank_change": false,
+      "all_extremes_hold": true,
+      "cells": [
+        {
+          "cofire_pair": [
+            "input_unusual",
+            "barely_passed"
+          ],
+          "rho": 0.0,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95941,
+          "mean_joint_rate": 0.0706,
+          "mean_forced_fraction": 0.0,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1735,
+              "unique": 0.0201,
+              "share": 0.116
+            },
+            "classifier_disagree": {
+              "solo": 0.247,
+              "unique": 0.0582,
+              "share": 0.236
+            },
+            "input_unusual": {
+              "solo": 0.1574,
+              "unique": 0.0142,
+              "share": 0.09
+            },
+            "barely_passed": {
+              "solo": 0.2019,
+              "unique": 0.031,
+              "share": 0.154
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.173523,
+              "unique_catch_rate": 0.020106,
+              "unique_share_of_solo": 0.1159
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.247037,
+              "unique_catch_rate": 0.058192,
+              "unique_share_of_solo": 0.2356
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.157409,
+              "unique_catch_rate": 0.014165,
+              "unique_share_of_solo": 0.09
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.201926,
+              "unique_catch_rate": 0.030998,
+              "unique_share_of_solo": 0.1535
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "input_unusual",
+            "barely_passed"
+          ],
+          "rho": 0.2,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95667,
+          "mean_joint_rate": 0.2553,
+          "mean_forced_fraction": 0.1999,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1747,
+              "unique": 0.0161,
+              "share": 0.092
+            },
+            "classifier_disagree": {
+              "solo": 0.2496,
+              "unique": 0.0482,
+              "share": 0.193
+            },
+            "input_unusual": {
+              "solo": 0.2078,
+              "unique": 0.0119,
+              "share": 0.057
+            },
+            "barely_passed": {
+              "solo": 0.2436,
+              "unique": 0.0248,
+              "share": 0.102
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.174731,
+              "unique_catch_rate": 0.016066,
+              "unique_share_of_solo": 0.0919
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.249626,
+              "unique_catch_rate": 0.048167,
+              "unique_share_of_solo": 0.193
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.207794,
+              "unique_catch_rate": 0.011895,
+              "unique_share_of_solo": 0.0572
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.243637,
+              "unique_catch_rate": 0.024847,
+              "unique_share_of_solo": 0.102
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "input_unusual",
+            "barely_passed"
+          ],
+          "rho": 0.4,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95874,
+          "mean_joint_rate": 0.4411,
+          "mean_forced_fraction": 0.3982,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1754,
+              "unique": 0.0112,
+              "share": 0.064
+            },
+            "classifier_disagree": {
+              "solo": 0.2511,
+              "unique": 0.0352,
+              "share": 0.14
+            },
+            "input_unusual": {
+              "solo": 0.2561,
+              "unique": 0.0087,
+              "share": 0.034
+            },
+            "barely_passed": {
+              "solo": 0.2843,
+              "unique": 0.0191,
+              "share": 0.067
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.175418,
+              "unique_catch_rate": 0.01116,
+              "unique_share_of_solo": 0.0636
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.2511,
+              "unique_catch_rate": 0.035182,
+              "unique_share_of_solo": 0.1401
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.256117,
+              "unique_catch_rate": 0.00873,
+              "unique_share_of_solo": 0.0341
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.284259,
+              "unique_catch_rate": 0.01914,
+              "unique_share_of_solo": 0.0673
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "input_unusual",
+            "barely_passed"
+          ],
+          "rho": 0.6,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 96265,
+          "mean_joint_rate": 0.6325,
+          "mean_forced_fraction": 0.6043,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1738,
+              "unique": 0.0082,
+              "share": 0.047
+            },
+            "classifier_disagree": {
+              "solo": 0.2487,
+              "unique": 0.0228,
+              "share": 0.092
+            },
+            "input_unusual": {
+              "solo": 0.3038,
+              "unique": 0.0058,
+              "share": 0.019
+            },
+            "barely_passed": {
+              "solo": 0.3218,
+              "unique": 0.0126,
+              "share": 0.039
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.173843,
+              "unique_catch_rate": 0.008165,
+              "unique_share_of_solo": 0.047
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.248657,
+              "unique_catch_rate": 0.022781,
+              "unique_share_of_solo": 0.0916
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.303797,
+              "unique_catch_rate": 0.005828,
+              "unique_share_of_solo": 0.0192
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.32182,
+              "unique_catch_rate": 0.01258,
+              "unique_share_of_solo": 0.0391
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        },
+        {
+          "cofire_pair": [
+            "input_unusual",
+            "barely_passed"
+          ],
+          "rho": 0.8,
+          "trials": 400,
+          "error_dist": "burst",
+          "signal_quality": "medium",
+          "total_defective": 95407,
+          "mean_joint_rate": 0.812,
+          "mean_forced_fraction": 0.7976,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "drop_first_by_unique": "input_unusual",
+          "keep_first_by_unique": "classifier_disagree",
+          "middle_pair_order": "barely_passed > route_changed",
+          "extremes_hold": true,
+          "rank_equals_baseline": true,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.1756,
+              "unique": 0.0041,
+              "share": 0.023
+            },
+            "classifier_disagree": {
+              "solo": 0.2507,
+              "unique": 0.012,
+              "share": 0.048
+            },
+            "input_unusual": {
+              "solo": 0.3524,
+              "unique": 0.0026,
+              "share": 0.007
+            },
+            "barely_passed": {
+              "solo": 0.3626,
+              "unique": 0.0066,
+              "share": 0.018
+            }
+          },
+          "by_signal_full": [
+            {
+              "signal": "route_changed",
+              "solo_catch_rate": 0.175637,
+              "unique_catch_rate": 0.004056,
+              "unique_share_of_solo": 0.0231
+            },
+            {
+              "signal": "classifier_disagree",
+              "solo_catch_rate": 0.250736,
+              "unique_catch_rate": 0.011959,
+              "unique_share_of_solo": 0.0477
+            },
+            {
+              "signal": "input_unusual",
+              "solo_catch_rate": 0.352406,
+              "unique_catch_rate": 0.002589,
+              "unique_share_of_solo": 0.0073
+            },
+            {
+              "signal": "barely_passed",
+              "solo_catch_rate": 0.362646,
+              "unique_catch_rate": 0.006614,
+              "unique_share_of_solo": 0.0182
+            }
+          ],
+          "middle_swapped_vs_independent": false,
+          "rank_changed_vs_independent": false
+        }
+      ]
+    }
+  ],
+  "interpretation": [
+    "PASS (sim family): no forced pair among C(4,2)=6 reordered middle or broke extremes up to ρ=0.8. Prune order is robust to single-pair induced co-fire on this fixture — still not a production lock (need real co-occurrence labels)."
+  ]
+}

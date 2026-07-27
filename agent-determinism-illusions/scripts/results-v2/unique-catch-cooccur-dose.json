@@ -1,0 +1,2393 @@
+{
+  "experiment": "unique-catch-cooccur-dose",
+  "claim": "Critical co-occurrence-label mass π* on a single defect class that flips unique-CR middle (barely vs route)",
+  "p_sig": 0.9,
+  "error_dist": "burst",
+  "signal_quality": "medium",
+  "trials_per_cell": 400,
+  "seed": 20260727,
+  "step": 0.05,
+  "pi_grid": [
+    0.0,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95,
+    1.0
+  ],
+  "attack_labels": [
+    "route_cd",
+    "barely_route",
+    "cd_barely"
+  ],
+  "by_attack": {
+    "route_cd": {
+      "pi_star_middle_flip": 0.5,
+      "extremes_always_hold": false,
+      "cells": [
+        {
+          "attack_label": "route_cd",
+          "pi": 0.0,
+          "total_defective": 95734,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.018969,
+          "barely_unique": 0.032193,
+          "cd_unique": 0.057754,
+          "input_unique": 0.014687,
+          "delta_barely_minus_route": 0.013224,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.174181,
+              "unique": 0.018969
+            },
+            "classifier_disagree": {
+              "solo": 0.249577,
+              "unique": 0.057754
+            },
+            "input_unusual": {
+              "solo": 0.160277,
+              "unique": 0.014687
+            },
+            "barely_passed": {
+              "solo": 0.205956,
+              "unique": 0.032193
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.05,
+          "total_defective": 95584,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.019846,
+          "barely_unique": 0.029618,
+          "cd_unique": 0.055982,
+          "input_unique": 0.014427,
+          "delta_barely_minus_route": 0.009772,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.185157,
+              "unique": 0.019846
+            },
+            "classifier_disagree": {
+              "solo": 0.256194,
+              "unique": 0.055982
+            },
+            "input_unusual": {
+              "solo": 0.160989,
+              "unique": 0.014427
+            },
+            "barely_passed": {
+              "solo": 0.203925,
+              "unique": 0.029618
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.1,
+          "total_defective": 95732,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.019032,
+          "barely_unique": 0.028454,
+          "cd_unique": 0.054151,
+          "input_unique": 0.01288,
+          "delta_barely_minus_route": 0.009422,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.192788,
+              "unique": 0.019032
+            },
+            "classifier_disagree": {
+              "solo": 0.26054,
+              "unique": 0.054151
+            },
+            "input_unusual": {
+              "solo": 0.158421,
+              "unique": 0.01288
+            },
+            "barely_passed": {
+              "solo": 0.203318,
+              "unique": 0.028454
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.15,
+          "total_defective": 96626,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.018629,
+          "barely_unique": 0.027125,
+          "cd_unique": 0.051943,
+          "input_unique": 0.013009,
+          "delta_barely_minus_route": 0.008496,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.202854,
+              "unique": 0.018629
+            },
+            "classifier_disagree": {
+              "solo": 0.266957,
+              "unique": 0.051943
+            },
+            "input_unusual": {
+              "solo": 0.159471,
+              "unique": 0.013009
+            },
+            "barely_passed": {
+              "solo": 0.204779,
+              "unique": 0.027125
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.2,
+          "total_defective": 95897,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.018249,
+          "barely_unique": 0.024891,
+          "cd_unique": 0.0502,
+          "input_unique": 0.012065,
+          "delta_barely_minus_route": 0.006642,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.21423,
+              "unique": 0.018249
+            },
+            "classifier_disagree": {
+              "solo": 0.274482,
+              "unique": 0.0502
+            },
+            "input_unusual": {
+              "solo": 0.160422,
+              "unique": 0.012065
+            },
+            "barely_passed": {
+              "solo": 0.203771,
+              "unique": 0.024891
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.25,
+          "total_defective": 95708,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.018139,
+          "barely_unique": 0.024366,
+          "cd_unique": 0.047603,
+          "input_unique": 0.011086,
+          "delta_barely_minus_route": 0.006227,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.2225,
+              "unique": 0.018139
+            },
+            "classifier_disagree": {
+              "solo": 0.278002,
+              "unique": 0.047603
+            },
+            "input_unusual": {
+              "solo": 0.157636,
+              "unique": 0.011086
+            },
+            "barely_passed": {
+              "solo": 0.204737,
+              "unique": 0.024366
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.3,
+          "total_defective": 96103,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.017377,
+          "barely_unique": 0.022403,
+          "cd_unique": 0.045066,
+          "input_unique": 0.011051,
+          "delta_barely_minus_route": 0.005026,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.229712,
+              "unique": 0.017377
+            },
+            "classifier_disagree": {
+              "solo": 0.283404,
+              "unique": 0.045066
+            },
+            "input_unusual": {
+              "solo": 0.158393,
+              "unique": 0.011051
+            },
+            "barely_passed": {
+              "solo": 0.203355,
+              "unique": 0.022403
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.35,
+          "total_defective": 95613,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.017351,
+          "barely_unique": 0.020112,
+          "cd_unique": 0.043205,
+          "input_unique": 0.00935,
+          "delta_barely_minus_route": 0.002761,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.242132,
+              "unique": 0.017351
+            },
+            "classifier_disagree": {
+              "solo": 0.291027,
+              "unique": 0.043205
+            },
+            "input_unusual": {
+              "solo": 0.15866,
+              "unique": 0.00935
+            },
+            "barely_passed": {
+              "solo": 0.203999,
+              "unique": 0.020112
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.4,
+          "total_defective": 95787,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.01733,
+          "barely_unique": 0.019157,
+          "cd_unique": 0.041081,
+          "input_unique": 0.008686,
+          "delta_barely_minus_route": 0.001827,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.252362,
+              "unique": 0.01733
+            },
+            "classifier_disagree": {
+              "solo": 0.298318,
+              "unique": 0.041081
+            },
+            "input_unusual": {
+              "solo": 0.15997,
+              "unique": 0.008686
+            },
+            "barely_passed": {
+              "solo": 0.205164,
+              "unique": 0.019157
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.45,
+          "total_defective": 95603,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.016663,
+          "barely_unique": 0.017458,
+          "cd_unique": 0.039267,
+          "input_unique": 0.008483,
+          "delta_barely_minus_route": 0.000795,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.263329,
+              "unique": 0.016663
+            },
+            "classifier_disagree": {
+              "solo": 0.307166,
+              "unique": 0.039267
+            },
+            "input_unusual": {
+              "solo": 0.162097,
+              "unique": 0.008483
+            },
+            "barely_passed": {
+              "solo": 0.207504,
+              "unique": 0.017458
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.5,
+          "total_defective": 95573,
+          "unique_rank": [
+            "classifier_disagree",
+            "route_changed",
+            "barely_passed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "route_changed > barely_passed",
+          "middle_flipped": true,
+          "extremes_hold": true,
+          "route_unique": 0.017013,
+          "barely_unique": 0.016647,
+          "cd_unique": 0.036768,
+          "input_unique": 0.007554,
+          "delta_barely_minus_route": -0.000366,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.273226,
+              "unique": 0.017013
+            },
+            "classifier_disagree": {
+              "solo": 0.310914,
+              "unique": 0.036768
+            },
+            "input_unusual": {
+              "solo": 0.160516,
+              "unique": 0.007554
+            },
+            "barely_passed": {
+              "solo": 0.206167,
+              "unique": 0.016647
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.55,
+          "total_defective": 95494,
+          "unique_rank": [
+            "classifier_disagree",
+            "route_changed",
+            "barely_passed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "route_changed > barely_passed",
+          "middle_flipped": true,
+          "extremes_hold": true,
+          "route_unique": 0.016881,
+          "barely_unique": 0.014629,
+          "cd_unique": 0.034484,
+          "input_unique": 0.006513,
+          "delta_barely_minus_route": -0.002252,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.282248,
+              "unique": 0.016881
+            },
+            "classifier_disagree": {
+              "solo": 0.316093,
+              "unique": 0.034484
+            },
+            "input_unusual": {
+              "solo": 0.159434,
+              "unique": 0.006513
+            },
+            "barely_passed": {
+              "solo": 0.205269,
+              "unique": 0.014629
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.6,
+          "total_defective": 95721,
+          "unique_rank": [
+            "classifier_disagree",
+            "route_changed",
+            "barely_passed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "route_changed > barely_passed",
+          "middle_flipped": true,
+          "extremes_hold": true,
+          "route_unique": 0.015221,
+          "barely_unique": 0.012787,
+          "cd_unique": 0.03202,
+          "input_unique": 0.00608,
+          "delta_barely_minus_route": -0.002434,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.288871,
+              "unique": 0.015221
+            },
+            "classifier_disagree": {
+              "solo": 0.319951,
+              "unique": 0.03202
+            },
+            "input_unusual": {
+              "solo": 0.158544,
+              "unique": 0.00608
+            },
+            "barely_passed": {
+              "solo": 0.203769,
+              "unique": 0.012787
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.65,
+          "total_defective": 96000,
+          "unique_rank": [
+            "classifier_disagree",
+            "route_changed",
+            "barely_passed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "route_changed > barely_passed",
+          "middle_flipped": true,
+          "extremes_hold": true,
+          "route_unique": 0.016667,
+          "barely_unique": 0.012417,
+          "cd_unique": 0.02975,
+          "input_unique": 0.005198,
+          "delta_barely_minus_route": -0.00425,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.300563,
+              "unique": 0.016667
+            },
+            "classifier_disagree": {
+              "solo": 0.326542,
+              "unique": 0.02975
+            },
+            "input_unusual": {
+              "solo": 0.157688,
+              "unique": 0.005198
+            },
+            "barely_passed": {
+              "solo": 0.203802,
+              "unique": 0.012417
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.7,
+          "total_defective": 96108,
+          "unique_rank": [
+            "classifier_disagree",
+            "route_changed",
+            "barely_passed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "route_changed > barely_passed",
+          "middle_flipped": true,
+          "extremes_hold": true,
+          "route_unique": 0.016211,
+          "barely_unique": 0.010384,
+          "cd_unique": 0.027594,
+          "input_unique": 0.004994,
+          "delta_barely_minus_route": -0.005827,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.310286,
+              "unique": 0.016211
+            },
+            "classifier_disagree": {
+              "solo": 0.331731,
+              "unique": 0.027594
+            },
+            "input_unusual": {
+              "solo": 0.159196,
+              "unique": 0.004994
+            },
+            "barely_passed": {
+              "solo": 0.203032,
+              "unique": 0.010384
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.75,
+          "total_defective": 95749,
+          "unique_rank": [
+            "classifier_disagree",
+            "route_changed",
+            "barely_passed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "route_changed > barely_passed",
+          "middle_flipped": true,
+          "extremes_hold": true,
+          "route_unique": 0.015353,
+          "barely_unique": 0.008543,
+          "cd_unique": 0.02447,
+          "input_unique": 0.004188,
+          "delta_barely_minus_route": -0.00681,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.3244,
+              "unique": 0.015353
+            },
+            "classifier_disagree": {
+              "solo": 0.342761,
+              "unique": 0.02447
+            },
+            "input_unusual": {
+              "solo": 0.161506,
+              "unique": 0.004188
+            },
+            "barely_passed": {
+              "solo": 0.207428,
+              "unique": 0.008543
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.8,
+          "total_defective": 96062,
+          "unique_rank": [
+            "classifier_disagree",
+            "route_changed",
+            "barely_passed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "route_changed > barely_passed",
+          "middle_flipped": true,
+          "extremes_hold": true,
+          "route_unique": 0.014938,
+          "barely_unique": 0.007245,
+          "cd_unique": 0.023339,
+          "input_unique": 0.003165,
+          "delta_barely_minus_route": -0.007693,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.32835,
+              "unique": 0.014938
+            },
+            "classifier_disagree": {
+              "solo": 0.344069,
+              "unique": 0.023339
+            },
+            "input_unusual": {
+              "solo": 0.160719,
+              "unique": 0.003165
+            },
+            "barely_passed": {
+              "solo": 0.20443,
+              "unique": 0.007245
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.85,
+          "total_defective": 95552,
+          "unique_rank": [
+            "classifier_disagree",
+            "route_changed",
+            "barely_passed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "route_changed > barely_passed",
+          "middle_flipped": true,
+          "extremes_hold": true,
+          "route_unique": 0.014966,
+          "barely_unique": 0.00561,
+          "cd_unique": 0.021088,
+          "input_unique": 0.002616,
+          "delta_barely_minus_route": -0.009356,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.339407,
+              "unique": 0.014966
+            },
+            "classifier_disagree": {
+              "solo": 0.350207,
+              "unique": 0.021088
+            },
+            "input_unusual": {
+              "solo": 0.158688,
+              "unique": 0.002616
+            },
+            "barely_passed": {
+              "solo": 0.203282,
+              "unique": 0.00561
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.9,
+          "total_defective": 95944,
+          "unique_rank": [
+            "classifier_disagree",
+            "route_changed",
+            "barely_passed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "route_changed > barely_passed",
+          "middle_flipped": true,
+          "extremes_hold": true,
+          "route_unique": 0.014248,
+          "barely_unique": 0.004034,
+          "cd_unique": 0.01799,
+          "input_unique": 0.001824,
+          "delta_barely_minus_route": -0.010214,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.349266,
+              "unique": 0.014248
+            },
+            "classifier_disagree": {
+              "solo": 0.357313,
+              "unique": 0.01799
+            },
+            "input_unusual": {
+              "solo": 0.160416,
+              "unique": 0.001824
+            },
+            "barely_passed": {
+              "solo": 0.205339,
+              "unique": 0.004034
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 0.95,
+          "total_defective": 96551,
+          "unique_rank": [
+            "classifier_disagree",
+            "route_changed",
+            "barely_passed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "route_changed > barely_passed",
+          "middle_flipped": true,
+          "extremes_hold": true,
+          "route_unique": 0.014262,
+          "barely_unique": 0.002444,
+          "cd_unique": 0.017152,
+          "input_unique": 0.001139,
+          "delta_barely_minus_route": -0.011818,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.359458,
+              "unique": 0.014262
+            },
+            "classifier_disagree": {
+              "solo": 0.364471,
+              "unique": 0.017152
+            },
+            "input_unusual": {
+              "solo": 0.160164,
+              "unique": 0.001139
+            },
+            "barely_passed": {
+              "solo": 0.204048,
+              "unique": 0.002444
+            }
+          }
+        },
+        {
+          "attack_label": "route_cd",
+          "pi": 1.0,
+          "total_defective": 96117,
+          "unique_rank": [
+            "route_changed",
+            "classifier_disagree",
+            "barely_passed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "route_changed > barely_passed",
+          "middle_flipped": true,
+          "extremes_hold": false,
+          "route_unique": 0.014649,
+          "barely_unique": 0.000905,
+          "cd_unique": 0.013515,
+          "input_unique": 0.000406,
+          "delta_barely_minus_route": -0.013744,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.373753,
+              "unique": 0.014649
+            },
+            "classifier_disagree": {
+              "solo": 0.372723,
+              "unique": 0.013515
+            },
+            "input_unusual": {
+              "solo": 0.162437,
+              "unique": 0.000406
+            },
+            "barely_passed": {
+              "solo": 0.207175,
+              "unique": 0.000905
+            }
+          }
+        }
+      ]
+    },
+    "barely_route": {
+      "pi_star_middle_flip": null,
+      "extremes_always_hold": false,
+      "cells": [
+        {
+          "attack_label": "barely_route",
+          "pi": 0.0,
+          "total_defective": 96526,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.019528,
+          "barely_unique": 0.031453,
+          "cd_unique": 0.05814,
+          "input_unique": 0.01411,
+          "delta_barely_minus_route": 0.011925,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.172586,
+              "unique": 0.019528
+            },
+            "classifier_disagree": {
+              "solo": 0.246659,
+              "unique": 0.05814
+            },
+            "input_unusual": {
+              "solo": 0.157066,
+              "unique": 0.01411
+            },
+            "barely_passed": {
+              "solo": 0.202153,
+              "unique": 0.031453
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.05,
+          "total_defective": 96553,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.019078,
+          "barely_unique": 0.030294,
+          "cd_unique": 0.054996,
+          "input_unique": 0.013164,
+          "delta_barely_minus_route": 0.011216,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.183102,
+              "unique": 0.019078
+            },
+            "classifier_disagree": {
+              "solo": 0.248951,
+              "unique": 0.054996
+            },
+            "input_unusual": {
+              "solo": 0.159591,
+              "unique": 0.013164
+            },
+            "barely_passed": {
+              "solo": 0.212225,
+              "unique": 0.030294
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.1,
+          "total_defective": 95492,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.018389,
+          "barely_unique": 0.02995,
+          "cd_unique": 0.052643,
+          "input_unique": 0.013142,
+          "delta_barely_minus_route": 0.011561,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.193849,
+              "unique": 0.018389
+            },
+            "classifier_disagree": {
+              "solo": 0.249246,
+              "unique": 0.052643
+            },
+            "input_unusual": {
+              "solo": 0.158987,
+              "unique": 0.013142
+            },
+            "barely_passed": {
+              "solo": 0.222343,
+              "unique": 0.02995
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.15,
+          "total_defective": 96298,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.018131,
+          "barely_unique": 0.027903,
+          "cd_unique": 0.048682,
+          "input_unique": 0.012576,
+          "delta_barely_minus_route": 0.009772,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.20476,
+              "unique": 0.018131
+            },
+            "classifier_disagree": {
+              "solo": 0.251449,
+              "unique": 0.048682
+            },
+            "input_unusual": {
+              "solo": 0.162392,
+              "unique": 0.012576
+            },
+            "barely_passed": {
+              "solo": 0.232123,
+              "unique": 0.027903
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.2,
+          "total_defective": 96104,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.017325,
+          "barely_unique": 0.027044,
+          "cd_unique": 0.047001,
+          "input_unique": 0.011519,
+          "delta_barely_minus_route": 0.009719,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.215038,
+              "unique": 0.017325
+            },
+            "classifier_disagree": {
+              "solo": 0.251384,
+              "unique": 0.047001
+            },
+            "input_unusual": {
+              "solo": 0.160805,
+              "unique": 0.011519
+            },
+            "barely_passed": {
+              "solo": 0.239647,
+              "unique": 0.027044
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.25,
+          "total_defective": 96082,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.017568,
+          "barely_unique": 0.02578,
+          "cd_unique": 0.045139,
+          "input_unique": 0.011074,
+          "delta_barely_minus_route": 0.008212,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.224839,
+              "unique": 0.017568
+            },
+            "classifier_disagree": {
+              "solo": 0.252847,
+              "unique": 0.045139
+            },
+            "input_unusual": {
+              "solo": 0.161331,
+              "unique": 0.011074
+            },
+            "barely_passed": {
+              "solo": 0.247164,
+              "unique": 0.02578
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.3,
+          "total_defective": 96041,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.017055,
+          "barely_unique": 0.026072,
+          "cd_unique": 0.040514,
+          "input_unique": 0.010037,
+          "delta_barely_minus_route": 0.009017,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.232953,
+              "unique": 0.017055
+            },
+            "classifier_disagree": {
+              "solo": 0.249768,
+              "unique": 0.040514
+            },
+            "input_unusual": {
+              "solo": 0.159776,
+              "unique": 0.010037
+            },
+            "barely_passed": {
+              "solo": 0.255849,
+              "unique": 0.026072
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.35,
+          "total_defective": 95594,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.015827,
+          "barely_unique": 0.024196,
+          "cd_unique": 0.038444,
+          "input_unique": 0.009823,
+          "delta_barely_minus_route": 0.008369,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.243164,
+              "unique": 0.015827
+            },
+            "classifier_disagree": {
+              "solo": 0.250947,
+              "unique": 0.038444
+            },
+            "input_unusual": {
+              "solo": 0.159497,
+              "unique": 0.009823
+            },
+            "barely_passed": {
+              "solo": 0.262663,
+              "unique": 0.024196
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.4,
+          "total_defective": 95389,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.016186,
+          "barely_unique": 0.023839,
+          "cd_unique": 0.035906,
+          "input_unique": 0.008817,
+          "delta_barely_minus_route": 0.007653,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.252576,
+              "unique": 0.016186
+            },
+            "classifier_disagree": {
+              "solo": 0.249379,
+              "unique": 0.035906
+            },
+            "input_unusual": {
+              "solo": 0.160983,
+              "unique": 0.008817
+            },
+            "barely_passed": {
+              "solo": 0.272264,
+              "unique": 0.023839
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.45,
+          "total_defective": 95652,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.016246,
+          "barely_unique": 0.02207,
+          "cd_unique": 0.032357,
+          "input_unique": 0.008311,
+          "delta_barely_minus_route": 0.005824,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.263622,
+              "unique": 0.016246
+            },
+            "classifier_disagree": {
+              "solo": 0.249226,
+              "unique": 0.032357
+            },
+            "input_unusual": {
+              "solo": 0.158251,
+              "unique": 0.008311
+            },
+            "barely_passed": {
+              "solo": 0.279503,
+              "unique": 0.02207
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.5,
+          "total_defective": 95300,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.015635,
+          "barely_unique": 0.02171,
+          "cd_unique": 0.029182,
+          "input_unique": 0.00765,
+          "delta_barely_minus_route": 0.006075,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.275068,
+              "unique": 0.015635
+            },
+            "classifier_disagree": {
+              "solo": 0.248993,
+              "unique": 0.029182
+            },
+            "input_unusual": {
+              "solo": 0.161752,
+              "unique": 0.00765
+            },
+            "barely_passed": {
+              "solo": 0.289948,
+              "unique": 0.02171
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.55,
+          "total_defective": 95647,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.014344,
+          "barely_unique": 0.020304,
+          "cd_unique": 0.026702,
+          "input_unique": 0.006482,
+          "delta_barely_minus_route": 0.00596,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.282288,
+              "unique": 0.014344
+            },
+            "classifier_disagree": {
+              "solo": 0.249804,
+              "unique": 0.026702
+            },
+            "input_unusual": {
+              "solo": 0.16036,
+              "unique": 0.006482
+            },
+            "barely_passed": {
+              "solo": 0.294677,
+              "unique": 0.020304
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.6,
+          "total_defective": 96190,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.014211,
+          "barely_unique": 0.019524,
+          "cd_unique": 0.024847,
+          "input_unique": 0.005562,
+          "delta_barely_minus_route": 0.005313,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.291319,
+              "unique": 0.014211
+            },
+            "classifier_disagree": {
+              "solo": 0.25092,
+              "unique": 0.024847
+            },
+            "input_unusual": {
+              "solo": 0.158468,
+              "unique": 0.005562
+            },
+            "barely_passed": {
+              "solo": 0.303264,
+              "unique": 0.019524
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.65,
+          "total_defective": 96168,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.014267,
+          "barely_unique": 0.018041,
+          "cd_unique": 0.021327,
+          "input_unique": 0.004908,
+          "delta_barely_minus_route": 0.003774,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.303822,
+              "unique": 0.014267
+            },
+            "classifier_disagree": {
+              "solo": 0.250406,
+              "unique": 0.021327
+            },
+            "input_unusual": {
+              "solo": 0.15996,
+              "unique": 0.004908
+            },
+            "barely_passed": {
+              "solo": 0.314554,
+              "unique": 0.018041
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.7,
+          "total_defective": 95634,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.013363,
+          "barely_unique": 0.016856,
+          "cd_unique": 0.018069,
+          "input_unique": 0.004737,
+          "delta_barely_minus_route": 0.003493,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.311751,
+              "unique": 0.013363
+            },
+            "classifier_disagree": {
+              "solo": 0.250403,
+              "unique": 0.018069
+            },
+            "input_unusual": {
+              "solo": 0.161104,
+              "unique": 0.004737
+            },
+            "barely_passed": {
+              "solo": 0.319855,
+              "unique": 0.016856
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.75,
+          "total_defective": 96494,
+          "unique_rank": [
+            "barely_passed",
+            "classifier_disagree",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": false,
+          "route_unique": 0.01369,
+          "barely_unique": 0.01598,
+          "cd_unique": 0.015037,
+          "input_unique": 0.004239,
+          "delta_barely_minus_route": 0.00229,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.321377,
+              "unique": 0.01369
+            },
+            "classifier_disagree": {
+              "solo": 0.248161,
+              "unique": 0.015037
+            },
+            "input_unusual": {
+              "solo": 0.160031,
+              "unique": 0.004239
+            },
+            "barely_passed": {
+              "solo": 0.328756,
+              "unique": 0.01598
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.8,
+          "total_defective": 96864,
+          "unique_rank": [
+            "barely_passed",
+            "classifier_disagree",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": false,
+          "route_unique": 0.012647,
+          "barely_unique": 0.015145,
+          "cd_unique": 0.012967,
+          "input_unique": 0.003252,
+          "delta_barely_minus_route": 0.002498,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.327996,
+              "unique": 0.012647
+            },
+            "classifier_disagree": {
+              "solo": 0.248338,
+              "unique": 0.012967
+            },
+            "input_unusual": {
+              "solo": 0.158666,
+              "unique": 0.003252
+            },
+            "barely_passed": {
+              "solo": 0.334613,
+              "unique": 0.015145
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.85,
+          "total_defective": 95714,
+          "unique_rank": [
+            "barely_passed",
+            "route_changed",
+            "classifier_disagree",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": false,
+          "route_unique": 0.012516,
+          "barely_unique": 0.013352,
+          "cd_unique": 0.010155,
+          "input_unique": 0.002351,
+          "delta_barely_minus_route": 0.000836,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.343806,
+              "unique": 0.012516
+            },
+            "classifier_disagree": {
+              "solo": 0.250747,
+              "unique": 0.010155
+            },
+            "input_unusual": {
+              "solo": 0.161763,
+              "unique": 0.002351
+            },
+            "barely_passed": {
+              "solo": 0.346929,
+              "unique": 0.013352
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.9,
+          "total_defective": 96764,
+          "unique_rank": [
+            "barely_passed",
+            "route_changed",
+            "classifier_disagree",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": false,
+          "route_unique": 0.011502,
+          "barely_unique": 0.012773,
+          "cd_unique": 0.006769,
+          "input_unique": 0.001757,
+          "delta_barely_minus_route": 0.001271,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.352931,
+              "unique": 0.011502
+            },
+            "classifier_disagree": {
+              "solo": 0.251953,
+              "unique": 0.006769
+            },
+            "input_unusual": {
+              "solo": 0.161889,
+              "unique": 0.001757
+            },
+            "barely_passed": {
+              "solo": 0.356341,
+              "unique": 0.012773
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 0.95,
+          "total_defective": 96186,
+          "unique_rank": [
+            "barely_passed",
+            "route_changed",
+            "classifier_disagree",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": false,
+          "route_unique": 0.011155,
+          "barely_unique": 0.011706,
+          "cd_unique": 0.003847,
+          "input_unique": 0.000863,
+          "delta_barely_minus_route": 0.000551,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.360926,
+              "unique": 0.011155
+            },
+            "classifier_disagree": {
+              "solo": 0.25118,
+              "unique": 0.003847
+            },
+            "input_unusual": {
+              "solo": 0.16021,
+              "unique": 0.000863
+            },
+            "barely_passed": {
+              "solo": 0.362516,
+              "unique": 0.011706
+            }
+          }
+        },
+        {
+          "attack_label": "barely_route",
+          "pi": 1.0,
+          "total_defective": 95514,
+          "unique_rank": [
+            "barely_passed",
+            "route_changed",
+            "classifier_disagree",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": false,
+          "route_unique": 0.01071,
+          "barely_unique": 0.010847,
+          "cd_unique": 0.00133,
+          "input_unique": 0.00044,
+          "delta_barely_minus_route": 0.000137,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.371349,
+              "unique": 0.01071
+            },
+            "classifier_disagree": {
+              "solo": 0.251021,
+              "unique": 0.00133
+            },
+            "input_unusual": {
+              "solo": 0.161474,
+              "unique": 0.00044
+            },
+            "barely_passed": {
+              "solo": 0.371359,
+              "unique": 0.010847
+            }
+          }
+        }
+      ]
+    },
+    "cd_barely": {
+      "pi_star_middle_flip": null,
+      "extremes_always_hold": true,
+      "cells": [
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.0,
+          "total_defective": 95822,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.019672,
+          "barely_unique": 0.031454,
+          "cd_unique": 0.058233,
+          "input_unique": 0.014537,
+          "delta_barely_minus_route": 0.011782,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.175774,
+              "unique": 0.019672
+            },
+            "classifier_disagree": {
+              "solo": 0.250809,
+              "unique": 0.058233
+            },
+            "input_unusual": {
+              "solo": 0.160662,
+              "unique": 0.014537
+            },
+            "barely_passed": {
+              "solo": 0.204535,
+              "unique": 0.031454
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.05,
+          "total_defective": 96468,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.018058,
+          "barely_unique": 0.031047,
+          "cd_unique": 0.05633,
+          "input_unique": 0.014067,
+          "delta_barely_minus_route": 0.012989,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.174949,
+              "unique": 0.018058
+            },
+            "classifier_disagree": {
+              "solo": 0.255556,
+              "unique": 0.05633
+            },
+            "input_unusual": {
+              "solo": 0.160737,
+              "unique": 0.014067
+            },
+            "barely_passed": {
+              "solo": 0.213874,
+              "unique": 0.031047
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.1,
+          "total_defective": 95420,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.018214,
+          "barely_unique": 0.030402,
+          "cd_unique": 0.054538,
+          "input_unique": 0.013131,
+          "delta_barely_minus_route": 0.012188,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.17423,
+              "unique": 0.018214
+            },
+            "classifier_disagree": {
+              "solo": 0.260669,
+              "unique": 0.054538
+            },
+            "input_unusual": {
+              "solo": 0.159296,
+              "unique": 0.013131
+            },
+            "barely_passed": {
+              "solo": 0.220635,
+              "unique": 0.030402
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.15,
+          "total_defective": 96445,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.016413,
+          "barely_unique": 0.02812,
+          "cd_unique": 0.053129,
+          "input_unique": 0.012494,
+          "delta_barely_minus_route": 0.011707,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.175395,
+              "unique": 0.016413
+            },
+            "classifier_disagree": {
+              "solo": 0.26921,
+              "unique": 0.053129
+            },
+            "input_unusual": {
+              "solo": 0.161066,
+              "unique": 0.012494
+            },
+            "barely_passed": {
+              "solo": 0.229436,
+              "unique": 0.02812
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.2,
+          "total_defective": 96012,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.015727,
+          "barely_unique": 0.028194,
+          "cd_unique": 0.050098,
+          "input_unique": 0.011853,
+          "delta_barely_minus_route": 0.012467,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.175488,
+              "unique": 0.015727
+            },
+            "classifier_disagree": {
+              "solo": 0.274153,
+              "unique": 0.050098
+            },
+            "input_unusual": {
+              "solo": 0.160001,
+              "unique": 0.011853
+            },
+            "barely_passed": {
+              "solo": 0.237606,
+              "unique": 0.028194
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.25,
+          "total_defective": 95941,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.01528,
+          "barely_unique": 0.02882,
+          "cd_unique": 0.047623,
+          "input_unique": 0.010256,
+          "delta_barely_minus_route": 0.01354,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.176108,
+              "unique": 0.01528
+            },
+            "classifier_disagree": {
+              "solo": 0.278661,
+              "unique": 0.047623
+            },
+            "input_unusual": {
+              "solo": 0.1589,
+              "unique": 0.010256
+            },
+            "barely_passed": {
+              "solo": 0.247048,
+              "unique": 0.02882
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.3,
+          "total_defective": 96069,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.014136,
+          "barely_unique": 0.026242,
+          "cd_unique": 0.046456,
+          "input_unique": 0.01044,
+          "delta_barely_minus_route": 0.012106,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.176613,
+              "unique": 0.014136
+            },
+            "classifier_disagree": {
+              "solo": 0.287585,
+              "unique": 0.046456
+            },
+            "input_unusual": {
+              "solo": 0.16129,
+              "unique": 0.01044
+            },
+            "barely_passed": {
+              "solo": 0.255681,
+              "unique": 0.026242
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.35,
+          "total_defective": 96338,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.013266,
+          "barely_unique": 0.025878,
+          "cd_unique": 0.043773,
+          "input_unique": 0.009373,
+          "delta_barely_minus_route": 0.012612,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.173763,
+              "unique": 0.013266
+            },
+            "classifier_disagree": {
+              "solo": 0.290695,
+              "unique": 0.043773
+            },
+            "input_unusual": {
+              "solo": 0.158203,
+              "unique": 0.009373
+            },
+            "barely_passed": {
+              "solo": 0.261579,
+              "unique": 0.025878
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.4,
+          "total_defective": 95953,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.011923,
+          "barely_unique": 0.025888,
+          "cd_unique": 0.041281,
+          "input_unique": 0.009213,
+          "delta_barely_minus_route": 0.013965,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.174148,
+              "unique": 0.011923
+            },
+            "classifier_disagree": {
+              "solo": 0.296802,
+              "unique": 0.041281
+            },
+            "input_unusual": {
+              "solo": 0.159849,
+              "unique": 0.009213
+            },
+            "barely_passed": {
+              "solo": 0.27131,
+              "unique": 0.025888
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.45,
+          "total_defective": 95710,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.010741,
+          "barely_unique": 0.024731,
+          "cd_unique": 0.040466,
+          "input_unique": 0.007815,
+          "delta_barely_minus_route": 0.01399,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.175781,
+              "unique": 0.010741
+            },
+            "classifier_disagree": {
+              "solo": 0.305621,
+              "unique": 0.040466
+            },
+            "input_unusual": {
+              "solo": 0.160495,
+              "unique": 0.007815
+            },
+            "barely_passed": {
+              "solo": 0.280002,
+              "unique": 0.024731
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.5,
+          "total_defective": 95240,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.010563,
+          "barely_unique": 0.023887,
+          "cd_unique": 0.037516,
+          "input_unique": 0.007476,
+          "delta_barely_minus_route": 0.013324,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.176354,
+              "unique": 0.010563
+            },
+            "classifier_disagree": {
+              "solo": 0.310521,
+              "unique": 0.037516
+            },
+            "input_unusual": {
+              "solo": 0.159334,
+              "unique": 0.007476
+            },
+            "barely_passed": {
+              "solo": 0.288671,
+              "unique": 0.023887
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.55,
+          "total_defective": 95690,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.009426,
+          "barely_unique": 0.022552,
+          "cd_unique": 0.034674,
+          "input_unique": 0.007148,
+          "delta_barely_minus_route": 0.013126,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.176727,
+              "unique": 0.009426
+            },
+            "classifier_disagree": {
+              "solo": 0.316637,
+              "unique": 0.034674
+            },
+            "input_unusual": {
+              "solo": 0.160602,
+              "unique": 0.007148
+            },
+            "barely_passed": {
+              "solo": 0.297283,
+              "unique": 0.022552
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.6,
+          "total_defective": 95918,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.008747,
+          "barely_unique": 0.022311,
+          "cd_unique": 0.032945,
+          "input_unique": 0.006099,
+          "delta_barely_minus_route": 0.013564,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.178653,
+              "unique": 0.008747
+            },
+            "classifier_disagree": {
+              "solo": 0.32436,
+              "unique": 0.032945
+            },
+            "input_unusual": {
+              "solo": 0.162587,
+              "unique": 0.006099
+            },
+            "barely_passed": {
+              "solo": 0.307189,
+              "unique": 0.022311
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.65,
+          "total_defective": 95981,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.007324,
+          "barely_unique": 0.02141,
+          "cd_unique": 0.03161,
+          "input_unique": 0.005189,
+          "delta_barely_minus_route": 0.014086,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.174972,
+              "unique": 0.007324
+            },
+            "classifier_disagree": {
+              "solo": 0.329148,
+              "unique": 0.03161
+            },
+            "input_unusual": {
+              "solo": 0.158594,
+              "unique": 0.005189
+            },
+            "barely_passed": {
+              "solo": 0.312416,
+              "unique": 0.02141
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.7,
+          "total_defective": 96096,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.006088,
+          "barely_unique": 0.020178,
+          "cd_unique": 0.028846,
+          "input_unique": 0.004693,
+          "delta_barely_minus_route": 0.01409,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.174763,
+              "unique": 0.006088
+            },
+            "classifier_disagree": {
+              "solo": 0.334239,
+              "unique": 0.028846
+            },
+            "input_unusual": {
+              "solo": 0.160038,
+              "unique": 0.004693
+            },
+            "barely_passed": {
+              "solo": 0.319524,
+              "unique": 0.020178
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.75,
+          "total_defective": 95505,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.005351,
+          "barely_unique": 0.020104,
+          "cd_unique": 0.026679,
+          "input_unique": 0.003926,
+          "delta_barely_minus_route": 0.014753,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.175363,
+              "unique": 0.005351
+            },
+            "classifier_disagree": {
+              "solo": 0.340663,
+              "unique": 0.026679
+            },
+            "input_unusual": {
+              "solo": 0.159814,
+              "unique": 0.003926
+            },
+            "barely_passed": {
+              "solo": 0.329564,
+              "unique": 0.020104
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.8,
+          "total_defective": 95903,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.004254,
+          "barely_unique": 0.019165,
+          "cd_unique": 0.024629,
+          "input_unique": 0.003024,
+          "delta_barely_minus_route": 0.014911,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.174729,
+              "unique": 0.004254
+            },
+            "classifier_disagree": {
+              "solo": 0.345172,
+              "unique": 0.024629
+            },
+            "input_unusual": {
+              "solo": 0.15987,
+              "unique": 0.003024
+            },
+            "barely_passed": {
+              "solo": 0.337278,
+              "unique": 0.019165
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.85,
+          "total_defective": 96044,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.003488,
+          "barely_unique": 0.018335,
+          "cd_unique": 0.022792,
+          "input_unique": 0.002634,
+          "delta_barely_minus_route": 0.014847,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.173733,
+              "unique": 0.003488
+            },
+            "classifier_disagree": {
+              "solo": 0.350537,
+              "unique": 0.022792
+            },
+            "input_unusual": {
+              "solo": 0.159312,
+              "unique": 0.002634
+            },
+            "barely_passed": {
+              "solo": 0.344051,
+              "unique": 0.018335
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.9,
+          "total_defective": 95816,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.002724,
+          "barely_unique": 0.018316,
+          "cd_unique": 0.020059,
+          "input_unique": 0.002077,
+          "delta_barely_minus_route": 0.015592,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.174084,
+              "unique": 0.002724
+            },
+            "classifier_disagree": {
+              "solo": 0.355254,
+              "unique": 0.020059
+            },
+            "input_unusual": {
+              "solo": 0.158606,
+              "unique": 0.002077
+            },
+            "barely_passed": {
+              "solo": 0.350776,
+              "unique": 0.018316
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 0.95,
+          "total_defective": 95172,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.001681,
+          "barely_unique": 0.016864,
+          "cd_unique": 0.017579,
+          "input_unique": 0.001303,
+          "delta_barely_minus_route": 0.015183,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.177426,
+              "unique": 0.001681
+            },
+            "classifier_disagree": {
+              "solo": 0.364677,
+              "unique": 0.017579
+            },
+            "input_unusual": {
+              "solo": 0.162117,
+              "unique": 0.001303
+            },
+            "barely_passed": {
+              "solo": 0.363741,
+              "unique": 0.016864
+            }
+          }
+        },
+        {
+          "attack_label": "cd_barely",
+          "pi": 1.0,
+          "total_defective": 96224,
+          "unique_rank": [
+            "classifier_disagree",
+            "barely_passed",
+            "route_changed",
+            "input_unusual"
+          ],
+          "middle_pair_order": "barely_passed > route_changed",
+          "middle_flipped": false,
+          "extremes_hold": true,
+          "route_unique": 0.000551,
+          "barely_unique": 0.0159,
+          "cd_unique": 0.016119,
+          "input_unique": 0.000499,
+          "delta_barely_minus_route": 0.015349,
+          "by_signal": {
+            "route_changed": {
+              "solo": 0.177035,
+              "unique": 0.000551
+            },
+            "classifier_disagree": {
+              "solo": 0.371685,
+              "unique": 0.016119
+            },
+            "input_unusual": {
+              "solo": 0.161841,
+              "unique": 0.000499
+            },
+            "barely_passed": {
+              "solo": 0.371695,
+              "unique": 0.0159
+            }
+          }
+        }
+      ]
+    }
+  },
+  "interpretation": [
+    "route_cd π*=0.5: middle unlocks at moderate Mike-class mass (around half is enough; matches mike_half). Middle not locked; needs real π estimate before prune.",
+    "barely_route π*=None; cd_barely π*=None (null = that single-class dose never flips middle)."
+  ]
+}

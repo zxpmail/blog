@@ -373,11 +373,27 @@ CD looks like the weak link next to P6 on solo CR (24.9 vs 28.4) and is the load
 
 **Concentration of the 95.8%.** Of 96 MISS runs: **qwen3-0.5b = 77 (80.2%)**, gemma3 = 16 (16.7%), deepseek-v4-flash = 3 (3.1%). Top scenario DS4 alone is 34.4%. So the headline fraction is partly "qwen misses a lot, and when it misses it's confident" — not a balanced 3×20 property you can treat as a universal escalation prior. What *does* hold as a shape, conditional on miss: qwen 75/77 (97.4%) and gemma 16/16 (100%) at conf ≥ 0.9; deepseek barely misses (1/3 high-conf). Dump: `results-v2/confidence-vs-miss-concentration.json`.
 
-### Update (2026-07-22): escalation tripwire ≠ audit weighting — next part (draft)
+### Update (2026-07-27): co-occurrence unlocks the middle; ends still hold
+
+Mike's follow-up after the unique-catch column: a 3×3 (dist × quality) independence sweep held the same unique-CR rank in every cell (`CD > barely > route > input`), but that still leaves *independence* untested — force two signals to co-fire from one defect class and see whether `barely` and `route` swap.
+
+Three offline arms on the same coupled-Uniform unique-catch definition (burst/medium, 10% floor):
+
+1. **Forced pair** (`unique-catch-cofire-test.py`): inject `route_changed ∧ classifier_disagree` on fraction ρ of defectives (ρ→0.8), then all C(4,2)=6 pairs. Unique *mass* collapses under shared fires; **rank never moves**.
+2. **Co-occurrence labels** (`unique-catch-cooccur-labels-test.py`): each defective draws a latent class → signature fires at `p_sig=0.90`. Under `mike_half` (π(`route_cd`)=0.5), middle **does** flip (`route > barely`; stable at N=2000). Extremes still hold.
+3. **Dose** (`unique-catch-cooccur-dose-test.py`): π*(`route_cd`)≈**0.50** (anti-flicker). Single-class doses of `barely_route` / `cd_barely` never flip middle. At π(`route_cd`)=1 extremes also break (route overtakes CD) — only under that extreme.
+
+**Prune takeaway:** drop `input_unusual` first / keep CD last survives these sims; **do not lock** `barely` vs `route` without an estimate of real co-occurrence-label mass on route∧CD. π here is invented — a production trace's labels remain the lock condition. Dumps: `results-v2/unique-catch-cofire.json`, `unique-catch-cofire-pairs.json`, `unique-catch-cooccur-labels.json`, `unique-catch-cooccur-dose.json`.
+
+### Update (2026-07-22): escalation tripwire ≠ audit weighting — next part
 
 Alexey Spinov's follow-up on this post pushes a different knob than Mike's: not *how often* to audit the high-confidence region, but *whether unanimous L2 votes should auto-execute at all* when the failure mode is correlated. That incompleteness in the Part 6 diagram is real — divergence-only escalation is not enough for the failure mode DF v2 already measured.
 
-**Full write-up is [Part 7](blog-agent-determinism-illusions-7.en.md)** (*Divergence escalates the wrong population* — local draft, **not published on DEV.to yet**). This Update is only a pointer so the published post does not pretend the old diagram is complete. Numbers, D+T2, recurrence vs novelty, structural≠causal independence, and hold-out tests live in that draft — not duplicated here.
+**Full write-up is [Part 7](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513)** (*Divergence escalates the wrong population*). This Update is only a pointer so the published post does not pretend the old diagram is complete. Numbers, D+T2, recurrence vs novelty, structural≠causal independence, and hold-out tests live there — not duplicated here.
+
+### Update (2026-07-27): after who enters — who gets seen (pointer)
+
+Alexey's later grid on this thread (floor volume, arrival vs precision order) and Mike's reframe (rank-inside-stream is the open problem) sit *after* Part 7's entry policy. **[Part 15](blog-agent-determinism-illusions-15.en.md)** (*D+T2 names who enters; budget names who gets seen* — local draft) holds the offline suite: diluted-queue acceptance, feature×time stress, Trigger∥Rank / Shadow∥Enforce. Numbering jumps to 15 so Parts 8–14 keep their other arcs; publish order on this argument line is 7 → 15.
 
 ---
 
