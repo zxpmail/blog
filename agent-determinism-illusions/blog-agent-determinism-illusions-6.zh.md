@@ -319,12 +319,11 @@ Mike 在独有捞获列之后的跟进：3×3（分布 × 信号质量）独立�
 
 同一套耦合 Uniform 独有捞获定义（burst/medium、10% floor）三条离线臂：
 
-1. **强制共火对**（`unique-catch-cofire-test.py`）：对 ρ 比例的缺陷强制 `route_changed ∧ classifier_disagree`（ρ→0.8），再扫全 C(4,2)=6 对。共火下 unique *绝对值*塌；**序全程不动**。
-2. **共现标签**（`unique-catch-cooccur-labels-test.py`）：每个缺陷抽潜在类 → 签名以 `p_sig=0.90` 点火。`mike_half`（π(`route_cd`)=0.5）下中段**翻了**（`route > barely`；N=2000 仍稳）。两端仍持。
-3. **剂量**（`unique-catch-cooccur-dose-test.py`）：π*(`route_cd`)≈**0.50**（防闪烁）。`barely_route` / `cd_barely` 单类剂量从不翻中段。π(`route_cd`)=1 时两端也会破（route 压过 CD）——只在这种极端。
+1. **强制共火对**（[`unique-catch-cofire-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/unique-catch-cofire-test.py)）：对 ρ 比例的缺陷强制 `route_changed ∧ classifier_disagree`（ρ→0.8），再扫全 C(4,2)=6 对。共火下 unique *绝对值*塌；**序全程不动**。结果：[`unique-catch-cofire.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/unique-catch-cofire.json)、[`unique-catch-cofire-pairs.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/unique-catch-cofire-pairs.json)。
+2. **共现标签**（[`unique-catch-cooccur-labels-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/unique-catch-cooccur-labels-test.py)）：每个缺陷抽潜在类 → 签名以 `p_sig=0.90` 点火。`mike_half`（π(`route_cd`)=0.5）下中段**翻了**（`route > barely`；N=2000 仍稳）。两端仍持。结果：[`unique-catch-cooccur-labels.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/unique-catch-cooccur-labels.json)。
+3. **剂量**（[`unique-catch-cooccur-dose-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/unique-catch-cooccur-dose-test.py)）：π*(`route_cd`)≈**0.50**（防闪烁）。`barely_route` / `cd_barely` 单类剂量从不翻中段。π(`route_cd`)=1 时两端也会破（route 压过 CD）——只在这种极端。结果：[`unique-catch-cooccur-dose.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/unique-catch-cooccur-dose.json)。
 
-**裁剪结论：** 先砍 `input_unusual` / 最后留 CD，在这些仿真里站得住；**不要锁** `barely` vs `route`，除非有真实共现标签里 route∧CD 的质量估计。此处 π 是编的——生产 trace 的标签才是上锁条件。落盘：`results-v2/unique-catch-cofire.json`、`unique-catch-cofire-pairs.json`、`unique-catch-cooccur-labels.json`、`unique-catch-cooccur-dose.json`。
-
+**裁剪结论：** 先砍 `input_unusual` / 最后留 CD，在这些仿真里站得住；**不要锁** `barely` vs `route`，除非有真实共现标签里 route∧CD 的质量估计。此处 π 是编的——生产 trace 的标签才是上锁条件。
 ### Update (2026-07-22)：升级 tripwire ≠ 审计加权——系列下篇
 
 Alexey Spinov 对本篇的跟评拧的是另一颗旋钮：不是高自信区*审计多勤*，而是当失败模式相关时，L2 **全票**是否还该自动执行。第 6 篇管线图缺这层，是真缺——只靠分歧升级，对不上 DF v2 已测到的失败模式。
