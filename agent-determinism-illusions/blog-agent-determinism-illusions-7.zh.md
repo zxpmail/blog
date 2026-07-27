@@ -195,7 +195,9 @@ Checksum 仍是正确的第一道门槛——拦住「打一致性分」。它**
 
 ### Update (2026-07-27)：联合失败监视——发现你其实没有因果独立（Mike）
 
-Mike 在结构≠因果之后的下一刀：实践修法不是更强的独立性*定义*——是**监视器**。跟踪主张与 probe 的联合失败率；把相关失败尖峰当成独立告警。因果独立无法事先认证；可以事后发现原来没有。
+Mike 在结构≠因果之后的下一刀：实践修法不是更强的独立性*定义*——是**监视器**。跟踪主张与 probe 的联合失败率；把相关失败尖峰当成独立告警。
+
+操作收口（比「事先绝对无法盖章」更窄）：**测得到的上游事先盖章**（血缘、对已点名共因路径做混沌注入）。**别假装**那枚章盖住了未点名的共因——那些剩余，联合失败尖峰*就是*可跑的检查。
 
 离线仿真（[`joint-failure-monitor-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/joint-failure-monitor-test.py) → [`joint-failure-monitor.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/joint-failure-monitor.json)）：`(claim_fail, probe_fail)` 流；滚动窗 W=200 **excess** = ĵ − ĉ·p̂；excess ≥ τ 连续 K=3 窗则告警。两体制——纯独立（p_c=0.12, p_p=0.10）vs 同基线加日程化共因停电窗（双强制失败；传感器中断形）。Checksum 仍只打结构过/不过；监视器从不看主张说理。
 
@@ -206,7 +208,7 @@ Mike 在结构≠因果之后的下一刀：实践修法不是更强的独立性
 
 本网格工作点：τ=0.03（FAR≤5% 且检出≥90%，再取最小延迟）。
 
-**结论：** checksum 仍是同信道的事先门槛。因果独立仍是事后量——联合失败尖峰*就是*可跑的检查。监视器不制造因果独立；它让丢掉因果独立变得可听见。
+**结论：** checksum / 已测上游 = 事先章；联合失败 excess = 剩余告警。监视器不制造因果独立，也不替代已经能跑的上游测试——它让尚未盖章的那截变得可听见。
 
 ### Update (2026-07-23)：hold-out 实验——分叉可测
 

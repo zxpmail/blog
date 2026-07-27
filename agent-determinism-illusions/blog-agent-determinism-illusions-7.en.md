@@ -210,7 +210,9 @@ What this tightens about the asymmetry claim: **"recurrence buildable today"** i
 
 ### Update (2026-07-27): joint-failure monitor — notice when you didn't have it (Mike)
 
-Mike's next cut after structural≠causal: the practical fix is not a stronger *definition* of independence — it is a **monitor**. Track the joint failure rate of claim and probe over time; treat a correlated-failure spike as its own alert. You cannot certify causal independence up front. You can notice when it turns out you didn't have it.
+Mike's next cut after structural≠causal: the practical fix is not a stronger *definition* of independence — it is a **monitor**. Track the joint failure rate of claim and probe over time; treat a correlated-failure spike as its own alert.
+
+Ops landing (narrower than “never certify up front”): **stamp what you can test** upstream (lineage, chaos-inject a named shared path). **Don't pretend** that stamp covers unnamed common causes — for those, the joint-failure spike *is* the available check.
 
 Offline sim ([`joint-failure-monitor-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/joint-failure-monitor-test.py) → [`joint-failure-monitor.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/joint-failure-monitor.json)): stream of `(claim_fail, probe_fail)`; rolling W=200 **excess** = ĵ − ĉ·p̂; alert if excess ≥ τ for K=3 consecutive windows. Two regimes — pure independence (p_c=0.12, p_p=0.10) vs the same baseline plus scheduled common-cause outage windows (both forced fail; sensor-outage shape). Checksum still only grades structural pass/fail; the monitor never peeks at claim rationale.
 
@@ -221,7 +223,7 @@ Offline sim ([`joint-failure-monitor-test.py`](https://github.com/zxpmail/blog/b
 
 Operating point on this grid: τ=0.03 (FAR≤5% and detection≥90%, then min delay).
 
-**Takeaway:** checksum remains the advance bar for same-channel. Causal independence stays post-hoc — the joint-failure spike *is* the available check. This monitor does not create causal independence; it makes losing it audible.
+**Takeaway:** checksum / tested upstream = the advance stamp. Joint-failure excess = the residual alarm. This monitor does not create causal independence and does not replace tests you can already run — it makes the unstamped remainder audible.
 
 ### Update (2026-07-23): hold-out experiment — the fork is measurable
 

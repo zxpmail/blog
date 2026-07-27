@@ -25,7 +25,7 @@ alert if excess≥τ for K=3 windows.
 
 Operating point: τ=0.03 (FAR≤0.05 ∧ detect≥0.90, min delay).
 
-## Reply / on-page
+## Ops landing
 
-- `working-notes/reply-mike-joint-failure-monitor.md`
-- Part 7 Update after structural≠causal
+Stamp what you can test upstream; alert on joint-failure spikes for the rest.
+Not “causal independence can never be certified.”
