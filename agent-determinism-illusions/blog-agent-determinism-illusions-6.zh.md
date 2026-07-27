@@ -328,7 +328,7 @@ Mike 在独有捞获列之后的跟进：3×3（分布 × 信号质量）独立�
 
 Alexey Spinov 对本篇的跟评拧的是另一颗旋钮：不是高自信区*审计多勤*，而是当失败模式相关时，L2 **全票**是否还该自动执行。第 6 篇管线图缺这层，是真缺——只靠分歧升级，对不上 DF v2 已测到的失败模式。
 
-**全文在 [第 7 篇](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513)**（《分歧升级捞错了人》）。此处只指路，避免已发表正文假装旧图完整。数字、D+T2、复发/新奇、结构≠因果独立、hold-out 都在那里，不在本篇重复。
+**全文在 [第 7 篇](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513)**（《分歧升级捞错了人》）。此处只指路，避免已发表正文假装旧图完整。数字、D+T2、复发/新奇、结构≠因果独立、hold-out，以及[联合失败监视](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent-determinism-illusions-7.zh.md#joint-failure-monitor-mike)（测得到的上游盖章；其余靠尖峰报警）都在那里，不在本篇重复。
 
 ### Update (2026-07-27)：进队之后——谁被看见（指针）
 

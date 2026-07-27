@@ -206,7 +206,9 @@ Two cuts, not one:
 
 Checksum framing is still the right first bar — it stops agreement-grading. It is **not** a common-cause shield. Naming the second failure mode so "out-of-channel" does not silently promote structural difference into causal independence.
 
-What this tightens about the asymmetry claim: **"recurrence buildable today"** is about T1/T2 on burned classes — history-conditioned, **no independence required**. The hold-out probe below only checked the **structural** half of the novelty bar (pass/fail writable without the claim's rationale). It did **not** certify causal independence against shared upstream failure. Domain-shaped scarcity now has two layers: finding a checksum-passing probe, *and* finding one whose input path does not share a common cause with the claim.
+What this tightens about the asymmetry claim: **"recurrence buildable today"** is about T1/T2 on burned classes — history-conditioned, **no independence required**. The hold-out probe below only checked the **structural** half of the novelty bar (pass/fail writable without the claim's rationale). It did **not** certify causal independence against shared upstream failure. Domain-shaped scarcity now has two layers: finding a checksum-passing probe, *and* finding one whose input path does not share a common cause with the claim. Ops follow-up (stamp what you can test; alert on the rest): [joint-failure monitor Update](#joint-failure-monitor-mike).
+
+<a id="joint-failure-monitor-mike"></a>
 
 ### Update (2026-07-27): joint-failure monitor — notice when you didn't have it (Mike)
 

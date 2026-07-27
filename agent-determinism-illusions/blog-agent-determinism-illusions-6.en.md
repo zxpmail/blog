@@ -388,7 +388,7 @@ Three offline arms on the same coupled-Uniform unique-catch definition (burst/me
 
 Alexey Spinov's follow-up on this post pushes a different knob than Mike's: not *how often* to audit the high-confidence region, but *whether unanimous L2 votes should auto-execute at all* when the failure mode is correlated. That incompleteness in the Part 6 diagram is real — divergence-only escalation is not enough for the failure mode DF v2 already measured.
 
-**Full write-up is [Part 7](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513)** (*Divergence escalates the wrong population*). This Update is only a pointer so the published post does not pretend the old diagram is complete. Numbers, D+T2, recurrence vs novelty, structural≠causal independence, and hold-out tests live there — not duplicated here.
+**Full write-up is [Part 7](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513)** (*Divergence escalates the wrong population*). This Update is only a pointer so the published post does not pretend the old diagram is complete. Numbers, D+T2, recurrence vs novelty, structural≠causal independence, hold-out tests, and the [joint-failure monitor](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent-determinism-illusions-7.en.md#joint-failure-monitor-mike) (stamp testable upstream; alert on the rest) live there — not duplicated here.
 
 ### Update (2026-07-27): after who enters — who gets seen (pointer)
 
