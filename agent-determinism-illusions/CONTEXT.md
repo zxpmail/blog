@@ -1,13 +1,13 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Tom Jones Part 15：正文 Update 已入库；本地 commit 待与先前实验 commit 一并推送（GitHub 曾 502）
+- Tom Jones Part 15：正文 Update 已入库并本地 commit；**push 仍失败**（连不上 github.com:443）
 
 ## 上次停在哪个位置
-- 新增 `blog-agent-determinism-illusions-15.{en,zh}.md`（含 Update 2026-07-29）
-- 实验：`conf-desc-miss-shape` + `agree-set-halueval`（n=70）
-- 回复：`working-notes/reply-tom-jones-part15.md`
-- 本地可能仍 ahead：`a9690c4` 实验 commit 若未推上需再 push
+- `c375c9a` docs(part15)：`blog-agent-determinism-illusions-15.{en,zh}.md` + README + CONTEXT
+- `a9690c4` feat(scripts)：conf_desc / HaluEval agree-set（与上文一起 **ahead 2**）
+- 回复草稿：`working-notes/reply-tom-jones-part15.md`（可贴 DEV.to）
+- 待网络恢复：`git push origin HEAD`
 
 ## 近期关键决定
 - conf_desc = fixture (conf,miss) 联合；不能当双线安全 fallback
