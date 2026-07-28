@@ -1,0 +1,1296 @@
+{
+  "question": "Is conf_desc matching miss shape a fixture property or a real within-model failure-timing property? Safe as dual-line fallback?",
+  "source": "Tom Jones comment on Part 15 (2026-07-28)",
+  "seed": 7,
+  "miss_rate": 0.35,
+  "models": [
+    "qwen3-0-5b",
+    "gemma3-latest",
+    "deepseek-v4-flash"
+  ],
+  "raw": {
+    "qwen3-0-5b": {
+      "n_items_source": 200,
+      "n_miss_source": 77,
+      "queue_n": 189,
+      "queue_miss": 77,
+      "budgets": {
+        "0.01": {
+          "n": 189,
+          "k": 2,
+          "budget": 0.01,
+          "arrival": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 2,
+            "caught": 2,
+            "n_miss": 77,
+            "catch_rate": 0.025974025974025976,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "lift_conf_desc_minus_arrival": 2
+        },
+        "0.02": {
+          "n": 189,
+          "k": 4,
+          "budget": 0.02,
+          "arrival": {
+            "k": 4,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 4,
+            "caught": 4,
+            "n_miss": 77,
+            "catch_rate": 0.05194805194805195,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 4,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 4,
+            "caught": 1,
+            "n_miss": 77,
+            "catch_rate": 0.012987012987012988,
+            "precision": 0.25
+          },
+          "lift_conf_desc_minus_arrival": 4
+        },
+        "0.05": {
+          "n": 189,
+          "k": 9,
+          "budget": 0.05,
+          "arrival": {
+            "k": 9,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 9,
+            "caught": 9,
+            "n_miss": 77,
+            "catch_rate": 0.11688311688311688,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 9,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 9,
+            "caught": 4,
+            "n_miss": 77,
+            "catch_rate": 0.05194805194805195,
+            "precision": 0.4444444444444444
+          },
+          "lift_conf_desc_minus_arrival": 9
+        }
+      }
+    },
+    "gemma3-latest": {
+      "n_items_source": 200,
+      "n_miss_source": 16,
+      "queue_n": 30,
+      "queue_miss": 16,
+      "budgets": {
+        "0.01": {
+          "n": 30,
+          "k": 1,
+          "budget": 0.01,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 16,
+            "catch_rate": 0.0625,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "lift_conf_desc_minus_arrival": 1
+        },
+        "0.02": {
+          "n": 30,
+          "k": 1,
+          "budget": 0.02,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 16,
+            "catch_rate": 0.0625,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 16,
+            "catch_rate": 0.0625,
+            "precision": 1.0
+          },
+          "lift_conf_desc_minus_arrival": 1
+        },
+        "0.05": {
+          "n": 30,
+          "k": 2,
+          "budget": 0.05,
+          "arrival": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 2,
+            "caught": 2,
+            "n_miss": 16,
+            "catch_rate": 0.125,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 2,
+            "caught": 1,
+            "n_miss": 16,
+            "catch_rate": 0.0625,
+            "precision": 0.5
+          },
+          "lift_conf_desc_minus_arrival": 2
+        }
+      }
+    },
+    "deepseek-v4-flash": {
+      "n_items_source": 200,
+      "n_miss_source": 3,
+      "queue_n": 9,
+      "queue_miss": 3,
+      "budgets": {
+        "0.01": {
+          "n": 9,
+          "k": 1,
+          "budget": 0.01,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 3,
+            "catch_rate": 0.3333333333333333,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "lift_conf_desc_minus_arrival": 1
+        },
+        "0.02": {
+          "n": 9,
+          "k": 1,
+          "budget": 0.02,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 3,
+            "catch_rate": 0.3333333333333333,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 3,
+            "catch_rate": 0.3333333333333333,
+            "precision": 1.0
+          },
+          "lift_conf_desc_minus_arrival": 1
+        },
+        "0.05": {
+          "n": 9,
+          "k": 1,
+          "budget": 0.05,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 3,
+            "catch_rate": 0.3333333333333333,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "lift_conf_desc_minus_arrival": 1
+        }
+      }
+    }
+  },
+  "fixture_shuffle": {
+    "qwen3-0-5b": {
+      "queue_n": 189,
+      "budgets": {
+        "0.01": {
+          "n": 189,
+          "k": 2,
+          "budget": 0.01,
+          "arrival": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 2,
+            "caught": 1,
+            "n_miss": 77,
+            "catch_rate": 0.012987012987012988,
+            "precision": 0.5
+          },
+          "lift_conf_desc_minus_arrival": 0
+        },
+        "0.02": {
+          "n": 189,
+          "k": 4,
+          "budget": 0.02,
+          "arrival": {
+            "k": 4,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 4,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 4,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 4,
+            "caught": 1,
+            "n_miss": 77,
+            "catch_rate": 0.012987012987012988,
+            "precision": 0.25
+          },
+          "lift_conf_desc_minus_arrival": 0
+        },
+        "0.05": {
+          "n": 189,
+          "k": 9,
+          "budget": 0.05,
+          "arrival": {
+            "k": 9,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 9,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 9,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 9,
+            "caught": 3,
+            "n_miss": 77,
+            "catch_rate": 0.03896103896103896,
+            "precision": 0.3333333333333333
+          },
+          "lift_conf_desc_minus_arrival": 0
+        }
+      }
+    },
+    "gemma3-latest": {
+      "queue_n": 30,
+      "budgets": {
+        "0.01": {
+          "n": 30,
+          "k": 1,
+          "budget": 0.01,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "lift_conf_desc_minus_arrival": 0
+        },
+        "0.02": {
+          "n": 30,
+          "k": 1,
+          "budget": 0.02,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 16,
+            "catch_rate": 0.0625,
+            "precision": 1.0
+          },
+          "lift_conf_desc_minus_arrival": 0
+        },
+        "0.05": {
+          "n": 30,
+          "k": 2,
+          "budget": 0.05,
+          "arrival": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 2,
+            "caught": 1,
+            "n_miss": 16,
+            "catch_rate": 0.0625,
+            "precision": 0.5
+          },
+          "lift_conf_desc_minus_arrival": 0
+        }
+      }
+    },
+    "deepseek-v4-flash": {
+      "queue_n": 9,
+      "budgets": {
+        "0.01": {
+          "n": 9,
+          "k": 1,
+          "budget": 0.01,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 3,
+            "catch_rate": 0.3333333333333333,
+            "precision": 1.0
+          },
+          "lift_conf_desc_minus_arrival": 0
+        },
+        "0.02": {
+          "n": 9,
+          "k": 1,
+          "budget": 0.02,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "lift_conf_desc_minus_arrival": 0
+        },
+        "0.05": {
+          "n": 9,
+          "k": 1,
+          "budget": 0.05,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "lift_conf_desc_minus_arrival": 0
+        }
+      }
+    }
+  },
+  "temporal_holdout": {
+    "qwen3-0-5b": {
+      "n_future": 60,
+      "queue_n": 60,
+      "queue_miss": 26,
+      "budgets": {
+        "0.01": {
+          "n": 60,
+          "k": 1,
+          "budget": 0.01,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 26,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 26,
+            "catch_rate": 0.038461538461538464,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 26,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 26,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "lift_conf_desc_minus_arrival": 1
+        },
+        "0.02": {
+          "n": 60,
+          "k": 1,
+          "budget": 0.02,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 26,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 26,
+            "catch_rate": 0.038461538461538464,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 26,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 26,
+            "catch_rate": 0.038461538461538464,
+            "precision": 1.0
+          },
+          "lift_conf_desc_minus_arrival": 1
+        },
+        "0.05": {
+          "n": 60,
+          "k": 3,
+          "budget": 0.05,
+          "arrival": {
+            "k": 3,
+            "caught": 0,
+            "n_miss": 26,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 3,
+            "caught": 3,
+            "n_miss": 26,
+            "catch_rate": 0.11538461538461539,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 3,
+            "caught": 0,
+            "n_miss": 26,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 3,
+            "caught": 1,
+            "n_miss": 26,
+            "catch_rate": 0.038461538461538464,
+            "precision": 0.3333333333333333
+          },
+          "lift_conf_desc_minus_arrival": 3
+        }
+      }
+    },
+    "gemma3-latest": {
+      "n_future": 60,
+      "queue_n": 1,
+      "queue_miss": 1,
+      "budgets": {
+        "0.01": {
+          "n": 1,
+          "k": 1,
+          "budget": 0.01,
+          "arrival": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 1,
+            "catch_rate": 1.0,
+            "precision": 1.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 1,
+            "catch_rate": 1.0,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 1,
+            "catch_rate": 1.0,
+            "precision": 1.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 1,
+            "catch_rate": 1.0,
+            "precision": 1.0
+          },
+          "lift_conf_desc_minus_arrival": 0
+        },
+        "0.02": {
+          "n": 1,
+          "k": 1,
+          "budget": 0.02,
+          "arrival": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 1,
+            "catch_rate": 1.0,
+            "precision": 1.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 1,
+            "catch_rate": 1.0,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 1,
+            "catch_rate": 1.0,
+            "precision": 1.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 1,
+            "catch_rate": 1.0,
+            "precision": 1.0
+          },
+          "lift_conf_desc_minus_arrival": 0
+        },
+        "0.05": {
+          "n": 1,
+          "k": 1,
+          "budget": 0.05,
+          "arrival": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 1,
+            "catch_rate": 1.0,
+            "precision": 1.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 1,
+            "catch_rate": 1.0,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 1,
+            "catch_rate": 1.0,
+            "precision": 1.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 1,
+            "n_miss": 1,
+            "catch_rate": 1.0,
+            "precision": 1.0
+          },
+          "lift_conf_desc_minus_arrival": 0
+        }
+      }
+    },
+    "deepseek-v4-flash": {
+      "n_future": 60,
+      "queue_n": 0,
+      "queue_miss": 0,
+      "budgets": {}
+    }
+  },
+  "cross_model": {
+    "qwen3-0-5b": {
+      "within": {
+        "n": 189,
+        "k": 9,
+        "budget": 0.05,
+        "arrival": {
+          "k": 9,
+          "caught": 0,
+          "n_miss": 77,
+          "catch_rate": 0.0,
+          "precision": 0.0
+        },
+        "conf_desc": {
+          "k": 9,
+          "caught": 9,
+          "n_miss": 77,
+          "catch_rate": 0.11688311688311688,
+          "precision": 1.0
+        },
+        "conf_asc": {
+          "k": 9,
+          "caught": 0,
+          "n_miss": 77,
+          "catch_rate": 0.0,
+          "precision": 0.0
+        },
+        "random": {
+          "k": 9,
+          "caught": 4,
+          "n_miss": 77,
+          "catch_rate": 0.05194805194805195,
+          "precision": 0.4444444444444444
+        },
+        "lift_conf_desc_minus_arrival": 9
+      },
+      "donors": {
+        "gemma3-latest": {
+          "n": 189,
+          "k": 9,
+          "budget": 0.05,
+          "arrival": {
+            "k": 9,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 9,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 9,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 9,
+            "caught": 4,
+            "n_miss": 77,
+            "catch_rate": 0.05194805194805195,
+            "precision": 0.4444444444444444
+          },
+          "lift_conf_desc_minus_arrival": 0
+        },
+        "deepseek-v4-flash": {
+          "n": 189,
+          "k": 9,
+          "budget": 0.05,
+          "arrival": {
+            "k": 9,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 9,
+            "caught": 0,
+            "n_miss": 77,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 9,
+            "caught": 7,
+            "n_miss": 77,
+            "catch_rate": 0.09090909090909091,
+            "precision": 0.7777777777777778
+          },
+          "random": {
+            "k": 9,
+            "caught": 4,
+            "n_miss": 77,
+            "catch_rate": 0.05194805194805195,
+            "precision": 0.4444444444444444
+          },
+          "lift_conf_desc_minus_arrival": 0
+        }
+      }
+    },
+    "gemma3-latest": {
+      "within": {
+        "n": 30,
+        "k": 2,
+        "budget": 0.05,
+        "arrival": {
+          "k": 2,
+          "caught": 0,
+          "n_miss": 16,
+          "catch_rate": 0.0,
+          "precision": 0.0
+        },
+        "conf_desc": {
+          "k": 2,
+          "caught": 2,
+          "n_miss": 16,
+          "catch_rate": 0.125,
+          "precision": 1.0
+        },
+        "conf_asc": {
+          "k": 2,
+          "caught": 0,
+          "n_miss": 16,
+          "catch_rate": 0.0,
+          "precision": 0.0
+        },
+        "random": {
+          "k": 2,
+          "caught": 1,
+          "n_miss": 16,
+          "catch_rate": 0.0625,
+          "precision": 0.5
+        },
+        "lift_conf_desc_minus_arrival": 2
+      },
+      "donors": {
+        "qwen3-0-5b": {
+          "n": 30,
+          "k": 2,
+          "budget": 0.05,
+          "arrival": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 2,
+            "caught": 2,
+            "n_miss": 16,
+            "catch_rate": 0.125,
+            "precision": 1.0
+          },
+          "conf_asc": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 2,
+            "caught": 1,
+            "n_miss": 16,
+            "catch_rate": 0.0625,
+            "precision": 0.5
+          },
+          "lift_conf_desc_minus_arrival": 2
+        },
+        "deepseek-v4-flash": {
+          "n": 30,
+          "k": 2,
+          "budget": 0.05,
+          "arrival": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 2,
+            "caught": 0,
+            "n_miss": 16,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 2,
+            "caught": 2,
+            "n_miss": 16,
+            "catch_rate": 0.125,
+            "precision": 1.0
+          },
+          "random": {
+            "k": 2,
+            "caught": 1,
+            "n_miss": 16,
+            "catch_rate": 0.0625,
+            "precision": 0.5
+          },
+          "lift_conf_desc_minus_arrival": 0
+        }
+      }
+    },
+    "deepseek-v4-flash": {
+      "within": {
+        "n": 9,
+        "k": 1,
+        "budget": 0.05,
+        "arrival": {
+          "k": 1,
+          "caught": 0,
+          "n_miss": 3,
+          "catch_rate": 0.0,
+          "precision": 0.0
+        },
+        "conf_desc": {
+          "k": 1,
+          "caught": 1,
+          "n_miss": 3,
+          "catch_rate": 0.3333333333333333,
+          "precision": 1.0
+        },
+        "conf_asc": {
+          "k": 1,
+          "caught": 0,
+          "n_miss": 3,
+          "catch_rate": 0.0,
+          "precision": 0.0
+        },
+        "random": {
+          "k": 1,
+          "caught": 0,
+          "n_miss": 3,
+          "catch_rate": 0.0,
+          "precision": 0.0
+        },
+        "lift_conf_desc_minus_arrival": 1
+      },
+      "donors": {
+        "qwen3-0-5b": {
+          "n": 9,
+          "k": 1,
+          "budget": 0.05,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "lift_conf_desc_minus_arrival": 0
+        },
+        "gemma3-latest": {
+          "n": 9,
+          "k": 1,
+          "budget": 0.05,
+          "arrival": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_desc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "conf_asc": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "random": {
+            "k": 1,
+            "caught": 0,
+            "n_miss": 3,
+            "catch_rate": 0.0,
+            "precision": 0.0
+          },
+          "lift_conf_desc_minus_arrival": 0
+        }
+      }
+    }
+  },
+  "claims": {
+    "C1_raw_conf_desc_beats_arrival": {
+      "pass": true,
+      "cells": [
+        {
+          "model": "qwen3-0-5b",
+          "budget": "0.01",
+          "lift": 2,
+          "win": true
+        },
+        {
+          "model": "qwen3-0-5b",
+          "budget": "0.02",
+          "lift": 4,
+          "win": true
+        },
+        {
+          "model": "qwen3-0-5b",
+          "budget": "0.05",
+          "lift": 9,
+          "win": true
+        },
+        {
+          "model": "gemma3-latest",
+          "budget": "0.01",
+          "lift": 1,
+          "win": true
+        },
+        {
+          "model": "gemma3-latest",
+          "budget": "0.02",
+          "lift": 1,
+          "win": true
+        },
+        {
+          "model": "gemma3-latest",
+          "budget": "0.05",
+          "lift": 2,
+          "win": true
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "budget": "0.01",
+          "lift": 1,
+          "win": true
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "budget": "0.02",
+          "lift": 1,
+          "win": true
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "budget": "0.05",
+          "lift": 1,
+          "win": true
+        }
+      ],
+      "detail": "conf_desc catch > arrival on >= half of (model,B) cells"
+    },
+    "C2_shuffle_erases_edge_over_random": {
+      "pass": true,
+      "mean_raw_conf_desc_minus_random": 1.5555555555555556,
+      "mean_shuffle_conf_desc_minus_random": -0.8888888888888888,
+      "detail": "after conf shuffle, mean (conf_desc-random) <= 0 and below raw edge"
+    },
+    "C3_cross_model_unstable": {
+      "pass": true,
+      "unstable_pairs": 5,
+      "compared_pairs": 6,
+      "detail": "donor-conf conf_desc lift unstable vs within on >= half pairs"
+    },
+    "C4_fallback_verdict": {
+      "pass": true,
+      "conf_desc_safe_universal_fallback": false,
+      "fixture_shaped_evidence": true,
+      "cross_model_unstable": true,
+      "raw_beats_random_edge": 1.5555555555555556,
+      "shuffle_beats_random_edge": -0.8888888888888888,
+      "reason": "conf_desc's edge over random collapses under conf-shuffle → the 'accidental match' is this fixture's (conf,miss) joint (see also 95.8% MISS at conf≥0.9); not a safe dual-line fallback warrant."
+    }
+  },
+  "answer_for_tom": "Raw: conf_desc>arrival on 9/9 cells; conf_desc-random edge raw=1.56. After shuffle, edge vs random=-0.89 (C2 PASS). Cross-model donor unstable 5/6 (C3 PASS). conf_desc's edge over random collapses under conf-shuffle → the 'accidental match' is this fixture's (conf,miss) joint (see also 95.8% MISS at conf≥0.9); not a safe dual-line fallback warrant. Low-conf rejects preferred as distractors so MISS↔high-conf can surface; same DF v2 dump as confidence-vs-miss-concentration."
+}

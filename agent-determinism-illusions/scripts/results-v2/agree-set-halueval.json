@@ -1,0 +1,108 @@
+{
+  "source": "Tom Jones Part 15 agree-set / same-vs-cross mirror",
+  "n_requested": 70,
+  "full": false,
+  "seed": 7,
+  "models": {
+    "a": "deepseek",
+    "b": "ollama_gemma",
+    "same_second_draw": "ollama_gemma"
+  },
+  "halueval": {
+    "qa_rows": 10000,
+    "sum_rows": 10000,
+    "items": 70
+  },
+  "cross_model": {
+    "n_usable": 52,
+    "n_agree": 41,
+    "n_disagree": 11,
+    "n_both_wrong_on_disagree": 0,
+    "note_both_wrong": "Under binary faithfulness vs a single gold, disagree usually means exactly one side matches gold; both-wrong-on-disagree is rare and must not be read as independence evidence (Tom's caveat).",
+    "overall": {
+      "label": "overall",
+      "n": 52,
+      "n_agree": 41,
+      "agreement_rate": 0.7884615384615384,
+      "n_wrong_agree": 8,
+      "p_wrong_given_agree": 0.1951219512195122,
+      "wilson95": [
+        0.1023,
+        0.3401
+      ]
+    },
+    "by_family": {
+      "qa": {
+        "label": "qa",
+        "n": 32,
+        "n_agree": 26,
+        "agreement_rate": 0.8125,
+        "n_wrong_agree": 2,
+        "p_wrong_given_agree": 0.07692307692307693,
+        "wilson95": [
+          0.0214,
+          0.2414
+        ]
+      },
+      "summarization": {
+        "label": "summarization",
+        "n": 20,
+        "n_agree": 15,
+        "agreement_rate": 0.75,
+        "n_wrong_agree": 6,
+        "p_wrong_given_agree": 0.4,
+        "wilson95": [
+          0.1982,
+          0.6425
+        ]
+      }
+    }
+  },
+  "same_model_gemma": {
+    "n_usable": 70,
+    "n_agree": 70,
+    "n_disagree": 0,
+    "n_both_wrong_on_disagree": 0,
+    "note_both_wrong": "Under binary faithfulness vs a single gold, disagree usually means exactly one side matches gold; both-wrong-on-disagree is rare and must not be read as independence evidence (Tom's caveat).",
+    "overall": {
+      "label": "overall",
+      "n": 70,
+      "n_agree": 70,
+      "agreement_rate": 1.0,
+      "n_wrong_agree": 28,
+      "p_wrong_given_agree": 0.4,
+      "wilson95": [
+        0.2933,
+        0.5171
+      ]
+    },
+    "by_family": {
+      "qa": {
+        "label": "qa",
+        "n": 35,
+        "n_agree": 35,
+        "agreement_rate": 1.0,
+        "n_wrong_agree": 8,
+        "p_wrong_given_agree": 0.22857142857142856,
+        "wilson95": [
+          0.1207,
+          0.3902
+        ]
+      },
+      "summarization": {
+        "label": "summarization",
+        "n": 35,
+        "n_agree": 35,
+        "agreement_rate": 1.0,
+        "n_wrong_agree": 20,
+        "p_wrong_given_agree": 0.5714285714285714,
+        "wilson95": [
+          0.4086,
+          0.7202
+        ]
+      }
+    }
+  },
+  "agreement_gap_same_minus_cross": 0.21153846153846156,
+  "answer_for_tom": "Cross-model agree-set: agreement=0.7884615384615384, P(wrong|agree)=0.1951219512195122 Wilson95=[0.1023, 0.3401]; qa=0.07692307692307693, sum=0.4. Same-model (gemma×gemma) agreement=1.0 vs cross=0.7884615384615384. Model tier is DeepSeek-chat × gemma3, not Tom's 70B pair — numbers are same-question replications, not copies of 27.5%/88%."
+}
