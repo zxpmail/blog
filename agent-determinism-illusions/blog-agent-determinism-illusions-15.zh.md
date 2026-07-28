@@ -14,11 +14,11 @@
 
 第 7 篇收束在：分歧留下；T1/T2 加入；它们都不是 novelty 臂。那回答的是 **谁进入** escalate 集合。它不回答：集合大于人工预算时，谁先被看见。
 
-在第 6 篇线程里，Alexey 给出 wiring 警告：无序合并 D∪S 在 2% 预算下可能抓得比纯 D 还少；Mike 把开放问题收成 **rank-inside-stream**——coverage-limited 是历史建成的 trigger R 的 load-bearing 属性，当时还没人提出设计。
+在第 6 篇线程里，Alexey 给出 wiring 警告：无序合并 D∪S 在 2% 预算下可能抓得比纯 D 还少；Mike 把开放问题凝成 **rank-inside-stream**——coverage-limited 是历史建成的 trigger R 的 load-bearing 属性，其时尚无人提出设计。
 
-我们不在 Alexey 的 720 格上复现——那是他的参数模型（π·h·r_m），不在本仓库。在 df_proxy 上跑了一个相关检验（`scripts/merge-displacement-grid-test.py`），结果是**结构性 NULL**：D 流（conf<0.9）在该 fixture 上 miss-starved——qwen3-0.5b 上 D 流 115 条只 2 MISS，gemma3 上 147 条零 MISS；三个模型 × 8 个预算点 × 4 个被合并流（共 96 格）里没有一格 D@arrival > 0。位移形态无处触发。这本身就是发现：真实单 judge 输出上 D 流没有可被稀释的 miss 体积。
+我们不在 Alexey 的 720 格上复现——那是他的参数模型（π·h·r_m），不在本仓库。在 df_proxy 上跑了一个相关检验（`scripts/merge-displacement-grid-test.py`），结果是**结构性 NULL**：D 流（conf<0.9）在该 fixture 上 miss-starved——qwen3-0.5b 上 D 流 115 条只 2 MISS，gemma3 上 147 条零 MISS；三个模型、八个预算点、四种合并之选——九十六格内，D@arrival 无一大于零。位移形态无处触发。此即发现本身：真实单 judge 输出上 D 流没有可被稀释的 miss 体积。
 
-本篇转向更弱的命题：rank 在**任何** escalate 流内能否动针，并给出双线生产形态必须长什么样。
+本篇转向更弱的命题：rank 在**任何** escalate 流内能否动针，并描出双线生产形态应有的轮廓。
 
 ---
 
@@ -40,7 +40,7 @@ DF v2 全量 runs（N=585），预算 1%/2%/5%：
 - **可部署代理能动针：** 留一法 `P(MISS|class)` 在 6/18 格胜过 arrival；D+T2 在 5% 上 arrival 10 → loo 29（= oracle）。
 - 自然 multiperspective（N=60）撑不起可部署主张；但仍显示 arrival 的残酷：B=5% 时 UHC∧class 捕 3，D+T2 捕 0。
 
-所以开放问题是真的：同一条流、同一个 B，只改顺序，捕获就变。
+开放问题由此坐实：同一条流、同一个 B，只改顺序，捕获就变。
 
 ---
 
@@ -52,9 +52,9 @@ DF v2 全量 runs（N=585），预算 1%/2%/5%：
 
 门禁 G0–G6（压力扫描里加 G7）：holdout MISS 量；≥ arrival；在构造队列上赢过启发式基线；合并非劣；LOMO；冷启动；**排序 headroom**（arrival < oracle）。
 
-**分层 holdout 上自然 D+T2 是 29/29 全 MISS**——arrival 已等于 oracle；G6 失败；那里的 SHIP 会是空通过。故决定性协议**构造**稀释 escalate 队列：holdout 全部 D+T2 MISS + 非 MISS 干扰项 ≈ 35% miss-rate，干扰项先到。
+**分层 holdout 上自然 D+T2 是 29/29 全 MISS**——arrival 已等于 oracle；G6 失败；那里的 SHIP 会是空通过。故决定性测试**构造**稀释 escalate 队列：holdout 全部 D+T2 MISS + 非 MISS 干扰项 ≈ 35% miss-rate，干扰项先到。
 
-该协议上：**SHIP**——B=5% k=8，arrival **0** → R_hist **8** = oracle **8**。
+该测试上：**SHIP**——B=5% k=8，arrival **0** → R_hist **8** = oracle **8**。
 
 范围 caveat 写死：证书只覆盖这批流量 + 这些 B + 这种稀释压力——不是通用生产许可证。
 
@@ -88,7 +88,7 @@ DF v2 全量 runs（N=585），预算 1%/2%/5%：
 | **Enforce** | 人实际审谁 |
 | **Fallback** | 影子抓 0 且 oracle>0 → 留在 arrival |
 
-**分层 + 稀释 35%：** 固定 diluted 上 Rank lift（R_hist − arrival）打平/压过「只换 trigger、arrival」；影子 hist lift +3/+8——**SUPPORT 双发布**。
+**分层 + 稀释 35%：** 固定 diluted 上 Rank lift（R_hist − arrival）打平/压过「只换 trigger（arrival 序）」；影子 hist lift +3/+8——**SUPPORT 双发布**。
 
 **模型内时间：** R_hist lift 0；arrival 下最佳 trigger 是 T2（捕 3/8）——表过期时 **Trigger 旋钮赢**。影子 hist 空转 → **fallback_arrival**；safe ≥ enforce。（conf_desc 影子本可 lift——特征选择仍重要。）
 
@@ -96,7 +96,7 @@ DF v2 全量 runs（N=585），预算 1%/2%/5%：
 
 ## 收束
 
-第 7 篇命名了谁进门。Alexey 命名了不可缩的 floor。Mike 把开放问题收成 rank-inside-stream。离线套件说：
+第 7 篇命名了谁进门。Alexey 命名了不可缩的 floor。Mike 把开放问题凝成 rank-inside-stream。离线套件说：
 
 1. 预算下的顺序是 load-bearing 的。  
 2. 玩具 hist ranker 能在*构造*稀释队列 + 分层 holdout 上通过预注册门。  

@@ -24,9 +24,9 @@ Part 7 closed with: divergence stays; T1/T2 join it; none of them is the novelty
 
 On the Part 6 thread, Alexey posted a wiring warning: merging a second stream S into D under arrival order at a 2% budget can catch fewer MISSes than D alone. Mike reframed the open problem as **rank-inside-stream** — coverage-limited is a load-bearing property of any history-built trigger R, and nobody had proposed a design yet.
 
-We do not reproduce Alexey's 720-cell grid: that was his parametric model (π·h·r_m), not in this repo. We ran a related check on df_proxy (`scripts/merge-displacement-grid-test.py`) and got a **structural NULL**: the D stream (conf<0.9) is miss-starved on this fixture — qwen3-0.5b's D has 2 MISS in 115 items, gemma3's has 0 in 147; across three models × eight budgets × four added streams (96 cells total), D@arrival never exceeds 0. The displacement shape has nowhere to fire. That itself is the finding: real single-judge outputs don't give D enough miss-mass to dilute.
+We do not reproduce Alexey's 720-cell grid: that was his parametric model (π·h·r_m), not in this repo. We ran a related check on df_proxy (`scripts/merge-displacement-grid-test.py`) and got a **structural NULL**: the D stream (conf<0.9) is miss-starved on this fixture — qwen3-0.5b's D has 2 MISS in 115 items, gemma3's has 0 in 147; three models, eight budgets, four added streams — 96 cells, and D@arrival exceeds 0 in none. The displacement shape has nowhere to fire. That itself is the finding: real single-judge outputs don't give D enough miss-mass to dilute.
 
-This part pivots to a weaker proposition: can rank move the needle **inside any** escalate stream — and what a dual-line production shape would have to look like.
+This part pivots to a weaker proposition: can rank move the needle **inside any** escalate stream — and the shape dual-line production must take.
 
 ---
 
@@ -48,7 +48,7 @@ On DF v2 all-run traffic (N=585), under budgets 1%/2%/5%:
 - **Deployable proxy can move the needle:** leave-one-out `P(MISS|class)` beats arrival in 6/18 cells; on D+T2 at 5%, arrival 10 → loo 29 (= oracle).
 - Natural multiperspective (N=60) is too small for the deployable claim; it still shows arrival-order cruelty: UHC∧class catches 3 while D+T2 catches 0 at B=5%.
 
-So the open problem is real: same stream, same B, order alone changes catch.
+Thus the open problem holds: same stream, same B, order alone changes catch.
 
 ---
 
