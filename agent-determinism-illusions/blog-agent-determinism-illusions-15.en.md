@@ -7,7 +7,7 @@
 
 ---
 title: "D+T2 names who enters; budget names who gets seen"
-published: false
+published: true
 description: "After Part 7's trigger fix: Alexey's floor-volume and Mike's rank-inside-stream open problem. Offline diluted-queue acceptance, feature×time stress, and Trigger∥Rank / Shadow∥Enforce dual-line sim. Calibrated hist ships on stratified dilution; stale tables fail closed."
 tags: ai, llm, agents, testing
 canonical_url: ""

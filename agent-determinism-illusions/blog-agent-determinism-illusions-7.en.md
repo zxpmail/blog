@@ -345,4 +345,4 @@ Alexey/Mike on the Part 6 thread pushed past tripwire choice to floor volume and
 
 **Series:** Agent Determinism Illusions · Scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
 **Previous:** [Part 6 — Five comments that redesigned my LLM verification pipeline](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
-**Next (this arc):** [Part 15 — D+T2 names who enters; budget names who gets seen](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent-determinism-illusions-15.en.md)
+**Next (this arc):** [Part 15 — D+T2 names who enters; budget names who gets seen](https://dev.to/zxpmail/dt2-names-who-enters-budget-names-who-gets-seen-4f9g)

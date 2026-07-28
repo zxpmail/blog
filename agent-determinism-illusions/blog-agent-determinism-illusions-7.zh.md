@@ -330,4 +330,4 @@ Xiao Man 在 P1→P4 悬崖与「过规格 = 浪费不是安全」之后追问�
 
 **系列：** Agent Determinism Illusions · 脚本：[GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
 **上一篇：** [第 6 篇](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f)  
-**本弧下一篇：** [第 15 篇 — D+T2 只决定谁进门；预算决定谁被看见](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent-determinism-illusions-15.zh.md)
+**本弧下一篇：** [第 15 篇 — D+T2 只决定谁进门；预算决定谁被看见](https://dev.to/zxpmail/dt2-names-who-enters-budget-names-who-gets-seen-4f9g)

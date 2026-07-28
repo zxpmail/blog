@@ -1,5 +1,9 @@
 # Reply draft — Mike Czerwinski (three-part split ack / Part 15)
 
+**STATUS (2026-07-28):** Part 15 is LIVE on DEV.to → https://dev.to/zxpmail/dt2-names-who-enters-budget-names-who-gets-seen-4f9g
+
+Use the "after Part 15 is live" block below. Checklist done (published flag flipped, Part 6/7 placeholder URLs swapped to live).
+
 Post: https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f  
 Parent: Mike after “Took the reframe…” (`D+T2 / budget / degradable rank`)  
 Prior draft: `reply-mike-rank-inside-stream.md` (already posted)
@@ -28,7 +32,7 @@ Offline suite inside: diluted-queue acceptance, feature×time stress, Trigger∥
 ```text
 That's the landing I wanted named out loud — D+T2 for who enters, budget for who gets seen, calibrated rank as a degradable line rather than another tripwire.
 
-Part 15 is live: [TITLE / URL]. Diluted-queue acceptance, feature×time stress, Trigger∥Rank / Shadow∥Enforce. Happy to take cuts.
+Part 15 is live: [D+T2 names who enters; budget names who gets seen](https://dev.to/zxpmail/dt2-names-who-enters-budget-names-who-gets-seen-4f9g). Diluted-queue acceptance, feature×time stress, Trigger∥Rank / Shadow∥Enforce. Happy to take cuts.
 ```
 
 ---
