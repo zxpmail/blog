@@ -102,6 +102,42 @@ Production dual-line is not a metaphor:
 
 ---
 
+### Update (2026-07-29): conf_desc is fixture-shaped; agree-set mirror (Tom Jones)
+
+[Tom Jones](https://dev.to/zxpmail/dt2-names-who-enters-budget-names-who-gets-seen-4f9g), on the agree-set, provider-name temporal collapse, G6/G7 headroom, and the open question:
+
+> In your within-model temporal holdout, high-confidence ordering accidentally matches the fixture's miss shape. Do you know whether that is a property of the fixture, or whether confidence-descending is picking up something real about when that model fails? Those have opposite implications for whether conf_desc is a safe fallback line.
+
+**1. conf_desc disentangling** (`conf-desc-miss-shape-test.py` → `results-v2/conf-desc-miss-shape.json`)
+
+Same DF v2 dumps. Diluted escalate queues (~35% miss; low-conf rejects as distractors first so arrival catch@small-k ≈ 0):
+
+| Cut | Result |
+|-----|--------|
+| Raw | conf_desc beats arrival on **9/9** (model × B) cells |
+| Conf↔slot shuffle | conf_desc edge over *random* collapses (raw **+1.56** → shuffle **−0.89**) |
+| Cross-model donor conf | unstable on **5/6** pairs |
+
+Reading: the "accidental match" reproduces, and it is the fixture's joint `(conf, miss)` — same dump already has 95.8% of MISS at conf≥0.9 (qwen-heavy). **conf_desc is not a safe universal dual-line fallback warrant.** Fallback stays fail-closed to arrival when shadow goes vacuous; conf_desc may be a shadow *candidate*, not the safety floor.
+
+**2. Agree-set HaluEval mirror** (`agree-set-halueval-probe.py` → `results-v2/agree-set-halueval.json`)
+
+Stratified n=70, seed=7, DeepSeek-v4-flash × local gemma3:latest (not Tom's 70B pair — same question shape, different tier). Cross-model usable n=52 after parse drops:
+
+| Metric | Value |
+|--------|-------|
+| Agreement | 78.8% |
+| P(wrong\|agree) | **19.5%** (8/41), Wilson 95% **[10.2%, 34.0%]** |
+| qa / summarization | 7.7% / **40%** |
+
+Same qualitative warning as Tom's 27.5% [16.1, 42.8]: the auto-pass lane can carry non-trivial error mass; summarization worse here. Do **not** read P(both wrong\|disagree)=0 as evidence (0/11; construction under binary + single gold — Tom's caveat).
+
+Same-model mirror: gemma×gemma at temperature 0 agreed 100% (70/70) — mostly determinism. Informative gap under controlled backends: same(1.00) − cross(0.79) ≈ +0.21. Tom's silent provider rename remains the cleaner temporal instance; this is only the controllable same-vs-cross wedge.
+
+**3. G6/G7** — agreed. A vacuous SHIP is worse than a wrong number; refusing to credit a win before proving headroom is why those gates exist.
+
+---
+
 ## Closing
 
 Part 7 named who enters. Alexey named the unshrinkable floor. Mike named the open problem as rank-inside-stream. The offline suite says:
@@ -111,7 +147,9 @@ Part 7 named who enters. Alexey named the unshrinkable floor. Mike named the ope
 3. The same candidate collapses under time-like holdout — so a SHIP is not a ship.  
 4. Dual-line is the ops shape that matches the data: separate Trigger from Rank; Shadow before Enforce; fail closed when the shadow goes vacuous.
 
-**D+T2 names who enters. Budget names who gets seen. Rank is a calibrated, degradable line — not another tripwire.**
+Tom's follow-up sharpens (4): **conf_desc matching miss shape on this dump is fixture joint, not a safe fallback law**; agree-set error mass is real on a HaluEval probe even at a smaller model tier.
+
+**D+T2 names who enters. Budget names who gets seen. Rank is a calibrated, degradable line — not another tripwire. conf_desc is not the safety floor.**
 
 What this does *not* claim: production labels, agent gaming, live catch@k confidence intervals, or that R_hist is the right production scorer. Those are product gates (shadow weeks, sliding recalibration, real audit outcomes) — not this fixture.
 

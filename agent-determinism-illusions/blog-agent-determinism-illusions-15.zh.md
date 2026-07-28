@@ -94,6 +94,42 @@ DF v2 全量 runs（N=585），预算 1%/2%/5%：
 
 ---
 
+### Update (2026-07-29)：conf_desc 是 fixture 形状；agree-set 镜像（Tom Jones）
+
+[Tom Jones](https://dev.to/zxpmail/dt2-names-who-enters-budget-names-who-gets-seen-4f9g) 在 agree-set、provider 改名时间塌缩、G6/G7 余量、以及开放问题上追问：
+
+> 你们的模型内时间 holdout 里，高置信排序碰巧对齐了 fixture 的 miss 形状。你知道那是 fixture 性质，还是置信度降序抓住了该模型何时失败的真实规律？两者对 conf_desc 能不能当安全 fallback 线，含义相反。
+
+**1. conf_desc 拆因**（`conf-desc-miss-shape-test.py` → `results-v2/conf-desc-miss-shape.json`）
+
+同一套 DF v2 落盘。稀释升级队列（约 35% miss；低置信拒绝作干扰项且排在前，使 arrival 在小 k 上捕获 ≈ 0）：
+
+| 切割 | 结果 |
+|------|------|
+| 原始 | conf_desc 在 **9/9**（模型 × B）格上击败到达 |
+| conf↔槽位置换 | conf_desc 相对 *random* 的优势塌掉（原始 **+1.56** → 置换 **−0.89**） |
+| 跨模型借置信 | **5/6** 对不稳定 |
+
+读法：「碰巧对齐」可复现，且是 fixture 的联合分布 `(conf, miss)`——同一落盘已有 95.8% MISS 在 conf≥0.9（偏 qwen）。**conf_desc 不是安全的通用双线 fallback 许可证。** Shadow 变空洞时 fallback 仍 fail-closed 到到达；conf_desc 可以当 shadow *候选*，不是安全地板。
+
+**2. Agree-set HaluEval 镜像**（`agree-set-halueval-probe.py` → `results-v2/agree-set-halueval.json`）
+
+分层 n=70，seed=7，DeepSeek-v4-flash × 本地 gemma3:latest（不是 Tom 的 70B 对——同题型、不同档）。跨模型可用 n=52（解析失败剔除后）：
+
+| 指标 | 值 |
+|------|-----|
+| 同意率 | 78.8% |
+| P(wrong\|agree) | **19.5%**（8/41），Wilson 95% **[10.2%, 34.0%]** |
+| qa / summarization | 7.7% / **40%** |
+
+与 Tom 的 27.5% [16.1, 42.8] 同属定性警告：自动放行车道可以驮着不可忽略的错误质量；这里 summarization 更差。**不要**把 P(both wrong\|disagree)=0 当证据（此处 0/11；二值 + 单一金标下的构造——Tom 的 caveat）。
+
+同模镜像：gemma×gemma 在 temperature 0 上同意 100%（70/70）——多半是确定性。可控后端下有信息量的差距：同(1.00) − 异(0.79) ≈ +0.21。Tom 的静默 provider 改名仍是更干净的时间实例；这里只是可控的同/异模楔子。
+
+**3. G6/G7**——同意。空洞 SHIP 比一个错数字更糟；先证明有余量再认赢，正是这些门存在的理由。
+
+---
+
 ## 收束
 
 第 7 篇命名了谁进门。Alexey 命名了不可缩的 floor。Mike 把开放问题凝成 rank-inside-stream。离线套件说：
@@ -103,7 +139,9 @@ DF v2 全量 runs（N=585），预算 1%/2%/5%：
 3. 同一候选在时间样 holdout 上塌掉——所以 SHIP ≠ 可上线。  
 4. 双线是贴合数据的运维形态：Trigger 与 Rank 分开；Shadow 先于 Enforce；影子空转则 fail-closed。
 
-**D+T2 决定谁进门。预算决定谁被看见。Rank 是可校准、可降级的一条线——不是又一根 tripwire。**
+Tom 的追问把 (4) 钉得更锋利：**本 dump 上 conf_desc 对齐 miss 形状是 fixture 联合，不是安全 fallback 律**；即使在更小模型档，HaluEval 探针上的 agree-set 错误质量也是真的。
+
+**D+T2 点名谁进场。预算点名谁被看见。Rank 是可校准、可降级的线——不是另一根绊线。conf_desc 不是安全地板。**
 
 本文不主张：生产标签、agent 博弈、线上 catch@k 置信区间，或 R_hist 就是正确的生产打分器。那些是产品门禁（影子周、滑动重估、真实审结）——不是本 fixture。
 

@@ -1,15 +1,15 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Tom Jones Part 15：两支实验已齐；回复草稿可贴；Part 15 正文 Update / `--full` / commit 待定
+- Tom Jones Part 15：正文 Update 已入库；本地 commit 待与先前实验 commit 一并推送（GitHub 曾 502）
 
 ## 上次停在哪个位置
-- `conf-desc-miss-shape.json`：conf_desc = fixture (conf,miss) 联合；不能当安全 fallback
-- `agree-set-halueval.json`：n=70 DeepSeek-v4-flash × gemma3；P(wrong|agree)=19.5% Wilson[10.2%,34.0%]；同模 temp0 100% vs 异模 78.8%
+- 新增 `blog-agent-determinism-illusions-15.{en,zh}.md`（含 Update 2026-07-29）
+- 实验：`conf-desc-miss-shape` + `agree-set-halueval`（n=70）
 - 回复：`working-notes/reply-tom-jones-part15.md`
-- DeepSeek 密钥从 `~/.cc-switch/cc-switch.db` 导出（`scripts/data/.deepseek_env.json`，已 gitignore）
+- 本地可能仍 ahead：`a9690c4` 实验 commit 若未推上需再 push
 
 ## 近期关键决定
-- 模型对：DeepSeek-v4-flash（cc-switch）+ Ollama gemma3:latest
-- HaluEval 先 n=70 分层对齐 Tom；`--full` 可选第二档
-- 二值 disagree 双错不当证据（Tom caveat）
+- conf_desc = fixture (conf,miss) 联合；不能当双线安全 fallback
+- HaluEval agree-set：P(wrong|agree)=19.5% Wilson[10.2%,34.0%]；同模 temp0≠provider 塌缩
+- Part 15 编号跳号保留（发表序 7→15）
