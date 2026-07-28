@@ -27,4 +27,5 @@ Offline. Arms: `arrival` | `loo_class` | `oracle`. Budgets 1%/2%/5% of traffic.
 ## What this does / doesn’t settle
 
 - Settles: budget binds harder than trigger once tp > k; a non-oracle ranker *can* move catch on measured traffic; oracle is the ceiling Mike/Alexey implied.
-- Does not settle: a production ranker (loo class is a toy proxy); Alexey’s 76/720 displacement shape (needs regimes where D@arrival already catches >0 and merge dilutes it).
+- Does not settle: a production ranker (loo class is a toy proxy).
+- Settled 2026-07-28 via `scripts/merge-displacement-grid-test.py`: Alexey’s 76/720 displacement shape returns STRUCTURAL NULL on df_proxy — D stream is miss-starved (qwen3 D=2/115, gemma3 D=0/147); 3 models × 8 budgets × 4 added streams = 96 cells, D@arrival=0 in every cell. Shape has nowhere to fire on this fixture; do not force a 76/N number.

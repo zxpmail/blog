@@ -14,9 +14,11 @@
 
 第 7 篇收束在：分歧留下；T1/T2 加入；它们都不是 novelty 臂。那回答的是 **谁进入** escalate 集合。它不回答：集合大于人工预算时，谁先被看见。
 
-在第 6 篇线程里，Alexey 用 720 格网格把缺口量化：trigger 的真阳性 floor volume 不能靠 class 滤掉；2% 人审预算下，无序合并在 76/720 格里比纯分歧抓得更少；精度序下是 0/720。Mike 接过 reframe：coverage-limited 是历史建成的 trigger R 的**定义**，开放问题是 **rank-inside-stream**——当时还没人提出设计。
+在第 6 篇线程里，Alexey 给出 wiring 警告：无序合并 D∪S 在 2% 预算下可能抓得比纯 D 还少；Mike 把开放问题收成 **rank-inside-stream**——coverage-limited 是历史建成的 trigger R 的 load-bearing 属性，当时还没人提出设计。
 
-本篇离线检验这个问题，并给出双线生产形态必须长什么样。
+我们不在 Alexey 的 720 格上复现——那是他的参数模型（π·h·r_m），不在本仓库。在 df_proxy 上跑了一个相关检验（`scripts/merge-displacement-grid-test.py`），结果是**结构性 NULL**：D 流（conf<0.9）在该 fixture 上 miss-starved——qwen3-0.5b 上 D 流 115 条只 2 MISS，gemma3 上 147 条零 MISS；三个模型 × 8 个预算点 × 4 个被合并流（共 96 格）里没有一格 D@arrival > 0。位移形态无处触发。这本身就是发现：真实单 judge 输出上 D 流没有可被稀释的 miss 体积。
+
+本篇转向更弱的命题：rank 在**任何** escalate 流内能否动针，并给出双线生产形态必须长什么样。
 
 ---
 
@@ -64,7 +66,7 @@ DF v2 全量 runs（N=585），预算 1%/2%/5%：
 
 轴：特征 × 稀释 miss-rate（15%→95%）× holdout（分层 / 模型内时间 / 全局时间）。G7 挡住 0=0 SHIP。
 
-**分层：** R_hist / R_hist_conf 在**所有**扫过的稀释率上 SHIP。35% 不是刀刃侥幸。
+**分层：** R_hist / R_hist_conf 在**所有**扫过的稀释率上 SHIP（其他候选不是——如 R_conf_asc 在 0.95 处 NO_SHIP）。35% 不是刀刃侥幸。
 
 **模型内时间**（每模型前 70% → train）：R_hist 在 **15–65% NO_SHIP**（G2/G7——hist 抓 0，conf_desc 满载）；只在稠密队列 80–95% 恢复 SHIP。全局时间仍 G0 失败（miss_test=1）。
 

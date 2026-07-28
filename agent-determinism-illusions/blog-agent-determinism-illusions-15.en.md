@@ -22,9 +22,11 @@ series: "Agent Determinism Illusions"
 
 Part 7 closed with: divergence stays; T1/T2 join it; none of them is the novelty arm. That answers **who enters** the escalate set. It does not answer what happens when the set is larger than the human budget.
 
-On the Part 6 thread, Alexey put numbers on that gap (720-cell grid): the trigger's true-positive floor volume is unshrinkable by class filters; under a 2% review budget, an unordered merge can catch *fewer* misses than divergence alone in 76/720 cells; under precision order, 0/720. Mike took the reframe: coverage-limited is the *definition* of a history-built trigger R, and the open problem is **rank-inside-stream** — nobody had proposed a design yet.
+On the Part 6 thread, Alexey posted a wiring warning: merging a second stream S into D under arrival order at a 2% budget can catch fewer MISSes than D alone. Mike reframed the open problem as **rank-inside-stream** — coverage-limited is a load-bearing property of any history-built trigger R, and nobody had proposed a design yet.
 
-This part tests that open problem offline, then asks what a dual-line production shape would have to look like.
+We do not reproduce Alexey's 720-cell grid: that was his parametric model (π·h·r_m), not in this repo. We ran a related check on df_proxy (`scripts/merge-displacement-grid-test.py`) and got a **structural NULL**: the D stream (conf<0.9) is miss-starved on this fixture — qwen3-0.5b's D has 2 MISS in 115 items, gemma3's has 0 in 147; across three models × eight budgets × four added streams (96 cells total), D@arrival never exceeds 0. The displacement shape has nowhere to fire. That itself is the finding: real single-judge outputs don't give D enough miss-mass to dilute.
+
+This part pivots to a weaker proposition: can rank move the needle **inside any** escalate stream — and what a dual-line production shape would have to look like.
 
 ---
 
@@ -72,7 +74,7 @@ Script: `scripts/ranker-acceptance-stress-sweep.py` → `results-v2/ranker-accep
 
 Axes: features × dilution miss-rate (15%→95%) × holdout (stratified / within-model temporal / global temporal). G7 blocks 0=0 SHIP.
 
-**Stratified:** R_hist / R_hist_conf **SHIP at every swept dilution**. The 35% result was not a knife-edge.
+**Stratified:** R_hist / R_hist_conf **SHIP at every swept dilution** (other candidates do not — e.g. R_conf_asc goes NO_SHIP at 0.95). The 35% result was not a knife-edge.
 
 **within_model_temporal** (per-model first 70% → train): R_hist **NO_SHIP at 15–65%** (G2/G7 — hist catch 0 while conf_desc saturates); recovers SHIP only on dense queues 80–95%. global_temporal still fails G0 (miss_test=1).
 
