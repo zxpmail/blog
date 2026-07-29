@@ -43,6 +43,12 @@ rule strictly dominates on gap cells, ties at corners.
 Mike's gap is real and quantifiable on this fixture when ranker partially
 loses calibration — not just conceptual.
 
+Landing: collected with three other reader-driven revisions (Mike HHI
+pair-join, Tom Jones position-adjacency, Xiao Man shape-routing rename_keys)
+in Part 16 — `blog-agent-determinism-illusions-16.{en,zh}.md`, `published:false`
+on dev.to as of 2026-07-29. Reply paste below uses script links only; add
+Part 16 dev.to URL when it goes live.
+
 ---
 
 ## English (paste to DEV.to)
