@@ -110,6 +110,8 @@ python alexey-trigger-yield-test.py
 | Mike — joint-failure monitor live vs late | `joint-failure-monitor-test.py`、`joint-failure-monitor-duration-test.py` | `results-v2/joint-failure-monitor.json`、`results-v2/joint-failure-monitor-duration.json` |
 | Mike — shadow-promote ladder（soft-couple ρ） | `joint-failure-shadow-promote-test.py` | `results-v2/joint-failure-shadow-promote.json` |
 | Mike — quiet-failure fallback gap (shadow ∈ (0, enforce)) | `partial-stale-shadow-test.py`（纯数学扫描）、`partial-stale-injection-test.py`（df_proxy stress） | `results-v2/partial-stale-shadow.json`、`results-v2/partial-stale-injection.json` |
+| Mike — DS4 上游设计期检查（apology 文）| `ds4-upstream-design-check-test.py`（双向 value-match 验证）| `results-v2/ds4-upstream-design-check.json` |
+| Mike — 第四 size 点 cliff-vs-slope（apology 文）| 复用 `directional-failure-v2.py --model qwen2.5:1.5b` | `results-v2/qwen2-5-1-5b_summary.json` |
 
 实验之间有依赖：`probe-shape-routing-rename-keys` 复用 `probe-artifact-shape-routing` 的 SCHEMA/probe 推论；`joint-failure-monitor-duration` 是 `joint-failure-monitor-test` 的 τ/L 扫展；`joint-failure-shadow-promote` 是 duration 的 soft-couple 晋升门（ρ=1 校准 → ρ<1 shadow）；`position-adjacency-obedience-v2` 是 v1 在二值饱和后的脱 ceiling 重跑。运行细节看各自 docstring。
 
