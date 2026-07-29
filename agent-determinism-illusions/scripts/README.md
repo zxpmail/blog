@@ -93,6 +93,24 @@ python alexey-trigger-yield-test.py
 
 ---
 
+## 跟帖驱动的延伸实验
+
+读者在 dev.to 评论里提出的挑战/疑问驱动了一批延伸实验。每个脚本自带 docstring（spec + 方法 + 预期 + 证伪条件），可以独立复跑；回复只挂当次实验的链接，这一段是索引层，让读者从单条回复回到完整证据链。
+
+| 读者 / 主题 | 脚本 | 结果 |
+|-------------|------|------|
+| Xiao Man — probe-cascade vs artifact-shape 路由（Part 7） | `probe-cascade-routing-test.py`、`probe-artifact-shape-routing-test.py` | `results-v2/probe-cascade-routing.json`、`results-v2/probe-artifact-shape-routing.json` |
+| Xiao Man — shape-routing 第三扰动 rename_keys | `probe-shape-routing-rename-keys-test.py` | `results-v2/probe-shape-routing-rename-keys.json` |
+| Tom Jones — conf_desc shuffle / HaluEval agree-set（Part 15） | `conf-desc-miss-shape-test.py`、`agree-set-halueval-probe.py` | `results-v2/conf-desc-miss-shape.json`、`results-v2/agree-set-halueval.json` |
+| Tom Jones — position-adjacency 服从率（Part 15） | `position-adjacency-obedience-test.py`、`position-adjacency-obedience-v2.py` | `results-v2/position-adjacency-obedience.json`、`results-v2/position-adjacency-obedience-v2.json` |
+| Mike — HHI pair-join 经验测量 | `pair-join-empirical-test.py` | `results-v2/pair-join-empirical.json` |
+| Mike — unique-catch co-fire / 共现 concentration | `unique-catch-cofire-test.py`、`unique-catch-cooccur-dose-test.py`、`unique-catch-cooccur-labels-test.py`、`defect-class-concentration-histogram.py` | `results-v2/unique-catch-cofire.json`、`results-v2/unique-catch-cooccur-*.json`、`results-v2/defect-class-concentration-histogram.json` |
+| Mike — joint-failure monitor live vs late | `joint-failure-monitor-test.py`、`joint-failure-monitor-duration-test.py` | `results-v2/joint-failure-monitor.json`、`results-v2/joint-failure-monitor-duration.json` |
+
+实验之间有依赖：`probe-shape-routing-rename-keys` 复用 `probe-artifact-shape-routing` 的 SCHEMA/probe 推论；`joint-failure-monitor-duration` 是 `joint-failure-monitor-test` 的 τ/L 扫展；`position-adjacency-obedience-v2` 是 v1 在二值饱和后的脱 ceiling 重跑。运行细节看各自 docstring。
+
+---
+
 ## 如何用它打我的脸
 
 文章结尾说"欢迎拿你自己的业务数据打脸"。具体怎么打:
