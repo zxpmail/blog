@@ -1,0 +1,167 @@
+{
+  "claim": "Tom Jones: freeze relocates failure; naive attribution costumes spec defects as agent failures; salvage+naming guards recover work and correct the message.",
+  "n_per_scenario_policy": 40,
+  "worker_lines": 421,
+  "seed": 7,
+  "scenarios": [
+    "honest_ok",
+    "agent_bad_empty",
+    "spec_missing_test",
+    "both_bad"
+  ],
+  "policies": [
+    "naive_block",
+    "tom_guards"
+  ],
+  "claims": {
+    "C1_gate_blocks_agent_and_spec": true,
+    "C2_naive_misattributes_spec_as_agent": true,
+    "C3_tom_guards_attribute_correctly": true,
+    "C4_salvage_recovers_spec_defect_work": true,
+    "C5_freeze_blocks_agent_rewrite": true,
+    "honest_always_passes": true,
+    "all_hold": true,
+    "naive_spec": {
+      "n": 40,
+      "misattribution_rate": 1.0,
+      "mean_work_lost": 421.0,
+      "mean_lines_salvaged": 0.0,
+      "mean_lines_before": 421.0
+    },
+    "tom_spec": {
+      "n": 40,
+      "misattribution_rate": 0.0,
+      "mean_work_lost": 0.0,
+      "mean_lines_salvaged": 421.0,
+      "mean_lines_before": 421.0
+    },
+    "tom_agent": {
+      "n": 40,
+      "misattribution_rate": 0.0,
+      "mean_work_lost": 0.0,
+      "mean_lines_salvaged": 0.0,
+      "mean_lines_before": 0.0
+    },
+    "naive_agent": {
+      "n": 40,
+      "misattribution_rate": 0.0,
+      "mean_work_lost": 0.0,
+      "mean_lines_salvaged": 0.0,
+      "mean_lines_before": 0.0
+    }
+  },
+  "rewrite_cell": {
+    "rewrite_stuck": false,
+    "fingerprint_unchanged": true,
+    "gate_still_blocks": true,
+    "gate_reason": "verify_test_missing",
+    "c5_hold": true
+  },
+  "rows_sample": [
+    {
+      "policy": "naive_block",
+      "true_cause": "none",
+      "gate_pass": true,
+      "gate_reason": "ok",
+      "attributed": "none",
+      "misattributed": false,
+      "lines_before": 421,
+      "lines_salvaged": 421,
+      "work_lost": 0,
+      "message": "pass",
+      "scenario": "honest_ok"
+    },
+    {
+      "policy": "tom_guards",
+      "true_cause": "none",
+      "gate_pass": true,
+      "gate_reason": "ok",
+      "attributed": "none",
+      "misattributed": false,
+      "lines_before": 421,
+      "lines_salvaged": 421,
+      "work_lost": 0,
+      "message": "pass",
+      "scenario": "honest_ok"
+    },
+    {
+      "policy": "naive_block",
+      "true_cause": "agent",
+      "gate_pass": false,
+      "gate_reason": "artifact_missing_or_empty",
+      "attributed": "agent_failed",
+      "misattributed": false,
+      "lines_before": 0,
+      "lines_salvaged": 0,
+      "work_lost": 0,
+      "message": "cleanup:destroyed_no_salvage",
+      "scenario": "agent_bad_empty"
+    },
+    {
+      "policy": "tom_guards",
+      "true_cause": "agent",
+      "gate_pass": false,
+      "gate_reason": "artifact_missing_or_empty",
+      "attributed": "agent_failed",
+      "misattributed": false,
+      "lines_before": 0,
+      "lines_salvaged": 0,
+      "work_lost": 0,
+      "message": "cleanup:salvage_then_destroy",
+      "scenario": "agent_bad_empty"
+    },
+    {
+      "policy": "naive_block",
+      "true_cause": "spec",
+      "gate_pass": false,
+      "gate_reason": "verify_test_missing",
+      "attributed": "agent_failed",
+      "misattributed": true,
+      "lines_before": 421,
+      "lines_salvaged": 0,
+      "work_lost": 421,
+      "message": "cleanup:destroyed_no_salvage",
+      "scenario": "spec_missing_test"
+    },
+    {
+      "policy": "tom_guards",
+      "true_cause": "spec",
+      "gate_pass": false,
+      "gate_reason": "verify_test_missing",
+      "attributed": "spec_defect",
+      "misattributed": false,
+      "lines_before": 421,
+      "lines_salvaged": 421,
+      "work_lost": 0,
+      "message": "cleanup:salvage_then_destroy",
+      "scenario": "spec_missing_test"
+    },
+    {
+      "policy": "naive_block",
+      "true_cause": "both",
+      "gate_pass": false,
+      "gate_reason": "artifact_missing_or_empty",
+      "attributed": "agent_failed",
+      "misattributed": false,
+      "lines_before": 0,
+      "lines_salvaged": 0,
+      "work_lost": 0,
+      "message": "cleanup:destroyed_no_salvage",
+      "scenario": "both_bad"
+    },
+    {
+      "policy": "tom_guards",
+      "true_cause": "both",
+      "gate_pass": false,
+      "gate_reason": "artifact_missing_or_empty",
+      "attributed": "agent_failed",
+      "misattributed": false,
+      "lines_before": 0,
+      "lines_salvaged": 0,
+      "work_lost": 0,
+      "message": "cleanup:salvage_then_destroy",
+      "scenario": "both_bad"
+    }
+  ],
+  "n_rows": 320
+}
