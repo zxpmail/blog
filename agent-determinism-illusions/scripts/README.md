@@ -108,9 +108,10 @@ python alexey-trigger-yield-test.py
 | Mike — HHI pair-join 经验测量 | `pair-join-empirical-test.py` | `results-v2/pair-join-empirical.json` |
 | Mike — unique-catch co-fire / 共现 concentration | `unique-catch-cofire-test.py`、`unique-catch-cooccur-dose-test.py`、`unique-catch-cooccur-labels-test.py`、`defect-class-concentration-histogram.py` | `results-v2/unique-catch-cofire.json`、`results-v2/unique-catch-cooccur-*.json`、`results-v2/defect-class-concentration-histogram.json` |
 | Mike — joint-failure monitor live vs late | `joint-failure-monitor-test.py`、`joint-failure-monitor-duration-test.py` | `results-v2/joint-failure-monitor.json`、`results-v2/joint-failure-monitor-duration.json` |
+| Mike — shadow-promote ladder（soft-couple ρ） | `joint-failure-shadow-promote-test.py` | `results-v2/joint-failure-shadow-promote.json` |
 | Mike — quiet-failure fallback gap (shadow ∈ (0, enforce)) | `partial-stale-shadow-test.py`（纯数学扫描）、`partial-stale-injection-test.py`（df_proxy stress） | `results-v2/partial-stale-shadow.json`、`results-v2/partial-stale-injection.json` |
 
-实验之间有依赖：`probe-shape-routing-rename-keys` 复用 `probe-artifact-shape-routing` 的 SCHEMA/probe 推论；`joint-failure-monitor-duration` 是 `joint-failure-monitor-test` 的 τ/L 扫展；`position-adjacency-obedience-v2` 是 v1 在二值饱和后的脱 ceiling 重跑。运行细节看各自 docstring。
+实验之间有依赖：`probe-shape-routing-rename-keys` 复用 `probe-artifact-shape-routing` 的 SCHEMA/probe 推论；`joint-failure-monitor-duration` 是 `joint-failure-monitor-test` 的 τ/L 扫展；`joint-failure-shadow-promote` 是 duration 的 soft-couple 晋升门（ρ=1 校准 → ρ<1 shadow）；`position-adjacency-obedience-v2` 是 v1 在二值饱和后的脱 ceiling 重跑。运行细节看各自 docstring。
 
 ---
 

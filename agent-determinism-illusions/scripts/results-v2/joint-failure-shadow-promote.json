@@ -1,0 +1,220 @@
+{
+  "experiment": "joint-failure-shadow-promote",
+  "claim": "Sim→Interrupt overclaims when production coupling ρ<1; shadow live-catch vs sim prediction is the promote gate",
+  "parent": "soft-couple extension of joint-failure-monitor-duration-test.py; ρ=1 recovers coupled-uniform",
+  "params": {
+    "T": 3000,
+    "W": 200,
+    "K": 3,
+    "p_c": 0.12,
+    "p_p": 0.1,
+    "outage_onset": 1000,
+    "rho_grid": [
+      1.0,
+      0.8,
+      0.6,
+      0.4,
+      0.2
+    ],
+    "promote_eps": 0.1,
+    "trials": 100,
+    "seed": 20260729,
+    "cells": [
+      {
+        "role": "interrupt",
+        "tau": 0.05,
+        "L": 20
+      },
+      {
+        "role": "forensic",
+        "tau": 0.03,
+        "L": 20
+      }
+    ]
+  },
+  "definitions": {
+    "rho": "P(force both-fail) each step inside the outage window; else independent baseline",
+    "predicted_live": "live_catch_rate at ρ=1.0 (calibrate / sim)",
+    "promote_ok": "predicted_live − realized_live ≤ promote_eps",
+    "live_catch": "first alert while outage still active",
+    "late_only": "first alert only after outage ended"
+  },
+  "ladders": [
+    {
+      "role": "interrupt",
+      "tau": 0.05,
+      "L": 20,
+      "predicted_live_rho1": 0.99,
+      "promote_eps": 0.1,
+      "first_refuse_rho": 0.8,
+      "shadow": [
+        {
+          "tau": 0.05,
+          "outage_length": 20,
+          "rho": 1.0,
+          "trials": 100,
+          "live_catch_rate": 0.99,
+          "late_only_rate": 0.01,
+          "miss_rate": 0.0,
+          "early_false_rate": 0.0,
+          "any_alert_rate": 1.0,
+          "mean_delay_live": 14.919191919191919,
+          "predicted_live": 0.99,
+          "gap_vs_predicted": 0.0,
+          "promote_ok": true
+        },
+        {
+          "tau": 0.05,
+          "outage_length": 20,
+          "rho": 0.8,
+          "trials": 100,
+          "live_catch_rate": 0.62,
+          "late_only_rate": 0.36,
+          "miss_rate": 0.02,
+          "early_false_rate": 0.0,
+          "any_alert_rate": 0.98,
+          "mean_delay_live": 16.370967741935484,
+          "predicted_live": 0.99,
+          "gap_vs_predicted": 0.37,
+          "promote_ok": false
+        },
+        {
+          "tau": 0.05,
+          "outage_length": 20,
+          "rho": 0.6,
+          "trials": 100,
+          "live_catch_rate": 0.25,
+          "late_only_rate": 0.31,
+          "miss_rate": 0.44,
+          "early_false_rate": 0.0,
+          "any_alert_rate": 0.56,
+          "mean_delay_live": 17.24,
+          "predicted_live": 0.99,
+          "gap_vs_predicted": 0.74,
+          "promote_ok": false
+        },
+        {
+          "tau": 0.05,
+          "outage_length": 20,
+          "rho": 0.4,
+          "trials": 100,
+          "live_catch_rate": 0.05,
+          "late_only_rate": 0.06,
+          "miss_rate": 0.89,
+          "early_false_rate": 0.0,
+          "any_alert_rate": 0.11,
+          "mean_delay_live": 15.0,
+          "predicted_live": 0.99,
+          "gap_vs_predicted": 0.94,
+          "promote_ok": false
+        },
+        {
+          "tau": 0.05,
+          "outage_length": 20,
+          "rho": 0.2,
+          "trials": 100,
+          "live_catch_rate": 0.01,
+          "late_only_rate": 0.0,
+          "miss_rate": 0.99,
+          "early_false_rate": 0.0,
+          "any_alert_rate": 0.01,
+          "mean_delay_live": 19.0,
+          "predicted_live": 0.99,
+          "gap_vs_predicted": 0.98,
+          "promote_ok": false
+        }
+      ]
+    },
+    {
+      "role": "forensic",
+      "tau": 0.03,
+      "L": 20,
+      "predicted_live_rho1": 1.0,
+      "promote_eps": 0.1,
+      "first_refuse_rho": 0.6,
+      "shadow": [
+        {
+          "tau": 0.03,
+          "outage_length": 20,
+          "rho": 1.0,
+          "trials": 100,
+          "live_catch_rate": 1.0,
+          "late_only_rate": 0.0,
+          "miss_rate": 0.0,
+          "early_false_rate": 0.0,
+          "any_alert_rate": 1.0,
+          "mean_delay_live": 9.65,
+          "predicted_live": 1.0,
+          "gap_vs_predicted": 0.0,
+          "promote_ok": true
+        },
+        {
+          "tau": 0.03,
+          "outage_length": 20,
+          "rho": 0.8,
+          "trials": 100,
+          "live_catch_rate": 0.98,
+          "late_only_rate": 0.01,
+          "miss_rate": 0.0,
+          "early_false_rate": 0.01,
+          "any_alert_rate": 0.99,
+          "mean_delay_live": 10.877551020408163,
+          "predicted_live": 1.0,
+          "gap_vs_predicted": 0.020000000000000018,
+          "promote_ok": true
+        },
+        {
+          "tau": 0.03,
+          "outage_length": 20,
+          "rho": 0.6,
+          "trials": 100,
+          "live_catch_rate": 0.84,
+          "late_only_rate": 0.15,
+          "miss_rate": 0.01,
+          "early_false_rate": 0.0,
+          "any_alert_rate": 0.99,
+          "mean_delay_live": 13.880952380952381,
+          "predicted_live": 1.0,
+          "gap_vs_predicted": 0.16000000000000003,
+          "promote_ok": false
+        },
+        {
+          "tau": 0.03,
+          "outage_length": 20,
+          "rho": 0.4,
+          "trials": 100,
+          "live_catch_rate": 0.42,
+          "late_only_rate": 0.3,
+          "miss_rate": 0.27,
+          "early_false_rate": 0.01,
+          "any_alert_rate": 0.72,
+          "mean_delay_live": 15.071428571428571,
+          "predicted_live": 1.0,
+          "gap_vs_predicted": 0.5800000000000001,
+          "promote_ok": false
+        },
+        {
+          "tau": 0.03,
+          "outage_length": 20,
+          "rho": 0.2,
+          "trials": 100,
+          "live_catch_rate": 0.05,
+          "late_only_rate": 0.13,
+          "miss_rate": 0.82,
+          "early_false_rate": 0.0,
+          "any_alert_rate": 0.18,
+          "mean_delay_live": 14.6,
+          "predicted_live": 1.0,
+          "gap_vs_predicted": 0.95,
+          "promote_ok": false
+        }
+      ]
+    }
+  ],
+  "interpretation": [
+    "Calibrate Interrupt-τ on coupled-uniform (ρ=1); shadow-eval under soft-couple ρ<1. promote_ok iff predicted_live − realized ≤ eps.",
+    "Interrupt τ=0.05 L=20: predicted_live=0.990; first_refuse_rho=0.8.",
+    "Forensic contrast τ=0.03 L=20: predicted_live=1.000; first_refuse_rho=0.6 (any-alert may stay high longer than live — residue ≠ interrupt).",
+    "SUPPORT Mike's ladder: soft-couple drops live-catch below the sim prediction; Sim→Interrupt would overclaim interrupt capability that shadow correctly refuses to promote."
+  ]
+}
