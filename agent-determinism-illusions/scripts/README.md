@@ -101,6 +101,7 @@ python alexey-trigger-yield-test.py
 |-------------|------|------|
 | Xiao Man — probe-cascade vs artifact-shape 路由（Part 7） | `probe-cascade-routing-test.py`、`probe-artifact-shape-routing-test.py` | `results-v2/probe-cascade-routing.json`、`results-v2/probe-artifact-shape-routing.json` |
 | Xiao Man — shape-routing 第三扰动 rename_keys | `probe-shape-routing-rename-keys-test.py` | `results-v2/probe-shape-routing-rename-keys.json` |
+| Xiao Man — 结构不变量锚点（position/type/cardinality） | `probe-structural-invariant-anchor-test.py` | `results-v2/probe-structural-invariant-anchor.json` |
 | Tom Jones — conf_desc shuffle / HaluEval agree-set（Part 15） | `conf-desc-miss-shape-test.py`、`agree-set-halueval-probe.py` | `results-v2/conf-desc-miss-shape.json`、`results-v2/agree-set-halueval.json` |
 | Tom Jones — position-adjacency 服从率（Part 15） | `position-adjacency-obedience-test.py`、`position-adjacency-obedience-v2.py` | `results-v2/position-adjacency-obedience.json`、`results-v2/position-adjacency-obedience-v2.json` |
 | Mike — HHI pair-join 经验测量 | `pair-join-empirical-test.py` | `results-v2/pair-join-empirical.json` |

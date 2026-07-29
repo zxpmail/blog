@@ -1,14 +1,16 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Tom Jones Part 15：正文 Update + 实验脚本已 push 到 origin/main
+- Xiao Man 结构不变量：实验已跑完，回复草稿待贴 DEV.to
 
 ## 上次停在哪个位置
-- `cf2b626` feat(scripts)：conf_desc / HaluEval agree-set
-- `0986f9c` docs(part15)：远程润色正文 + Update 2026-07-29（rebase 合入）
-- 回复草稿：`working-notes/reply-tom-jones-part15.md`（可贴 DEV.to）
+- 脚本：`scripts/probe-structural-invariant-anchor-test.py`
+- 结果：`scripts/results-v2/probe-structural-invariant-anchor.json`（C1–C5 全过）
+- 回复：`working-notes/reply-xiao-man-structural-invariants.md`
+- 待办：贴回复；可选 commit/push；正文 Update 未做
 
 ## 近期关键决定
-- conf_desc = fixture (conf,miss) 联合；不能当双线安全 fallback
-- HaluEval agree-set：P(wrong|agree)=19.5% Wilson[10.2%,34.0%]；同模 temp0≠provider 塌缩
-- Part 15 编号跳号保留；远程已有正文，Update 叠在 Closing 前
+- 无万能锚点；须声明不变量类 + 变异套件
+- type 对 dual_list 的「存活」依赖顺序；dual_first 才是诚实格
+- 验证＝声明 → 诚实对齐 fixed_matched → 按声称类变异回归（不只跑三格）
+- Tom 邻接 follow-up / Kalmet 致歉回复仍待贴（若尚未贴）

@@ -1,0 +1,429 @@
+{
+  "claim": "Xiao Man structural-invariant candidates vs key_name baseline under five T3 perturbations (mutation suite for probe anchors).",
+  "n_per_arm": 40,
+  "seed": 7,
+  "anchors": [
+    "key_name",
+    "position",
+    "type",
+    "cardinality"
+  ],
+  "perturbations": [
+    "honest",
+    "rename_keys",
+    "reorder",
+    "type_wrap",
+    "dual_list",
+    "dual_first"
+  ],
+  "survive_rule": "locate≥0.95 and catch≥0.95 and false_reject≤0.05",
+  "survival_matrix": {
+    "key_name": {
+      "honest": "SURVIVE",
+      "rename_keys": "FAIL",
+      "reorder": "SURVIVE",
+      "type_wrap": "FAIL",
+      "dual_list": "SURVIVE",
+      "dual_first": "SURVIVE"
+    },
+    "position": {
+      "honest": "SURVIVE",
+      "rename_keys": "SURVIVE",
+      "reorder": "FAIL",
+      "type_wrap": "FAIL",
+      "dual_list": "SURVIVE",
+      "dual_first": "FAIL"
+    },
+    "type": {
+      "honest": "SURVIVE",
+      "rename_keys": "SURVIVE",
+      "reorder": "SURVIVE",
+      "type_wrap": "FAIL",
+      "dual_list": "SURVIVE",
+      "dual_first": "FAIL"
+    },
+    "cardinality": {
+      "honest": "SURVIVE",
+      "rename_keys": "SURVIVE",
+      "reorder": "SURVIVE",
+      "type_wrap": "FAIL",
+      "dual_list": "FAIL",
+      "dual_first": "FAIL"
+    }
+  },
+  "claims": {
+    "C1_key_name_dies_on_rename": true,
+    "C2_position_survives_rename_dies_reorder": true,
+    "C3_type_survives_rename_reorder_dies_wrap": true,
+    "C4_cardinality_dies_on_dual_list": true,
+    "C4b_type_dies_when_decoy_first": true,
+    "C5_no_universal_anchor": true,
+    "all_hold": true
+  },
+  "cells": [
+    {
+      "anchor": "key_name",
+      "perturbation": "honest",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "key_name",
+      "perturbation": "rename_keys",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 0.0,
+      "locate_rate_bad": 0.0,
+      "locate_rate": 0.0,
+      "catch_rate": 0.0,
+      "false_reject_rate": 1.0,
+      "miss_kinds": {
+        "unlocated:wrong_port": 15,
+        "unlocated:missing_leaf": 16,
+        "unlocated:nested_limit": 9
+      },
+      "fr_reasons": {
+        "unlocated": 40
+      }
+    },
+    {
+      "anchor": "key_name",
+      "perturbation": "reorder",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "key_name",
+      "perturbation": "type_wrap",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 0.0,
+      "locate_rate_bad": 0.0,
+      "locate_rate": 0.0,
+      "catch_rate": 0.0,
+      "false_reject_rate": 1.0,
+      "miss_kinds": {
+        "unlocated:wrong_port": 15,
+        "unlocated:missing_leaf": 16,
+        "unlocated:nested_limit": 9
+      },
+      "fr_reasons": {
+        "unlocated": 40
+      }
+    },
+    {
+      "anchor": "key_name",
+      "perturbation": "dual_list",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "key_name",
+      "perturbation": "dual_first",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "position",
+      "perturbation": "honest",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "position",
+      "perturbation": "rename_keys",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "position",
+      "perturbation": "reorder",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 0.0,
+      "locate_rate_bad": 0.0,
+      "locate_rate": 0.0,
+      "catch_rate": 0.0,
+      "false_reject_rate": 1.0,
+      "miss_kinds": {
+        "unlocated:wrong_port": 15,
+        "unlocated:missing_leaf": 16,
+        "unlocated:nested_limit": 9
+      },
+      "fr_reasons": {
+        "unlocated": 40
+      }
+    },
+    {
+      "anchor": "position",
+      "perturbation": "type_wrap",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 0.0,
+      "locate_rate_bad": 0.0,
+      "locate_rate": 0.0,
+      "catch_rate": 0.0,
+      "false_reject_rate": 1.0,
+      "miss_kinds": {
+        "unlocated:wrong_port": 15,
+        "unlocated:missing_leaf": 16,
+        "unlocated:nested_limit": 9
+      },
+      "fr_reasons": {
+        "unlocated": 40
+      }
+    },
+    {
+      "anchor": "position",
+      "perturbation": "dual_list",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "position",
+      "perturbation": "dual_first",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 1.0,
+      "miss_kinds": {},
+      "fr_reasons": {
+        "P3 services shape": 40
+      }
+    },
+    {
+      "anchor": "type",
+      "perturbation": "honest",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "type",
+      "perturbation": "rename_keys",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "type",
+      "perturbation": "reorder",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "type",
+      "perturbation": "type_wrap",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 0.0,
+      "locate_rate_bad": 0.0,
+      "locate_rate": 0.0,
+      "catch_rate": 0.0,
+      "false_reject_rate": 1.0,
+      "miss_kinds": {
+        "unlocated:wrong_port": 15,
+        "unlocated:missing_leaf": 16,
+        "unlocated:nested_limit": 9
+      },
+      "fr_reasons": {
+        "unlocated": 40
+      }
+    },
+    {
+      "anchor": "type",
+      "perturbation": "dual_list",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "type",
+      "perturbation": "dual_first",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 1.0,
+      "miss_kinds": {},
+      "fr_reasons": {
+        "P3 services shape": 40
+      }
+    },
+    {
+      "anchor": "cardinality",
+      "perturbation": "honest",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "cardinality",
+      "perturbation": "rename_keys",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "cardinality",
+      "perturbation": "reorder",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 1.0,
+      "locate_rate_bad": 1.0,
+      "locate_rate": 1.0,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "miss_kinds": {},
+      "fr_reasons": {}
+    },
+    {
+      "anchor": "cardinality",
+      "perturbation": "type_wrap",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 0.0,
+      "locate_rate_bad": 0.0,
+      "locate_rate": 0.0,
+      "catch_rate": 0.0,
+      "false_reject_rate": 1.0,
+      "miss_kinds": {
+        "unlocated:wrong_port": 15,
+        "unlocated:missing_leaf": 16,
+        "unlocated:nested_limit": 9
+      },
+      "fr_reasons": {
+        "unlocated": 40
+      }
+    },
+    {
+      "anchor": "cardinality",
+      "perturbation": "dual_list",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 0.0,
+      "locate_rate_bad": 0.0,
+      "locate_rate": 0.0,
+      "catch_rate": 0.0,
+      "false_reject_rate": 1.0,
+      "miss_kinds": {
+        "unlocated:wrong_port": 15,
+        "unlocated:missing_leaf": 16,
+        "unlocated:nested_limit": 9
+      },
+      "fr_reasons": {
+        "unlocated": 40
+      }
+    },
+    {
+      "anchor": "cardinality",
+      "perturbation": "dual_first",
+      "n_good": 40,
+      "n_bad": 40,
+      "locate_rate_good": 0.0,
+      "locate_rate_bad": 0.0,
+      "locate_rate": 0.0,
+      "catch_rate": 0.0,
+      "false_reject_rate": 1.0,
+      "miss_kinds": {
+        "unlocated:wrong_port": 15,
+        "unlocated:missing_leaf": 16,
+        "unlocated:nested_limit": 9
+      },
+      "fr_reasons": {
+        "unlocated": 40
+      }
+    }
+  ]
+}
