@@ -138,6 +138,42 @@ Same-model mirror: gemma×gemma at temperature 0 agreed 100% (70/70) — mostly 
 
 ---
 
+### Update (2026-07-29): partial-stale fallback gap (Mike Czerwinski)
+
+[Mike Czerwinski](https://dev.to/zxpmail/dt2-names-who-enters-budget-names-who-gets-seen-4f9g), on the fallback rule:
+
+> Shadow catching 0 is loud and easy to fall back on. Shadow catching a nonzero number that's wrong is the harder case, because the vacuous check never fires and dual-line ships a compromised rank believing the fallback would have caught it if it mattered.
+
+The fallback rule above is `shadow==0 ⟹ fallback to arrival`. Mike's quiet-failure regime is `shadow ∈ (0, enforce)` — shadow still catches something, but less than enforce would have, and the vacuous check never fires.
+
+**1. Pure-math scan** (`partial-stale-shadow-test.py` → `results-v2/partial-stale-shadow.json`)
+
+81-cell (shadow, enforce) grid at oracle=8. Three rules: vacuous (current), noninferior (proposed: `shadow < enforce ⟹ fallback`), god (upper bound).
+
+| Measure | Value |
+|---------|-------|
+| Cells in quiet-gap regime | 28 / 81 |
+| Mean catches lost by vacuous vs noninferior (gap cells) | 3.0/cell |
+| Max catches lost per cell | 7 (shadow=1, enforce=8) |
+
+**2. Empirical stress** (`partial-stale-injection-test.py` → `results-v2/partial-stale-injection.json`)
+
+Stratified class stream (n=164, k=8, enforce=8, oracle=8, pure R_hist=8). Inject per-item R_hist score perturbation (with probability p, replace score with prior — simulates partial calibration loss). 30 draws per p:
+
+| p | shadow mean | gap fraction | vacuous loss vs noninferior |
+|---|-------------|--------------|------------------------------|
+| 0.3 | 7.90 | 3% | 3.00 |
+| 0.5 | 7.17 | 40% | 2.08 |
+| 0.7 | 4.73 | 93% | 3.50 |
+| 0.8 | 3.17 | 100% | 4.83 |
+| 0.9 | 2.70 | 97% | 5.21 |
+
+Pure R_hist on this fixture lands at corners (0 on temporal diluted, 8 on stratified class) — the partial-stale regime doesn't surface natively. The stress test fills it in: when the ranker partially loses calibration, vacuous ships shadow while enforce would have caught more.
+
+Reading: the dual-line fallback rule should be `shadow < enforce ⟹ fallback`, not `shadow==0 ⟹ fallback`. Noninferior strictly dominates on gap cells, ties at corners. Production rankers will occupy (0, enforce) whenever they partially drift — the fixture's corner-only behavior is the construction, not the law.
+
+---
+
 ## Closing
 
 Part 7 named who enters. Alexey named the unshrinkable floor. Mike named the open problem as rank-inside-stream. The offline suite says:

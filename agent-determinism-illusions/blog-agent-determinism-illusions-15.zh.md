@@ -130,6 +130,42 @@ DF v2 全量 runs（N=585），预算 1%/2%/5%：
 
 ---
 
+### Update (2026-07-29)：partial-stale fallback 缺口（Mike Czerwinski）
+
+[Mike Czerwinski](https://dev.to/zxpmail/dt2-names-who-enters-budget-names-who-gets-seen-4f9g) 对 fallback 规则的追问：
+
+> Shadow catching 0 is loud and easy to fall back on. Shadow catching a nonzero number that's wrong is the harder case, because the vacuous check never fires and dual-line ships a compromised rank believing the fallback would have caught it if it mattered.
+
+上面的 fallback 规则是 `shadow==0 ⟹ 退回 arrival`。Mike 的 quiet-failure 区间是 `shadow ∈ (0, enforce)`——shadow 还能 catch 一些，但比 enforce 本可以 catch 的少，vacuous check 不会触发。
+
+**1. 纯数学扫描**（`partial-stale-shadow-test.py` → `results-v2/partial-stale-shadow.json`）
+
+oracle=8 下的 81 格 (shadow, enforce) 网格。三条规则：vacuous（现行）、noninferior（提议：`shadow < enforce ⟹ fallback`）、god（上界）。
+
+| 指标 | 值 |
+|---------|-------|
+| quiet-gap 区间格子数 | 28 / 81 |
+| vacuous 相对 noninferior 的平均少 catch（gap 格） | 3.0/格 |
+| 单格最大少 catch | 7（shadow=1, enforce=8） |
+
+**2. 经验压测**（`partial-stale-injection-test.py` → `results-v2/partial-stale-injection.json`）
+
+分层 class 流（n=164, k=8, enforce=8, oracle=8, 纯 R_hist=8）。逐项注入 R_hist 分数扰动（概率 p 替换为先验——模拟部分失校）。每个 p 跑 30 次：
+
+| p | shadow 均值 | gap 比例 | vacuous 相对 noninferior 少 catch |
+|---|-------------|----------|------------------------------------|
+| 0.3 | 7.90 | 3% | 3.00 |
+| 0.5 | 7.17 | 40% | 2.08 |
+| 0.7 | 4.73 | 93% | 3.50 |
+| 0.8 | 3.17 | 100% | 4.83 |
+| 0.9 | 2.70 | 97% | 5.21 |
+
+本 fixture 上纯 R_hist 落在角落（时间稀释 0、分层 class 8）——partial-stale 区间不原生浮现。压测把它填出来：ranker 部分失校时，vacuous ship 一个 compromised shadow，而 enforce 本可以 catch 更多。
+
+Reading：双线 fallback 规则应该是 `shadow < enforce ⟹ fallback`，不是 `shadow==0 ⟹ fallback`。Noninferior 在 gap 格严格优于 vacuous，在角落打平。生产 ranker 只要部分漂移就会落入 (0, enforce)——本 fixture 的纯角落行为是构造产物，不是定律。
+
+---
+
 ## 收束
 
 第 7 篇命名了谁进门。Alexey 命名了不可缩的 floor。Mike 把开放问题凝成 rank-inside-stream。离线套件说：
