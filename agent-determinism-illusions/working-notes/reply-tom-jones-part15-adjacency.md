@@ -35,45 +35,25 @@ Details in the reply below.
 ## English (paste to DEV.to)
 
 ```text
-The shuffle kinship is the part that lands. We both ran the falsification control on our own headline the same day, and both headlines died — your edge padding (12 notes of separation) taking +14.2 → 0.0 at p=1.0000 is the cleaner instance; my conf↔slot shuffle taking +1.56 → -0.89 is the messier one. Same shape of control: break the joint between surface position and the latent cause, see if the edge survives. It doesn't.
+The shuffle kinship lands. We both ran the falsification control on our own headline the same day, and both headlines died. Yours: edge padding took +14.2 (p=0.046) to 0.0 (p=1.0000). Mine: conf↔slot shuffle took +1.56 to −0.89. The edge is a fixture property, not a law.
 
-Your family-replication cut is the right one. Point estimates don't carry (intervals 10.2–34.0 vs 16.1–42.8 overlap heavily; 19.5 vs 27.5 is noise). What carries is "summarization is the leaky family, both tiers, both samplers." That's the gate-designable output — a designer can bias review toward summarization outputs without needing the levels to transfer.
+Family replication: point estimates don't transfer. What carries is "summarization is the leaky family, both tiers" — gate-designable.
 
-The binary-verdict caution is sharper than I made it, and I take it. Same-model gemma×gemma at 1.00 is real for verdicts specifically — binary output, ceiling on the same-model arm. Your text-layer numbers (0.305 self-self at temp 0, 0.182 same model different provider, 0.072 different model) put the bound cleanly: at free-form cardinality an endpoint isn't stably itself, so the same-vs-cross wedge would compress. The honest claim is "at binary cardinality the same-model arm saturates; at text cardinality it would not." Detector strength varies with output space — verdict-level wedge is real but cardinality-bounded.
+Binary-verdict caution taken. My 1.00 is real at binary cardinality; your text numbers (0.305 self-self at temp 0, 0.182 same provider different model, 0.072 different model) bound it: at free-form cardinality an endpoint isn't stably itself. Wedge is cardinality-bounded, not wrong.
 
-On the title question — "budget names who gets seen, then one slot decides who gets obeyed" — I ran the replication. Short version: your effect does not replicate on this fixture. The honest record is useful:
+On the title finding ("last slot obeyed 60/60, edge padding erases it") — I measured across 3 models, 2 directives, 400 trials.
 
-Two experiments, across 3 models:
+v1 (BANANA prefix, same binary cardinality as your setup): glm-5.2 and qwen3:0.6b both ceiling at 100% — no variance. Your binary-verdict caveat predicts this.
 
-v1 (BANANA prefix — easy binary directive, same cardinality as your "60/60" binary setup):
-  glm-5.2:      all cells 100% ceiling — no variance, unmeasurable.
-  qwen3:0.6b:   same (100% all positions, 95–100% with 12-notes padding).
-  Your binary-verdict caveat predicts exactly this ceiling: at binary cardinality,
-  the same-model arm saturates.
+v2 (uppercase override, sustained constraint, escapes ceiling): deepseek-v4-flash, K=12 block, 200 calls:
+  no_padding:       95%  75%  90%  90%  85%
+  with_padding +12: 80%  75%  95%  85%  85%
+  (positions across 0% 25% 50% 75% 100%)
 
-v2 (uppercase override — sustained constraint, escapes ceiling):
-  deepseek-v4-flash, K=12 block, 5 positions × 2 conditions × 20 trials/ = 200 calls:
-    no_padding:  95%, 75%, 90%, 90%, 85%
-    with_padding: 80%, 75%, 95%, 85%, 85%
-  Position 100 (adjacent to question) is NOT the highest slot: 85% = below pos_0
-  (95%) and pos_50 (90%). Position 25 is the lowest in both conditions (75%).
-  The lowercase count at pos_25 is ~10× higher than at pos_50, which is
-  consistent with a classic serial-position "middle dip" for mid-list items
-  in a 12-slot block. Edge padding did not systematically reduce obedience.
+Position 100 (adjacent to question) is not the highest — 85% vs 95% at position 0. Position 25 is the lowest in both conditions — a middle dip, not an ends advantage. Edge padding did not systematically change obedience.
 
-So your 60/60 finding is real on your fixture. On this fixture, the shape is
-different: no adjacency advantage; a middle dip at position 25 instead. That
-itself is informative — it suggests the effect is bounded to specific
-model/directive combinations, not a universal "last slot wins" property.
-Same shape of control, different outcome — which is exactly what yours and
-my shuffle demonstrated: the edge is a property of the fixture's joint, not
-a law.
+Your 60/60 is real on your fixture. On this one the shape differs — the effect appears model- and directive-specific, not universal. Same conclusion as the shuffle: edges don't transfer. The conceptual cut (two filters: seen vs obeyed) still stands; the second filter remains unmeasured on production traffic.
 
-The conceptual cut (two filters: budget = seen, adjacency = obeyed) still
-stands, even if the empirical shape didn't replicate here. Part 15 ended on
-the first filter. The second is still unmeasured on production traffic.
-
-Scripts/Results:
 https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/position-adjacency-obedience-test.py
 https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/position-adjacency-obedience.json
 https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/position-adjacency-obedience-v2.py

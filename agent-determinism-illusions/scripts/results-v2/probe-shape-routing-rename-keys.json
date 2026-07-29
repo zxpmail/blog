@@ -1,0 +1,109 @@
+{
+  "experiment": "probe-shape-routing-rename-keys",
+  "question": "Is the depth signal from artifact shape stable under minor shape changes? Specifically: does synonym-rename (services→components, schema-semantic-preserving) break shape routing?",
+  "source": "Xiao Man inferability-first push, Part 7 thread, 2026-07-29",
+  "predecessor": "probe-artifact-shape-routing-test.py (cue_erase, decoy_nest)",
+  "third_perturbation": "rename_keys on T3 (services→components)",
+  "n_per_cell": 40,
+  "seed": 7,
+  "rename_map": {
+    "services": "components",
+    "budget": "cost_limit",
+    "timeout_ms": "request_timeout_ms",
+    "retries": "retry_count",
+    "fingerprint": "sig"
+  },
+  "normal_T3": {
+    "fixed_matched": {
+      "population": "normal_T3",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 17.43,
+      "miss_kinds": {},
+      "reject_reasons_on_good": {},
+      "route_histogram": {
+        "T3/P3": 40
+      }
+    },
+    "artifact_shape": {
+      "population": "normal_T3",
+      "policy": "artifact_shape",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 0.0,
+      "mean_probe_ops": 19.43,
+      "miss_kinds": {},
+      "reject_reasons_on_good": {},
+      "route_histogram": {
+        "T3/P3": 40
+      }
+    }
+  },
+  "rename_keys_T3": {
+    "fixed_matched": {
+      "population": "rename_keys_T3",
+      "policy": "fixed_matched",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 1.0,
+      "mean_probe_ops": 2.0,
+      "miss_kinds": {},
+      "reject_reasons_on_good": {
+        "P3 services": 40
+      },
+      "route_histogram": {
+        "T3/P3": 40
+      }
+    },
+    "artifact_shape": {
+      "population": "rename_keys_T3",
+      "policy": "artifact_shape",
+      "n_bad": 40,
+      "n_good": 40,
+      "catch_rate": 1.0,
+      "false_reject_rate": 1.0,
+      "mean_probe_ops": 6.0,
+      "miss_kinds": {},
+      "reject_reasons_on_good": {
+        "P1 max_connections=None": 40
+      },
+      "route_histogram": {
+        "T1/P1": 40
+      }
+    }
+  },
+  "claims": {
+    "C1_normal_T3_baseline_match": {
+      "pass": true,
+      "catch_fixed": 1.0,
+      "catch_shape": 1.0,
+      "fr_fixed": 0.0,
+      "fr_shape": 0.0,
+      "detail": "On unmodified T3, shape matches fixed on catch AND false_reject (|Δ| <= 0.05)."
+    },
+    "C2_rename_misroutes_to_T1": {
+      "pass": true,
+      "route_hist_shape": {
+        "T1/P1": 40
+      },
+      "detail": "rename_keys on T3 causes shape router to misclassify away from T3/P3."
+    },
+    "C3_rename_false_reject_spikes": {
+      "pass": false,
+      "fr_fixed": 1.0,
+      "fr_shape": 1.0,
+      "catch_fixed": 1.0,
+      "catch_shape": 1.0,
+      "reject_reasons_on_good": {
+        "P1 max_connections=None": 40
+      },
+      "detail": "rename_keys: shape false_reject_rate > fixed + 0.15 (specificity collapse)."
+    }
+  },
+  "interpretation": "Three perturbations now, two failure axes. cue_erase: catch drops (under-reject on P4-specific defects). decoy_nest: catch drops to 0 (wrong-probe-wrong-depth). rename_keys: catch looks fine but false_reject spikes (over-reject from misroute to T1). Depth signal not stable on either axis — confirms Xiao Man's design cut: don't infer depth from shape; route to fixed mid-depth probe as baseline."
+}
