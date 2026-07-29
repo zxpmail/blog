@@ -1,0 +1,271 @@
+{
+  "experiment": "partial-stale-injection-stress",
+  "question": "Does the quiet-failure regime (shadow ∈ (0, enforce)) materialize on real df_proxy data when R_hist ranking is partially perturbed?",
+  "source": "Mike Czerwinski comment on Part 15, 2026-07-29 (quiet-failure challenge)",
+  "predecessor": "partial-stale-shadow-test.py (pure-math scan)",
+  "method": {
+    "data": "df_proxy (qwen3-0-5b, gemma3-latest, deepseek-v4-flash)",
+    "queue": "within_model_temporal diluted (35% miss rate)",
+    "k": 8,
+    "enforce_arrival": 8,
+    "oracle": 8,
+    "pure_R_hist_shadow": 8,
+    "perturbations": [
+      0.0,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1.0
+    ],
+    "n_draws_per_p": 30,
+    "perturbation_model": "With prob p per item, replace its R_hist score with prior; re-sort. Simulates partial loss of calibration."
+  },
+  "rules": {
+    "vacuous": "ship shadow if shadow > 0 else enforce (current dual-line)",
+    "noninferior": "ship shadow if shadow >= enforce else enforce (proposed)",
+    "god": "ship max(shadow, enforce)"
+  },
+  "results": [
+    {
+      "p": 0.0,
+      "mean_shadow": 8,
+      "median_shadow": 8.0,
+      "stdev_shadow": 0.0,
+      "min_shadow": 8,
+      "max_shadow": 8,
+      "quiet_gap_draws": 0,
+      "quiet_gap_fraction": 0.0,
+      "mean_ship_vacuous": 8,
+      "mean_ship_noninferior": 8,
+      "mean_ship_god": 8,
+      "mean_catches_lost_vacuous_vs_noninferior": 0.0,
+      "mean_catches_lost_vacuous_vs_god": 0,
+      "shadow_distribution": {
+        "8": 30
+      }
+    },
+    {
+      "p": 0.1,
+      "mean_shadow": 8,
+      "median_shadow": 8.0,
+      "stdev_shadow": 0.0,
+      "min_shadow": 8,
+      "max_shadow": 8,
+      "quiet_gap_draws": 0,
+      "quiet_gap_fraction": 0.0,
+      "mean_ship_vacuous": 8,
+      "mean_ship_noninferior": 8,
+      "mean_ship_god": 8,
+      "mean_catches_lost_vacuous_vs_noninferior": 0.0,
+      "mean_catches_lost_vacuous_vs_god": 0,
+      "shadow_distribution": {
+        "8": 30
+      }
+    },
+    {
+      "p": 0.2,
+      "mean_shadow": 8,
+      "median_shadow": 8.0,
+      "stdev_shadow": 0.0,
+      "min_shadow": 8,
+      "max_shadow": 8,
+      "quiet_gap_draws": 0,
+      "quiet_gap_fraction": 0.0,
+      "mean_ship_vacuous": 8,
+      "mean_ship_noninferior": 8,
+      "mean_ship_god": 8,
+      "mean_catches_lost_vacuous_vs_noninferior": 0.0,
+      "mean_catches_lost_vacuous_vs_god": 0,
+      "shadow_distribution": {
+        "8": 30
+      }
+    },
+    {
+      "p": 0.3,
+      "mean_shadow": 7.9,
+      "median_shadow": 8.0,
+      "stdev_shadow": 0.54,
+      "min_shadow": 5,
+      "max_shadow": 8,
+      "quiet_gap_draws": 1,
+      "quiet_gap_fraction": 0.03,
+      "mean_ship_vacuous": 7.9,
+      "mean_ship_noninferior": 8,
+      "mean_ship_god": 8,
+      "mean_catches_lost_vacuous_vs_noninferior": 3,
+      "mean_catches_lost_vacuous_vs_god": 0.1,
+      "shadow_distribution": {
+        "5": 1,
+        "8": 29
+      }
+    },
+    {
+      "p": 0.4,
+      "mean_shadow": 7.7,
+      "median_shadow": 8.0,
+      "stdev_shadow": 0.59,
+      "min_shadow": 6,
+      "max_shadow": 8,
+      "quiet_gap_draws": 7,
+      "quiet_gap_fraction": 0.23,
+      "mean_ship_vacuous": 7.7,
+      "mean_ship_noninferior": 8,
+      "mean_ship_god": 8,
+      "mean_catches_lost_vacuous_vs_noninferior": 1.29,
+      "mean_catches_lost_vacuous_vs_god": 0.3,
+      "shadow_distribution": {
+        "6": 2,
+        "7": 5,
+        "8": 23
+      }
+    },
+    {
+      "p": 0.5,
+      "mean_shadow": 7.17,
+      "median_shadow": 8.0,
+      "stdev_shadow": 1.13,
+      "min_shadow": 4,
+      "max_shadow": 8,
+      "quiet_gap_draws": 12,
+      "quiet_gap_fraction": 0.4,
+      "mean_ship_vacuous": 7.17,
+      "mean_ship_noninferior": 8,
+      "mean_ship_god": 8,
+      "mean_catches_lost_vacuous_vs_noninferior": 2.08,
+      "mean_catches_lost_vacuous_vs_god": 0.83,
+      "shadow_distribution": {
+        "4": 1,
+        "5": 1,
+        "6": 8,
+        "7": 2,
+        "8": 18
+      }
+    },
+    {
+      "p": 0.6,
+      "mean_shadow": 6.37,
+      "median_shadow": 6.5,
+      "stdev_shadow": 1.33,
+      "min_shadow": 4,
+      "max_shadow": 8,
+      "quiet_gap_draws": 22,
+      "quiet_gap_fraction": 0.73,
+      "mean_ship_vacuous": 6.37,
+      "mean_ship_noninferior": 8,
+      "mean_ship_god": 8,
+      "mean_catches_lost_vacuous_vs_noninferior": 2.23,
+      "mean_catches_lost_vacuous_vs_god": 1.63,
+      "shadow_distribution": {
+        "4": 3,
+        "5": 6,
+        "6": 6,
+        "7": 7,
+        "8": 8
+      }
+    },
+    {
+      "p": 0.7,
+      "mean_shadow": 4.73,
+      "median_shadow": 5.0,
+      "stdev_shadow": 1.71,
+      "min_shadow": 1,
+      "max_shadow": 8,
+      "quiet_gap_draws": 28,
+      "quiet_gap_fraction": 0.93,
+      "mean_ship_vacuous": 4.73,
+      "mean_ship_noninferior": 8,
+      "mean_ship_god": 8,
+      "mean_catches_lost_vacuous_vs_noninferior": 3.5,
+      "mean_catches_lost_vacuous_vs_god": 3.27,
+      "shadow_distribution": {
+        "1": 1,
+        "2": 3,
+        "3": 3,
+        "4": 5,
+        "5": 7,
+        "6": 8,
+        "7": 1,
+        "8": 2
+      }
+    },
+    {
+      "p": 0.8,
+      "mean_shadow": 3.17,
+      "median_shadow": 3.0,
+      "stdev_shadow": 1.51,
+      "min_shadow": 1,
+      "max_shadow": 7,
+      "quiet_gap_draws": 30,
+      "quiet_gap_fraction": 1.0,
+      "mean_ship_vacuous": 3.17,
+      "mean_ship_noninferior": 8,
+      "mean_ship_god": 8,
+      "mean_catches_lost_vacuous_vs_noninferior": 4.83,
+      "mean_catches_lost_vacuous_vs_god": 4.83,
+      "shadow_distribution": {
+        "1": 5,
+        "2": 5,
+        "3": 8,
+        "4": 7,
+        "5": 3,
+        "6": 1,
+        "7": 1
+      }
+    },
+    {
+      "p": 0.9,
+      "mean_shadow": 2.7,
+      "median_shadow": 3.0,
+      "stdev_shadow": 1.13,
+      "min_shadow": 0,
+      "max_shadow": 5,
+      "quiet_gap_draws": 29,
+      "quiet_gap_fraction": 0.97,
+      "mean_ship_vacuous": 2.97,
+      "mean_ship_noninferior": 8,
+      "mean_ship_god": 8,
+      "mean_catches_lost_vacuous_vs_noninferior": 5.21,
+      "mean_catches_lost_vacuous_vs_god": 5.03,
+      "shadow_distribution": {
+        "0": 1,
+        "1": 3,
+        "2": 9,
+        "3": 9,
+        "4": 7,
+        "5": 1
+      }
+    },
+    {
+      "p": 1.0,
+      "mean_shadow": 8,
+      "median_shadow": 8.0,
+      "stdev_shadow": 0.0,
+      "min_shadow": 8,
+      "max_shadow": 8,
+      "quiet_gap_draws": 0,
+      "quiet_gap_fraction": 0.0,
+      "mean_ship_vacuous": 8,
+      "mean_ship_noninferior": 8,
+      "mean_ship_god": 8,
+      "mean_catches_lost_vacuous_vs_noninferior": 0.0,
+      "mean_catches_lost_vacuous_vs_god": 0,
+      "shadow_distribution": {
+        "8": 30
+      }
+    }
+  ],
+  "summary": {
+    "first_p_with_gap": 0.3,
+    "peak_gap_p": 0.8,
+    "peak_gap_fraction": 1.0,
+    "peak_vacuous_vs_noninferior_loss_p": 0.9,
+    "peak_vacuous_vs_noninferior_loss": 5.21,
+    "interpretation": "If first_p_with_gap is not None and peak_gap_fraction > 0: Mike's quiet-failure gap is real and quantifiable on this fixture when ranker partially loses calibration. The vacuous rule loses catches vs the noninferior rule."
+  }
+}

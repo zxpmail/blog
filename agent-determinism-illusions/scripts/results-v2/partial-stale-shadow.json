@@ -1,0 +1,1147 @@
+{
+  "experiment": "partial-stale-shadow-fallback",
+  "question": "Does the dual-line fallback rule (shadow==0 ⟹ fallback) handle the quiet-failure regime where shadow ∈ (0, enforce)?",
+  "source": "Mike Czerwinski comment on Part 15, 2026-07-29",
+  "predecessor": "dual-line-ops-sim.py (line 346, current fallback rule)",
+  "oracle": 8,
+  "rules": {
+    "vacuous": "ship shadow if shadow > 0 else enforce (current dual-line)",
+    "noninferior": "ship shadow if shadow >= enforce else enforce (proposed)",
+    "god": "ship max(shadow, enforce) (upper bound)"
+  },
+  "current_fixture_cells": [
+    {
+      "holdout": "stratified",
+      "stream": "diluted",
+      "B": 0.05,
+      "k": 8,
+      "shadow_R_hist": 8,
+      "enforce_arrival": 0,
+      "regime": "shadow=oracle"
+    },
+    {
+      "holdout": "within_model_temporal",
+      "stream": "diluted",
+      "B": 0.05,
+      "k": 8,
+      "shadow_R_hist": 0,
+      "enforce_arrival": 0,
+      "regime": "loud_failure (both zero)"
+    },
+    {
+      "holdout": "within_model_temporal",
+      "stream": "class",
+      "B": 0.05,
+      "k": 8,
+      "shadow_R_hist": 0,
+      "enforce_arrival": 4,
+      "regime": "loud_failure (R_hist=0)"
+    },
+    {
+      "holdout": "within_model_temporal",
+      "stream": "class",
+      "B": 0.05,
+      "k": 8,
+      "shadow_conf_desc": 8,
+      "enforce_arrival": 4,
+      "regime": "shadow=oracle"
+    }
+  ],
+  "summary": {
+    "n_cells_scanned": 81,
+    "n_quiet_gap_cells": 28,
+    "quiet_gap_fraction": 0.346,
+    "avg_loss_vacuous_in_gap": 5.0,
+    "avg_loss_noninferior_in_gap": 2.0,
+    "max_loss_gap_per_cell": 7,
+    "gap_region_shadow_enforce_pairs": [
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        1,
+        6
+      ],
+      [
+        1,
+        7
+      ],
+      [
+        1,
+        8
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        2,
+        7
+      ],
+      [
+        2,
+        8
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        5
+      ],
+      [
+        3,
+        6
+      ],
+      [
+        3,
+        7
+      ],
+      [
+        3,
+        8
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        4,
+        7
+      ],
+      [
+        4,
+        8
+      ],
+      [
+        5,
+        6
+      ],
+      [
+        5,
+        7
+      ],
+      [
+        5,
+        8
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        6,
+        8
+      ],
+      [
+        7,
+        8
+      ]
+    ]
+  },
+  "cells": [
+    {
+      "shadow": 0,
+      "enforce": 0,
+      "ship_vacuous": 0,
+      "ship_noninferior": 0,
+      "ship_god": 0,
+      "loss_vacuous": 8,
+      "loss_noninferior": 8,
+      "loss_god": 8,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "both_zero"
+    },
+    {
+      "shadow": 0,
+      "enforce": 1,
+      "ship_vacuous": 1,
+      "ship_noninferior": 1,
+      "ship_god": 1,
+      "loss_vacuous": 7,
+      "loss_noninferior": 7,
+      "loss_god": 7,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "loud_failure_shadow_zero"
+    },
+    {
+      "shadow": 0,
+      "enforce": 2,
+      "ship_vacuous": 2,
+      "ship_noninferior": 2,
+      "ship_god": 2,
+      "loss_vacuous": 6,
+      "loss_noninferior": 6,
+      "loss_god": 6,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "loud_failure_shadow_zero"
+    },
+    {
+      "shadow": 0,
+      "enforce": 3,
+      "ship_vacuous": 3,
+      "ship_noninferior": 3,
+      "ship_god": 3,
+      "loss_vacuous": 5,
+      "loss_noninferior": 5,
+      "loss_god": 5,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "loud_failure_shadow_zero"
+    },
+    {
+      "shadow": 0,
+      "enforce": 4,
+      "ship_vacuous": 4,
+      "ship_noninferior": 4,
+      "ship_god": 4,
+      "loss_vacuous": 4,
+      "loss_noninferior": 4,
+      "loss_god": 4,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "loud_failure_shadow_zero"
+    },
+    {
+      "shadow": 0,
+      "enforce": 5,
+      "ship_vacuous": 5,
+      "ship_noninferior": 5,
+      "ship_god": 5,
+      "loss_vacuous": 3,
+      "loss_noninferior": 3,
+      "loss_god": 3,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "loud_failure_shadow_zero"
+    },
+    {
+      "shadow": 0,
+      "enforce": 6,
+      "ship_vacuous": 6,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 2,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "loud_failure_shadow_zero"
+    },
+    {
+      "shadow": 0,
+      "enforce": 7,
+      "ship_vacuous": 7,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 1,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "loud_failure_shadow_zero"
+    },
+    {
+      "shadow": 0,
+      "enforce": 8,
+      "ship_vacuous": 8,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 0,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "loud_failure_shadow_zero"
+    },
+    {
+      "shadow": 1,
+      "enforce": 0,
+      "ship_vacuous": 1,
+      "ship_noninferior": 1,
+      "ship_god": 1,
+      "loss_vacuous": 7,
+      "loss_noninferior": 7,
+      "loss_god": 7,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 1,
+      "enforce": 1,
+      "ship_vacuous": 1,
+      "ship_noninferior": 1,
+      "ship_god": 1,
+      "loss_vacuous": 7,
+      "loss_noninferior": 7,
+      "loss_god": 7,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "tie"
+    },
+    {
+      "shadow": 1,
+      "enforce": 2,
+      "ship_vacuous": 1,
+      "ship_noninferior": 2,
+      "ship_god": 2,
+      "loss_vacuous": 7,
+      "loss_noninferior": 6,
+      "loss_god": 6,
+      "vacuous_loses_vs_noninferior": 1,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 1,
+      "enforce": 3,
+      "ship_vacuous": 1,
+      "ship_noninferior": 3,
+      "ship_god": 3,
+      "loss_vacuous": 7,
+      "loss_noninferior": 5,
+      "loss_god": 5,
+      "vacuous_loses_vs_noninferior": 2,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 1,
+      "enforce": 4,
+      "ship_vacuous": 1,
+      "ship_noninferior": 4,
+      "ship_god": 4,
+      "loss_vacuous": 7,
+      "loss_noninferior": 4,
+      "loss_god": 4,
+      "vacuous_loses_vs_noninferior": 3,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 1,
+      "enforce": 5,
+      "ship_vacuous": 1,
+      "ship_noninferior": 5,
+      "ship_god": 5,
+      "loss_vacuous": 7,
+      "loss_noninferior": 3,
+      "loss_god": 3,
+      "vacuous_loses_vs_noninferior": 4,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 1,
+      "enforce": 6,
+      "ship_vacuous": 1,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 7,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 5,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 1,
+      "enforce": 7,
+      "ship_vacuous": 1,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 7,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 6,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 1,
+      "enforce": 8,
+      "ship_vacuous": 1,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 7,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 7,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 2,
+      "enforce": 0,
+      "ship_vacuous": 2,
+      "ship_noninferior": 2,
+      "ship_god": 2,
+      "loss_vacuous": 6,
+      "loss_noninferior": 6,
+      "loss_god": 6,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 2,
+      "enforce": 1,
+      "ship_vacuous": 2,
+      "ship_noninferior": 2,
+      "ship_god": 2,
+      "loss_vacuous": 6,
+      "loss_noninferior": 6,
+      "loss_god": 6,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 2,
+      "enforce": 2,
+      "ship_vacuous": 2,
+      "ship_noninferior": 2,
+      "ship_god": 2,
+      "loss_vacuous": 6,
+      "loss_noninferior": 6,
+      "loss_god": 6,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "tie"
+    },
+    {
+      "shadow": 2,
+      "enforce": 3,
+      "ship_vacuous": 2,
+      "ship_noninferior": 3,
+      "ship_god": 3,
+      "loss_vacuous": 6,
+      "loss_noninferior": 5,
+      "loss_god": 5,
+      "vacuous_loses_vs_noninferior": 1,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 2,
+      "enforce": 4,
+      "ship_vacuous": 2,
+      "ship_noninferior": 4,
+      "ship_god": 4,
+      "loss_vacuous": 6,
+      "loss_noninferior": 4,
+      "loss_god": 4,
+      "vacuous_loses_vs_noninferior": 2,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 2,
+      "enforce": 5,
+      "ship_vacuous": 2,
+      "ship_noninferior": 5,
+      "ship_god": 5,
+      "loss_vacuous": 6,
+      "loss_noninferior": 3,
+      "loss_god": 3,
+      "vacuous_loses_vs_noninferior": 3,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 2,
+      "enforce": 6,
+      "ship_vacuous": 2,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 6,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 4,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 2,
+      "enforce": 7,
+      "ship_vacuous": 2,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 6,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 5,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 2,
+      "enforce": 8,
+      "ship_vacuous": 2,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 6,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 6,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 3,
+      "enforce": 0,
+      "ship_vacuous": 3,
+      "ship_noninferior": 3,
+      "ship_god": 3,
+      "loss_vacuous": 5,
+      "loss_noninferior": 5,
+      "loss_god": 5,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 3,
+      "enforce": 1,
+      "ship_vacuous": 3,
+      "ship_noninferior": 3,
+      "ship_god": 3,
+      "loss_vacuous": 5,
+      "loss_noninferior": 5,
+      "loss_god": 5,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 3,
+      "enforce": 2,
+      "ship_vacuous": 3,
+      "ship_noninferior": 3,
+      "ship_god": 3,
+      "loss_vacuous": 5,
+      "loss_noninferior": 5,
+      "loss_god": 5,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 3,
+      "enforce": 3,
+      "ship_vacuous": 3,
+      "ship_noninferior": 3,
+      "ship_god": 3,
+      "loss_vacuous": 5,
+      "loss_noninferior": 5,
+      "loss_god": 5,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "tie"
+    },
+    {
+      "shadow": 3,
+      "enforce": 4,
+      "ship_vacuous": 3,
+      "ship_noninferior": 4,
+      "ship_god": 4,
+      "loss_vacuous": 5,
+      "loss_noninferior": 4,
+      "loss_god": 4,
+      "vacuous_loses_vs_noninferior": 1,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 3,
+      "enforce": 5,
+      "ship_vacuous": 3,
+      "ship_noninferior": 5,
+      "ship_god": 5,
+      "loss_vacuous": 5,
+      "loss_noninferior": 3,
+      "loss_god": 3,
+      "vacuous_loses_vs_noninferior": 2,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 3,
+      "enforce": 6,
+      "ship_vacuous": 3,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 5,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 3,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 3,
+      "enforce": 7,
+      "ship_vacuous": 3,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 5,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 4,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 3,
+      "enforce": 8,
+      "ship_vacuous": 3,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 5,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 5,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 4,
+      "enforce": 0,
+      "ship_vacuous": 4,
+      "ship_noninferior": 4,
+      "ship_god": 4,
+      "loss_vacuous": 4,
+      "loss_noninferior": 4,
+      "loss_god": 4,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 4,
+      "enforce": 1,
+      "ship_vacuous": 4,
+      "ship_noninferior": 4,
+      "ship_god": 4,
+      "loss_vacuous": 4,
+      "loss_noninferior": 4,
+      "loss_god": 4,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 4,
+      "enforce": 2,
+      "ship_vacuous": 4,
+      "ship_noninferior": 4,
+      "ship_god": 4,
+      "loss_vacuous": 4,
+      "loss_noninferior": 4,
+      "loss_god": 4,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 4,
+      "enforce": 3,
+      "ship_vacuous": 4,
+      "ship_noninferior": 4,
+      "ship_god": 4,
+      "loss_vacuous": 4,
+      "loss_noninferior": 4,
+      "loss_god": 4,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 4,
+      "enforce": 4,
+      "ship_vacuous": 4,
+      "ship_noninferior": 4,
+      "ship_god": 4,
+      "loss_vacuous": 4,
+      "loss_noninferior": 4,
+      "loss_god": 4,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "tie"
+    },
+    {
+      "shadow": 4,
+      "enforce": 5,
+      "ship_vacuous": 4,
+      "ship_noninferior": 5,
+      "ship_god": 5,
+      "loss_vacuous": 4,
+      "loss_noninferior": 3,
+      "loss_god": 3,
+      "vacuous_loses_vs_noninferior": 1,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 4,
+      "enforce": 6,
+      "ship_vacuous": 4,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 4,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 2,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 4,
+      "enforce": 7,
+      "ship_vacuous": 4,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 4,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 3,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 4,
+      "enforce": 8,
+      "ship_vacuous": 4,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 4,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 4,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 5,
+      "enforce": 0,
+      "ship_vacuous": 5,
+      "ship_noninferior": 5,
+      "ship_god": 5,
+      "loss_vacuous": 3,
+      "loss_noninferior": 3,
+      "loss_god": 3,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 5,
+      "enforce": 1,
+      "ship_vacuous": 5,
+      "ship_noninferior": 5,
+      "ship_god": 5,
+      "loss_vacuous": 3,
+      "loss_noninferior": 3,
+      "loss_god": 3,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 5,
+      "enforce": 2,
+      "ship_vacuous": 5,
+      "ship_noninferior": 5,
+      "ship_god": 5,
+      "loss_vacuous": 3,
+      "loss_noninferior": 3,
+      "loss_god": 3,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 5,
+      "enforce": 3,
+      "ship_vacuous": 5,
+      "ship_noninferior": 5,
+      "ship_god": 5,
+      "loss_vacuous": 3,
+      "loss_noninferior": 3,
+      "loss_god": 3,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 5,
+      "enforce": 4,
+      "ship_vacuous": 5,
+      "ship_noninferior": 5,
+      "ship_god": 5,
+      "loss_vacuous": 3,
+      "loss_noninferior": 3,
+      "loss_god": 3,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 5,
+      "enforce": 5,
+      "ship_vacuous": 5,
+      "ship_noninferior": 5,
+      "ship_god": 5,
+      "loss_vacuous": 3,
+      "loss_noninferior": 3,
+      "loss_god": 3,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "tie"
+    },
+    {
+      "shadow": 5,
+      "enforce": 6,
+      "ship_vacuous": 5,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 3,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 1,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 5,
+      "enforce": 7,
+      "ship_vacuous": 5,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 3,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 2,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 5,
+      "enforce": 8,
+      "ship_vacuous": 5,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 3,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 3,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 6,
+      "enforce": 0,
+      "ship_vacuous": 6,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 2,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 6,
+      "enforce": 1,
+      "ship_vacuous": 6,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 2,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 6,
+      "enforce": 2,
+      "ship_vacuous": 6,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 2,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 6,
+      "enforce": 3,
+      "ship_vacuous": 6,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 2,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 6,
+      "enforce": 4,
+      "ship_vacuous": 6,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 2,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 6,
+      "enforce": 5,
+      "ship_vacuous": 6,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 2,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 6,
+      "enforce": 6,
+      "ship_vacuous": 6,
+      "ship_noninferior": 6,
+      "ship_god": 6,
+      "loss_vacuous": 2,
+      "loss_noninferior": 2,
+      "loss_god": 2,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "tie"
+    },
+    {
+      "shadow": 6,
+      "enforce": 7,
+      "ship_vacuous": 6,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 2,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 1,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 6,
+      "enforce": 8,
+      "ship_vacuous": 6,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 2,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 2,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 7,
+      "enforce": 0,
+      "ship_vacuous": 7,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 1,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 7,
+      "enforce": 1,
+      "ship_vacuous": 7,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 1,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 7,
+      "enforce": 2,
+      "ship_vacuous": 7,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 1,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 7,
+      "enforce": 3,
+      "ship_vacuous": 7,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 1,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 7,
+      "enforce": 4,
+      "ship_vacuous": 7,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 1,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 7,
+      "enforce": 5,
+      "ship_vacuous": 7,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 1,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 7,
+      "enforce": 6,
+      "ship_vacuous": 7,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 1,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_wins_partial"
+    },
+    {
+      "shadow": 7,
+      "enforce": 7,
+      "ship_vacuous": 7,
+      "ship_noninferior": 7,
+      "ship_god": 7,
+      "loss_vacuous": 1,
+      "loss_noninferior": 1,
+      "loss_god": 1,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "tie"
+    },
+    {
+      "shadow": 7,
+      "enforce": 8,
+      "ship_vacuous": 7,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 1,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 1,
+      "regime": "quiet_failure_partial_stale"
+    },
+    {
+      "shadow": 8,
+      "enforce": 0,
+      "ship_vacuous": 8,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 0,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_perfect"
+    },
+    {
+      "shadow": 8,
+      "enforce": 1,
+      "ship_vacuous": 8,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 0,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_perfect"
+    },
+    {
+      "shadow": 8,
+      "enforce": 2,
+      "ship_vacuous": 8,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 0,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_perfect"
+    },
+    {
+      "shadow": 8,
+      "enforce": 3,
+      "ship_vacuous": 8,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 0,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_perfect"
+    },
+    {
+      "shadow": 8,
+      "enforce": 4,
+      "ship_vacuous": 8,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 0,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_perfect"
+    },
+    {
+      "shadow": 8,
+      "enforce": 5,
+      "ship_vacuous": 8,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 0,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_perfect"
+    },
+    {
+      "shadow": 8,
+      "enforce": 6,
+      "ship_vacuous": 8,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 0,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_perfect"
+    },
+    {
+      "shadow": 8,
+      "enforce": 7,
+      "ship_vacuous": 8,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 0,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "shadow_perfect"
+    },
+    {
+      "shadow": 8,
+      "enforce": 8,
+      "ship_vacuous": 8,
+      "ship_noninferior": 8,
+      "ship_god": 8,
+      "loss_vacuous": 0,
+      "loss_noninferior": 0,
+      "loss_god": 0,
+      "vacuous_loses_vs_noninferior": 0,
+      "regime": "tie"
+    }
+  ],
+  "interpretation": "Mike's gap is real and bounded: when shadow ∈ (0, enforce), the vacuous rule ships shadow and loses (enforce - shadow) catches vs the noninferior rule. Current fixture doesn't stress this regime — all cells sit at corners (shadow ∈ {0, oracle}). Fix: change fallback condition from `shadow==0` to `shadow < enforce`."
+}
