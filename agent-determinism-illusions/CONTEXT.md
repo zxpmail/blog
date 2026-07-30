@@ -1,15 +1,14 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Tom Jones（冻结声明/归因错位）：实验已跑通，回复草稿待贴
+- Xiao Man fallback-with-logging 回帖草稿待贴
 
 ## 上次停在哪个位置
-- 脚本：`scripts/frozen-declaration-fault-attribution-test.py`
-- 结果：`scripts/results-v2/frozen-declaration-fault-attribution.json`（C1–C5 全过）
-- 回复：`working-notes/reply-tom-jones-frozen-declaration.md`
-- 帖子在 nexuslabzen「done real」线程，不在本系列编号篇
+- 草稿：`working-notes/reply-xiao-man-fallback-logging.md`
+- path-passing / survival 已复跑，与冻结 JSON 一致
+- Tom Jones adjacency：`reply-tom-jones-vinicius-split.md` 仍待贴
 
 ## 近期关键决定
-- 冻结闸门正确；失败被搬到「归因+清理」面，不是消失
-- naive：规格错 100% 标成 agent_failed，丢 421 行；tom_guards 纠正并 salvage
-- 冻结后小声明是链上唯一未核验点
+- 同意 Xiao Man：fallback+日志，不投票；checksum 不当 commit 默认门
+- 7/8 三平局用死亡格破平：主锚 synonym_list，次锚 structural
+- 不挂 Part 17；不新开实验除非对方追问
