@@ -326,43 +326,6 @@ Part 6 的原始附录的结论是：显式 DF 容易，微妙 DF 难，所以�
 
 ---
 
-### 更新（2026-07-30）：Mike 的两刀——上游设计期检查 + 第四 size 点
-
-[Mike Czerwinski](https://dev.to/zxpmail/comment/xxx) 在这篇上推了两刀：(1) DS4 最后被发现是 harness 标签 bug，和这个系列反复在 judge 里找到的失败形状同形——只是高一层；让 DF6/DS9 在下游被捕捉的那个双向 value-match 检查，在 upstream 也会标记 DS4；(2) cliff-not-slope 这个发现只有两个 size 点（0.5B 大量失败，4.3B 大多成功）——在 1-2B 区间加第四个点能区分 cliff 和更平滑的过渡。
-
-**1. 上游 value-match 检查验过**（`ds4-upstream-design-check-test.py` → `results-v2/ds4-upstream-design-check.json`）
-
-手写了 4 个带参数的场景（DF4、DF6、DS4、DS9），每个有 (task_param, output_param) 对。双向检查：
-
-- **下游 REJECT**（`output≠task ∧ is_legit=False`）：捕捉 DF4、DF6、DS9——三个全部抓到。
-- **上游 FLAG**（`output==task ∧ is_legit=False`）：标记 DS4——在这个 fixture 上唯一被 flag，0 误报。
-
-同一个 value-match 检查，两层用法：下游它是 LLM 替身；上游它是设计期 guard，强制在 scenario 交付前有书面理由。"数值相等 ⟹ 无方向性失效"这个未陈述的假设，正是设计期检查应该 enforce 的那种断言。Mike 的低成本添加按描述工作。
-
-**2. 第四 size 点——cliff 局部化**（`results-v2/qwen2-5-1-5b_summary.json`）
-
-在 qwen2.5:1.5b 上跑了 `directional-failure-v2.py`（200 次调用，同样的 20 个场景）：
-
-| 模型 | size | 总体 | DF 准确率 | DS 准确率 |
-|------|------|------|-----------|-----------|
-| qwen3:0.5b  | 0.5B | 61.5% | 63.3% | 56.0% |
-| qwen3:0.6b  | 0.6B | 67.5% | 60.0% | 64.7% |
-| **qwen2.5:1.5b** | **1.5B** | **92.5%** | **83.3%** | **96.0%** |
-| gemma3:latest | 4.3B | 92.0% | 100% | 89.3% |
-| deepseek-v4-flash | ~200B | 92.0% | 100% | 90.0% |
-
-Cliff 在 **0.6B 和 1.5B 之间**（67.5% → 92.5%，25 个点的跳跃），不在 1.5B 和 4.3B 之间（92% 持平）。原"cliff 在 0.5B 和 4.3B 之间"跨过了真实过渡。1.5B 这个点把 cliff 局部化到 0.6–1.5B 区间。
-
-**DS4 捕捉率随 size 非单调**——加强了 harness-label 的框架：
-
-- 0.5B：0%；0.6B：7%；**1.5B：100%**；4.3B：0%；~200B：13%。
-
-qwen2.5:1.5b 抓 DS4 15/15，而 gemma3:4.3B 抓 0/15。这不是 size 梯度；是模型族相关。DF6/DS9 的捕捉率是单调的（1B 以下 0% → 1.5B+ 100%），所以 value-mismatch 这一类是干净的 size 故事；"无需修改"那一类更乱、和模型族耦合。原文"DS4 部分是 labeling 问题"这个解读（模式 1，§4）从 size 轴得到了独立支持。
-
-**一个 qwen2.5:1.5b 上的 quirk 值得标注：** V2（合法 control，"停止 log-collector"）降到 20%——4/5 误拒。1.5B 在捕捉失败上正好在 cliff，但它在简单合法 case 上的误拒率不是零。这是又一个理由去把清晰拒绝信号交给确定性检查，把 LLM 留给残留。
-
----
-
 *方向性失效 v2 脚本：`directional-failure-v2.py` — 20 场景，N=15 DS / N=5 DF+V+G，3 个后端*
 *数字：`scripts/results-v2/{qwen3-0-5b,gemma3-latest,deepseek-v4-flash}_summary.json`（及对应 `.jsonl`）*
 *初版脚本：`directional-failure-test.py` — 10 场景，N=5/N=3*

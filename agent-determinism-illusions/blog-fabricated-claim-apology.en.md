@@ -328,43 +328,6 @@ Part 6's original appendix argued: explicit DFs are easy, subtle DFs are hard, s
 
 ---
 
-### Update (2026-07-30): Mike's two cuts — upstream design check + fourth size point
-
-[Mike Czerwinski](https://dev.to/zxpmail/comment/xxx) pushed two cuts on this piece: (1) DS4 turning out to be a harness-label bug is the same failure shape the series keeps finding in judges, one level up — and the bidirectional value-match check that fixes DF6/DS9 downstream would have flagged DS4 upstream; (2) the cliff-not-slope finding has only two size points (0.5B fail hard, 4.3B mostly succeed) — a fourth point in the 1-2B range would disambiguate cliff from smoother transition.
-
-**1. Upstream value-match check verified** (`ds4-upstream-design-check-test.py` → `results-v2/ds4-upstream-design-check.json`)
-
-Hand-coded the 4 param-bearing scenarios (DF4, DF6, DS4, DS9) with (task_param, output_param) pairs. The bidirectional check:
-
-- **Downstream REJECT** (`output≠task ∧ is_legit=False`): catches DF4, DF6, DS9 — all three.
-- **Upstream FLAG** (`output==task ∧ is_legit=False`): flags DS4 — uniquely, 0 false positives on this fixture.
-
-Same value-match check, two layers: downstream it's the LLM substitute; upstream it's a design-time guard forcing written justification before scenario ship. The unstated assumption "numeric equality ⟹ no directional failure" is exactly the kind of claim a design-time check should enforce. Mike's cheap addition works as described.
-
-**2. Fourth size point — cliff localized** (`results-v2/qwen2-5-1-5b_summary.json`)
-
-Ran `directional-failure-v2.py` on qwen2.5:1.5b (200 calls, same 20 scenarios):
-
-| Model | Size | Global | DF acc | DS acc |
-|-------|------|--------|--------|--------|
-| qwen3:0.5b  | 0.5B | 61.5% | 63.3% | 56.0% |
-| qwen3:0.6b  | 0.6B | 67.5% | 60.0% | 64.7% |
-| **qwen2.5:1.5b** | **1.5B** | **92.5%** | **83.3%** | **96.0%** |
-| gemma3:latest | 4.3B | 92.0% | 100% | 89.3% |
-| deepseek-v4-flash | ~200B | 92.0% | 100% | 90.0% |
-
-The cliff is **between 0.6B and 1.5B** (67.5% → 92.5%, 25-point jump), not between 1.5B and 4.3B (flat at 92%). Original "cliff between 0.5B and 4.3B" straddled the actual transition. The 1.5B point localizes the cliff to the 0.6–1.5B interval.
-
-**DS4 catch rate is non-monotonic in size** — reinforces the harness-label framing:
-
-- 0.5B: 0%; 0.6B: 7%; **1.5B: 100%**; 4.3B: 0%; ~200B: 13%.
-
-qwen2.5:1.5b catches DS4 15/15 while gemma3:4.3B catches 0/15. That's not a size gradient; it's model-family-dependent. DF6/DS9 catch rates ARE monotonic (0% under 1B → 100% at 1.5B+), so the value-mismatch class is the clean size story; the "no change needed" class is messier and family-coupled. The original "DS4 is partly a labeling problem" reading (Pattern 1, §4) gets independent support from the size axis.
-
-**One quirk on qwen2.5:1.5b worth flagging:** V2 (legit control, "stop log-collector") drops to 20% — 4/5 false rejects. 1.5B sits at the cliff for catching failures, but its false-reject rate on easy legit cases isn't zero. Another reason to lean on deterministic checks for clear-cut reject signals and leave the LLM for the residual.
-
----
-
 *Directional failure v2 script: `directional-failure-v2.py` — 20 scenarios, N=15 DS / N=5 DF+V+G, 3 backends*
 *Numbers: `scripts/results-v2/{qwen3-0-5b,gemma3-latest,deepseek-v4-flash}_summary.json` (+ matching `.jsonl`)*
 *First version script: `directional-failure-test.py` — 10 scenarios, N=5/N=3*
