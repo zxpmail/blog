@@ -82,35 +82,13 @@ Result: `results-v2/qwen2-5-1-5b_summary.json`
 ```text
 Two cuts, both land.
 
-1. Harness-label bug as the same shape one level up — agree, and the bidirectional value-match check you proposed is verified. Wrote a small script that hand-codes the 4 param-bearing scenarios (DF4, DF6, DS4, DS9) with (task_param, output_param) pairs and runs the check both directions:
-- downstream REJECT (output≠task ∧ is_legit=False): DF4, DF6, DS9 — all caught
-- upstream FLAG (output==task ∧ is_legit=False): DS4 — uniquely, 0 false positives on this fixture
-
-Same value-match check that fixes DF6/DS9 downstream flags DS4 upstream, before it ships as forty-five judgments of noise. The unstated assumption ("numeric equality ⟹ no directional failure") is exactly the kind of claim a design-time check should enforce. Cheap addition, real catch.
+1. Upstream value-match check — verified. Same check that fixes DF6/DS9 downstream flags DS4 upstream, 0 false positives on the 4 param-bearing scenarios. The unstated assumption "numeric equality ⟹ no directional failure" is exactly what a design-time check should catch.
 
 https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/ds4-upstream-design-check-test.py
-https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/ds4-upstream-design-check.json
 
-2. Cliff-not-slope — you called it. Ran directional-failure-v2.py on qwen2.5:1.5b (200 calls, same 20 scenarios):
+2. Cliff-not-slope — you called it. qwen2.5:1.5b (200 calls): global 92.5%, DF 83.3%, DS 96.0%. Cliff is between 0.6B and 1.5B (67.5%→92.5%), not 1.5B↔4.3B (flat at 92%). Original "cliff between 0.5B and 4.3B" straddled the real transition.
 
-| Model | Size | Global | DF acc | DS acc |
-|-------|------|--------|--------|--------|
-| qwen3:0.5b  | 0.5B | 61.5% | 63.3% | 56.0% |
-| qwen3:0.6b  | 0.6B | 67.5% | 60.0% | 64.7% |
-| qwen2.5:1.5b | 1.5B | 92.5% | 83.3% | 96.0% |
-| gemma3:latest | 4.3B | 92.0% | 100% | 89.3% |
-| deepseek-v4-flash | ~200B | 92.0% | 100% | 90.0% |
-
-The cliff is between 0.6B and 1.5B (67.5% → 92.5%, 25-point jump), not between 1.5B and 4.3B (92.5% → 92.0%, flat). So the original "cliff between 0.5B and 4.3B" straddled the actual transition — your read that two points underdetermine was right. The cliff is sharp, just narrower than the original gap implied.
-
-One wrinkle worth naming on DS4 specifically. Catch rate is non-monotonic in size:
-- 0.5B: 0%, 0.6B: 7%, 1.5B: 100%, 4.3B: 0%, ~200B: 13%
-
-qwen2.5:1.5b catches DS4 15/15; gemma3:4.3B catches 0/15. That's not a size gradient — it's model-family-dependent, which reinforces your harness-label framing: DS4 under is_legit=False is partly a fixture/labeling property, not a clean directional-failure universal. (The 1.5B's perfect catch may be over-rejection aligning with the harsh harness label — accepting was a defensible call per the article's Pattern 1 caveat.)
-
-DF6 and DS9 catch rates ARE monotonic: 0% under 1B → 100% at 1.5B and above. The value-mismatch class is the clean size story; the "no change needed" class is messier and family-coupled.
-
-One quirk on qwen2.5:1.5b worth flagging: V2 (legit control, "stop log-collector") drops to 20% — 4/5 false rejects. So 1.5B sits at the cliff for catching failures, but its false-reject rate on easy legit cases isn't zero. Another reason to lean on deterministic checks for clear-cut reject signals and leave the LLM for the residual.
+DS4 catch is non-monotonic (0.5B 0% → 0.6B 7% → 1.5B 100% → 4.3B 0% → 200B 13%) — family-coupled, not size-coupled. Reinforces your harness-label read. DF6/DS9 are monotonic; value-mismatch is the clean size story.
 
 https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/qwen2-5-1-5b_summary.json
 ```
