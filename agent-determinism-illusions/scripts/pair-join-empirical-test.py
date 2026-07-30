@@ -46,7 +46,9 @@ Expected / falsification:
 
 Cost: 100 trials × 3 probes = 300 LLM calls. ~2-5 min on glm-5.2.
 
-Output: results-v2/pair-join-empirical.json
+Output: results-v2/pair-join-empirical-{model_slug}.json
+  (e.g. pair-join-empirical-qwen3-0-6b.json). Cross-model: re-run with
+  --backend ollama --model <other>; compare lift + DF6/DS5-vs-DS4 shape.
 """
 
 import json, os, sys, io, time, argparse, re, urllib.request
@@ -54,7 +56,7 @@ from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True)
 
 OUT_DIR = Path(__file__).parent / "results-v2"
 OUT_DIR.mkdir(exist_ok=True)
@@ -301,7 +303,9 @@ def main():
 
             time.sleep(0.05)
 
-        sys.stdout.flush()
+        n_done = len(trials)
+        n_miss_so_far = sum(1 for t in trials if t["miss"])
+        print(f"  [{sc_id}] {args.n_per_scenario} trials  |  cumulative {n_done}/{len(SCENARIOS)*args.n_per_scenario}  misses={n_miss_so_far}  ({time.time()-t0:.0f}s)", flush=True)
 
     elapsed = time.time() - t0
     print(f"\n  Done. {total_calls} calls in {elapsed:.1f}s.")
@@ -438,10 +442,15 @@ def main():
         "total_llm_calls": total_calls,
     }
 
-    out_path = OUT_DIR / "pair-join-empirical.json"
+    out_path = OUT_DIR / f"pair-join-empirical-{model_slug}.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
+    # Canonical alias points at the latest run (keeps older links working).
+    alias = OUT_DIR / "pair-join-empirical.json"
+    with open(alias, "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=2)
     print(f"\n  → {out_path}")
+    print(f"  → {alias} (alias)")
 
     # ============================================================
     # Console summary

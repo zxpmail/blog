@@ -1,0 +1,49 @@
+{
+  "experiment": "pair-join-empirical-cross-model",
+  "claim": "Mike's within-model caveat: does qwen3:0.6b's lift≈1.14 + DF6/DS5-neither vs DS4-cofire shape hold on other models, or reverse?",
+  "protocol": "Same pair-join-empirical-test.py: 20 scenarios × N=5 × 3 probes. Compare lift + per-scenario shape.",
+  "models": [
+    {
+      "model": "qwen3:0.6b",
+      "file": "pair-join-empirical-qwen3-0-6b.json",
+      "n_miss": 30,
+      "lift": 1.14,
+      "joint_hhi": 0.322,
+      "scenario_hhi": 0.124,
+      "shape": "DF6+DS5 = 9 MISSes neither signal; DS4 = 3/5 route∧CD co-fire; route catches 8 scenarios, CD 4, intersection 3",
+      "verdict": "informative baseline — looks like independent detectors with disjoint territory"
+    },
+    {
+      "model": "gemma3:latest",
+      "file": "pair-join-empirical-gemma3-latest.json",
+      "n_miss": 5,
+      "lift": null,
+      "joint_hhi": 0.68,
+      "scenario_hhi": 1.0,
+      "shape": "All 5 MISSes on DS4 only. route never fires (0/5). CD fires 4/5. No co-fire.",
+      "verdict": "DEGENERATE on miss count, but DS4 cell REVERSES: qwen3 co-fires here; gemma is CD-only"
+    },
+    {
+      "model": "qwen2.5:1.5b",
+      "file": "pair-join-empirical-qwen2-5-1-5b.json",
+      "n_miss": 5,
+      "lift": null,
+      "joint_hhi": 1.0,
+      "scenario_hhi": 0.44,
+      "shape": "MISSes on DF4(3)+DF6(1)+DS8(1). route fires 5/5. CD fires 0/5. DS4 miss=0. No co-fire.",
+      "verdict": "Thin n_miss, but opposite margin from gemma: route-saturated, CD-dead; DS4 co-fire cell empty"
+    }
+  ],
+  "reading": [
+    "qwen3's aggregate lift 1.14 does not survive cross-model. On gemma3 and qwen2.5:1.5b the 2×2 collapses to a single margin (CD-only vs route-only), so lift is undefined — itself evidence that 'independent detectors' was a within-model description.",
+    "The load-bearing DS4 co-fire cell reverses: qwen3 3/5 both; gemma3 0/5 route / 4/5 CD; qwen2.5 0 MISSes on DS4.",
+    "DF6/DS5 'neither' pocket is also model-bound: qwen3 had 9; gemma3 caught 0 there (no MISSes); qwen2.5 had 1 DF6 miss caught by route alone.",
+    "SUPPORT Mike: close within-model before trusting n. Cross-model pair-join refuses 'independent in general'."
+  ],
+  "honest_limits": [
+    "gemma3 and qwen2.5:1.5b each produce only 5 MISSes — too thin for a second lift estimate; the claim rests on shape/margin reversal, not a second lift≈1.",
+    "Still fixture traffic, not production.",
+    "CPU-only ollama; glm-5.2 previously also degenerate (5 MISSes all DS4)."
+  ],
+  "timestamp": "2026-07-29"
+}

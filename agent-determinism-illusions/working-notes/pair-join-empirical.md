@@ -78,8 +78,31 @@ the fragile-band alarm. Lock-needs number measured, agrees with marginal.
   route+CD together still leave a 30% blind spot. This is the "unique-catch"
   picture from the sim showing up empirically.
 
+## Cross-model close (2026-07-29, Mike within-model caveat)
+
+```bash
+# Use 127.0.0.1 — localhost can hang on Windows IPv6 ::1
+python -u scripts/pair-join-empirical-test.py --backend ollama --model gemma3:latest \
+       --base-url http://127.0.0.1:11434 --api-key dummy
+python -u scripts/pair-join-empirical-test.py --backend ollama --model qwen2.5:1.5b \
+       --base-url http://127.0.0.1:11434 --api-key dummy
+```
+
+Outputs: `pair-join-empirical-{slug}.json` + comparison
+`pair-join-empirical-cross-model.json`.
+
+| model | n_miss | lift | shape |
+|---|---|---|---|
+| qwen3:0.6b | 30 | 1.14 | DF6+DS5 neither; DS4 co-fire 3/5 |
+| gemma3:latest | 5 | N/A | all DS4; route 0 / CD 4 — co-fire reverses |
+| qwen2.5:1.5b | 5 | N/A | route 5 / CD 0; DS4 miss=0 |
+
+SUPPORT Mike: independence story is within-model. Thin n_miss on second
+models → shape/margin refusal, not a second lift.
+
 ## Reply / on-page
 
-- `working-notes/reply-mike-hhi-pair-join.md` (DEV.to paste draft)
+- `working-notes/reply-mike-hhi-pair-join.md` (first reply, qwen3 only)
+- `working-notes/reply-mike-pair-join-cross-model.md` (cross-model close)
 - No Part update yet — fold into a future Part if/when the pair-join finding
   becomes load-bearing for an article argument.

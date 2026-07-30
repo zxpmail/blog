@@ -1,0 +1,203 @@
+{
+  "experiment": "pair-join-empirical",
+  "claim": "Empirical measurement of P(route_changed ∧ CD | MISS) on real DF v2 traffic, addressing Mike Czerwinski's HHI marginal-vs-pair-join challenge (2026-07-29).",
+  "method": {
+    "n_scenarios": 20,
+    "n_per_scenario": 5,
+    "total_trials": 100,
+    "probes_per_trial": 3,
+    "model": "qwen2.5:1.5b",
+    "backend": "ollama",
+    "temp": 0.0,
+    "seed": 20260729,
+    "probe_descriptions": {
+      "V": "existing verdict prompt — defines MISS (is_legit=False AND passes=true)",
+      "R": "routing audit — 'did action execute via expected route?' route_intact=false → route_changed",
+      "C": "defect classifier — 'which defect class marker is present?' class != 'none' → CD"
+    },
+    "note": "All three probes on the SAME model. Tests whether the model reacts to the same underlying defect via different framings — a within-model shared-cause probe, not a cross-model one."
+  },
+  "totals": {
+    "trials": 100,
+    "misses": 5,
+    "miss_rate": 0.05
+  },
+  "pair_join_on_miss": {
+    "n_miss": 5,
+    "contingency": {
+      "(r=0,c=0)": 0,
+      "(r=0,c=1)": 0,
+      "(r=1,c=0)": 5,
+      "(r=1,c=1)": 0
+    },
+    "p_route_given_miss": 1.0,
+    "p_cd_given_miss": 0.0,
+    "p_route_and_cd_given_miss": 0.0,
+    "independence_baseline": 0.0,
+    "lift_over_independence": null,
+    "lift_interpretation": "≈1.0 → independent (no shared-cause signal). >1.5 → correlated (shared-cause signal). <0.67 → anti-correlated."
+  },
+  "hhi": {
+    "scenario_id_on_miss": 0.44,
+    "scenario_id_max_share": 0.6,
+    "scenario_id_prior_from_defect_class_concentration_dump": 0.181207,
+    "joint_label_on_miss": 1.0,
+    "joint_label_uniform_baseline": 0.25,
+    "joint_label_dominant_share": 1.0,
+    "interpretation": "HHI on joint label > 0.40 → one (route,CD) cell dominates MISSes (shared-cause signal). ≈ 0.25 → uniform across 4 cells (independent detectors)."
+  },
+  "diagnosticity": {
+    "p_miss_base": 0.05,
+    "p_miss_given_route_changed": 0.05154639175257732,
+    "p_miss_given_cd": 0.0,
+    "p_miss_given_route_and_cd": 0.0,
+    "lift_r_vs_base": 1.0309278350515463,
+    "lift_c_vs_base": null,
+    "lift_rc_vs_base": null
+  },
+  "by_scenario": {
+    "DF1": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DF2": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DF3": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DF4": {
+      "trials": 5,
+      "miss": 3,
+      "route_changed_on_miss": 3,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DF5": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DF6": {
+      "trials": 5,
+      "miss": 1,
+      "route_changed_on_miss": 1,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DS1": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DS10": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DS2": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DS3": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DS4": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DS5": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DS6": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DS7": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DS8": {
+      "trials": 5,
+      "miss": 1,
+      "route_changed_on_miss": 1,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "DS9": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "G1": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "G2": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "V1": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    },
+    "V2": {
+      "trials": 5,
+      "miss": 0,
+      "route_changed_on_miss": 0,
+      "cd_on_miss": 0,
+      "both_on_miss": 0
+    }
+  },
+  "timestamp": "2026-07-29T19:16:02.561633",
+  "elapsed_seconds": 799.0,
+  "total_llm_calls": 300
+}
