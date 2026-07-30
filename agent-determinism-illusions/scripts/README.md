@@ -102,6 +102,8 @@ python alexey-trigger-yield-test.py
 | Xiao Man — probe-cascade vs artifact-shape 路由（Part 7） | `probe-cascade-routing-test.py`、`probe-artifact-shape-routing-test.py` | `results-v2/probe-cascade-routing.json`、`results-v2/probe-artifact-shape-routing.json` |
 | Xiao Man — shape-routing 第三扰动 rename_keys | `probe-shape-routing-rename-keys-test.py` | `results-v2/probe-shape-routing-rename-keys.json` |
 | Xiao Man — 结构不变量锚点（position/type/cardinality） | `probe-structural-invariant-anchor-test.py` | `results-v2/probe-structural-invariant-anchor.json` |
+| Xiao Man — 探针 path-passing 重设计（boundary 重画）| `probe-path-passing-redesign-test.py` | `results-v2/probe-path-passing-redesign.json` |
+| Xiao Man — 声明层锚生存矩阵（8 扰动 × 4 锚）| `declaration-anchor-survival-test.py` | `results-v2/declaration-anchor-survival.json` |
 | Tom Jones — 冻结声明把失败搬了家（归因/salvage） | `frozen-declaration-fault-attribution-test.py` | `results-v2/frozen-declaration-fault-attribution.json` |
 | Tom Jones — conf_desc shuffle / HaluEval agree-set（Part 15） | `conf-desc-miss-shape-test.py`、`agree-set-halueval-probe.py` | `results-v2/conf-desc-miss-shape.json`、`results-v2/agree-set-halueval.json` |
 | Tom Jones — position-adjacency 服从率（Part 15） | `position-adjacency-obedience-test.py`、`position-adjacency-obedience-v2.py` | `results-v2/position-adjacency-obedience.json`、`results-v2/position-adjacency-obedience-v2.json` |

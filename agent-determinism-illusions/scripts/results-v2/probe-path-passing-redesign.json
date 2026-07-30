@@ -1,0 +1,41 @@
+{
+  "experiment": "probe-path-passing-redesign",
+  "source": "Xiao Man 2026-07-30 refinement on rename_keys cell",
+  "predecessor": "probe-shape-routing-rename-keys-test.py",
+  "n": 40,
+  "seed": 7,
+  "declaration_services_candidates": [
+    "services",
+    "components",
+    "modules"
+  ],
+  "default_rename_map": {
+    "services": "components",
+    "budget": "cost_limit",
+    "timeout_ms": "request_timeout_ms",
+    "retries": "retry_count",
+    "fingerprint": "sig"
+  },
+  "adversarial_rename_extra": {
+    "services": "instances"
+  },
+  "results": {
+    "probe_v1_hardcoded": {
+      "normal_T3_false_reject": 0.0,
+      "rename_keys_T3_false_reject": 1.0
+    },
+    "probe_v2_path_passed": {
+      "normal_T3_false_reject": 0.0,
+      "rename_keys_T3_false_reject": 0.0,
+      "path_unresolved_normal": 0,
+      "path_unresolved_rename": 0,
+      "adversarial_false_reject": 1.0,
+      "adversarial_path_unresolved": 40
+    }
+  },
+  "claims": {
+    "v2_probe_rename_immune": true,
+    "router_declaration_fails_outside_synonym_list": true
+  },
+  "interpretation": "Probe-side fix verified: path-passed probe is rename-immune by construction. But the router-side lookup is the new failure site — declaration with synonym list works for known renames and fails on out-of-declaration ones (e.g. 'instances'). Xiao Man's boundary redraw relocates the lookup; it doesn't eliminate it. The next survival question is the router-side anchor."
+}

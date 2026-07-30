@@ -1,0 +1,193 @@
+{
+  "experiment": "declaration-anchor-survival",
+  "question": "What's the survival envelope of different declaration-layer anchors?",
+  "context": "Xiao Man 'remove anchor from probe' refinement — anchor relocates to declaration; this tests whether the new anchor layer has a measurable survival envelope.",
+  "base_artifact": "T3 good (services[2] each {name,port,limits})",
+  "anchors": [
+    "synonym_list",
+    "structural",
+    "cardinality",
+    "cross_field"
+  ],
+  "perturbations": [
+    "P0_baseline",
+    "P1_rename_in_decl",
+    "P2_rename_outside_decl",
+    "P3_decoy",
+    "P4_shape_corrupt",
+    "P5_cardinality_corrupt",
+    "P6_decoy_with_limits",
+    "P7_inner_field_rename"
+  ],
+  "survival_matrix": {
+    "synonym_list": {
+      "P0_baseline": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P1_rename_in_decl": {
+        "resolved": "components",
+        "truth": "components",
+        "survived": true
+      },
+      "P2_rename_outside_decl": {
+        "resolved": null,
+        "truth": "instances",
+        "survived": false
+      },
+      "P3_decoy": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P4_shape_corrupt": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P5_cardinality_corrupt": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P6_decoy_with_limits": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P7_inner_field_rename": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      }
+    },
+    "structural": {
+      "P0_baseline": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P1_rename_in_decl": {
+        "resolved": "components",
+        "truth": "components",
+        "survived": true
+      },
+      "P2_rename_outside_decl": {
+        "resolved": "instances",
+        "truth": "instances",
+        "survived": true
+      },
+      "P3_decoy": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P4_shape_corrupt": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P5_cardinality_corrupt": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P6_decoy_with_limits": {
+        "resolved": "connections",
+        "truth": "services",
+        "survived": false
+      },
+      "P7_inner_field_rename": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      }
+    },
+    "cardinality": {
+      "P0_baseline": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P1_rename_in_decl": {
+        "resolved": "components",
+        "truth": "components",
+        "survived": true
+      },
+      "P2_rename_outside_decl": {
+        "resolved": "instances",
+        "truth": "instances",
+        "survived": true
+      },
+      "P3_decoy": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P4_shape_corrupt": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P5_cardinality_corrupt": {
+        "resolved": null,
+        "truth": "services",
+        "survived": false
+      },
+      "P6_decoy_with_limits": {
+        "resolved": "connections",
+        "truth": "services",
+        "survived": false
+      },
+      "P7_inner_field_rename": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      }
+    },
+    "cross_field": {
+      "P0_baseline": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P1_rename_in_decl": {
+        "resolved": "components",
+        "truth": "components",
+        "survived": true
+      },
+      "P2_rename_outside_decl": {
+        "resolved": "instances",
+        "truth": "instances",
+        "survived": true
+      },
+      "P3_decoy": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P4_shape_corrupt": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P5_cardinality_corrupt": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P6_decoy_with_limits": {
+        "resolved": "services",
+        "truth": "services",
+        "survived": true
+      },
+      "P7_inner_field_rename": {
+        "resolved": null,
+        "truth": "services",
+        "survived": false
+      }
+    }
+  },
+  "interpretation": "Each anchor has a distinct survival envelope. None survives all 6. synonym_list handles known renames but dies on novel ones; structural dies on shape_corrupt; cardinality dies on cardinality_corrupt; cross_field is broadest but still dies on inner-shape perturbations. Conclusion: anchor relocation is real and useful, but the new anchor layer inherits its own survival question — there is no anchor-free finish."
+}
