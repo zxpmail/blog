@@ -1,14 +1,14 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Xiao Man fallback-with-logging 回帖草稿待贴
+- Tom Jones（done 线程）：operation check / quarantine 回帖草稿待贴
 
 ## 上次停在哪个位置
-- 草稿：`working-notes/reply-xiao-man-fallback-logging.md`
-- path-passing / survival 已复跑，与冻结 JSON 一致
+- 草稿：`working-notes/reply-tom-jones-operation-check.md`
+- Xiao Man fallback 回帖草稿已 push（`829ace1`），是否已贴未确认
 - Tom Jones adjacency：`reply-tom-jones-vinicius-split.md` 仍待贴
 
 ## 近期关键决定
-- 同意 Xiao Man：fallback+日志，不投票；checksum 不当 commit 默认门
-- 7/8 三平局用死亡格破平：主锚 synonym_list，次锚 structural
-- 不挂 Part 17；不新开实验除非对方追问
+- 存在检查（dispatch/stat）与操作检疫（review/must-fail）组合，不互相替代
+- 本轮不新开实验；用 Tom 的 patch-script 现场病例收束
+- 残余是 declaration↔intent；one-line-of-why 要补
