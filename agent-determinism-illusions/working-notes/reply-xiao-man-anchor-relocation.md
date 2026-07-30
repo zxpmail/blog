@@ -40,9 +40,9 @@ Reply paste below uses GitHub links (Part 17 not on dev.to yet).
 ```text
 Both principles verified empirically.
 
-1. Probe never re-finds what router resolved — verified. Wrote a path-passing variant: probe v1 (hardcoded art.get("services")) false_rejects 100% on rename_keys; probe v2 (router resolves path, passes it to probe) false_rejects 0%. The probe becomes a value-checker at a known coordinate, not a finder.
+1. Implementation leak first, because it's the strongest evidence for your second principle. Wrote a path-passing probe where the router resolves the services path and hands it to the probe. First draft only path-passed the outer key — inner timeout_ms was still hardcoded. rename_keys also changes timeout_ms → request_timeout_ms, so v2 still rejected everything. Had to path-pass all renamed keys before the probe was actually rename-immune. That leak is exactly what your "did we put lookup responsibility back into the probe?" audit catches — the moment neutral mutation (rename) changed catch behavior, the boundary had leaked.
 
-Implementation leak worth flagging — first v2 draft only took the services path from the router; inner timeout_ms was still hardcoded. rename_keys also changes timeout_ms → request_timeout_ms, so v2 still rejected everything. Had to path-pass all renamed keys before the probe was actually rename-immune. Exactly the audit case you named: "did we accidentally put lookup responsibility back into the probe?"
+Final numbers: probe v1 (hardcoded art.get("services")) false_reject 100% on rename_keys; probe v2 (path-passed by declaration-aware router) false_reject 0%.
 
 https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/probe-path-passing-redesign-test.py
 
@@ -55,15 +55,14 @@ https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/pr
 | cardinality | 6/8 | count change + shape clone |
 | cross_field | 7/8 | inner field rename (port→port_number) |
 
-No anchor 8/8. Narrow vs wide is a trade-off, not monotone improvement — the "wide" anchors trade robustness on rename for fragility on shape clone and inner rename.
+No anchor 8/8. Narrow ↔ wide is a trade-off, not monotone improvement — the "wide" anchors trade robustness on rename for fragility on shape clone and inner rename.
 
 Codified the neutral-mutation rule: any router/probe-layered fixture must declare its neutral-mutation inventory up front and report boundary-leak count alongside catch rate. Existing fixtures (rename_keys, decoy_nest, cue_erase, cross-model pair-join) already run neutral mutations — they just weren't called that. The label is the contribution, not a new framework.
 
 https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/declaration-anchor-survival-test.py
 https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/working-notes/boundary-leak-detector-rule.md
 
-Round 2 written up as Part 17 (pending Part 16 publish):
-https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent-determinism-illusions-17.en.md
+Open question on the narrow ↔ wide trade-off: each wide anchor dies on a different perturbation (P6 vs P7), so neither dominates. In production, do you pick one anchor and accept its blind corner, layer multiple anchors as votes, or move to a different abstraction entirely (e.g. semantic identity via checksum/cross-field invariant)? The survival matrix says the question is real; it doesn't say which way to resolve it.
 ```
 
 ---
@@ -79,5 +78,6 @@ https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/blog-agent
   - cardinality 6/8 死 P5+P6
   - cross_field 7/8 死 P7（内层 rename）
 - boundary-leak 规则落 working-notes
-- Part 17 en/zh 写完，published:false，跟 Part 16 一起发
-- 挂 4 个 GitHub 链接：path-passing 脚本、survival 脚本、规则 note、Part 17 en
+- Part 17 en/zh 写完但 published:false —— **不挂 Part 17 链接，不提 Part 17 编号**
+- 挂 3 个 GitHub 链接：path-passing 脚本、survival 脚本、规则 note
+- 结尾留开放问题：narrow ↔ wide trade-off，问 Xiao Man 怎么看（单锚 / 多锚投票 / 不同抽象）
