@@ -145,7 +145,7 @@ Pattern: each reader named a specific blind spot in Part 15's fixture. None of t
 
 Reader-driven revision isn't a bug in fixture-based research. It's the necessary complement — a single fixture answers a single question, and the readers name the adjacent questions the original framing missed.
 
-**Four comments. Four experiments. Four scope-narrowing fixes. The fixture didn't lie — it just wasn't the whole truth.**
+Four comments, four experiments, four scope-narrowing fixes. The fixture measures what it measures — the rest is for readers to name.
 
 ---
 
