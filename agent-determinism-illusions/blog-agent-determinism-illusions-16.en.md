@@ -7,7 +7,7 @@
 
 ---
 title: "Reader-driven revisions: four comments that bit back"
-published: false
+published: true
 description: "Four readers (Mike Czerwinski ×2, Tom Jones, Xiao Man) challenged four claims from Part 15. Each named a fixture limitation the original piece missed. Four experiments, four concessions, four scope-narrowing fixes."
 tags: ai, llm, agents, testing
 canonical_url: ""

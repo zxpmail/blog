@@ -18,7 +18,7 @@ series: "Agent Determinism Illusions"
 
 **Agent Determinism Illusions (Part 17)**
 
-> **Where this fits:** Part 16 collected four reader-driven revisions — Mike HHI pair-join, Tom Jones position-adjacency, Xiao Man shape-routing (rename_keys), Mike quiet-failure. After it was drafted, Xiao Man replied to the rename_keys section with a refinement: not "pick a better anchor," but "remove the anchor from the probe's responsibility." This part is the second round — what the refinement predicts, what the experiments confirm, and the methodological rule that falls out.
+> **Where this fits:** Part 16 collected four reader-driven revisions — Mike HHI pair-join, Tom Jones position-adjacency, Xiao Man shape-routing (rename_keys), Mike quiet-failure. Before Part 16 shipped, Xiao Man replied to the rename_keys section of the draft with a refinement: not "pick a better anchor," but "remove the anchor from the probe's responsibility." This part is the response — what the refinement predicts, what the experiments on this fixture support, and the methodological rule that falls out.
 
 ---
 
@@ -37,16 +37,16 @@ Round 1 said: shape-routing is fragile under rename. Round 2 sharpens: the fix i
 
 ---
 
-## 2. Path-passing probe — verified
+## 2. Path-passing probe — confirmed on fixture
 
 Script: `probe-path-passing-redesign-test.py` → `results-v2/probe-path-passing-redesign.json`.
 
 Two probe designs on the same rename_keys population (T3 good artifacts, `services → components` + inner renames, n=40, seed=7):
 
-| Probe | Design | false_reject on rename_keys |
+| Probe | Design | false_reject on rename_keys (n=40) |
 |-------|--------|:---------------------------:|
-| v1 (current) | hardcoded `art.get("services")` | **100%** |
-| v2 (refined) | path passed by declaration-aware router | **0%** |
+| v1 (current) | hardcoded `art.get("services")` | **100%** (40/40) |
+| v2 (refined) | path passed by declaration-aware router | **0%** (0/40) |
 
 Probe-side fix works. The probe becomes a value-checker at a router-resolved coordinate, not a finder.
 
@@ -58,7 +58,7 @@ Probe-side fix works. The probe becomes a value-checker at a router-resolved coo
 
 Script: `declaration-anchor-survival-test.py` → `results-v2/declaration-anchor-survival.json`.
 
-Probe-side fix is one half. The other half: the new anchor layer (declaration/router) has its own survival envelope. Four anchors × eight perturbations:
+Probe-side fix is one half. The other half: the new anchor layer (declaration/router) has its own survival envelope. Four anchors × eight perturbations; each cell is a single deterministic resolution check, not a stochastic trial:
 
 | anchor | P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | survived |
 |--------|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--------:|
@@ -111,16 +111,16 @@ What this rule does **not** do: replace catch rate. A fixture with zero boundary
 
 Round 1 said: depth-from-shape is fragile under rename. Round 2 sharpens:
 
-- **Probe layer:** anchor can be removed. Path-passing redesign verified; probe becomes rename-immune by construction.
+- **Probe layer:** anchor can be removed. Path-passing redesign confirmed (n=40, seed=7); probe becomes rename-immune by construction.
 - **System layer:** anchor doesn't vanish, it relocates. Declaration/router is the new anchor site, with its own measurable survival envelope.
 - **Methodological consequence:** neutral mutations are boundary-leak detectors. Future fixtures should report leak count alongside catch rate.
 
-Xiao Man named the architectural principle. The empirical work confirms it: probe becomes anchor-free; system stays anchor-bound at a different layer; the survival question moves with the anchor.
+Xiao Man named the architectural principle. The empirical work on this fixture supports it: probe becomes anchor-free; system stays anchor-bound at a different layer; the survival question moves with the anchor.
 
 **Probe without anchor, system with anchor at a different layer. That's the relocation.**
 
 ---
 
 **Series:** Agent Determinism Illusions · Scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
-**Previous:** [Part 16 — Reader-driven revisions: four comments that bit back](https://dev.to/zxpmail/reader-driven-revisions-four-comments-that-bit-back-xxx)  
+**Previous:** [Part 16 — Reader-driven revisions: four comments that bit back](https://dev.to/zxpmail/reader-driven-revisions-four-comments-that-bit-back-30p8)  
 **Comment thread origin:** [Part 6](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f) · [Part 7](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513)

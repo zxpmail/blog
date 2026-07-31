@@ -13,7 +13,7 @@
 
 **Agent Determinism Illusions（第 17 篇）**
 
-> **本文在系列中的位置：** 第 16 篇收了四条读者驱动的修订——Mike HHI pair-join、Tom Jones position-adjacency、Xiao Man shape-routing（rename_keys）、Mike quiet-failure。成稿之后，Xiao Man 在 rename_keys 一节下回复了一条更锐利的修订：不是"选个更好的锚"，是"把锚点从探针的职责中移除"。本篇是第二轮——这一刀预言什么、实验确认什么、规则落在哪里。
+> **本文在系列中的位置：** 第 16 篇收了四条读者驱动的修订——Mike HHI pair-join、Tom Jones position-adjacency、Xiao Man shape-routing（rename_keys）、Mike quiet-failure。成稿之后、发布之前，Xiao Man 在 rename_keys 一节下回复了一条更锐利的修订：不是"选个更好的锚"，是"把锚点从探针的职责中移除"。本篇是对这一刀的回应——预言什么、在本 fixture 上确认什么、规则落在哪里。
 
 ---
 
@@ -32,16 +32,16 @@ Round-1 说：shape-routing 在 rename 下脆。Round-2 把刀磨利：修复不
 
 ---
 
-## 2. Path-passing 探针——验过
+## 2. Path-passing 探针——在 fixture 上确认
 
 脚本：`probe-path-passing-redesign-test.py` → `results-v2/probe-path-passing-redesign.json`。
 
 两种探针设计在同一组 rename_keys 总体上跑（T3 合法 artifact，`services → components` + 内层 rename，n=40，seed=7）：
 
-| 探针 | 设计 | rename_keys 下 false_reject |
+| 探针 | 设计 | rename_keys 下 false_reject（n=40） |
 |------|------|:---------------------------:|
-| v1（现状） | 硬编码 `art.get("services")` | **100%** |
-| v2（重设计） | 路径由 declaration-aware 路由器传入 | **0%** |
+| v1（现状） | 硬编码 `art.get("services")` | **100%**（40/40） |
+| v2（重设计） | 路径由 declaration-aware 路由器传入 | **0%**（0/40） |
 
 探针侧修复有效。探针从"查找器"变成"在已知坐标上的值检查器"。
 
@@ -53,7 +53,7 @@ Round-1 说：shape-routing 在 rename 下脆。Round-2 把刀磨利：修复不
 
 脚本：`declaration-anchor-survival-test.py` → `results-v2/declaration-anchor-survival.json`。
 
-探针侧修复是一半。另一半：新锚层（declaration/router）有自己的生存包络。四锚 × 八扰动：
+探针侧修复是一半。另一半：新锚层（declaration/router）有自己的生存包络。四锚 × 八扰动；每单元是一次确定性解析检查，不是统计抽样：
 
 | 锚 | P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | 存活 |
 |------|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--------:|
@@ -106,16 +106,16 @@ Xiao Man 更深的重画——mutation suite 当架构违规检测器，不是 b
 
 Round-1 说：depth-from-shape 在 rename 下脆。Round-2 把刀磨利：
 
-- **探针层：** 锚可以移除。Path-passing 重设计验过；探针按构造 rename-immune。
+- **探针层：** 锚可以移除。Path-passing 重设计在 n=40、seed=7 上确认；探针按构造 rename-immune。
 - **系统层：** 锚不消失，只搬家。Declaration/router 是新锚点，有自己的可测生存包络。
 - **方法论后果：** 中性 mutation 是 boundary-leak 检测器。下一篇 fixture 应该把 leak 计数跟 catch rate 并列报。
 
-Xiao Man 命名了架构原则。经验证据坐实：探针变无锚；系统仍在另一层有锚；生存问题跟着锚走。
+Xiao Man 命名了架构原则。经验证据在本 fixture 上支持：探针变无锚；系统仍在另一层有锚；生存问题跟着锚走。
 
 **探针无锚；系统在另一层有锚。这就是搬家。**
 
 ---
 
 **系列：** Agent Determinism Illusions · 脚本：[GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)  
-**论证弧上一篇：** [第 16 篇 — 读者驱动的修订：四条咬回来的评论](https://dev.to/zxpmail/reader-driven-revisions-four-comments-that-bit-back-xxx)  
+**论证弧上一篇：** [第 16 篇 — 读者驱动的修订：四条咬回来的评论](https://dev.to/zxpmail/reader-driven-revisions-four-comments-that-bit-back-30p8)  
 **评论线程起点：** [第 6 篇](https://dev.to/zxpmail/five-comments-that-redesigned-my-llm-verification-pipeline-388f) · [第 7 篇](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513)
