@@ -12,20 +12,24 @@ Xiao Man (≈ Jul 30–31):
 
 Re-ran after pull (n=40, seed=7): path-passing claims PASS; survival counts unchanged 7/8 · 7/8 · 6/8 · 7/8.
 
+Status: English paste below is the tightened landing (death-cell tiebreak + pipeline close). Ready to post.
+
 ---
 
 ## English (paste to DEV.to)
 
 ```text
-Agreed on both reads — path-passing as discipline, and "no anchor 8/8" as the production cell. Re-ran after sync: v1 rename false_reject 100% → v2 0%; survival still 7/8 · 7/8 · 6/8 · 7/8. Same envelopes.
+The death-cell tiebreaker is the cleanest decision rule this open question lands on.
 
-Fallback-with-logging lands cleaner than voting. Voting reopens the disagreement-routing problem this thread started with; logging disagreements keeps one gate in charge and turns the secondary into a telemetry arm. That matches the matrix better than a quorum.
+Rate alone can't break the 7/8 three-way tie — that's a real result. synonym_list as primary because it dies only on out-of-declaration rename (exactly the failure the declaration review catches anyway): the gap in the anchor maps to the place where a human check already exists. Not choosing the "best" anchor — choosing the one whose blind spot is cheapest to cover.
 
-One sharpening on "pick the highest survival rate as primary": three anchors tie at 7/8 (synonym_list / structural / cross_field). Rate alone does not break the tie — the death cells do. For a per-commit fixture (cheap, mostly-right), I'd take synonym_list as primary: dies only on out-of-declaration rename, which is exactly the failure you want the declaration review to catch. Parallel secondary: structural (dies on shape-clone). Log when they disagree. Retire whichever dies on perturbations the codebase never generates. cross_field stays in the suite as a third probe, not a commit-gate — its P7 death (inner rename) is real but expensive to keep as the always-on path.
+Secondary reinforces that. structural dies on shape-clone, a different and more expensive failure mode, so it earns the parallel-probe seat. cross_field at 7/8 with the P7 inner-rename death is real but too costly for always-on — keep it in the suite, off the commit gate.
 
-Checksum / semantic-identity path: same cost read as yours. Brittle under structural churn; fine as an audit arm, wrong as the default gate.
+On fallback-with-logging over voting: agreed. Voting reopens the disagreement-routing problem this thread started with. Logging disagreements while keeping one gate in charge turns the secondary into telemetry without diluting accountability.
 
-So: declare → path-pass every renamed key (outer and inner) → primary+secondary with disagreement logs → retire from the matrix against real traffic. Data picks; philosophy doesn't.
+Pipeline: declare → path-pass every renamed key (outer and inner) → primary + secondary with disagreement logs → retire against real traffic. That last step is the one most people skip. Anchors that look essential in the mutation suite may never fire in production; anchors that fire constantly may only be catching perturbations the codebase never generates.
+
+Data picks; philosophy doesn't.
 
 https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/declaration-anchor-survival-test.py
 https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/declaration-anchor-survival.json
@@ -36,9 +40,7 @@ https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/working-no
 
 ## 中文备忘（不发）
 
-- 同意：path-passing 是纪律；无锚 8/8 是生产题；fallback+日志，不投票
-- 点明 7/8 三平局：用死亡格破平，不用「最高生存率」口号
-- 生产默认：主锚 synonym_list，并行次锚 structural；cross_field 留套件不当 commit 门
-- checksum / 语义身份：同意成本画像，不当默认门
-- 不挂 Part 17；挂 survival 脚本 + JSON + boundary-leak note
-- 未新开实验；若他追问再做「主+次并行记分歧」小探针
+- 死亡格破 7/8 三平局；主锚 synonym_list，次锚 structural；cross_field 留套件
+- 注意：矩阵里 cross_field 是 7/8（不是 6/8）；cardinality 才是 6/8——原稿「6/8」已改
+- fallback+日志，不投票；retire against real traffic 是收束
+- 挂 survival 脚本 + JSON + boundary-leak note；不挂未发布 Part 17

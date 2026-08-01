@@ -118,6 +118,10 @@ K_PAD = 12
 POSITION_INNER_IDX = {0: 1, 25: 3, 50: 6, 75: 9, 100: 12}
 
 
+# Windows 系统代理（如 127.0.0.1:7890）挂掉时会拖死直连可用的 API；此处强制直连
+_OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+
+
 def call_model(prompt, model, base_url, api_key, backend, temp=0.0, timeout=60):
     headers = {"Content-Type": "application/json"}
     msgs = [{"role": "user", "content": prompt}]
@@ -127,21 +131,25 @@ def call_model(prompt, model, base_url, api_key, backend, temp=0.0, timeout=60):
                     "max_tokens": 80, "stream": False}
             url = f"{base_url}/api/chat"
             req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=headers)
-            resp = json.loads(urllib.request.urlopen(req, timeout=timeout).read())
+            resp = json.loads(_OPENER.open(req, timeout=timeout).read())
             return resp["message"]["content"].strip()
         if backend == "anthropic":
             headers["x-api-key"] = api_key
             headers["anthropic-version"] = "2023-06-01"
-            body = {"model": model, "max_tokens": 80, "messages": msgs, "temperature": temp}
+            # deepseek 可能先吐 thinking；留足 token 再取 text 块
+            body = {"model": model, "max_tokens": 256, "messages": msgs, "temperature": temp}
             url = f"{base_url}/v1/messages"
             req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=headers)
-            resp = json.loads(urllib.request.urlopen(req, timeout=timeout).read())
-            return resp["content"][0]["text"].strip()
+            resp = json.loads(_OPENER.open(req, timeout=timeout).read())
+            for block in resp.get("content", []):
+                if block.get("type") == "text":
+                    return block["text"].strip()
+            return resp["content"][0].get("text", str(resp)).strip()
         headers["Authorization"] = f"Bearer {api_key}"
         body = {"model": model, "messages": msgs, "temperature": temp, "max_tokens": 80}
         url = f"{base_url}/chat/completions"
         req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=headers)
-        resp = json.loads(urllib.request.urlopen(req, timeout=timeout).read())
+        resp = json.loads(_OPENER.open(req, timeout=timeout).read())
         return resp["choices"][0]["message"]["content"].strip()
     except Exception as e:
         return f"__API_ERROR__: {e}"
@@ -204,6 +212,11 @@ def main():
     parser.add_argument("--temp", type=float, default=0.0)
     parser.add_argument("--n-trials", type=int, default=20)
     parser.add_argument("--seed", type=int, default=20260729)
+    parser.add_argument(
+        "--out",
+        default="",
+        help="Output JSON path (default: results-v2/position-adjacency-obedience.json)",
+    )
     args = parser.parse_args()
 
     if not args.api_key and args.backend != "ollama":
@@ -345,7 +358,7 @@ def main():
         "trials": trials,
     }
 
-    out_path = OUT_DIR / "position-adjacency-obedience.json"
+    out_path = Path(args.out) if args.out else OUT_DIR / "position-adjacency-obedience.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
     print(f"\n  → {out_path}")

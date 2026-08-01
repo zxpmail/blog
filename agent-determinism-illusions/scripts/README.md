@@ -104,9 +104,11 @@ python alexey-trigger-yield-test.py
 | Xiao Man — 结构不变量锚点（position/type/cardinality） | `probe-structural-invariant-anchor-test.py` | `results-v2/probe-structural-invariant-anchor.json` |
 | Xiao Man — 探针 path-passing 重设计（boundary 重画）| `probe-path-passing-redesign-test.py` | `results-v2/probe-path-passing-redesign.json` |
 | Xiao Man — 声明层锚生存矩阵（8 扰动 × 4 锚）| `declaration-anchor-survival-test.py` | `results-v2/declaration-anchor-survival.json` |
+| Xiao Man — fallback+日志 / 退役信号（主次分歧 × 两种流量）| `declaration-anchor-fallback-logging-test.py` | `results-v2/declaration-anchor-fallback-logging.json` |
 | Tom Jones — 冻结声明把失败搬了家（归因/salvage） | `frozen-declaration-fault-attribution-test.py` | `results-v2/frozen-declaration-fault-attribution.json` |
 | Tom Jones — conf_desc shuffle / HaluEval agree-set（Part 15） | `conf-desc-miss-shape-test.py`、`agree-set-halueval-probe.py` | `results-v2/conf-desc-miss-shape.json`、`results-v2/agree-set-halueval.json` |
 | Tom Jones — position-adjacency 服从率（Part 15） | `position-adjacency-obedience-test.py`、`position-adjacency-obedience-v2.py` | `results-v2/position-adjacency-obedience.json`、`results-v2/position-adjacency-obedience-v2.json` |
+| Tom Jones — Vinicius 拆分格 A（deepseek × BANANA） | `position-adjacency-obedience-test.py --model deepseek-v4-flash --out …` | `results-v2/position-adjacency-obedience-v1-deepseek.json` |
 | Mike — HHI pair-join 经验测量 | `pair-join-empirical-test.py` | `results-v2/pair-join-empirical-{slug}.json` + `pair-join-empirical-cross-model.json` |
 | Mike — unique-catch co-fire / 共现 concentration | `unique-catch-cofire-test.py`、`unique-catch-cooccur-dose-test.py`、`unique-catch-cooccur-labels-test.py`、`defect-class-concentration-histogram.py` | `results-v2/unique-catch-cofire.json`、`results-v2/unique-catch-cooccur-*.json`、`results-v2/defect-class-concentration-histogram.json` |
 | Mike — joint-failure monitor live vs late | `joint-failure-monitor-test.py`、`joint-failure-monitor-duration-test.py` | `results-v2/joint-failure-monitor.json`、`results-v2/joint-failure-monitor-duration.json` |

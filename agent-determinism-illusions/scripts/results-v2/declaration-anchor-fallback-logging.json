@@ -1,0 +1,159 @@
+{
+  "experiment": "declaration-anchor-fallback-logging",
+  "question": "Does primary+secondary disagreement logging yield a usable retirement signal under different production mixes — without voting?",
+  "context": "Xiao Man 2026-08-01 lock: failure mode over rate; synonym_list primary; fallback-with-logging as design not compromise.",
+  "primary": "synonym_list",
+  "secondary": "structural",
+  "seed": 7,
+  "n_draws_per_mix": 400,
+  "part_a_ledger": [
+    {
+      "perturbation": "P0_baseline",
+      "truth": "services",
+      "primary_resolved": "services",
+      "secondary_resolved": "services",
+      "agree": true,
+      "primary_ok": true,
+      "secondary_ok": true,
+      "gate_ok": true
+    },
+    {
+      "perturbation": "P1_rename_in_decl",
+      "truth": "components",
+      "primary_resolved": "components",
+      "secondary_resolved": "components",
+      "agree": true,
+      "primary_ok": true,
+      "secondary_ok": true,
+      "gate_ok": true
+    },
+    {
+      "perturbation": "P2_rename_outside_decl",
+      "truth": "instances",
+      "primary_resolved": null,
+      "secondary_resolved": "instances",
+      "agree": false,
+      "primary_ok": false,
+      "secondary_ok": true,
+      "gate_ok": false
+    },
+    {
+      "perturbation": "P3_decoy",
+      "truth": "services",
+      "primary_resolved": "services",
+      "secondary_resolved": "services",
+      "agree": true,
+      "primary_ok": true,
+      "secondary_ok": true,
+      "gate_ok": true
+    },
+    {
+      "perturbation": "P4_shape_corrupt",
+      "truth": "services",
+      "primary_resolved": "services",
+      "secondary_resolved": "services",
+      "agree": true,
+      "primary_ok": true,
+      "secondary_ok": true,
+      "gate_ok": true
+    },
+    {
+      "perturbation": "P5_cardinality_corrupt",
+      "truth": "services",
+      "primary_resolved": "services",
+      "secondary_resolved": "services",
+      "agree": true,
+      "primary_ok": true,
+      "secondary_ok": true,
+      "gate_ok": true
+    },
+    {
+      "perturbation": "P6_decoy_with_limits",
+      "truth": "services",
+      "primary_resolved": "services",
+      "secondary_resolved": "connections",
+      "agree": false,
+      "primary_ok": true,
+      "secondary_ok": false,
+      "gate_ok": true
+    },
+    {
+      "perturbation": "P7_inner_field_rename",
+      "truth": "services",
+      "primary_resolved": "services",
+      "secondary_resolved": "services",
+      "agree": true,
+      "primary_ok": true,
+      "secondary_ok": true,
+      "gate_ok": true
+    }
+  ],
+  "part_a_disagree_cells": [
+    "P2_rename_outside_decl",
+    "P6_decoy_with_limits"
+  ],
+  "part_b_mixes": [
+    {
+      "mix": "rename_heavy",
+      "n": 400,
+      "weights": {
+        "P0_baseline": 0.35,
+        "P1_rename_in_decl": 0.2,
+        "P2_rename_outside_decl": 0.25,
+        "P3_decoy": 0.12,
+        "P4_shape_corrupt": 0.02,
+        "P5_cardinality_corrupt": 0.02,
+        "P6_decoy_with_limits": 0.02,
+        "P7_inner_field_rename": 0.02
+      },
+      "disagree_rate": 0.22,
+      "primary_error_rate": 0.205,
+      "secondary_error_rate": 0.015,
+      "disagree_histogram": {
+        "P2_rename_outside_decl": 82,
+        "P6_decoy_with_limits": 6
+      },
+      "retirement": {
+        "modal_disagree_cell": "P2_rename_outside_decl",
+        "primary_ok_on_modal": false,
+        "secondary_ok_on_modal": true,
+        "retirement_pressure": "primary",
+        "note": "Modal disagree cell is a known primary death; human declaration cover / synonym widen — not a commit-time vote."
+      }
+    },
+    {
+      "mix": "shape_clone_heavy",
+      "n": 400,
+      "weights": {
+        "P0_baseline": 0.3,
+        "P1_rename_in_decl": 0.05,
+        "P2_rename_outside_decl": 0.05,
+        "P3_decoy": 0.15,
+        "P4_shape_corrupt": 0.05,
+        "P5_cardinality_corrupt": 0.05,
+        "P6_decoy_with_limits": 0.3,
+        "P7_inner_field_rename": 0.05
+      },
+      "disagree_rate": 0.3425,
+      "primary_error_rate": 0.06,
+      "secondary_error_rate": 0.2825,
+      "disagree_histogram": {
+        "P6_decoy_with_limits": 113,
+        "P2_rename_outside_decl": 24
+      },
+      "retirement": {
+        "modal_disagree_cell": "P6_decoy_with_limits",
+        "primary_ok_on_modal": true,
+        "secondary_ok_on_modal": false,
+        "retirement_pressure": "secondary",
+        "note": "Modal disagree cell is one the primary never dies on; secondary is telemetry noise for this traffic — do not promote to co-gate."
+      }
+    }
+  ],
+  "verdict": {
+    "part_a_pass": true,
+    "part_b_pass": true,
+    "pass": true
+  },
+  "interpretation": "Disagreement is not a vote request. The modal disagree cell under traffic says which side is under pressure: P2-cluster → primary (cover with declaration review); P6-cluster → secondary (keep as telemetry, do not promote). Same gate, different retirement reads."
+}
