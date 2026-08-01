@@ -1,12 +1,11 @@
 # CONTEXT
 
 ## 当前正在做什么
-- 本地已提交 `1bd8368`；Xiao Man 短回帖待贴；未 push
+- 已 push：`586b776` + `9f98cd9`；Xiao Man 短回帖可贴（链接已可点）
 
 ## 上次停在哪个位置
-- 工作区干净；`main` 比 `origin/main` 超前 1 个提交
-- 回帖草稿：`reply-xiao-man-path-pass-logging-lock.md`
+- rebase 时《镜子》与远程「退回白话版」冲突，保留本轮已定稿深渊版后推送成功
+- 草稿：`reply-xiao-man-path-pass-logging-lock.md`
 
 ## 近期关键决定
 - 分歧众数格 → 压力在错的一侧；日志不投票
-- GitHub 链接需 push 后才可点
