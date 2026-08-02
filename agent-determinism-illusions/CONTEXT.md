@@ -1,11 +1,12 @@
 # CONTEXT
 
 ## 当前正在做什么
-- 已 push：`586b776` + `9f98cd9`；Xiao Man 短回帖可贴（链接已可点）
+- Xiao Man load-sensor 短收（带 Part 7 边界）待贴；本轮不跑新实验
 
 ## 上次停在哪个位置
-- rebase 时《镜子》与远程「退回白话版」冲突，保留本轮已定稿深渊版后推送成功
-- 草稿：`reply-xiao-man-path-pass-logging-lock.md`
+- 草稿：`working-notes/reply-xiao-man-load-sensor.md`
+- 若以后要钉「双绿同错→静音」再加一刀实验
 
 ## 近期关键决定
-- 分歧众数格 → 压力在错的一侧；日志不投票
+- load sensor 局部对；不等于解决 unanimous miss
+- 回帖第二段收成 scope note，不吹「绿着也有用」
