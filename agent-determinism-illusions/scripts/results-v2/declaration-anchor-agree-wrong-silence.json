@@ -1,0 +1,51 @@
+{
+  "experiment": "declaration-anchor-agree-wrong-silence",
+  "question": "When both anchors agree on the same wrong key, does the disagree-cell load sensor stay quiet while the primary gate would still ship?",
+  "context": "Xiao Man 2026-08-03: scope note confirmation — sensor is pressure visibility not verdict; mute on agree-wrong = Part 7 unanimous-miss shape.",
+  "primary": "synonym_list",
+  "secondary": "structural",
+  "cells": [
+    {
+      "perturbation": "P2_rename_outside_decl",
+      "truth": "instances",
+      "primary_resolved": null,
+      "secondary_resolved": "instances",
+      "agree": false,
+      "primary_ok": false,
+      "secondary_ok": true,
+      "sensor_fires": true,
+      "gate_oracle_ok": false,
+      "gate_would_ship": false
+    },
+    {
+      "perturbation": "P6_decoy_with_limits",
+      "truth": "services",
+      "primary_resolved": "services",
+      "secondary_resolved": "connections",
+      "agree": false,
+      "primary_ok": true,
+      "secondary_ok": false,
+      "sensor_fires": true,
+      "gate_oracle_ok": true,
+      "gate_would_ship": true
+    },
+    {
+      "perturbation": "P8_agree_wrong",
+      "truth": "instances",
+      "primary_resolved": "modules",
+      "secondary_resolved": "modules",
+      "agree": true,
+      "primary_ok": false,
+      "secondary_ok": false,
+      "sensor_fires": false,
+      "gate_oracle_ok": false,
+      "gate_would_ship": true
+    }
+  ],
+  "verdict": {
+    "controls_pass": true,
+    "mute_cell_pass": true,
+    "pass": true
+  },
+  "interpretation": "P2/P6 still light the sensor on opposite single-side deaths. P8 both land on modules while truth is instances: agree=true, sensor quiet, primary non-null → would ship the bait subtree. No signal is not no problem — same shape as unanimous miss. Out-of-channel / T2 still required for that population."
+}

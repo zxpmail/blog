@@ -105,6 +105,7 @@ python alexey-trigger-yield-test.py
 | Xiao Man — 探针 path-passing 重设计（boundary 重画）| `probe-path-passing-redesign-test.py` | `results-v2/probe-path-passing-redesign.json` |
 | Xiao Man — 声明层锚生存矩阵（8 扰动 × 4 锚）| `declaration-anchor-survival-test.py` | `results-v2/declaration-anchor-survival.json` |
 | Xiao Man — fallback+日志 / 退役信号（主次分歧 × 两种流量）| `declaration-anchor-fallback-logging-test.py` | `results-v2/declaration-anchor-fallback-logging.json` |
+| Xiao Man — 双绿同错→传感静音（P8 mute cell）| `declaration-anchor-agree-wrong-silence-test.py` | `results-v2/declaration-anchor-agree-wrong-silence.json` |
 | Tom Jones — 冻结声明把失败搬了家（归因/salvage） | `frozen-declaration-fault-attribution-test.py` | `results-v2/frozen-declaration-fault-attribution.json` |
 | Tom Jones — conf_desc shuffle / HaluEval agree-set（Part 15） | `conf-desc-miss-shape-test.py`、`agree-set-halueval-probe.py` | `results-v2/conf-desc-miss-shape.json`、`results-v2/agree-set-halueval.json` |
 | Tom Jones — position-adjacency 服从率（Part 15） | `position-adjacency-obedience-test.py`、`position-adjacency-obedience-v2.py` | `results-v2/position-adjacency-obedience.json`、`results-v2/position-adjacency-obedience-v2.json` |
