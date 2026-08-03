@@ -41,7 +41,7 @@ He said:
 
 > The body is AI-written. But the tables and data are from experiments.
 
-Felt like a routine patch. Measured numbers; the mirror had bitten genre. I added a filter, excluded genre-native items, saved. First reflex was not to admit error — another layer. I never finished the blog. Closed the window when the rule was done. It didn't hurt then. Only felt the system a little more complete. Complete, still on the extension of "good enough."
+Felt like a routine patch. Measured numbers; the mirror had bitten genre. I added a filter, excluded genre-native items, saved. First reflex was not to admit error — another layer. I never finished the blog. Closed the window when the rule was done. It didn't hurt then. It only felt a little more complete. Complete, still on the extension of "good enough."
 
 Next. Scan came back clean: no colon-bold, no tables, no number authority. Clean. I heard myself say: the rules work.
 
