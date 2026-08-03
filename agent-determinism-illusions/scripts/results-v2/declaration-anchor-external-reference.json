@@ -1,0 +1,72 @@
+{
+  "experiment": "declaration-anchor-external-reference",
+  "question": "Xiao Man 2026-08-04: the repeated need for an external probe becomes a design parameter — what does the probe look like in practice (different substrate / structural hash / shape-change)?",
+  "cells": [
+    {
+      "perturbation": "base",
+      "truth": "services",
+      "primary": "services",
+      "secondary": "services",
+      "agree": true,
+      "content_size_resolved": "services",
+      "content_size_ok": true,
+      "sensor_fires": false,
+      "static_canonical_fire": false,
+      "static_canonical_ok": true,
+      "consensus_drift": false
+    },
+    {
+      "perturbation": "P2_rename_outside_decl",
+      "truth": "instances",
+      "primary": null,
+      "secondary": "instances",
+      "agree": false,
+      "content_size_resolved": "instances",
+      "content_size_ok": true,
+      "sensor_fires": true,
+      "static_canonical_fire": true,
+      "static_canonical_ok": true,
+      "consensus_drift": "sensor(disagree)"
+    },
+    {
+      "perturbation": "P6_decoy_with_limits",
+      "truth": "services",
+      "primary": "services",
+      "secondary": "connections",
+      "agree": false,
+      "content_size_resolved": "services",
+      "content_size_ok": true,
+      "sensor_fires": true,
+      "static_canonical_fire": false,
+      "static_canonical_ok": true,
+      "consensus_drift": "sensor(disagree)"
+    },
+    {
+      "perturbation": "P8_agree_wrong",
+      "truth": "instances",
+      "primary": "modules",
+      "secondary": "modules",
+      "agree": true,
+      "content_size_resolved": "modules",
+      "content_size_ok": false,
+      "sensor_fires": false,
+      "static_canonical_fire": true,
+      "static_canonical_ok": true,
+      "consensus_drift": true
+    },
+    {
+      "perturbation": "P9_agree_right",
+      "truth": "modules",
+      "primary": "modules",
+      "secondary": "modules",
+      "agree": true,
+      "content_size_resolved": "modules",
+      "content_size_ok": true,
+      "sensor_fires": false,
+      "static_canonical_fire": true,
+      "static_canonical_ok": true,
+      "consensus_drift": true
+    }
+  ],
+  "interpretation": "A matching probe (canonical-location hash, option b as same-author reference) fires identically on P2 and P8 — it cannot separate a legit relocation from an adversarial one, because the two cells differ only in external intent, not artifact structure. A key-free substrate (option a) is still trapped by P8's bait (tie on key count, insertion order decides) — a re-drawn boundary, same species. Only the baseline tripwire (option c) closes the mute cell, by flagging 'agreed location moved' rather than judging — and it flags a legit relocation (P9) too, so it is advisory (route to human), never a gate."
+}
