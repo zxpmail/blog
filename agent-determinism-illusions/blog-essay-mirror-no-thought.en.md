@@ -26,7 +26,7 @@ Three months to build it. Outwardly: to tell whether a piece was AI-written. Fur
 
 For a while, the road looked open.
 
-Users dropped articles in; numbers came back. Someone said: useful, better than staring myself. Someone asked for one more rule. Someone revised the same piece, scanned again, watched the number fall, sent a screenshot — finally sounds human. At night someone asked: could this be the first gate of review? Not many messages. Each one tended the hallway lights. I tended myself the same way: less body text, more return values; fewer of those seconds sitting still, one more rule instead. While the score moved, the work felt forward. The mirror was done. I had become the one who made the mirror.
+Users dropped articles in; numbers came back. Someone said: useful, better than staring myself. Someone asked for one more rule. Someone revised the same piece, scanned again, watched the number fall, sent a screenshot — finally sounds human. At night someone asked: could this be the first gate of review? Not many messages. Each one tended the hallway lights. I tended myself the same way: less body text, more return values; fewer of those seconds sitting still, one more rule instead. While the score moved, the work felt forward. The mirror was done. I had become the one who made the mirror. "Become" — the word gave back no echo then.
 
 ---
 
@@ -49,7 +49,7 @@ He said:
 
 > This is AI-written. But the thought is mine.
 
-"Clean" shattered. It only meant default filler hadn't run. I typed a line into the README: few fingerprints only means few fingerprints. Ten seconds. Left it. Still didn't finish the body. One empty second this time, quickly covered by the next window. The light hadn't gone out. It only flickered.
+"Clean" shattered. It only meant the default fill hadn't kicked in. I typed a line into the README: few fingerprints only means few fingerprints. Ten seconds. Left it. Still didn't finish the body. One empty second this time, quickly covered by the next window. The light hadn't gone out. It only flickered.
 
 Later still — no sample, nothing to scan, nothing to cover.
 
@@ -57,7 +57,7 @@ Later still — no sample, nothing to scan, nothing to cover.
 
 I closed the laptop.
 
-Not persuaded. The track for arguing was gone. Those earlier lines — useful, one more rule, finally sounds human, first gate of review — no longer met this sentence. Still open on the screen: `rules.py`, `samples/`, `results-v2/`, three months of commits. Every push serious. Seriousness stacked into a shelter. Open again: shelter still there. Article outside, me inside — stopped beside the toolbox.
+The track for arguing was gone. Those earlier lines — useful, one more rule, finally sounds human, first gate of review — no longer met this sentence. Still open on the screen: `rules.py`, `samples/`, `results-v2/`, three months of commits. Every push serious. Seriousness stacked into a shelter. Open again: shelter still there. Article outside, me inside — stopped beside the toolbox.
 
 After closing, a stretch of doing nothing. No new rule. No going back to read those three.
 
@@ -87,7 +87,7 @@ Sometimes after a paragraph, hand on the desk edge, a few seconds. No word. The 
 
 The light is not in the hallway. It sits between the piece you will not finish reading and the title you will not write under. The middle is empty.
 
-When the hand moves toward a detector, a de-flavor sheet, a summary, an accuracy number, a score, any device willing to cut first for you — the hand is already fleeing. In that flee, you are not inside the article. Including this one.
+When the hand moves toward a detector, a de-AI pass, a summary, an accuracy number, a score, any device willing to cut first for you — the hand is already fleeing. In that flee, you are not inside the article. Including this one.
 
 Making it sharper can be the next filter too. I am not sure I am not doing that now. If you finish thinking "harsh," then save, share, open the next tab — we fled together again.
 
