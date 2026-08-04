@@ -1,7 +1,7 @@
 ---
 title: "The Channel Gap: Why Your LLM Judge is Blind in One Eye"
 published: false
-description: "Text-channel LLM judging vs filesystem-channel deterministic checks. Neither works alone, and the combination narrows the gap without closing it — named evasions become deterministic catches, the unenumerated rest routes to human instead of silently passing. René Zander's Data Processing Inequality, applied to agent verification."
+description: "Text-channel LLM judging vs filesystem-channel deterministic checks. Neither works alone, and the combination narrows the gap without closing it — named evasions become deterministic catches, the unenumerated rest routes to human instead of silently passing. René Zander's "deterministic wrapper" critique, read through the Data Processing Inequality lens."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
@@ -27,7 +27,7 @@ After the series went live, René Zander ([@reneza on dev.to](https://dev.to/ren
 
 They were saying that every "deterministic fix" in the series was a **deterministic wrapper on a semantic decision**. Vocabulary overlap thresholds, temperature-0 evaluation, Phase Gate formalism — all of them put a probabilistic judgment inside a code structure that looked deterministic, but the underlying decision was still a model output. The code didn't make the judgment more reliable; it made the unreliability harder to see.
 
-The commenter identified the root cause as the **Data Processing Inequality**: when the evaluator shares the same communication channel as the producer (both read/write text), information available to the evaluator is a *subset* of what the producer output. If the deviation doesn't appear in the text, the evaluator — human or LLM — cannot detect it.
+The commenter didn't name it, but what they described is the **Data Processing Inequality**: when the evaluator shares the same communication channel as the producer (both read/write text), information available to the evaluator is a *subset* of what the producer output. If the deviation doesn't appear in the text, the evaluator — human or LLM — cannot detect it.
 
 They had created a tool to implement the alternative: skillgate.
 

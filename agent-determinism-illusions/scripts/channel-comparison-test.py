@@ -9,7 +9,7 @@
   - 每个场景定义：输出文本 + 期望的证据文件 + 真实合规状态
   - Channel A: LLM 读文本 + 证据内容判断
   - Channel B: 文件系统检查证据文件存在且非空（skillgate 证据门模式）
-  - N=5/场景，temperature=0
+  - N=3/场景，temperature=0
 
 输出：
   results-v2/channel-comparison.json
