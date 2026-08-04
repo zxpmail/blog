@@ -7,7 +7,7 @@
 
 ---
 title: "Round 2: when the reply triggers another revision"
-published: false
+published: true
 description: "Xiao Man's 'remove anchor from probe' refinement on the rename_keys cell. Path-passing redesign (probe v1 false_reject 100% → v2 0%), declaration-anchor survival matrix (4 anchors × 8 perturbations, no anchor 8/8), and the boundary-leak-detector rule for future fixtures."
 tags: ai, llm, agents, testing
 canonical_url: ""

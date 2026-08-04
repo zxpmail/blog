@@ -23,20 +23,21 @@ Method:
     4. cross_field    — first key whose value is a list of dicts each having
                          {name, port, limits} (semantic-structural)
 
-  6 perturbations on the original good-T3:
-    P0 baseline              — no perturbation
-    P1 rename_in_decl        — services → components (in synonym_list)
-    P2 rename_outside_decl   — services → instances (NOT in synonym_list)
-    P3 decoy                 — add extra field "decoy": [{x:1}] (noise list)
-    P4 shape_corrupt         — change inner limits from dict to list
-    P5 cardinality_corrupt   — add a third dummy service entry
+  8 perturbations on the original good-T3:
+    P0 baseline               — no perturbation
+    P1 rename_in_decl         — services → components (in synonym_list)
+    P2 rename_outside_decl    — services → instances (NOT in synonym_list)
+    P3 decoy                  — add extra field "decoy": [{x:1}] (noise list)
+    P4 shape_corrupt          — change inner limits from dict to list
+    P5 cardinality_corrupt    — add a third dummy service entry
+    P6 decoy_with_limits      — insert "connections" list-of-dicts-with-limits BEFORE services (shape clone)
+    P7 inner_field_rename     — rename inner port → port_number
 
 Expected (the survival envelope each anchor):
-  synonym_list:  P0 ✓  P1 ✓  P2 ✗  P3 ✓  P4 ✓  P5 ✓  (dies only on out-of-decl rename)
-  structural:    P0 ✓  P1 ✓  P2 ✓  P3 ? (may pick decoy if decoy matches shape)
-                 P4 ✗  P5 ✓
-  cardinality:   P0 ✓  P1 ✓  P2 ✓  P3 ✓ (decoy has len 1)  P4 ✓  P5 ✗ (len 3)
-  cross_field:   P0 ✓  P1 ✓  P2 ✓  P3 ✓ (decoy lacks name/port/limits)  P4 ✗  P5 ✓
+  synonym_list:  P0 ✓  P1 ✓  P2 ✗  P3 ✓  P4 ✓  P5 ✓  P6 ✓  P7 ✓  (dies only on out-of-decl rename)
+  structural:    P0 ✓  P1 ✓  P2 ✓  P3 ✓  P4 ✓  P5 ✓  P6 ✗  P7 ✓  (dies on shape clone — can't distinguish decoy-with-limits)
+  cardinality:   P0 ✓  P1 ✓  P2 ✓  P3 ✓  P4 ✓  P5 ✗  P6 ✗  P7 ✓  (dies on count change + shape clone)
+  cross_field:   P0 ✓  P1 ✓  P2 ✓  P3 ✓  P4 ✓  P5 ✓  P6 ✓  P7 ✗  (dies on inner field rename — semantic-structural breaks)
 
 Falsification:
   If all anchors survive all perturbations → anchors are interchangeable; the
@@ -265,12 +266,14 @@ def main():
         "perturbations": [p[0] for p in PERTURBATIONS],
         "survival_matrix": survival_matrix,
         "interpretation": (
-            "Each anchor has a distinct survival envelope. None survives all 6. "
-            "synonym_list handles known renames but dies on novel ones; "
-            "structural dies on shape_corrupt; cardinality dies on cardinality_corrupt; "
-            "cross_field is broadest but still dies on inner-shape perturbations. "
-            "Conclusion: anchor relocation is real and useful, but the new anchor layer "
-            "inherits its own survival question — there is no anchor-free finish."
+            "Each anchor has a distinct failure signature. No anchor survives all 8. "
+            "synonym_list dies on out-of-decl rename (P2); structural dies on shape clone "
+            "(P6 — can't distinguish decoy-with-limits); cardinality dies on count change "
+            "(P5) and shape clone (P6); cross_field dies on inner field rename (P7). "
+            "The 'wide' anchors (structural/cross_field) trade robustness on outer rename "
+            "for fragility on shape-clone / inner-rename attacks. Conclusion: anchor "
+            "relocation is real and useful, but the new anchor layer inherits its own "
+            "survival question — there is no anchor-free finish."
         ),
     }
     RESULTS.mkdir(parents=True, exist_ok=True)

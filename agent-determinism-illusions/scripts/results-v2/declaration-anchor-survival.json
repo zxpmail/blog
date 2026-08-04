@@ -189,5 +189,5 @@
       }
     }
   },
-  "interpretation": "Each anchor has a distinct survival envelope. None survives all 6. synonym_list handles known renames but dies on novel ones; structural dies on shape_corrupt; cardinality dies on cardinality_corrupt; cross_field is broadest but still dies on inner-shape perturbations. Conclusion: anchor relocation is real and useful, but the new anchor layer inherits its own survival question — there is no anchor-free finish."
+  "interpretation": "Each anchor has a distinct failure signature. No anchor survives all 8. synonym_list dies on out-of-decl rename (P2); structural dies on shape clone (P6 — can't distinguish decoy-with-limits); cardinality dies on count change (P5) and shape clone (P6); cross_field dies on inner field rename (P7). The 'wide' anchors (structural/cross_field) trade robustness on outer rename for fragility on shape-clone / inner-rename attacks. Conclusion: anchor relocation is real and useful, but the new anchor layer inherits its own survival question — there is no anchor-free finish."
 }
