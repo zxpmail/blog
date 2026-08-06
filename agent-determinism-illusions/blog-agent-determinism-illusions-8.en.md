@@ -31,9 +31,7 @@ They had created a tool to implement the alternative: skillgate.
 
 ### 1.1 The alternative: skillgate
 
-Skillgate (`@reneza/skillgate` on npm) is a deterministic, model-independent gate that checks the **filesystem** instead of reading the model's output. Its thesis:
-
-> *Don't ask whether the task was done. Ask whether the evidence exists.*
+Skillgate (`@reneza/skillgate` on npm) is a deterministic, model-independent gate that checks the **filesystem** instead of reading the model's output. Its thesis: don't ask whether the task was done — ask whether the evidence exists.
 
 The implementation is minimal — a compact TypeScript package with two external dependencies (a YAML parser and a glob matcher). Its gate types:
 
@@ -119,7 +117,7 @@ Each channel has **zero false rejections** — when they flag something, it's re
 **The most revealing scenario — semantic gap (SC10):**
 - Agent's task: "Implement rate limiting middleware with key write-invalidation."
 - Agent produced: A RateLimiter class with IP/User level limiting, Redis storage, 24 passing tests, 92% coverage. Everything looked complete.
-- Not present: Write-invalidation. The diff review noted: "Keys expire via TTL, not write-invalidation — TTL is simpler and sufficient."
+- Not present: Write-invalidation — and the agent's self-review never mentions it. The review reads as a clean handoff: implemented the class, added the storage backend, tests pass, lint clean.
 - Channel A: 3/3 PASS — confident the work was done.
 - Channel B: PASS — all evidence files present and non-empty.
 

@@ -22,9 +22,7 @@
 
 ### 1.1 替代方案：skillgate
 
-Skillgate（`@reneza/skillgate` on npm）是一个确定性、模型无关的门，检查**文件系统**而不是读模型的输出。它的主张：
-
-> *不要问任务是否完成。问证据是否存在。*
+Skillgate（`@reneza/skillgate` on npm）是一个确定性、模型无关的门，检查**文件系统**而不是读模型的输出。它的主张：不要问任务是否完成——问证据是否存在。
 
 实现非常精简——一个紧凑的 TypeScript 包，两个外部依赖（一个 YAML 解析器和一个 glob 匹配器）。它的门类型：
 
@@ -110,7 +108,7 @@ ReqForge 的 `forge-verify` 和 skillgate 解决同一个问题——"工作真�
 **最有启发性的场景——语义缺口（SC10）：**
 - Agent 任务："实现限流中间件，含 key write-invalidation。"
 - Agent 产出：RateLimiter 类（IP/User 级别）、Redis 存储、24 个测试通过、覆盖率 92%。看起来一切完整。
-- 缺失的：Write-invalidation。diff review 写道："Keys expire via TTL，非 write-invalidation——TTL 更简单，已足够。"
+- 缺失的：Write-invalidation——而且 agent 的 self-review 全程没提它。review 读起来像干净交接：实现了类、加了 Redis 存储后端、测试通过、lint 干净。
 - Channel A：3/3 通过——自信工作完成了。
 - Channel B：通过——所有证据文件存在且非空。
 
