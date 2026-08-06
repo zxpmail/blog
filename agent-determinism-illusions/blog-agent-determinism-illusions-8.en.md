@@ -266,10 +266,12 @@ Putting Phase 1 and Phase 2 together produces a three-layer post-L1 pipeline tha
 | Mechanism | Detection rate | Cost per scenario |
 |-----------|:--------------:|:-----------------:|
 | C0 free-text LLM (old L2) | 20% | ~1s |
-| Evidence Gate only | 66.7% | ~0ms |
-| + C1 contract regex | 80.0% | ~0ms |
-| + C2 per-req LLM | **100%** | ~1s × N_req |
+| Evidence Gate (Phase 1 Channel B) | 66.7% | ~0ms |
+| C1 contract regex | 80.0% | ~0ms |
+| C2 per-req LLM | **100%** | ~1s × N_req |
 | Combined A+B (Phase 1, any reject) | 88.9% | ~1s |
+
+Rates are per-mechanism on each experiment's own scenario set — Phase 1 (12 scenarios) for Evidence Gate and A+B, Phase 2 (7 scenarios) for C0/C1/C2 — not a single cumulative run.
 
 ### 4.2 The remaining gap
 
