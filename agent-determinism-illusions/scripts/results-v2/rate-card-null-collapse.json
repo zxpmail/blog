@@ -1,0 +1,75 @@
+{
+  "claim": "Tom Jones rate-card: null≡no under boolean is-False; alias vs declare",
+  "serving": {
+    "rung": "tier-mid",
+    "provider": "direct-acme",
+    "model_id": "acme/foo-7b",
+    "tool_capable_declared": null
+  },
+  "truth_tool_capable": true,
+  "guards": {
+    "boolean_is_false": {
+      "guard": "boolean_is_false",
+      "cap": null,
+      "verdict": "PASS",
+      "shopping": true,
+      "rederived": true
+    },
+    "three_state": {
+      "guard": "three_state",
+      "cap": null,
+      "verdict": "BLOCK",
+      "shopping": true,
+      "rederived": true
+    },
+    "alias_lookup": {
+      "guard": "alias_lookup",
+      "cap": true,
+      "verdict": "PASS",
+      "shopping": true,
+      "rederived": true
+    },
+    "declare_assert": {
+      "guard": "declare_assert",
+      "cap": true,
+      "verdict": "PASS",
+      "shopping": false,
+      "rederived": false
+    },
+    "declare_undeclared": {
+      "guard": "declare_assert",
+      "cap": null,
+      "verdict": "BLOCK",
+      "shopping": false,
+      "rederived": false
+    }
+  },
+  "stale_schedule": {
+    "check": "schedule_stale",
+    "declared": true,
+    "provider_truth": false,
+    "stale": true,
+    "caught": true
+  },
+  "collapse": {
+    "miss_raw": null,
+    "genuine_false_raw": false,
+    "miss_boolean_cell": "not_false",
+    "genuine_boolean_cell": "false",
+    "miss_passes_is_not_false": true,
+    "genuine_passes_is_not_false": false,
+    "omit_incapable": {
+      "lookup_miss": null,
+      "genuine_absent_as_no": null,
+      "indistinguishable": true
+    }
+  },
+  "claims": {
+    "C1_boolean_null_passes": true,
+    "C2_three_state_blocks_null": true,
+    "C3_alias_passes_but_shops": true,
+    "C4_declare_passes_no_shop": true,
+    "C5_stale_caught_and_omit_indistinguishable": true
+  },
+  "all_pass": true
+}
