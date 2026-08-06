@@ -279,12 +279,12 @@ One scenario is the hardest across both experiments: **SC10/SC10a, the semantic 
 
 The case no text-channel mechanism can catch — the genuine DPI bound — is the opposite: a deviation the producer **never surfaces** in any evidence file. If the agent omits write-invalidation entirely and never mentions TTL, the missing requirement leaves no trace in any text the evaluator can read. Regex can't match what isn't there; an LLM reading the evidence can't notice an absence it has no signal for. This is the theoretically provable blind spot the Data Processing Inequality names: the evaluator's information is a subset of the producer's output, and an absence the producer never writes down is absent from that subset too.
 
-The fixes for this gap are all outside the evaluation channel:
+The fixes are all outside the evaluation channel — and they're the prescription René named in the original comment, which the experiments backfill:
 - **Human review on material calls** — a person reads the requirement vs the implementation
-- **Hard step budgets** — the agent runs out of steps before it can simulate compliance
-- **Server-side enforcement** — the VPS pre-receive hook cannot be fooled by plausible output
+- **A hard step budget** — the agent runs out of steps before it can simulate compliance
+- **Deterministic checks on what is actually binary** — skillgate's VPS pre-receive hook cannot be fooled by plausible output
 
-Skillgate's self-hosted gate implements the last two. The first requires human attention.
+Skillgate implements the third. The first two are a human reviewer and the orchestrator's step limit.
 
 ### 4.3 Implementation
 
