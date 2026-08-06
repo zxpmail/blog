@@ -1,7 +1,7 @@
 ---
 title: "The Channel Gap: Why Your LLM Judge is Blind in One Eye"
-published: false
-description: "Text-channel LLM judging vs filesystem-channel deterministic checks. Neither works alone, and the combination narrows the gap without closing it — named evasions become deterministic catches, the unenumerated rest routes to human instead of silently passing. René Zander's "deterministic wrapper" critique, read through the Data Processing Inequality lens."
+published: true
+description: "Text-channel LLM judging vs filesystem-channel deterministic checks. Neither works alone, and the combination narrows the gap without closing it — named evasions become deterministic catches, the unenumerated rest routes to human instead of silently passing. René Zander's 'deterministic wrapper' critique, read through the Data Processing Inequality lens."
 tags: ai, llm, agents, testing
 canonical_url: ""
 series: "Agent Determinism Illusions"
@@ -10,8 +10,6 @@ series: "Agent Determinism Illusions"
 # The Channel Gap: Why Your LLM Judge is Blind in One Eye
 
 **Agent Determinism Illusions (Part 8)**
-
-*2026-07-09*
 
 Part 6 ended with a functioning layered pipeline built from community corrections. Part 7 then fixed the escalation trigger: divergence alone routes humans to the safe-ambiguous set and auto-passes the confidently-wrong set. L0/L1 filter deterministically, L2 handles semantic residual, L3 detects divergence — plus class tripwires for unanimous misses. It's better than what came before. But it still has a fundamental design flaw that I only recognized after reading the tool that implements the *opposite* design choice.
 
@@ -131,15 +129,15 @@ Each channel has **zero false rejections** — when they flag something, it's re
 
 | Failure mode | Channel A (text) | Channel B (filesystem) |
 |-------------|:----------------:|:----------------------:|
-| Evidence missing | ✅ |
-| Empty evidence | ✅ |
+| Evidence missing | ✅ | ✅ |
+| Empty evidence | ✅ | ✅ |
 | Fabricated content | ✅ | ❌ |
 | Stale content | ✅ | ❌ |
-| Partial evidence | ✅ |
+| Partial evidence | ✅ | ✅ |
 | Agent rationalization ("no test needed") | ❌ | ✅ |
 | **Semantic gap (DPI bound)** | **❌** | **❌** |
 
-Combined (A or B rejects), the detection rate is 11/12 = 91.7%. The only shared blind spot is the semantic gap — and that's provably undetectable from text or filesystem evidence alone.
+Combined (A or B rejects) catches 8 of the 9 non-compliant scenarios (88.9% detection) and correctly passes all 3 compliant ones — 11/12 correct verdicts overall (91.7%). The only shared blind spot is the semantic gap — and that's provably undetectable from text or filesystem evidence alone.
 
 ---
 
@@ -151,7 +149,7 @@ The answer: **don't ask the LLM to judge the whole picture. Decompose "done" int
 
 ### 3.1 Design
 
-7 scenarios sharing a common 5-requirement contract for a rate-limiting middleware task:
+7 scenarios, each gated by a 5-requirement contract — five share a rate-limiting middleware contract, the other two reuse the Phase 1 CI-pipeline baselines:
 
 ```
 REQ-1: IP-level rate limiting       → evidence: test-output.txt
@@ -194,13 +192,9 @@ But C1 is **excellent on numerical and format constraints:**
 
 **C2 (per-requirement LLM) achieves 100% detection rate — the only mechanism in either experiment to catch every non-compliant scenario.** It works because forcing the LLM to judge one requirement at a time prevents the "everything looks fine" gestalt from overriding the missing-item signal.
 
-On SC10a (the semantic gap), the per-requirement LLM correctly rejected REQ-3:
+On SC10a (the semantic gap), the per-requirement LLM correctly rejected REQ-3 — it noted the evidence explicitly describes TTL expiration instead of write-invalidation, so the requirement isn't satisfied.
 
-> "Evidence clearly states TTL expiration is used instead of write-invalidation. The requirement is not satisfied."
-
-While the same LLM in C0 mode on the same scenario:
-
-> "Agent completed rate limiter implementation, tests all pass, lint clean, coverage 92% — all requirements met."
+The same LLM in C0 mode on the same scenario judged the work done: tests pass, lint clean, coverage 92% — all requirements met.
 
 The difference isn't model capability. It's **the same model, same temperature, different framing.** The holistic frame asks "is this good?" The per-item frame asks "is this specific thing proven?"
 
@@ -214,7 +208,7 @@ The C1 negation blind spot deserves deeper analysis because it mirrors the Data 
 |-------|-------|:-------:|:--------:|
 | "Keys expire via TTL, not **write-invalidation**" | `write.?invalidat` | **YES** | ❌ False pass |
 | "Coverage: **72.3%**" | `(8[5-9]\|90+)\%` | NO | ✅ Correct reject |
-| "Implemented **purgeCacheOnWrite**" | `purgeOnWrite` | **YES** | ✅ Correct pass |
+| "Implemented **purgeCacheOnWrite**" | `purge.*write` | **YES** | ✅ Correct pass |
 
 The numerical constraint (`85%+`) is immune to the negation problem because a number below threshold is factually wrong regardless of context. The keyword constraint (`write.?invalidat`) is vulnerable because the regex can't tell the difference between "I implemented X" and "I didn't implement X."
 
@@ -277,7 +271,7 @@ Putting Phase 1 and Phase 2 together produces a three-layer post-L1 pipeline tha
 | Evidence Gate only | 66.7% | ~0ms |
 | + C1 contract regex | 80.0% | ~0ms |
 | + C2 per-req LLM | **100%** | ~1s × N_req |
-| Combined C0+C1 (any reject) | 91.7% | ~1s |
+| Combined A+B (Phase 1, any reject) | 88.9% | ~1s |
 
 ### 4.2 The remaining gap
 
@@ -334,11 +328,11 @@ When `evidence_gates` is configured, the pipeline runs the evidence gate → C1 
 
 ## 5. What the Two Experiments Established
 
-**First, the channel you evaluate through determines what you can detect.** An LLM reading text catches semantic patterns that a filesystem check cannot — fabricated content, stale dates, implausible narratives. A filesystem check catches mechanical gaps that an LLM cannot — missing artifacts, empty evidence, incomplete coverage. Neither channel alone is sufficient, and the shared blind spot is provably uncloseable from either channel alone.
+**First, the channel you evaluate through determines what you can detect.** An LLM reading text catches content-level failures that a filesystem check cannot — fabricated evidence, stale dates, implausible narratives. A filesystem check catches mechanical gaps cheaply and deterministically, and in this run the LLM caught those too — redundant coverage, not complementarity. The divergence is narrow but real: filesystem accepts fabricated and stale evidence at face value, while the LLM accepted the agent's "no test needed" rationalization. Neither channel alone is sufficient, and the shared blind spot is provably uncloseable from either channel alone.
 
 **Second, per-requirement evaluation outperforms holistic evaluation by a wide margin.** The same LLM, same temperature, same evidence — but asking "does this evidence prove requirement N?" instead of "is the work done?" raised detection rate from 20% to 100%. The frame matters more than the model.
 
-**Third, contract regex is a practical zero-cost filter for a surprisingly wide set of constraints.** Numerical thresholds, format validity, and fixed-pattern detection all work reliably. The exception — negation patterns — can be handled by routing them to the per-requirement LLM. Caveat: "wide" applies to numerical/format constraints; for functional/semantic requirements, real-agent-authored evidence is far harsher — C1 collapses under agent vocabulary drift (see Part 10 §B).
+**Third, contract regex is a practical zero-cost filter for a surprisingly wide set of constraints.** Numerical thresholds, format validity, and fixed-pattern detection all work reliably. The exception — negation patterns — can be handled by routing them to the per-requirement LLM. Caveat: "wide" applies to numerical/format constraints; for functional/semantic requirements, real-agent-authored evidence is far harsher — C1 collapses under agent vocabulary drift.
 
 **Fourth, the negation blind spot in regex evaluation is the same problem as the DPI blind spot, one level down.** A regex that matches "write-invalidation" in "not write-invalidation" is making the same error as an LLM that reads "all tests pass" and misses that the wrong test suite was run. Both are pattern-matchers that can't distinguish "mentioned" from "satisfied."
 
@@ -348,7 +342,7 @@ When `evidence_gates` is configured, the pipeline runs the evidence gate → C1 
 
 | Experiment | Question | Answer |
 |-----------|----------|--------|
-| Phase 1 (12 scenarios) | Text channel vs filesystem channel | Complementary blind spots; combined = 91.7% |
+| Phase 1 (12 scenarios) | Text channel vs filesystem channel | Complementary blind spots; combined = 88.9% detection / 91.7% overall |
 | Phase 2 (7 scenarios) | Free-text vs contract regex vs per-req LLM | Per-req = 100% detection; contract regex = 85.7% at zero cost |
 | Combined (19 scenarios) | What catches the surfaced-deviation gap? | Per-requirement LLM (C2), when the deviation appears in evidence text; a non-surfaced deviation (genuine DPI bound) is uncloseable from any text channel |
 
@@ -359,6 +353,7 @@ The architectural conclusion: replace the single free-text LLM evaluation (old L
 *All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
 - Phase 1: `channel-comparison-test.py` — 12 scenarios, deepseek-v4-flash
 - Phase 2: `contract-comparison-test.py` — 7 scenarios, 3 mechanisms
-- skillgate source: v0.5.0 on [npm](https://www.npmjs.com/package/@reneza/skillgate) and [GitHub](https://github.com/renezander030/skillgate)
+- skillgate source: [npm](https://www.npmjs.com/package/@reneza/skillgate) and [GitHub](https://github.com/renezander030/skillgate) (v0.5.0, the version described; now at 0.6.x)
 - Pipeline implementation: `ReqForge/scripts/forge-verify/content-verify.mjs`
+- *Previous: [Part 7 — Divergence escalates the wrong population: unanimous misses auto-pass](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513)*
 - *Series start:* [I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix.](https://dev.to/zxpmail/i-tested-the-deterministic-agent-loop-claims-with-four-experiments-they-all-failed-including-38kj)
