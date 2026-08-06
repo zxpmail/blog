@@ -107,6 +107,9 @@ python alexey-trigger-yield-test.py
 | Xiao Man — fallback+日志 / 退役信号（主次分歧 × 两种流量）| `declaration-anchor-fallback-logging-test.py` | `results-v2/declaration-anchor-fallback-logging.json` |
 | Xiao Man — 双绿同错→传感静音（P8 mute cell）| `declaration-anchor-agree-wrong-silence-test.py` | `results-v2/declaration-anchor-agree-wrong-silence.json` |
 | Xiao Man — 外部参照探针（P2/P8 恒等定理；tripwire 关闭静音格）| `declaration-anchor-external-reference-test.py` | `results-v2/declaration-anchor-external-reference.json` |
+| Max Quimby — 升级线：固定抽检 vs 人工 yield 自适应 | `escalate-threshold-calibration-test.py` | `results-v2/escalate-threshold-calibration.json` |
+| Max Quimby — 高风险整类进人 vs 均匀抽检（同预算） | `high-risk-direct-human-test.py` | `results-v2/high-risk-direct-human.json` |
+| Max Quimby — 残差策略 4–6（T2 / Alex / dual-line 硬预算） | `residual-strategy-4to6-test.py` | `results-v2/residual-strategy-4to6.json` |
 | Tom Jones — 冻结声明把失败搬了家（归因/salvage） | `frozen-declaration-fault-attribution-test.py` | `results-v2/frozen-declaration-fault-attribution.json` |
 | Tom Jones — conf_desc shuffle / HaluEval agree-set（Part 15） | `conf-desc-miss-shape-test.py`、`agree-set-halueval-probe.py` | `results-v2/conf-desc-miss-shape.json`、`results-v2/agree-set-halueval.json` |
 | Tom Jones — position-adjacency 服从率（Part 15） | `position-adjacency-obedience-test.py`、`position-adjacency-obedience-v2.py` | `results-v2/position-adjacency-obedience.json`、`results-v2/position-adjacency-obedience-v2.json` |

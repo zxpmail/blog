@@ -1,0 +1,293 @@
+{
+  "experiment": "high-risk-direct-human",
+  "question": "At the same total human audit budget, does sending all high-risk items to humans beat uniform residual sampling on high-risk miss rate?",
+  "context": "Follow-up to Max Quimby escalation-line probe and the 'shrink residual' fork: high-risk direct-to-human (Part 4 class B shape) vs uniform / yield-adaptive residual spend.",
+  "method": {
+    "stream_length": 3000,
+    "trials": 400,
+    "seed": 20260807,
+    "human_skill": 0.85,
+    "d_hr": 0.35,
+    "d_norm": 0.08,
+    "hr_rates": [
+      0.05,
+      0.1,
+      0.2
+    ],
+    "budgets": [
+      0.1,
+      0.2,
+      0.3
+    ],
+    "p_rest_formula": "max(0, (budget - r_hr) / (1 - r_hr))"
+  },
+  "cells": [
+    {
+      "r_hr": 0.05,
+      "budget": 0.1,
+      "p_rest": 0.052631578947368425,
+      "budget_covers_hr_mass": true,
+      "ordinary_starved": false,
+      "uniform": {
+        "audit_rate_mean": 0.09972,
+        "audit_rate_std": 0.005261889905738903,
+        "hr_miss_mean": 0.9149740031087155,
+        "hr_miss_std": 0.03872531741820704,
+        "norm_miss_mean": 0.9160135934047046,
+        "norm_miss_std": 0.0180833641524342,
+        "overall_miss_mean": 0.9158443002608787,
+        "overall_miss_std": 0.016397339147411902
+      },
+      "hr_first": {
+        "audit_rate_mean": 0.10007333333333333,
+        "audit_rate_std": 0.00559081476091758,
+        "hr_miss_mean": 0.14968745838143707,
+        "hr_miss_std": 0.047602605356756804,
+        "norm_miss_mean": 0.9551279620623201,
+        "norm_miss_std": 0.013282363021880239,
+        "overall_miss_mean": 0.8043209792828465,
+        "overall_miss_std": 0.023876493533611282
+      },
+      "hr_miss_gain": 0.7652865447272784,
+      "read": "HR miss down at same budget"
+    },
+    {
+      "r_hr": 0.05,
+      "budget": 0.2,
+      "p_rest": 0.15789473684210528,
+      "budget_covers_hr_mass": true,
+      "ordinary_starved": false,
+      "uniform": {
+        "audit_rate_mean": 0.2003275,
+        "audit_rate_std": 0.007228052607731853,
+        "hr_miss_mean": 0.8282153883970906,
+        "hr_miss_std": 0.05338856724884842,
+        "norm_miss_mean": 0.8312033602604385,
+        "norm_miss_std": 0.02511502338425584,
+        "overall_miss_mean": 0.8306012321426308,
+        "overall_miss_std": 0.022259978932037825
+      },
+      "hr_first": {
+        "audit_rate_mean": 0.200255,
+        "audit_rate_std": 0.007414563217249538,
+        "hr_miss_mean": 0.15057965263696282,
+        "hr_miss_std": 0.049918950216768905,
+        "norm_miss_mean": 0.8657039003847662,
+        "norm_miss_std": 0.023294656465270767,
+        "overall_miss_mean": 0.7323119588033953,
+        "overall_miss_std": 0.02667307740587627
+      },
+      "hr_miss_gain": 0.6776357357601278,
+      "read": "HR miss down at same budget"
+    },
+    {
+      "r_hr": 0.05,
+      "budget": 0.3,
+      "p_rest": 0.2631578947368421,
+      "budget_covers_hr_mass": true,
+      "ordinary_starved": false,
+      "uniform": {
+        "audit_rate_mean": 0.3002766666666667,
+        "audit_rate_std": 0.008181191625165974,
+        "hr_miss_mean": 0.7459368124916373,
+        "hr_miss_std": 0.06071023126228218,
+        "norm_miss_mean": 0.7448610692058728,
+        "norm_miss_std": 0.02828750105007283,
+        "overall_miss_mean": 0.7448706982811164,
+        "overall_miss_std": 0.026500672337672428
+      },
+      "hr_first": {
+        "audit_rate_mean": 0.30080250000000003,
+        "audit_rate_std": 0.008120311169828913,
+        "hr_miss_mean": 0.1514528309933141,
+        "hr_miss_std": 0.04845549998250547,
+        "norm_miss_mean": 0.7744799997808314,
+        "norm_miss_std": 0.028878412716502263,
+        "overall_miss_mean": 0.657741551896361,
+        "overall_miss_std": 0.029616825703416637
+      },
+      "hr_miss_gain": 0.5944839814983233,
+      "read": "HR miss down at same budget"
+    },
+    {
+      "r_hr": 0.1,
+      "budget": 0.1,
+      "p_rest": 0.0,
+      "budget_covers_hr_mass": true,
+      "ordinary_starved": true,
+      "uniform": {
+        "audit_rate_mean": 0.1005725,
+        "audit_rate_std": 0.005743934301391539,
+        "hr_miss_mean": 0.9149257653527769,
+        "hr_miss_std": 0.02640637915111058,
+        "norm_miss_mean": 0.91544176773722,
+        "norm_miss_std": 0.018680280737278086,
+        "overall_miss_mean": 0.9153186746834033,
+        "overall_miss_std": 0.014689152579649473
+      },
+      "hr_first": {
+        "audit_rate_mean": 0.0994625,
+        "audit_rate_std": 0.005472875254174746,
+        "hr_miss_mean": 0.15080946706226697,
+        "hr_miss_std": 0.034903377417430825,
+        "norm_miss_mean": 1.0,
+        "norm_miss_std": 0.0,
+        "overall_miss_mean": 0.7240363568937322,
+        "overall_miss_std": 0.02461071741989694
+      },
+      "hr_miss_gain": 0.76411629829051,
+      "read": "HR covered; ordinary residual starved"
+    },
+    {
+      "r_hr": 0.1,
+      "budget": 0.2,
+      "p_rest": 0.11111111111111112,
+      "budget_covers_hr_mass": true,
+      "ordinary_starved": false,
+      "uniform": {
+        "audit_rate_mean": 0.19968166666666667,
+        "audit_rate_std": 0.007162302492777771,
+        "hr_miss_mean": 0.8305480293082471,
+        "hr_miss_std": 0.03625952507628275,
+        "norm_miss_mean": 0.8299205216922507,
+        "norm_miss_std": 0.0250281675170074,
+        "overall_miss_mean": 0.8301506642380436,
+        "overall_miss_std": 0.019883601966825478
+      },
+      "hr_first": {
+        "audit_rate_mean": 0.19936333333333334,
+        "audit_rate_std": 0.007257540274652744,
+        "hr_miss_mean": 0.1523033956329314,
+        "hr_miss_std": 0.03568993422666393,
+        "norm_miss_mean": 0.9054692728818967,
+        "norm_miss_std": 0.01970172671521994,
+        "overall_miss_mean": 0.6598092746795878,
+        "overall_miss_std": 0.023936804103848394
+      },
+      "hr_miss_gain": 0.6782446336753157,
+      "read": "HR miss down at same budget"
+    },
+    {
+      "r_hr": 0.1,
+      "budget": 0.3,
+      "p_rest": 0.2222222222222222,
+      "budget_covers_hr_mass": true,
+      "ordinary_starved": false,
+      "uniform": {
+        "audit_rate_mean": 0.29952666666666666,
+        "audit_rate_std": 0.00860662059862377,
+        "hr_miss_mean": 0.7433162578949613,
+        "hr_miss_std": 0.03978121672391681,
+        "norm_miss_mean": 0.7473436364168402,
+        "norm_miss_std": 0.02965449039179815,
+        "overall_miss_mean": 0.7459855867481139,
+        "overall_miss_std": 0.023779428875496007
+      },
+      "hr_first": {
+        "audit_rate_mean": 0.3001666666666667,
+        "audit_rate_std": 0.008622017239982167,
+        "hr_miss_mean": 0.15055720358823813,
+        "hr_miss_std": 0.03443204275004533,
+        "norm_miss_mean": 0.8095710493530045,
+        "norm_miss_std": 0.026533107176201914,
+        "overall_miss_mean": 0.5942749499872866,
+        "overall_miss_std": 0.02669473634327202
+      },
+      "hr_miss_gain": 0.5927590543067232,
+      "read": "HR miss down at same budget"
+    },
+    {
+      "r_hr": 0.2,
+      "budget": 0.1,
+      "p_rest": 0.0,
+      "budget_covers_hr_mass": false,
+      "ordinary_starved": true,
+      "uniform": {
+        "audit_rate_mean": 0.09972083333333333,
+        "audit_rate_std": 0.005458290685198198,
+        "hr_miss_mean": 0.9140974478946517,
+        "hr_miss_std": 0.01877642264447591,
+        "norm_miss_mean": 0.9141040863534612,
+        "norm_miss_std": 0.02027555761656217,
+        "overall_miss_mean": 0.9141204118754631,
+        "overall_miss_std": 0.013562572423320483
+      },
+      "hr_first": {
+        "audit_rate_mean": 0.10003833333333333,
+        "audit_rate_std": 0.00520514039138358,
+        "hr_miss_mean": 0.5730961348524408,
+        "hr_miss_std": 0.03501884809815891,
+        "norm_miss_mean": 1.0,
+        "norm_miss_std": 0.0,
+        "overall_miss_mean": 0.776881897594182,
+        "overall_miss_std": 0.021132192599596412
+      },
+      "hr_miss_gain": 0.34100131304221093,
+      "read": "HR miss down at same budget"
+    },
+    {
+      "r_hr": 0.2,
+      "budget": 0.2,
+      "p_rest": 0.0,
+      "budget_covers_hr_mass": true,
+      "ordinary_starved": true,
+      "uniform": {
+        "audit_rate_mean": 0.2001625,
+        "audit_rate_std": 0.007376570673688857,
+        "hr_miss_mean": 0.8290178307240683,
+        "hr_miss_std": 0.02561144977028588,
+        "norm_miss_mean": 0.8288372370744292,
+        "norm_miss_std": 0.02816586316203632,
+        "overall_miss_mean": 0.8289804681616098,
+        "overall_miss_std": 0.019231484042234934
+      },
+      "hr_first": {
+        "audit_rate_mean": 0.20016666666666666,
+        "audit_rate_std": 0.00731470254312142,
+        "hr_miss_mean": 0.15170793457300913,
+        "hr_miss_std": 0.02560795467216545,
+        "norm_miss_mean": 1.0,
+        "norm_miss_std": 0.0,
+        "overall_miss_mean": 0.5576944204517662,
+        "overall_miss_std": 0.024520303724970834
+      },
+      "hr_miss_gain": 0.6773098961510592,
+      "read": "HR covered; ordinary residual starved"
+    },
+    {
+      "r_hr": 0.2,
+      "budget": 0.3,
+      "p_rest": 0.12499999999999997,
+      "budget_covers_hr_mass": true,
+      "ordinary_starved": false,
+      "uniform": {
+        "audit_rate_mean": 0.3001416666666667,
+        "audit_rate_std": 0.008169598641673052,
+        "hr_miss_mean": 0.7463154721180024,
+        "hr_miss_std": 0.029181502655571557,
+        "norm_miss_mean": 0.7475089316838408,
+        "norm_miss_std": 0.033165462146425434,
+        "overall_miss_mean": 0.7468308639236266,
+        "overall_miss_std": 0.021804289299754656
+      },
+      "hr_first": {
+        "audit_rate_mean": 0.30000333333333334,
+        "audit_rate_std": 0.008135820729795393,
+        "hr_miss_mean": 0.14890971102436412,
+        "hr_miss_std": 0.024647126867832905,
+        "norm_miss_mean": 0.8942135947584882,
+        "norm_miss_std": 0.02335742470008561,
+        "overall_miss_mean": 0.5047177027372195,
+        "overall_miss_std": 0.02534700959783735
+      },
+      "hr_miss_gain": 0.5974057610936383,
+      "read": "HR miss down at same budget"
+    }
+  ],
+  "summary": {
+    "eligible_cells": 8,
+    "wins_on_hr_miss": 8,
+    "pass": true
+  },
+  "interpretation": "High-risk direct-to-human is the best *spend of a fixed human budget* against the expensive miss class: HR miss drops hard whenever budget can cover HR traffic mass. The arithmetic is honest — if budget ≈ HR share, ordinary residual gets zero sampling (starvation). That is not a failure of the policy; it is the cost of not auto-passing the dangerous class. Uniform 10% looks 'fair' and leaks HR; hr_first looks 'unfair' and buys the miss that matters. Shrinking residual by refusing auto on high-risk beats tuning yield on a mixed queue."
+}

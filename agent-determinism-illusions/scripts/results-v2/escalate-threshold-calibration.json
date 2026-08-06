@@ -1,0 +1,342 @@
+{
+  "experiment": "escalate-threshold-calibration",
+  "question": "On the unenumerated residual, does adapting audit rate to reviewers' observed yield beat a fixed escalation fraction?",
+  "context": "Max Quimby on Part 8 (2026-08-06): FS channel is Goodhart-able; named-evasion = blocklist; the ballgame is escalation calibration — fixed vs adapt to human catch/yield.",
+  "method": {
+    "stream_length": 2000,
+    "trials": 400,
+    "window": 50,
+    "fixed_p": 0.1,
+    "p_bounds": [
+      0.05,
+      0.5
+    ],
+    "yield_band": [
+      0.05,
+      0.15
+    ],
+    "step": 0.05,
+    "seed": 20260807,
+    "defect_rates": [
+      0.05,
+      0.15,
+      0.3
+    ],
+    "human_skills": [
+      0.6,
+      0.85
+    ],
+    "note": "Residual-only stream (post named-evasion filters). Yield = human catches / audits in window. Matched-budget fixed uses that trial's adaptive mean_p."
+  },
+  "cells": [
+    {
+      "defect_rate": 0.05,
+      "human_skill": 0.6,
+      "fixed": {
+        "audit_rate_mean": 0.10015625,
+        "audit_rate_std": 0.0066467404669195915,
+        "catch_rate_mean": 0.0592881955089736,
+        "catch_rate_std": 0.023660575371180912,
+        "miss_rate_mean": 0.9407118044910264,
+        "miss_rate_std": 0.02366057537118091,
+        "efficiency_mean": 0.591760117248518,
+        "efficiency_std": 0.23356262042951156,
+        "yield_rate_mean": 0.02945567186431481,
+        "yield_rate_std": 0.011944850464989852
+      },
+      "adaptive": {
+        "audit_rate_mean": 0.05572875,
+        "audit_rate_std": 0.006815840935397598,
+        "catch_rate_mean": 0.03278559893844254,
+        "catch_rate_std": 0.02046972518661293,
+        "miss_rate_mean": 0.9672144010615574,
+        "miss_rate_std": 0.02046972518661293,
+        "efficiency_mean": 0.5687481136163964,
+        "efficiency_std": 0.31331583592815065,
+        "yield_rate_mean": 0.028258389274016093,
+        "yield_rate_std": 0.01555667844784685,
+        "mean_p_mean": 0.05609062499999816,
+        "mean_p_std": 0.004060600577747876
+      },
+      "matched_budget_fixed": {
+        "audit_rate_mean": 0.056055,
+        "audit_rate_std": 0.006415889188975526,
+        "catch_rate_mean": 0.03534323779454808,
+        "catch_rate_std": 0.018126172918686005,
+        "miss_rate_mean": 0.9646567622054519,
+        "miss_rate_std": 0.018126172918686,
+        "efficiency_mean": 0.6298343319826366,
+        "efficiency_std": 0.3179551556850376,
+        "yield_rate_mean": 0.0312647896106526,
+        "yield_rate_std": 0.015916553866675617
+      },
+      "verdict": {
+        "miss_gain_vs_fixed_0_10": -0.026502596570531,
+        "miss_gain_vs_matched_budget": -0.002557638856105493,
+        "audit_delta_vs_fixed_0_10": -0.0444275,
+        "beats_fixed_on_miss": false,
+        "beats_matched_on_miss": false,
+        "read": "no material miss win vs fixed-0.10"
+      }
+    },
+    {
+      "defect_rate": 0.05,
+      "human_skill": 0.85,
+      "fixed": {
+        "audit_rate_mean": 0.09948125,
+        "audit_rate_std": 0.006634592525728776,
+        "catch_rate_mean": 0.08491315347035253,
+        "catch_rate_std": 0.027521867260130436,
+        "miss_rate_mean": 0.9150868465296474,
+        "miss_rate_std": 0.027521867260130436,
+        "efficiency_mean": 0.8546924943581742,
+        "efficiency_std": 0.27456439898635565,
+        "yield_rate_mean": 0.04279722279973041,
+        "yield_rate_std": 0.014551844687641508
+      },
+      "adaptive": {
+        "audit_rate_mean": 0.05995625,
+        "audit_rate_std": 0.00929696427870403,
+        "catch_rate_mean": 0.052170825233604924,
+        "catch_rate_std": 0.026682378351219452,
+        "miss_rate_mean": 0.947829174766395,
+        "miss_rate_std": 0.026682378351219452,
+        "efficiency_mean": 0.8399542932619736,
+        "efficiency_std": 0.34449755833931034,
+        "yield_rate_mean": 0.042096088527444904,
+        "yield_rate_std": 0.017646901018464452,
+        "mean_p_mean": 0.05992812499999832,
+        "mean_p_std": 0.006865289194468882
+      },
+      "matched_budget_fixed": {
+        "audit_rate_mean": 0.0595025,
+        "audit_rate_std": 0.008364577643125185,
+        "catch_rate_mean": 0.05055562661097062,
+        "catch_rate_std": 0.02236165944878461,
+        "miss_rate_mean": 0.9494443733890294,
+        "miss_rate_std": 0.02236165944878461,
+        "efficiency_mean": 0.8494256517318558,
+        "efficiency_std": 0.3546851712435502,
+        "yield_rate_mean": 0.042419227134038444,
+        "yield_rate_std": 0.017978571129346154
+      },
+      "verdict": {
+        "miss_gain_vs_fixed_0_10": -0.03274232823674761,
+        "miss_gain_vs_matched_budget": 0.0016151986226343729,
+        "audit_delta_vs_fixed_0_10": -0.03952499999999999,
+        "beats_fixed_on_miss": false,
+        "beats_matched_on_miss": false,
+        "read": "no material miss win vs fixed-0.10"
+      }
+    },
+    {
+      "defect_rate": 0.15,
+      "human_skill": 0.6,
+      "fixed": {
+        "audit_rate_mean": 0.10072125,
+        "audit_rate_std": 0.006458110514387323,
+        "catch_rate_mean": 0.06196628053679209,
+        "catch_rate_std": 0.014149653862148486,
+        "miss_rate_mean": 0.9380337194632079,
+        "miss_rate_std": 0.014149653862148484,
+        "efficiency_mean": 0.6155388139265642,
+        "efficiency_std": 0.1366031938169373,
+        "yield_rate_mean": 0.0927978218732445,
+        "yield_rate_std": 0.021196503493857165
+      },
+      "adaptive": {
+        "audit_rate_mean": 0.09144625,
+        "audit_rate_std": 0.045933593081435804,
+        "catch_rate_mean": 0.05361200062719954,
+        "catch_rate_std": 0.035563686587805135,
+        "miss_rate_mean": 0.9463879993728005,
+        "miss_rate_std": 0.035563686587805135,
+        "efficiency_mean": 0.554886114095861,
+        "efficiency_std": 0.13496137451035212,
+        "yield_rate_mean": 0.08355115228781461,
+        "yield_rate_std": 0.020333284206027355,
+        "mean_p_mean": 0.09106874999999968,
+        "mean_p_std": 0.04441310006158383
+      },
+      "matched_budget_fixed": {
+        "audit_rate_mean": 0.090395,
+        "audit_rate_std": 0.044730860148493236,
+        "catch_rate_mean": 0.05445732485191063,
+        "catch_rate_std": 0.02995998531137366,
+        "miss_rate_mean": 0.9455426751480893,
+        "miss_rate_std": 0.02995998531137366,
+        "efficiency_mean": 0.6008197793077261,
+        "efficiency_std": 0.14914571207223506,
+        "yield_rate_mean": 0.09056250035443743,
+        "yield_rate_std": 0.022940964535141703
+      },
+      "verdict": {
+        "miss_gain_vs_fixed_0_10": -0.008354279909592588,
+        "miss_gain_vs_matched_budget": -0.0008453242247111747,
+        "audit_delta_vs_fixed_0_10": -0.009274999999999992,
+        "beats_fixed_on_miss": false,
+        "beats_matched_on_miss": false,
+        "read": "no material miss win vs fixed-0.10"
+      }
+    },
+    {
+      "defect_rate": 0.15,
+      "human_skill": 0.85,
+      "fixed": {
+        "audit_rate_mean": 0.1002325,
+        "audit_rate_std": 0.006861570273380675,
+        "catch_rate_mean": 0.0855087551832197,
+        "catch_rate_std": 0.016780551616786148,
+        "miss_rate_mean": 0.9144912448167803,
+        "miss_rate_std": 0.016780551616786148,
+        "efficiency_mean": 0.8520697100114869,
+        "efficiency_std": 0.15136863712253798,
+        "yield_rate_mean": 0.12738993114886424,
+        "yield_rate_std": 0.023454880321207967
+      },
+      "adaptive": {
+        "audit_rate_mean": 0.20788875,
+        "audit_rate_std": 0.11382898177162709,
+        "catch_rate_mean": 0.17526677330120488,
+        "catch_rate_std": 0.10725630873182733,
+        "miss_rate_mean": 0.8247332266987951,
+        "miss_rate_std": 0.10725630873182733,
+        "efficiency_mean": 0.8042460145594933,
+        "efficiency_std": 0.12329296181409352,
+        "yield_rate_mean": 0.12036329474547887,
+        "yield_rate_std": 0.019756892726263135,
+        "mean_p_mean": 0.2077968750000001,
+        "mean_p_std": 0.11282979433735552
+      },
+      "matched_budget_fixed": {
+        "audit_rate_mean": 0.20808875,
+        "audit_rate_std": 0.11383840830955795,
+        "catch_rate_mean": 0.17705197808767761,
+        "catch_rate_std": 0.09995067373871946,
+        "miss_rate_mean": 0.8229480219123224,
+        "miss_rate_std": 0.09995067373871946,
+        "efficiency_mean": 0.8499820637932309,
+        "efficiency_std": 0.13086083622456599,
+        "yield_rate_mean": 0.12713349565444074,
+        "yield_rate_std": 0.02057748257606938
+      },
+      "verdict": {
+        "miss_gain_vs_fixed_0_10": 0.08975801811798523,
+        "miss_gain_vs_matched_budget": -0.001785204786472705,
+        "audit_delta_vs_fixed_0_10": 0.10765625000000001,
+        "beats_fixed_on_miss": true,
+        "beats_matched_on_miss": false,
+        "read": "mostly tracks a better average audit rate"
+      }
+    },
+    {
+      "defect_rate": 0.3,
+      "human_skill": 0.6,
+      "fixed": {
+        "audit_rate_mean": 0.09972375,
+        "audit_rate_std": 0.007004871984289986,
+        "catch_rate_mean": 0.0594763185452775,
+        "catch_rate_std": 0.009676230114357967,
+        "miss_rate_mean": 0.9405236814547225,
+        "miss_rate_std": 0.009676230114357965,
+        "efficiency_mean": 0.5961431832290587,
+        "efficiency_std": 0.08577434404315085,
+        "yield_rate_mean": 0.17830740033782647,
+        "yield_rate_std": 0.026767427598118294
+      },
+      "adaptive": {
+        "audit_rate_mean": 0.34993375,
+        "audit_rate_std": 0.08840624495081362,
+        "catch_rate_mean": 0.2083452946054267,
+        "catch_rate_std": 0.05994774902350802,
+        "miss_rate_mean": 0.7916547053945733,
+        "miss_rate_std": 0.059947749023508023,
+        "efficiency_mean": 0.5881612566578904,
+        "efficiency_std": 0.053146723629723225,
+        "yield_rate_mean": 0.17586365639932539,
+        "yield_rate_std": 0.016941116685826672,
+        "mean_p_mean": 0.34978437500000004,
+        "mean_p_std": 0.08758828113446256
+      },
+      "matched_budget_fixed": {
+        "audit_rate_mean": 0.34928,
+        "audit_rate_std": 0.08855828178766206,
+        "catch_rate_mean": 0.20980340843341103,
+        "catch_rate_std": 0.05600168543189781,
+        "miss_rate_mean": 0.790196591566589,
+        "miss_rate_std": 0.05600168543189782,
+        "efficiency_mean": 0.6003835106182199,
+        "efficiency_std": 0.046598789511809374,
+        "yield_rate_mean": 0.17951636477675215,
+        "yield_rate_std": 0.015131771638090777
+      },
+      "verdict": {
+        "miss_gain_vs_fixed_0_10": 0.14886897606014926,
+        "miss_gain_vs_matched_budget": -0.0014581138279843309,
+        "audit_delta_vs_fixed_0_10": 0.25021,
+        "beats_fixed_on_miss": true,
+        "beats_matched_on_miss": false,
+        "read": "mostly tracks a better average audit rate"
+      }
+    },
+    {
+      "defect_rate": 0.3,
+      "human_skill": 0.85,
+      "fixed": {
+        "audit_rate_mean": 0.09999,
+        "audit_rate_std": 0.007458063204808424,
+        "catch_rate_mean": 0.08537396481563334,
+        "catch_rate_std": 0.011955509460728406,
+        "miss_rate_mean": 0.9146260351843667,
+        "miss_rate_std": 0.011955509460728406,
+        "efficiency_mean": 0.8530637776043763,
+        "efficiency_std": 0.09530035327703744,
+        "yield_rate_mean": 0.25581126548868094,
+        "yield_rate_std": 0.02989769478681173
+      },
+      "adaptive": {
+        "audit_rate_mean": 0.4212725,
+        "audit_rate_std": 0.04279340114672192,
+        "catch_rate_mean": 0.35816449024028635,
+        "catch_rate_std": 0.0431274720684771,
+        "miss_rate_mean": 0.6418355097597136,
+        "miss_rate_std": 0.0431274720684771,
+        "efficiency_mean": 0.8491655999611174,
+        "efficiency_std": 0.041086819303085054,
+        "yield_rate_mean": 0.2547149282858284,
+        "yield_rate_std": 0.016303757026174762,
+        "mean_p_mean": 0.4207625,
+        "mean_p_std": 0.040813564213500506
+      },
+      "matched_budget_fixed": {
+        "audit_rate_mean": 0.42036,
+        "audit_rate_std": 0.042433942766927364,
+        "catch_rate_mean": 0.35946604788288206,
+        "catch_rate_std": 0.03915976331535091,
+        "miss_rate_mean": 0.6405339521171179,
+        "miss_rate_std": 0.03915976331535091,
+        "efficiency_mean": 0.8553479852025229,
+        "efficiency_std": 0.038893190191320766,
+        "yield_rate_mean": 0.2564885599679637,
+        "yield_rate_std": 0.014525724159004333
+      },
+      "verdict": {
+        "miss_gain_vs_fixed_0_10": 0.2727905254246531,
+        "miss_gain_vs_matched_budget": -0.001301557642595652,
+        "audit_delta_vs_fixed_0_10": 0.3212825,
+        "beats_fixed_on_miss": true,
+        "beats_matched_on_miss": false,
+        "read": "mostly tracks a better average audit rate"
+      }
+    }
+  ],
+  "summary": {
+    "n_cells": 6,
+    "beats_fixed_count": 3,
+    "beats_matched_count": 0,
+    "claim_beats_fixed": true,
+    "mostly_rate_tracking": true,
+    "pass": true
+  },
+  "interpretation": "Yield-adaptive audit moves the operating point when residual defect mass is high enough for windows to see yield — beating naive fixed-0.10 on miss. Against a fixed rate set to the same average audit budget, the extra gain usually shrinks: adaptation mostly discovers the right average rate online. It does not close unenumerated miss by itself; it spends human queue where recent yield says the residual is dirty. Goodhart on the FS surface remains a separate ratchet (name the evasion → L0/L1)."
+}

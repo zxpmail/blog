@@ -1,17 +1,15 @@
 # CONTEXT
 
 ## 当前正在做什么
-- **Part 8 发布（本篇主线）**：发布前检查已过——frontmatter YAML 转义、检出率 vs 总正确措辞、盲点地图对齐实际结果、交叉引用核查。下一步：贴 en 版到 dev.to（zh 不发平台）
-- 并行线程：working-notes/reply-xiao-man-external-reference.md（P8 后续——外部探针设计参数）草稿中，等 Xiao Man 再回应
+- Max Quimby（Part 8）回帖草稿已 push；英文可贴 DEV.to
+- Part 8 主线：发布前检查已过；en 可贴平台（zh 不发）
 
 ## 上次停在哪个位置
-- Part 8（en+zh）发布前修正已 commit（未 push）
-- 15/16/17 已发，独立弧：15→Part 7、16→15、17→16，均不指向 Part 8；今天发 8 填 7→8 链，无 live 链接冲突
-- Xiao Man 评论（2026-08-04）已收：P8 确认架构边界 + 两观察（fixture=护栏 / out-of-channel 成设计参数）
+- 草稿：`working-notes/reply-max-quimby-channel-gap-escalation.md`
+- 三刀：yield / hr_first / 4–6 已落盘并进本次 commit
+- 并行：`working-notes/reply-xiao-man-epistemic-distance.md` 等未纳入本次
 
 ## 近期关键决定
-- 盲点地图按实际结果修正：缺失/空/部分证据两通道都抓到 = 冗余覆盖，不是互补；真正分歧在内容层（A 独抓伪造/过期，B 独抓"无需测试"合理化）；共享盲区 = 语义缺口（DPI 约束）
-- 91.7% = 总正确率（11/12），非检出率；组合检出率 = 88.9%（8/9）
-- §3.2 引文转述化：C0/C2 判定无逐字原文记录，去掉块引用，规避伪造引文风险
-- Part 8 的 skillgate 钉在 v0.5.0（文章描述的版本；npm 最新 0.6.x）
-- 保留：load sensor = 压力可见性非裁决权；外部探针参照归属三分法（同作者=重画边界 / 异作者=可裁决 / 无参照=tripwire）；P2≡P8、P8≡P9 恒等观感定理
+- 企业形态：一道一道拦截 + 必须组合；人工最贵、只在最后、尽量少；无银弹
+- 稳/准/省来自栈纪律；实验只支撑「最后开口怎么花钱」
+- 保留：load sensor = 压力可见性；外部探针参照三分法；P2≡P8 等

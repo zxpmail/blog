@@ -1,0 +1,287 @@
+{
+  "experiment": "residual-strategy-4to6",
+  "question": "Under a hard human budget, do T2-first, Alex signal-rank, and dual-line rank beat uniform sampling on the residual — and how do they trade off against hr_first?",
+  "context": "Max Quimby escalation probe; strategies 4–6 from the 'who gets human eyes' fork (Part 7 T2, Alex signals, Part 15 rank-inside-stream).",
+  "method": {
+    "N": 3000,
+    "trials": 300,
+    "seed": 20260807,
+    "human_skill": 0.85,
+    "budgets": [
+      0.1,
+      0.15,
+      0.25
+    ],
+    "p_hr": 0.1,
+    "p_reversal": 0.18,
+    "mechanics": "all strategies audit exactly K=round(b·N) via score rank"
+  },
+  "cells": [
+    {
+      "budget": 0.1,
+      "K": 300,
+      "strategies": {
+        "uniform": {
+          "overall_miss": {
+            "mean": 0.9149726285841333,
+            "std": 0.013124545558679817
+          },
+          "hr_miss": {
+            "mean": 0.9149591408659291,
+            "std": 0.026624578095537987
+          },
+          "rev_miss": {
+            "mean": 0.9165099299778385,
+            "std": 0.022831745086327536
+          },
+          "overall_miss_gain_vs_uniform": 0.0
+        },
+        "hr_first": {
+          "overall_miss": {
+            "mean": 0.7677869274385518,
+            "std": 0.019962197393954408
+          },
+          "hr_miss": {
+            "mean": 0.17299537082684788,
+            "std": 0.04521317099780056
+          },
+          "rev_miss": {
+            "mean": 0.8975291020324982,
+            "std": 0.024746943689481743
+          },
+          "overall_miss_gain_vs_uniform": 0.1471857011455815
+        },
+        "t2_first": {
+          "overall_miss": {
+            "mean": 0.6702221988500013,
+            "std": 0.02449341917907521
+          },
+          "hr_miss": {
+            "mean": 0.8460130872118483,
+            "std": 0.034224030126948427
+          },
+          "rev_miss": {
+            "mean": 0.23388138759366378,
+            "std": 0.03475594852175591
+          },
+          "overall_miss_gain_vs_uniform": 0.24475042973413197
+        },
+        "alex_signals": {
+          "overall_miss": {
+            "mean": 0.63281360757218,
+            "std": 0.02194470099513511
+          },
+          "hr_miss": {
+            "mean": 0.6321178688648897,
+            "std": 0.043922559868831576
+          },
+          "rev_miss": {
+            "mean": 0.6327499234900806,
+            "std": 0.03520032760235087
+          },
+          "overall_miss_gain_vs_uniform": 0.28215902101195334
+        },
+        "dual_line_rank": {
+          "overall_miss": {
+            "mean": 0.5941889768922125,
+            "std": 0.02044126417763929
+          },
+          "hr_miss": {
+            "mean": 0.742729005731327,
+            "std": 0.041653874528012995
+          },
+          "rev_miss": {
+            "mean": 0.22354596058780904,
+            "std": 0.03169934192202939
+          },
+          "overall_miss_gain_vs_uniform": 0.3207836516919208
+        }
+      }
+    },
+    {
+      "budget": 0.15,
+      "K": 450,
+      "strategies": {
+        "uniform": {
+          "overall_miss": {
+            "mean": 0.8720033963669408,
+            "std": 0.015701089678055512
+          },
+          "hr_miss": {
+            "mean": 0.8723514817170832,
+            "std": 0.03147789399283166
+          },
+          "rev_miss": {
+            "mean": 0.8733061984515565,
+            "std": 0.02529365940962966
+          },
+          "overall_miss_gain_vs_uniform": 0.0
+        },
+        "hr_first": {
+          "overall_miss": {
+            "mean": 0.72644869781407,
+            "std": 0.020312624394959438
+          },
+          "hr_miss": {
+            "mean": 0.1496836024793479,
+            "std": 0.03428260625869484
+          },
+          "rev_miss": {
+            "mean": 0.8562671386189633,
+            "std": 0.027586452361982042
+          },
+          "overall_miss_gain_vs_uniform": 0.14555469855287084
+        },
+        "t2_first": {
+          "overall_miss": {
+            "mean": 0.6428390020057289,
+            "std": 0.023069546803280078
+          },
+          "hr_miss": {
+            "mean": 0.8119375861153718,
+            "std": 0.036341302587402806
+          },
+          "rev_miss": {
+            "mean": 0.2293358706442332,
+            "std": 0.03324992972938547
+          },
+          "overall_miss_gain_vs_uniform": 0.22916439436121194
+        },
+        "alex_signals": {
+          "overall_miss": {
+            "mean": 0.559662774269968,
+            "std": 0.022839696758520607
+          },
+          "hr_miss": {
+            "mean": 0.5622922899927637,
+            "std": 0.045353973058785725
+          },
+          "rev_miss": {
+            "mean": 0.5611531040788793,
+            "std": 0.0381208363994793
+          },
+          "overall_miss_gain_vs_uniform": 0.3123406220969728
+        },
+        "dual_line_rank": {
+          "overall_miss": {
+            "mean": 0.5233070154389357,
+            "std": 0.025790074734375574
+          },
+          "hr_miss": {
+            "mean": 0.6499424657402224,
+            "std": 0.04861311205014547
+          },
+          "rev_miss": {
+            "mean": 0.20863733256494976,
+            "std": 0.033532578741275285
+          },
+          "overall_miss_gain_vs_uniform": 0.34869638092800515
+        }
+      }
+    },
+    {
+      "budget": 0.25,
+      "K": 750,
+      "strategies": {
+        "uniform": {
+          "overall_miss": {
+            "mean": 0.7881099642802489,
+            "std": 0.019970043961325835
+          },
+          "hr_miss": {
+            "mean": 0.7869870184193214,
+            "std": 0.040596775377063465
+          },
+          "rev_miss": {
+            "mean": 0.7899789777165372,
+            "std": 0.03075586137409909
+          },
+          "overall_miss_gain_vs_uniform": 0.0
+        },
+        "hr_first": {
+          "overall_miss": {
+            "mean": 0.6595502968810049,
+            "std": 0.024363877986416364
+          },
+          "hr_miss": {
+            "mean": 0.15134348931314986,
+            "std": 0.03666891100165052
+          },
+          "rev_miss": {
+            "mean": 0.7698259256930792,
+            "std": 0.03244917803057632
+          },
+          "overall_miss_gain_vs_uniform": 0.12855966739924407
+        },
+        "t2_first": {
+          "overall_miss": {
+            "mean": 0.5849877413119962,
+            "std": 0.023756147498699653
+          },
+          "hr_miss": {
+            "mean": 0.7286838022571781,
+            "std": 0.042989454258662435
+          },
+          "rev_miss": {
+            "mean": 0.22164916522759792,
+            "std": 0.03418347385093228
+          },
+          "overall_miss_gain_vs_uniform": 0.20312222296825277
+        },
+        "alex_signals": {
+          "overall_miss": {
+            "mean": 0.4224974076853044,
+            "std": 0.02435894020887114
+          },
+          "hr_miss": {
+            "mean": 0.4246112794213481,
+            "std": 0.046764411181753326
+          },
+          "rev_miss": {
+            "mean": 0.4220180915064753,
+            "std": 0.04034551742522211
+          },
+          "overall_miss_gain_vs_uniform": 0.3656125565949445
+        },
+        "dual_line_rank": {
+          "overall_miss": {
+            "mean": 0.4774222804170907,
+            "std": 0.025206619920305703
+          },
+          "hr_miss": {
+            "mean": 0.5856911925069175,
+            "std": 0.04545412240141467
+          },
+          "rev_miss": {
+            "mean": 0.2036282259533304,
+            "std": 0.03190410041452393
+          },
+          "overall_miss_gain_vs_uniform": 0.3106876838631582
+        }
+      }
+    }
+  ],
+  "tips": [
+    {
+      "budget": 0.1,
+      "best_hr": "hr_first",
+      "best_rev": "dual_line_rank"
+    },
+    {
+      "budget": 0.15,
+      "best_hr": "hr_first",
+      "best_rev": "dual_line_rank"
+    },
+    {
+      "budget": 0.25,
+      "best_hr": "hr_first",
+      "best_rev": "dual_line_rank"
+    }
+  ],
+  "summary": {
+    "wins_vs_uniform": 3,
+    "n_budgets": 3,
+    "pass": true
+  },
+  "interpretation": "Hard budget turns 'escalation policy' into rank-who-gets-seen. T2-first spends eyes on the unanimous-miss-shaped packet; Alex ranks by external dirt signals; dual-line restricts the enter set then ranks inside it; hr_first still wins the expensive class when that class is labeled. None removes the human layer — they only choose which miss you buy less of."
+}
