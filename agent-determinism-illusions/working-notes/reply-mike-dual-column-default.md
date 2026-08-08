@@ -23,7 +23,7 @@ Mike (~9h):
 ```text
 Yes — and the stronger rule is the one I had left as an implication.
 
-ρ=0.8 is not a rounding gap. Any-alert at 98% while live-catch is at 62% is one column saying the monitor worked and the other saying interrupt capability already collapsed. I ran that contrast as a dashboard policy on the same dump (no re-sim):
+Same dump as the shadow-promote reply on this thread (live vs any-alert defined in the Part 7 monitor Updates; the conversation seat is here). ρ=0.8 is not a rounding gap. Any-alert at 98% while live-catch is at 62% is one column saying the monitor worked and the other saying interrupt capability already collapsed. I ran that contrast as a dashboard policy on that dump (no re-sim):
 
 | ρ | live | any | forensic-only (any≥90%) | dual (live promote_ok) |
 |---|---:|---:|---|---|
@@ -45,7 +45,7 @@ https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/re
 ```text
 对——更强的那句才是我上回只写成暗示的东西。
 
-ρ=0.8 不是舍入。any 98%、live 62%：一列说监视器还行，一列说中断能力已塌。同一落盘上做了仪表盘策略对照（不重跑）：ρ=1 两列都 SHIP；ρ=0.8 单列假绿、双列 HOLD。通常一致；不一致的那一行，正是单聚合结构上要藏的。所以运维规则按你的说成仪表，而不只是晋升附带条件：默认常驻两个数——在被烫到之前——因为第二列不能等裂口出现在一块从没挂过它的板上再发明。
+同一落盘、本线程 shadow-promote 回帖（live vs any-alert 定义在 Part 7 监视 Update；对话座位在这篇）。ρ=0.8 不是舍入。any 98%、live 62%：一列说监视器还行，一列说中断能力已塌。仪表盘策略对照（不重跑）：ρ=1 两列都 SHIP；ρ=0.8 单列假绿、双列 HOLD。通常一致；不一致的那一行，正是单聚合结构上要藏的。所以运维规则按你的说成仪表，而不只是晋升附带条件：默认常驻两个数——在被烫到之前——因为第二列不能等裂口出现在一块从没挂过它的板上再发明。
 
 已写入 Part 6（本线程）、紧挨 Trigger∥Rank / Shadow∥Enforce 指针的 Update。
 ```

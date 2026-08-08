@@ -1,12 +1,11 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Mike 默认双列：Update 已改挂 **Part 6**（非 Part 7；DEV.to 对话所在篇）
-- 回帖：`working-notes/reply-mike-dual-column-default.md`（已改正文指向）
-- Part 7 只留指针 → Part 6 `#dual-column-dashboard-mike`
+- Mike 默认双列回帖已加锚点：同 dump / Part 7 定义 / 对话在 Part 6
+- 草稿：`working-notes/reply-mike-dual-column-default.md`（可贴）
 
 ## 上次停在哪个位置
-- 改正后未 push；需提交 Part 6 en/zh + Part 7 回滚指针 + 回帖措辞
+- 回帖措辞微调未单独 commit；正文 Part 6 Update 已在 `7bb95b7`
 
 ## 近期关键决定
-- 线程在 Part 6 → Update 写 Part 6；监视 duration 定义仍指 Part 7
+- 线程在 Part 6；live/any 定义在 Part 7；回帖必须点前回 + Part 7
