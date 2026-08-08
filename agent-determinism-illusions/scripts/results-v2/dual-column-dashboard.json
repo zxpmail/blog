@@ -1,0 +1,107 @@
+{
+  "claim": "Forensic-only dashboard (any-alert ≥ floor) ships ρ=0.8 as green while dual-column (live promote_ok) holds; carry both numbers by default even when they usually agree.",
+  "source": "joint-failure-shadow-promote.json",
+  "any_floor": 0.9,
+  "promote_eps": 0.1,
+  "interrupt_rows": [
+    {
+      "rho": 1.0,
+      "live_catch_rate": 0.99,
+      "any_alert_rate": 1.0,
+      "gap_vs_predicted": 0.0,
+      "single_any": "SHIP",
+      "dual_column": "SHIP",
+      "disagree": false
+    },
+    {
+      "rho": 0.8,
+      "live_catch_rate": 0.62,
+      "any_alert_rate": 0.98,
+      "gap_vs_predicted": 0.37,
+      "single_any": "SHIP",
+      "dual_column": "HOLD",
+      "disagree": true
+    },
+    {
+      "rho": 0.6,
+      "live_catch_rate": 0.25,
+      "any_alert_rate": 0.56,
+      "gap_vs_predicted": 0.74,
+      "single_any": "HOLD",
+      "dual_column": "HOLD",
+      "disagree": false
+    },
+    {
+      "rho": 0.4,
+      "live_catch_rate": 0.05,
+      "any_alert_rate": 0.11,
+      "gap_vs_predicted": 0.94,
+      "single_any": "HOLD",
+      "dual_column": "HOLD",
+      "disagree": false
+    },
+    {
+      "rho": 0.2,
+      "live_catch_rate": 0.01,
+      "any_alert_rate": 0.01,
+      "gap_vs_predicted": 0.98,
+      "single_any": "HOLD",
+      "dual_column": "HOLD",
+      "disagree": false
+    }
+  ],
+  "forensic_rows": [
+    {
+      "rho": 1.0,
+      "live_catch_rate": 1.0,
+      "any_alert_rate": 1.0,
+      "gap_vs_predicted": 0.0,
+      "single_any": "SHIP",
+      "dual_column": "SHIP",
+      "disagree": false
+    },
+    {
+      "rho": 0.8,
+      "live_catch_rate": 0.98,
+      "any_alert_rate": 0.99,
+      "gap_vs_predicted": 0.020000000000000018,
+      "single_any": "SHIP",
+      "dual_column": "SHIP",
+      "disagree": false
+    },
+    {
+      "rho": 0.6,
+      "live_catch_rate": 0.84,
+      "any_alert_rate": 0.99,
+      "gap_vs_predicted": 0.16000000000000003,
+      "single_any": "SHIP",
+      "dual_column": "HOLD",
+      "disagree": true
+    },
+    {
+      "rho": 0.4,
+      "live_catch_rate": 0.42,
+      "any_alert_rate": 0.72,
+      "gap_vs_predicted": 0.5800000000000001,
+      "single_any": "HOLD",
+      "dual_column": "HOLD",
+      "disagree": false
+    },
+    {
+      "rho": 0.2,
+      "live_catch_rate": 0.05,
+      "any_alert_rate": 0.18,
+      "gap_vs_predicted": 0.95,
+      "single_any": "HOLD",
+      "dual_column": "HOLD",
+      "disagree": false
+    }
+  ],
+  "checks": {
+    "rho1_both_ship": true,
+    "rho08_single_ships_dual_holds": true,
+    "interrupt_has_disagree": true,
+    "forensic_has_disagree": true
+  },
+  "verdict": "SUPPORT"
+}

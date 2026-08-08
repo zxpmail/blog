@@ -120,6 +120,7 @@ python alexey-trigger-yield-test.py
 | Mike — unique-catch co-fire / 共现 concentration | `unique-catch-cofire-test.py`、`unique-catch-cooccur-dose-test.py`、`unique-catch-cooccur-labels-test.py`、`defect-class-concentration-histogram.py` | `results-v2/unique-catch-cofire.json`、`results-v2/unique-catch-cooccur-*.json`、`results-v2/defect-class-concentration-histogram.json` |
 | Mike — joint-failure monitor live vs late | `joint-failure-monitor-test.py`、`joint-failure-monitor-duration-test.py` | `results-v2/joint-failure-monitor.json`、`results-v2/joint-failure-monitor-duration.json` |
 | Mike — shadow-promote ladder（soft-couple ρ） | `joint-failure-shadow-promote-test.py` | `results-v2/joint-failure-shadow-promote.json` |
+| Mike — 默认双列仪表盘（单 any-alert 假绿 vs dual live） | `dual-column-dashboard-test.py`（读上一 JSON，不重跑 sim） | `results-v2/dual-column-dashboard.json` |
 | Mike — quiet-failure fallback gap (shadow ∈ (0, enforce)) | `partial-stale-shadow-test.py`（纯数学扫描）、`partial-stale-injection-test.py`（df_proxy stress） | `results-v2/partial-stale-shadow.json`、`results-v2/partial-stale-injection.json` |
 | Mike — DS4 上游设计期检查（apology 文）| `ds4-upstream-design-check-test.py`（双向 value-match 验证）| `results-v2/ds4-upstream-design-check.json` |
 | Mike — 第四 size 点 cliff-vs-slope（apology 文）| 复用 `directional-failure-v2.py --model qwen2.5:1.5b` | `results-v2/qwen2-5-1-5b_summary.json` |
