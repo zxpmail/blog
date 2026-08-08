@@ -413,6 +413,24 @@ Alexey Spinov's follow-up on this post pushes a different knob than Mike's: not 
 
 Alexey's later grid on this thread (floor volume, arrival vs precision order) and Mike's reframe (rank-inside-stream is the open problem) sit *after* Part 7's entry policy. **[Part 15](https://dev.to/zxpmail/dt2-names-who-enters-budget-names-who-gets-seen-4f9g)** (*D+T2 names who enters; budget names who gets seen*) holds the offline suite: diluted-queue acceptance, feature×time stress, Trigger∥Rank / Shadow∥Enforce. Numbering jumps to 15 so Parts 8–14 keep their other arcs; publish order on this argument line is 7 → 15. Mike's later cut on the same thread: the three-part split (entry / budget / degradable rank) is the cleaner landing.
 
+<a id="dual-column-dashboard-mike"></a>
+
+### Update (2026-08-08): shadow-promote + carry both columns by default (Mike)
+
+Mike's follow-ups on this thread after Trigger∥Rank / Shadow∥Enforce: (1) Forensic-τ and Interrupt-τ are two masters — do not promote a live-catch number from a coupled-uniform sim straight to interrupt. Honest ladder: pick τ on live-catch in sim → shadow-only under a production-like parent → promote only once shadow matches. (Monitor duration / live vs any-alert definitions: [Part 7](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513).) (2) Stronger than “validate before promoting”: **carry both any-alert and live-catch by default**, even when they usually agree — a single forensic aggregate is structurally built to hide the case where alert count stays respectable while interrupt capability has already collapsed.
+
+Soft-couple ladder ([`joint-failure-shadow-promote-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/joint-failure-shadow-promote-test.py) → [`joint-failure-shadow-promote.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/joint-failure-shadow-promote.json)): during the outage, force both-fail with probability ρ (ρ=1 recovers the sim parent). Interrupt candidate τ=0.05, L=20:
+
+| ρ | live-catch | any-alert | promote_ok (live gap ≤ 0.10) |
+|---|------------|-----------|------------------------------|
+| 1.0 | **99%** | 100% | YES |
+| 0.8 | **62%** | **98%** | NO |
+| 0.6 | 25% | 56% | NO |
+
+Dashboard contrast on the same dump ([`dual-column-dashboard-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/dual-column-dashboard-test.py) → [`dual-column-dashboard.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/dual-column-dashboard.json)): forensic-only policy (ship if any-alert ≥ 90%) **SHIP**s ρ=0.8; dual-column (ship only if live promote_ok) **HOLD**s. At ρ=1.0 both ship — they usually agree; the disagree row is why the second column had to exist beforehand.
+
+**Takeaway:** one scalar answering forensic and interrupt is the recurring bug (same shape as Trigger∥Rank / Shadow∥Enforce on this thread). Promotion needs the shadow middle step. Instrumentation needs both columns on the board before anyone has been burned.
+
 ---
 
 ## 5. Manuel Bruña & Alexey Spinov: Evidence, Not Narrative

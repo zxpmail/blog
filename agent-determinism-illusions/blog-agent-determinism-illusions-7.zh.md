@@ -225,25 +225,7 @@ Mike 对 τ 表的跟进：通常抬阈值是用检出换误报。这里 τ=0.03
 | 0.03 | ≈9 | **15** | **9** | L=9 → live **25%** / late **65%** / miss 6% |
 | 0.05 | ≈15 | **20** | **15** | L=15 → live **37%** / late **62%** / miss 1% |
 
-**结论：** 停电寿命 ≤ 检测延迟时，监视器常在*活*故障期间沉默，只在窗残渣上事后响——法医有用，拦不住进行中的中断。对 live 捕获，有用下限是 L ≳ delay（要 ≥90% live 还得略高于平均延迟），不是「任何最终能推动 excess 的 L」。上一则监视 Update：[盖章 / 剩余告警](#joint-failure-monitor-mike)。影子晋升与默认双列：[下一则 Update](#joint-failure-dual-column-mike)。
-
-<a id="joint-failure-dual-column-mike"></a>
-
-### Update (2026-08-08)：影子晋升 + 默认常驻双列（Mike）
-
-Mike 在 duration 表之后的两刀：(1) Forensic-τ 与 Interrupt-τ 是两个主子——不要把 coupled-uniform 仿真上的 live-catch 数直接晋升成中断能力。诚实阶梯：在仿真的 live-catch 列选 τ → 在生产形父分布下只跑影子 → 影子对齐后再晋升。(2) 比「晋升前先验证」更强：**默认同时带着 any-alert 与 live-catch**，即使多数时候一致——单看法医聚合在结构上就会藏住「告警数还体面、中断能力已塌」的那一格。
-
-软耦合阶梯（[`joint-failure-shadow-promote-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/joint-failure-shadow-promote-test.py) → [`joint-failure-shadow-promote.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/joint-failure-shadow-promote.json)）：停电窗内以概率 ρ 强制双失败（ρ=1 回到仿真父分布）。中断候选 τ=0.05、L=20：
-
-| ρ | live-catch | any-alert | promote_ok（live 缺口 ≤ 0.10） |
-|---|------------|-----------|--------------------------------|
-| 1.0 | **99%** | 100% | YES |
-| 0.8 | **62%** | **98%** | NO |
-| 0.6 | 25% | 56% | NO |
-
-同一落盘上的仪表盘对照（[`dual-column-dashboard-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/dual-column-dashboard-test.py) → [`dual-column-dashboard.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/dual-column-dashboard.json)）：只看法医（any-alert ≥ 90% 就放行）在 ρ=0.8 **SHIP**；双列（仅 live promote_ok 放行）**HOLD**。ρ=1.0 两者都放行——通常一致；不一致的那一行，就是第二列必须事先存在的理由。
-
-**结论：** 一个标量同时答法医与中断，是反复出现的bug（与 Trigger∥Rank / Shadow∥Enforce 同构）。晋升要影子中间步。仪表要在被烫到之前就挂双列。上一则：[duration Update](#joint-failure-monitor-duration-mike)。
+**结论：** 停电寿命 ≤ 检测延迟时，监视器常在*活*故障期间沉默，只在窗残渣上事后响——法医有用，拦不住进行中的中断。对 live 捕获，有用下限是 L ≳ delay（要 ≥90% live 还得略高于平均延迟），不是「任何最终能推动 excess 的 L」。上一则监视 Update：[盖章 / 剩余告警](#joint-failure-monitor-mike)。影子晋升 / 默认双列跟进写在 [第 6 篇线程 Update](blog-agent-determinism-illusions-6.zh.md#dual-column-dashboard-mike)（DEV.to 对话所在篇）。
 
 ### Update (2026-07-23)：hold-out 实验——分叉可测
 

@@ -1,14 +1,12 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Mike 默认双列：轻实验 SUPPORT + 回帖草稿 + Part 7 Update（en/zh）已落
-- 回帖：`working-notes/reply-mike-dual-column-default.md`
-- Update：`blog-agent-determinism-illusions-7.{en,zh}.md` § shadow-promote + dual-column
+- Mike 默认双列：Update 已改挂 **Part 6**（非 Part 7；DEV.to 对话所在篇）
+- 回帖：`working-notes/reply-mike-dual-column-default.md`（已改正文指向）
+- Part 7 只留指针 → Part 6 `#dual-column-dashboard-mike`
 
 ## 上次停在哪个位置
-- 英文可贴 DEV.to；文件需 push 后链接才在 main 可用
-- 分支仍为 `cursor/xiao-man-epistemic-distance-reply`（含多条 Part 8 评论线）
+- 改正后未 push；需提交 Part 6 en/zh + Part 7 回滚指针 + 回帖措辞
 
 ## 近期关键决定
-- 收敛路径：轻实验 + 短回帖锁句 + Part 7 Update 收进正文
-- ρ=0.8：single SHIP / dual HOLD；ρ=1 两列一致
+- 线程在 Part 6 → Update 写 Part 6；监视 duration 定义仍指 Part 7

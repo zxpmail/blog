@@ -13,7 +13,7 @@ Mike (~9h):
 
 ## 策略
 - 不重述整段晋升阶梯；锁「默认双列」
-- 挂轻实验表（读既有 JSON）；Part 7 Update 已写入 en/zh
+- 挂轻实验表（读既有 JSON）；Part 6 Update 已写入 en/zh（对话在 Part 6 线程）
 - 收他原句力度：第二列必须事先存在
 
 ---
@@ -32,7 +32,7 @@ Yes — and the stronger rule is the one I had left as an implication.
 
 They usually agree. The one row they do not is exactly the case a single aggregate is built to hide. So the ops rule is yours, stated as instrumentation rather than only as a promotion caveat: carry both numbers by default — before anyone has been burned — because the second column cannot be invented after the diverge shows up on a board that never had it.
 
-Wrote it into the Part 7 monitor arc as an Update next to the duration table.
+Wrote it into Part 6 (this thread) as an Update next to the Trigger∥Rank / Shadow∥Enforce pointer.
 
 https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/dual-column-dashboard-test.py
 https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/dual-column-dashboard.json
@@ -47,12 +47,12 @@ https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/re
 
 ρ=0.8 不是舍入。any 98%、live 62%：一列说监视器还行，一列说中断能力已塌。同一落盘上做了仪表盘策略对照（不重跑）：ρ=1 两列都 SHIP；ρ=0.8 单列假绿、双列 HOLD。通常一致；不一致的那一行，正是单聚合结构上要藏的。所以运维规则按你的说成仪表，而不只是晋升附带条件：默认常驻两个数——在被烫到之前——因为第二列不能等裂口出现在一块从没挂过它的板上再发明。
 
-已写入 Part 7 监视弧、紧挨 duration 表的 Update。
+已写入 Part 6（本线程）、紧挨 Trigger∥Rank / Shadow∥Enforce 指针的 Update。
 ```
 
 ---
 
 ## 检查
 - [ ] 发英文；挂 dual-column 两链接（需已在可访问分支/main）
-- [ ] Part 7 en/zh Update 已落
-- [ ] 不重贴整段 soft-couple 晋升表（点 Part 7 / 前回即可）
+- [ ] Part 6 en/zh Update 已落（非 Part 7）
+- [ ] 不重贴整段 soft-couple 晋升表（点 Part 6 Update / 前回即可）

@@ -240,25 +240,7 @@ Offline sweep ([`joint-failure-monitor-duration-test.py`](https://github.com/zxp
 | 0.03 | ≈9 | **15** | **9** | L=9 → live **25%** / late **65%** / miss 6% |
 | 0.05 | ≈15 | **20** | **15** | L=15 → live **37%** / late **62%** / miss 1% |
 
-**Takeaway:** when outage lifespan sits at or under the detection delay, the monitor often stays silent *during* the live failure and rings only on window residue afterward — forensics, not interruption. Usefulness floor for a *live* catch is L ≳ delay (a bit above mean delay for ≥90% live), not “any L that eventually moves excess.” Prior monitor Update: [stamp / residual alarm](#joint-failure-monitor-mike). Shadow-promote and dual-column dashboard: [next Update](#joint-failure-dual-column-mike).
-
-<a id="joint-failure-dual-column-mike"></a>
-
-### Update (2026-08-08): shadow-promote + carry both columns by default (Mike)
-
-Mike's follow-ups after the duration table: (1) Forensic-τ and Interrupt-τ are two masters — do not promote a live-catch number from a coupled-uniform sim straight to interrupt. Honest ladder: pick τ on live-catch in sim → shadow-only under a production-like parent → promote only once shadow matches. (2) Stronger than “validate before promoting”: **carry both any-alert and live-catch by default**, even when they usually agree — a single forensic aggregate is structurally built to hide the case where alert count stays respectable while interrupt capability has already collapsed.
-
-Soft-couple ladder ([`joint-failure-shadow-promote-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/joint-failure-shadow-promote-test.py) → [`joint-failure-shadow-promote.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/joint-failure-shadow-promote.json)): during the outage, force both-fail with probability ρ (ρ=1 recovers the sim parent). Interrupt candidate τ=0.05, L=20:
-
-| ρ | live-catch | any-alert | promote_ok (live gap ≤ 0.10) |
-|---|------------|-----------|------------------------------|
-| 1.0 | **99%** | 100% | YES |
-| 0.8 | **62%** | **98%** | NO |
-| 0.6 | 25% | 56% | NO |
-
-Dashboard contrast on the same dump ([`dual-column-dashboard-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/dual-column-dashboard-test.py) → [`dual-column-dashboard.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/dual-column-dashboard.json)): forensic-only policy (ship if any-alert ≥ 90%) **SHIP**s ρ=0.8; dual-column (ship only if live promote_ok) **HOLD**s. At ρ=1.0 both ship — they usually agree; the disagree row is why the second column had to exist beforehand.
-
-**Takeaway:** one scalar answering forensic and interrupt is the recurring bug (same shape as Trigger∥Rank / Shadow∥Enforce). Promotion needs the shadow middle step. Instrumentation needs both columns on the board before anyone has been burned. Prior: [duration Update](#joint-failure-monitor-duration-mike).
+**Takeaway:** when outage lifespan sits at or under the detection delay, the monitor often stays silent *during* the live failure and rings only on window residue afterward — forensics, not interruption. Usefulness floor for a *live* catch is L ≳ delay (a bit above mean delay for ≥90% live), not “any L that eventually moves excess.” Prior monitor Update: [stamp / residual alarm](#joint-failure-monitor-mike). Shadow-promote / dual-column dashboard follow-up lives on the [Part 6 thread Update](blog-agent-determinism-illusions-6.en.md#dual-column-dashboard-mike) (DEV.to conversation seat).
 
 ### Update (2026-07-23): hold-out experiment — the fork is measurable
 
