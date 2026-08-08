@@ -1,0 +1,56 @@
+{
+  "claim": "Miscompiled command gate fail-greens on wrong impl (exit 0, asserts after return); known-wrong canary rejects dead path. Green needs path-execution evidence, not an exit-0 slip.",
+  "cells": [
+    {
+      "compiler": "correct_compile",
+      "run_on_correct": {
+        "exit_code": 0,
+        "stdout": "OK",
+        "stderr": ""
+      },
+      "run_on_wrong": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\gate-miscompile-e1rjnbaj\\correct_compile\\on_wrong\\suite.py\", line 11, in <module>\n    test_add()\n    ~~~~~~~~^^\n  File \"C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\gate-miscompile-e1rjnbaj\\correct_compile\\on_wrong\\suite.py\", line 6, in test_add\n    assert add(1, 1) == 2\n           ^^^^^^^^^^^^^^\nAssertionError"
+      },
+      "exit_only": {
+        "correct_impl": "GREEN",
+        "wrong_impl": "RED"
+      },
+      "known_wrong_canary": {
+        "correct_impl": "GREEN",
+        "wrong_impl": "RED"
+      },
+      "suite_preview_miscompile_tail": null
+    },
+    {
+      "compiler": "miscompile",
+      "run_on_correct": {
+        "exit_code": 0,
+        "stdout": "OK",
+        "stderr": ""
+      },
+      "run_on_wrong": {
+        "exit_code": 0,
+        "stdout": "OK",
+        "stderr": ""
+      },
+      "exit_only": {
+        "correct_impl": "GREEN",
+        "wrong_impl": "GREEN"
+      },
+      "known_wrong_canary": {
+        "correct_impl": "REJECT_DEAD_PATH",
+        "wrong_impl": "REJECT_DEAD_PATH"
+      },
+      "suite_preview_miscompile_tail": "\n    return True  # extractor finished early\n    assert add(1, 1) == 2\n    assert add(2, 3) == 5\n    assert add(0, 0) == 0\n\nif __name__ == '__main__':\n    test_add()\n    print('OK')\n"
+    }
+  ],
+  "checks": {
+    "miscompile_exit_only_fail_green_on_wrong": true,
+    "correct_exit_only_separates": true,
+    "miscompile_canary_rejects_dead_path": true,
+    "correct_canary_armed": true
+  },
+  "verdict": "SUPPORT"
+}

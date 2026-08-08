@@ -1,14 +1,14 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Kartik（Part 8）回帖草稿已写：`working-notes/reply-kartik-ratchet-admission.md`
-- 实验 SUPPORT：`scripts/ratchet-admission-test.py`
+- Tom Jones（Part 8）回帖草稿已写：`working-notes/reply-tom-jones-gate-miscompile.md`
+- 实验 SUPPORT：`scripts/gate-miscompile-canary-test.py`
 
 ## 上次停在哪个位置
-- 英文可贴 DEV.to；脚本/JSON 若只在本地需先 push 再挂链接
-- Xiao Man 短帖在分支 `cursor/xiao-man-epistemic-distance-reply`
+- 英文可贴；脚本/JSON 需 push 后链接才在 main 可用
+- Kartik / Xiao Man 相关已在分支 `cursor/xiao-man-epistemic-distance-reply`
 
 ## 近期关键决定
-- 准入规则：人审后仅 binary-nameable 进 C1 KB；encode-all 抬 semantic FP；DPI 永不进
-- 不写「日志检查门未使用」
-- 知识库环 = 缩已见可穷举，不关闭缺口
+- 第三失效：静默误编译 → fail-green（正文未命名）
+- 绿须带路径执行证物；known-wrong canary 是廉价检查
+- 回帖承认缺口、复现表、收 habit 原句
