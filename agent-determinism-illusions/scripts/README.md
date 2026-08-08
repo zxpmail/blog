@@ -107,6 +107,7 @@ python alexey-trigger-yield-test.py
 | Xiao Man — fallback+日志 / 退役信号（主次分歧 × 两种流量）| `declaration-anchor-fallback-logging-test.py` | `results-v2/declaration-anchor-fallback-logging.json` |
 | Xiao Man — 双绿同错→传感静音（P8 mute cell）| `declaration-anchor-agree-wrong-silence-test.py` | `results-v2/declaration-anchor-agree-wrong-silence.json` |
 | Xiao Man — 外部参照探针（P2/P8 恒等定理；tripwire 关闭静音格）| `declaration-anchor-external-reference-test.py` | `results-v2/declaration-anchor-external-reference.json` |
+| Kartik — ratchet 准入（人审后仅 binary 进 KB；encode-all 抬 semantic FP；DPI 永不进）| `ratchet-admission-test.py` | `results-v2/ratchet-admission.json` |
 | Max Quimby — 升级线：固定抽检 vs 人工 yield 自适应 | `escalate-threshold-calibration-test.py` | `results-v2/escalate-threshold-calibration.json` |
 | Max Quimby — 高风险整类进人 vs 均匀抽检（同预算） | `high-risk-direct-human-test.py` | `results-v2/high-risk-direct-human.json` |
 | Max Quimby — 残差策略 4–6（T2 / Alex / dual-line 硬预算） | `residual-strategy-4to6-test.py` | `results-v2/residual-strategy-4to6.json` |
