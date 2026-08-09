@@ -1,7 +1,7 @@
 ---
-title: "Judging Fatigue"
+title: "Judging Fatigue: From Verifying AI to Verifying Myself"
 published: false
-description: "An all-green night, the person hollow with dread. Not tired — when making gets pulled away, you're left in a slot that needs you but doesn't nourish."
+description: "An all-green night, hollow with dread. Not tired — after making is pulled away, you are left in a slot that needs you and does not feed you."
 tags: ai, llm, essay
 series: "Judging vs. Building in the AI Era"
 series_part: 1
@@ -10,59 +10,53 @@ canonical_url: ""
 
 # Judging Fatigue
 
-**Or: the green light's on, but I don't know where to put my body**
+**Or: the green lights are on, and you don't know where to put your body**
 
 *2026-07-13*
 
+> Two faces of the same volume as [From "show me your code" to "show me your idea"](blog-essay-show-idea.en.md): this piece is the person inside the judging machine; that one is where the tyrant has abdicated, with only talk left in the hand.
+
 ---
 
-Before turning off the light I glanced at the terminal. All green.
+Before I turned off the light I glanced at the terminal. All green.
 
-Should be glad. Couldn't be glad. A hollow scooped out of my stomach. Not tired — tired knows to lie down, and lying down brings the blood back. Empty. Lying down doesn't bring it back. Hand resting on the edge of the keyboard, not wanting to touch anything. Tomorrow's to-do had already checked "one more verification layer" for me. The checkmark was cold. Once, when a stretch of code ran, my palm used to stay warm. Now the warmth is on the model's side. On my side, only the edge of the blade faces out: pass, fail, add one more. Edge facing out long enough, and what it grinds down is you.
+I should have been glad. I couldn't be. Something had been scooped out of my stomach. Not tired — tired knows to lie down, and lying down brings the blood back. Empty. Lying down doesn't bring it back. Hand on the edge of the keyboard, wanting to touch nothing. Tomorrow's to-do had already checked "one more verification layer" for me. The checkmark was cold. Once, when a stretch of code ran through, heat still seemed to sit in the palm. Now the heat is on the model's side. On my side only the edge faces out: pass, fail, add one more. Edge facing out long enough, and what it grinds is yourself.
 
-For a while I fooled myself with a cleaner question. Hand the judging to another model, pin the landing on the run results. The problem seemed solved. I stared at that architecture diagram, trying to find a place to put myself. None. Chest still tight. The cleaner the solution, the more it felt like pressing a correct answer over a wound.
+For a while I fooled myself with a cleaner question. Hand the judging to another model; pin the landing on the run result. The problem looked solved. I stared at that architecture diagram, looking for a place to put myself. None. The chest stayed tight. The cleaner the solution, the more it felt like pressing a correct answer over a wound.
 
-Ask again whether it's useful. Useful. The old line — panic, don't trust, run it yourself — I walked it again until it bled. Useful is built on others being too lazy to bleed. But useful doesn't feed. Useful and empty stand side by side, neither canceling the other. Worse: you do useful work and still feel empty — so beneath the empty grows guilt, accusing you of not knowing enough. Guilt steals another cut. Double-edged.
+Useful? Useful. The old line — if it scares you, don't trust it, run it yourself — I walked again until it bled. Useful does not feed. You do useful work and stay empty; under the empty, guilt grows, scolding you for never being content. Guilt steals another cut.
 
-Until one day I asked it out loud. Quiet voice: what am I actually doing all day.
+Until one day I asked it out loud. Not loud: what am I actually doing all day.
 
-The answer came quietly too. Quiet enough to want to hide from. All day: judging. Quality-checking what the model made. Distilling this, distilling that. Not making. The traces of making stay in someone else's output; your day is a chain of approvals and rejections. On paper, two words missing: making, judging. In the body, a missing blood-return. The instant it clicked, months of drifting suddenly had a name — the name brings no comfort. The name leaves nowhere to hide.
+The answer was quiet too. Quiet enough to want to duck. All day: judging. QC for what the model made. Distill this, then distill that. Not making. Traces of making stay in someone else's output; your day is a chain of permits and rejects. On paper, two words apart — make, judge. In the body, a whole missing return of blood. The instant it lined up, months of drift suddenly had a name — the name comforts no one. The name leaves nowhere to hide.
 
-What I saw later wasn't consolation. It was the slot on the assembly line — things pass in front of you, none of them yours.
+What I saw later was not consolation. It was the place on the line — things pass in front of you, and none of them are yours.
 
-Friday night. I went through the week's work log.
+Friday night. I opened the week's work log.
 
-Forty entries. Pass, thirty-six. Fail, four. None signed by me. My column read "confirmed." I sat with those three words for a while, unable to remember reading the reasoning behind a single one.
+Forty entries. Pass, thirty-six. Fail, four. None signed by me. My column said "confirmed." I sat with those three words a while and could not remember reading the reason on a single one of the forty.
 
-Monday's entry came closest. The reason field had words; the cursor rested on them for a beat. I was about to click in and look — my hand had already confirmed. Hand faster than eye. By the time the eye caught up to the screen, only one line remained: confirmed 17:42. I stared for a few seconds. Didn't click back.
+Monday's came closest. The reason field had text; the cursor rested on it for a beat. I meant to click in and look — the hand had already confirmed. Hand faster than eye. When the eye caught up, the page held one line: confirmed 17:42. I looked a few seconds. Did not click back.
 
-Under the lamp, I counted the week. Forty "confirmed," zero reasons. Log closed.
+Under the lamp I counted the week again. Forty "confirmed," zero reasons. Log closed.
 
-Not always this empty. One night was full.
+It was not always like this. One night was full.
 
-The tool, I posted it later. One comment came in. Short, pointed straight at a hole: "Your rule fails on a different set of inputs." I read it twice. The blood came back — the kind of heat forty confirmations that week couldn't give. I sat down, patched, ran, patched again. Next morning, fixed it, posted the writeup. That whole day, my palm was warm.
+I posted the tool later. One comment came in. Short, pointed at a hole: "Your rule fails on a different set of inputs." I read it twice. The blood came back — the heat forty confirmations that week could not give. I sat down, patched, ran, patched again. Next morning it was fixed; I posted the note. That whole day the palm was warm.
 
-Later it became one rule among others. When I looked at it again, I couldn't recall how warm my hand had been that night patching it. Then I noticed myself scrolling through the comments. Not afraid of being flamed — looking for the next one like that. The kind that could keep me up another night, warm again.
+Later it became one rule among the others. When I looked at it again I could no longer remember how warm the hand had been the night I patched it. Then I caught myself scrolling comments. Not afraid of flame — looking for the next one like that. The kind that could keep me up another whole night, warm again.
 
-Three months of judging before I understood: the only night I was full, there had been someone who judged me first. That comment. Sitting in my seat, I'm not waiting for the machine — I'm waiting for the next person to judge for me.
+Three months of judging before I understood: the only night I was full, someone had judged me first. That comment. In this seat I am not waiting for the machine — I am waiting for the next person to judge for me.
 
-Making tires the body, but brings the blood back. Judging spends itself dry, produces nothing, the veins run dry. AI took making, left judging. The world still needs a person in the judging seat. No nutrient under the cushion. You're not a burned-out hero. You're a part fitted into a slot that's needed but doesn't feed. Empty isn't self-pity. It's where the part should ring — and hasn't in a long time.
+When I made things, the body tired and the palm stayed warm. After a full day of judging, the veins feel pumped out. AI took making and left judging. The seat is still held; under the cushion there is nothing to draw. Not a hero burned out — a part screwed into a slot that needs you and does not feed you, quiet for a long time where it ought to ring.
 
-So that verification system, the one built to dodge self-judgment, showed its other face. Credentials in order, tests in order — a machine made solely for judging. I built it. My workplace is inside its belly. The green light is its property. The emptiness is mine. The more qualified it is, the more I look like the layer being digested.
+That verification system built to dodge self-judgment — papers in order, tests in order. I built it. I work in its belly. The green is its. The empty is mine. The more qualified it gets, the more I look like the layer being digested.
 
-Writing to here hasn't made me less empty. The words are growing, like making; the eye is still measuring: is this paragraph painful enough, clear enough. In measuring, the person returns to judging. No supply came. What came was only a more precise location: I feed the machine, the machine is lit, I am dark.
+Writing this far has not made me un-empty. Words grow, like making; the eye still measures: is this paragraph painful enough, clear enough. Measuring, the person is back in judging. No supply arrived. Only a sharper fix on the map: I feed the machine, the machine is lit, I am dark.
 
-I sat for a while. Didn't close the terminal. Didn't open a new window either. The green still stings. It stings, and I won't close it — closing would be admitting the day was wasted.
+I sat a while. Did not close the terminal. Did not open a new window. The green still stings. It stings, and I will not close it — closing would be admitting the day was wasted.
 
-The fatigue of judging has a name: not tired — empty.
-
-The next cut will be colder. Even the judge of "did it right" may be gone. That's the other face of the same volume.
-
-For now, stop here.
-
-And this essay waits for exactly this.
-
-Reading this far is already judging for me.
+The fatigue of judging is not tiredness. It is empty.
 
 Terminal still green. Person still empty. Two lights, same room, neither acknowledging the other.
 

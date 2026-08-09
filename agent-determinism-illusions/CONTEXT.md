@@ -1,11 +1,13 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Mike 默认双列回帖已加锚点：同 dump / Part 7 定义 / 对话在 Part 6
-- 草稿：`working-notes/reply-mike-dual-column-default.md`（可贴）
+- AI Explore 回帖草稿：`working-notes/reply-ai-explore-cross-channel-disagree.md`
+- 实验 SUPPORT：`cross-channel-disagree-signal-test.py`
 
 ## 上次停在哪个位置
-- 回帖措辞微调未单独 commit；正文 Part 6 Update 已在 `7bb95b7`
+- 英文可贴；脚本/JSON 需 push 后链接才稳
+- 随笔 #1 中英改稿仍在工作区未 commit
 
 ## 近期关键决定
-- 线程在 Part 6；live/any 定义在 Part 7；回帖必须点前回 + Part 7
+- 跨信道分歧 = 高产人审信号；双绿仍有 SC10 shared miss
+- agree_reject 不靠分歧信号
