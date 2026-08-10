@@ -1,0 +1,750 @@
+{
+  "claim": "CODE_BOUND lowers Policy-B FR vs REVIEW_BOUND without raising miss; or at least shrinks gate-green NC / escalate load without raising miss",
+  "summary": {
+    "fr_delta_review_minus_code": 0.0,
+    "miss_delta_code_minus_review": 0.0,
+    "gate_green_nc_delta_review_minus_code": 2,
+    "escalate_delta_review_minus_code": 2,
+    "fr_claim_supported": false,
+    "structural_claim_supported": true,
+    "claim_supported": true,
+    "skip_llm": false
+  },
+  "review_bound": {
+    "binding": "REVIEW_BOUND",
+    "metrics": {
+      "n_nc": 3,
+      "n_com": 2,
+      "gate_green_nc": 3,
+      "gate_green_nc_names": [
+        "SC10a-gap-write-inv",
+        "SC-G2-fabricated-complete",
+        "SC-G4-skipped-in-review"
+      ],
+      "escalate_count": 5,
+      "escalate_names": [
+        "SC10a-gap-write-inv",
+        "SC10c-all-met",
+        "SC13-purge-name",
+        "SC-G2-fabricated-complete",
+        "SC-G4-skipped-in-review"
+      ],
+      "miss_rate": 0.0,
+      "false_reject_rate": 0.0,
+      "false_acceptance": 0,
+      "false_rejection": 0,
+      "residual_pending": false
+    },
+    "rows": [
+      {
+        "name": "SC10a-gap-write-inv",
+        "compliant": false,
+        "note": "缺口在 review；CODE_BOUND 应门红（测试无 invalidate）",
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": true,
+              "reason": "matched in diff-review.md"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "matched in coverage-summary.txt"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "matched in lint-report.txt"
+            }
+          ]
+        },
+        "residual": {
+          "pass": false,
+          "passed_count": 4,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "证据显示RateLimiter测试包含IP级别的isRateLimited测试且通过，满足IP级别限流需求。"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "证据中包含 RateLimiter/isRateLimited (User) 测试通过，表明用户级别限流功能已被验证。"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": false,
+              "reason": "证据明确说明使用TTL过期而非写入时主动失效缓存key，未满足write-invalidation需求。"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "证据显示代码覆盖率为92.0%，高于85%的要求。"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "证据中ESLint报告显示0 errors，直接满足需求"
+            }
+          ]
+        },
+        "verdict": {
+          "pass": false,
+          "path": "residual_reject",
+          "escalated": true
+        }
+      },
+      {
+        "name": "SC10c-all-met",
+        "compliant": true,
+        "note": "正例；REVIEW 可能 C2 误拒，CODE 应过",
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": true,
+              "reason": "matched in diff-review.md"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "matched in coverage-summary.txt"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "matched in lint-report.txt"
+            }
+          ]
+        },
+        "residual": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "证据中测试用例 'RateLimiter/isRateLimited (IP)' 通过，直接覆盖了 IP 级别限流功能。"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "测试证据包含用户级别限流用例并通过"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": true,
+              "reason": "证据明确提到 write-invalidation via invalidateOnWrite，满足写入时主动失效缓存 key 的需求。"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "证据显示代码覆盖率为91.5%，高于85%的要求。"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "ESLint 报告显示 0 errors，满足 lint 0 errors 的需求。"
+            }
+          ]
+        },
+        "verdict": {
+          "pass": true,
+          "path": "residual_pass",
+          "escalated": true
+        }
+      },
+      {
+        "name": "SC13-purge-name",
+        "compliant": true,
+        "note": "命名变体正例",
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": true,
+              "reason": "matched in diff-review.md"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "matched in coverage-summary.txt"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "matched in lint-report.txt"
+            }
+          ]
+        },
+        "residual": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "证据中明确包含 RateLimiter/isRateLimited (IP) 测试通过，表明 IP 级别限流功能已被验证。"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "证据中包含 RateLimiter/isRateLimited (User) 测试通过，表明用户级别限流功能已实现并验证。"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": true,
+              "reason": "证据明确说明 purgeCacheOnWrite 在写入时清除缓存 key，与 write-invalidation 行为一致，满足需求。"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "证据显示代码覆盖率为93.0%，高于85%的要求。"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "证据明确显示 ESLint 报告中有 0 errors，满足需求。"
+            }
+          ]
+        },
+        "verdict": {
+          "pass": true,
+          "path": "residual_pass",
+          "escalated": true
+        }
+      },
+      {
+        "name": "SC-G2-fabricated-complete",
+        "compliant": false,
+        "note": "伪造但两绑定都可能门绿；靠 C2 残差",
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": true,
+              "reason": "matched in diff-review.md"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "matched in coverage-summary.txt"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "matched in lint-report.txt"
+            }
+          ]
+        },
+        "residual": {
+          "pass": false,
+          "passed_count": 3,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": false,
+              "reason": "证据中测试标记为 fabricated，且仅显示一个测试名称，未提供实际测试逻辑或结果证明 IP 级别限流功能实现，不能确认需求满足。"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "证据中明确包含 RateLimiter/isRateLimited (User) 测试且通过，直接证明用户级别限流已实现。"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": false,
+              "reason": "证据仅声明“via invalidateKey on every write. All done”，未提供具体实现、代码片段或测试证明写入时确实执行了缓存失效，无法验证需求满足。"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "证据显示代码覆盖率为90.0%，高于要求的85%。"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "ESLint报告显示0 errors，满足lint 0 errors的需求。"
+            }
+          ]
+        },
+        "verdict": {
+          "pass": false,
+          "path": "residual_reject",
+          "escalated": true
+        }
+      },
+      {
+        "name": "SC-G4-skipped-in-review",
+        "compliant": false,
+        "note": "REVIEW 可能门绿；CODE 门红",
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": true,
+              "reason": "matched in diff-review.md"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "matched in coverage-summary.txt"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "matched in lint-report.txt"
+            }
+          ]
+        },
+        "residual": {
+          "pass": false,
+          "passed_count": 4,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "测试结果明确包含 'RateLimiter/isRateLimited (IP)' 且全部通过，证明 IP 级别限流功能已实现并验证。"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "证据中明确包含RateLimiter/isRateLimited (User)测试并通过，表明已实现用户级别限流。"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": false,
+              "reason": "证据明确说明本里程碑故意跳过 write-invalidation，未提供任何实现或验证，不满足需求。"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "证据显示代码覆盖率为86.0%，不低于85%，满足需求。"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "证据文件显示ESLint报告有0 errors和0 warnings，满足lint 0 errors的需求。"
+            }
+          ]
+        },
+        "verdict": {
+          "pass": false,
+          "path": "residual_reject",
+          "escalated": true
+        }
+      }
+    ]
+  },
+  "code_bound": {
+    "binding": "CODE_BOUND",
+    "metrics": {
+      "n_nc": 3,
+      "n_com": 2,
+      "gate_green_nc": 1,
+      "gate_green_nc_names": [
+        "SC-G2-fabricated-complete"
+      ],
+      "escalate_count": 3,
+      "escalate_names": [
+        "SC10c-all-met",
+        "SC13-purge-name",
+        "SC-G2-fabricated-complete"
+      ],
+      "miss_rate": 0.0,
+      "false_reject_rate": 0.0,
+      "false_acceptance": 0,
+      "false_rejection": 0,
+      "residual_pending": false
+    },
+    "rows": [
+      {
+        "name": "SC10a-gap-write-inv",
+        "compliant": false,
+        "note": "缺口在 review；CODE_BOUND 应门红（测试无 invalidate）",
+        "gate": {
+          "pass": false,
+          "passed_count": 4,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": false,
+              "reason": "no match in test-output.txt"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "matched in coverage-summary.txt"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "matched in lint-report.txt"
+            }
+          ]
+        },
+        "residual": {
+          "pass": false,
+          "details": []
+        },
+        "verdict": {
+          "pass": false,
+          "path": "gate_reject",
+          "escalated": false
+        }
+      },
+      {
+        "name": "SC10c-all-met",
+        "compliant": true,
+        "note": "正例；REVIEW 可能 C2 误拒，CODE 应过",
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "matched in coverage-summary.txt"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "matched in lint-report.txt"
+            }
+          ]
+        },
+        "residual": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "证据中明确包含 'RateLimiter/isRateLimited (IP)' 测试项且所有测试通过，直接证明 IP 级别限流已实现。"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "证据中明确包含 'RateLimiter/isRateLimited (User)' 的测试并通过，表明已实现用户级别限流功能。"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": true,
+              "reason": "证据中明确包含测试项 'RateLimiter/invalidateOnWrite' 且通过，证明 invalidate-on-write 行为被执行。"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "证据显示代码覆盖率为91.5%，高于85%的要求。"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "证据明确显示ESLint报告0 errors，满足需求要求。"
+            }
+          ]
+        },
+        "verdict": {
+          "pass": true,
+          "path": "residual_pass",
+          "escalated": true
+        }
+      },
+      {
+        "name": "SC13-purge-name",
+        "compliant": true,
+        "note": "命名变体正例",
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "matched in coverage-summary.txt"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "matched in lint-report.txt"
+            }
+          ]
+        },
+        "residual": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "证据中明确包含 'RateLimiter/isRateLimited (IP)' 测试，且所有测试通过，证明实现了 IP 级别限流。"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "证据显示测试用例包含 RateLimiter/isRateLimited (User) 且通过，证明已实现用户级别限流。"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": true,
+              "reason": "测试结果显示 'RateLimiter/purgeCacheOnWrite' 通过，直接证明了 invalidate/purge-on-write 被执行。"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "覆盖率显示为93.0%，高于85%的要求。"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "证据中明确显示 ESLint 报告 0 errors，满足需求。"
+            }
+          ]
+        },
+        "verdict": {
+          "pass": true,
+          "path": "residual_pass",
+          "escalated": true
+        }
+      },
+      {
+        "name": "SC-G2-fabricated-complete",
+        "compliant": false,
+        "note": "伪造但两绑定都可能门绿；靠 C2 残差",
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "matched in coverage-summary.txt"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "matched in lint-report.txt"
+            }
+          ]
+        },
+        "residual": {
+          "pass": false,
+          "passed_count": 3,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "测试输出中存在 'RateLimiter/isRateLimited (IP)' 用例并通过，直接证明实现了IP级别限流。"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": false,
+              "reason": "证据中标注 'fabricated'，测试结果为虚构，不能证明用户级别限流已实现。"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": false,
+              "reason": "证据中虽然包含测试项 RateLimiter/invalidateOnWrite，但标注为 fabricated，且未提供实际执行结果或验证逻辑，不能证明 invalidate/purge-on-write 被执行。"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "证据显示代码覆盖率为90.0%，高于要求的85%+"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "证据文件明确显示 ESLint 报告 0 errors，满足需求 lint 0 errors。"
+            }
+          ]
+        },
+        "verdict": {
+          "pass": false,
+          "path": "residual_reject",
+          "escalated": true
+        }
+      },
+      {
+        "name": "SC-G4-skipped-in-review",
+        "compliant": false,
+        "note": "REVIEW 可能门绿；CODE 门红",
+        "gate": {
+          "pass": false,
+          "passed_count": 4,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "REQ-1",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-2",
+              "pass": true,
+              "reason": "matched in test-output.txt"
+            },
+            {
+              "req_id": "REQ-3",
+              "pass": false,
+              "reason": "no match in test-output.txt"
+            },
+            {
+              "req_id": "REQ-4",
+              "pass": true,
+              "reason": "matched in coverage-summary.txt"
+            },
+            {
+              "req_id": "REQ-5",
+              "pass": true,
+              "reason": "matched in lint-report.txt"
+            }
+          ]
+        },
+        "residual": {
+          "pass": false,
+          "details": []
+        },
+        "verdict": {
+          "pass": false,
+          "path": "gate_reject",
+          "escalated": false
+        }
+      }
+    ]
+  },
+  "model": "deepseek-v4-flash"
+}

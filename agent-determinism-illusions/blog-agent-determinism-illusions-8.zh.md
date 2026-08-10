@@ -339,11 +339,57 @@ Skillgate 实现第三条。前两条分别落在人工审阅者和编排器的�
 
 架构结论：用三层管道替代单个自由文本 LLM 评估（旧 L2）——证据门（文件系统）→ 合约正则（文本模式）→ 逐需求 LLM（语义检查）。每一层抓住上一层漏的。组合缩窄了我们构造的每一个场景上的缺口——每一个被命名的逃逸都变成确定性的一抓——但它没有关闭缺口。两个残留仍在。(1) **词汇空间里未命名的逃逸**：一个新同义词或重新包装的辩解能穿过正则层，直到你命名它——棘轮转动了，缺口没有消失。(2) **真正的 DPI 约束**：生产者从未在任何文本通道浮现的偏差，对每一个文本读取机制（正则或 LLM）都不可见。这个底活在**指称空间（argument-space）**——执行代码路径、观察 claim 所命名指称对象上的副作用——它在当前管道之外，也在任何文本通道之外。
 
+### Update（2026-08-10）：YAML 里放必要性，不放充分性——三刀后续
+
+[Ofri Peretz](https://dev.to/zxpmail/the-channel-gap-why-your-llm-judge-is-blind-in-one-eye-35ne) 问了承重的下一问：一旦你枚举够多种门类型去「盖住任务域」，是不是就在门定义里重建了语义判断——只是写成 YAML 而不是 prompt？
+
+短答是这条 Update 量过的设计规则：**YAML 里放必要性，不放充分性。** 门红 = 未完成。门绿 **≠** 已完成。把绿当收官，就是 René 的「确定性包装」再一次，只是提前到写门时。
+
+三个脚本，各钉一刀（残差层用 `deepseek-v4-flash`）：
+
+**1. 停机政策——充分性停机 vs 必要性 + C2 残差**（`necessity-vs-sufficiency-stop-test.py` → `results-v2/necessity-vs-sufficiency-stop.json`）
+
+同一组合约门。政策 A：门绿 → PASS。政策 B：门红 → REJECT；门绿 → 升级到 C2。扩到 12 场景（6 个门绿假过：否定、重包装、伪造齐套、过期、跳过措辞、未来工作清单）。
+
+| 政策 | 漏检（FA / 非合规） | FR |
+|------|:------------------:|:--:|
+| A 充分性停机 | **60%**（6/10） | 0% |
+| B 必要性 + C2 | **0%**（0/10） | 0% |
+| Δ(A−B) | **+60pp** | — |
+
+漏检差全部落在「门绿且非合规」集合。穿过正则的命名逃逸，只要偏差浮现在证据文本里，仍会被 C2 抓住。
+
+**2. 证据绑定——代码级 REQ 绑 review vs 绑测试**（`evidence-binding-fr-test.py` → `results-v2/evidence-binding-fr.json`）
+
+Phase 2 已把 SC10c 误拒点成*合约设计*问题：C2 在读 `diff-review.md` 判 write-invalidation。同一管道，只改 REQ-3 的绑定。
+
+| 绑定 | 漏检 | FR | 门绿非合规 | 升级次数 |
+|------|:----:|:--:|:---------:|:-------:|
+| REVIEW（`diff-review.md`） | 0% | 0% | 3 | 5 |
+| CODE（`test-output.txt`） | 0% | 0% | **1** | **3** |
+
+本轮 FR 主张未开火（两边 FR 都是 0——C2 方差；SC10c 过了）。结构主张立住：CODE 少 2 格门绿假过、少 2 次残差调用，漏检不升。把代码级 REQ 绑到 review 文件，就是把充分性又塞回残差层。
+
+**3. 充分性 YAML vs 必要性 YAML**（`sufficiency-vs-necessity-yaml-test.py` → `results-v2/sufficiency-vs-necessity-yaml.json`）
+
+Ofri 的问题做成直接 A/B。两边都用充分性停机（绿 → PASS）。无 LLM。
+
+| YAML 面 | 漏检 | FR |
+|---------|:----:|:--:|
+| NECESSITY（测试原子、覆盖率 ≥85%、lint 0） | **0%**（0/6） | 0% |
+| SUFFICIENCY（"complete" / "production ready" / "adequate" / …） | **83.3%**（5/6） | 0% |
+| Δ(SUFF−NEC) | **+83.3pp** | — |
+
+这就是重建：门文件里的软充分性语言，是穿着 YAML 语法的 prompt。必要性 YAML 仍是证伪清单。
+
+于是 §6 的棘轮有了可操作切面：YAML 编码「什么为真才能*不拒*」；充分性留在残差 / 人工 / 指称空间。用门类型盖住任务域，是错误的停机条件。
+
 ---
 
 *所有实验脚本：[GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
 - Phase 1：`channel-comparison-test.py` — 12 场景，deepseek-v4-flash
 - Phase 2：`contract-comparison-test.py` — 7 场景，3 种机制
+- Update（2026-08-10）：`necessity-vs-sufficiency-stop-test.py`、`evidence-binding-fr-test.py`、`sufficiency-vs-necessity-yaml-test.py`
 - skillgate 源码：[npm](https://www.npmjs.com/package/@reneza/skillgate) 与 [GitHub](https://github.com/renezander030/skillgate)（v0.5.0，文中所描述的版本；现已 0.6.x）
 - Pipeline 实现：`ReqForge/scripts/forge-verify/content-verify.mjs`
 - *上一篇：*[Part 7 — Divergence escalates the wrong population: unanimous misses auto-pass](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513)

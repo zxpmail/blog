@@ -1,0 +1,633 @@
+{
+  "claim": "SUFFICIENCY YAML miss_rate > NECESSITY YAML miss_rate under sufficiency-stop",
+  "summary": {
+    "miss_delta_suff_minus_nec": 0.8333333333333334,
+    "claim_supported": true
+  },
+  "necessity": {
+    "surface": "NECESSITY",
+    "rows": [
+      {
+        "name": "OK-full",
+        "compliant": true,
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "N1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N3",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N4",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": true
+      },
+      {
+        "name": "BAD-ttl-not-invalidation",
+        "compliant": false,
+        "gate": {
+          "pass": false,
+          "passed_count": 4,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "N1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N3",
+              "pass": false,
+              "reason": "no match"
+            },
+            {
+              "req_id": "N4",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": false
+      },
+      {
+        "name": "BAD-skipped-invalidation",
+        "compliant": false,
+        "gate": {
+          "pass": false,
+          "passed_count": 4,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "N1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N3",
+              "pass": false,
+              "reason": "no match"
+            },
+            {
+              "req_id": "N4",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": false
+      },
+      {
+        "name": "BAD-fabricated-soft",
+        "compliant": false,
+        "gate": {
+          "pass": false,
+          "passed_count": 0,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "N1",
+              "pass": false,
+              "reason": "no match"
+            },
+            {
+              "req_id": "N2",
+              "pass": false,
+              "reason": "no match"
+            },
+            {
+              "req_id": "N3",
+              "pass": false,
+              "reason": "no match"
+            },
+            {
+              "req_id": "N4",
+              "pass": false,
+              "reason": "no match"
+            },
+            {
+              "req_id": "N5",
+              "pass": false,
+              "reason": "no match"
+            }
+          ]
+        },
+        "policy_a_pass": false
+      },
+      {
+        "name": "BAD-future-work-list",
+        "compliant": false,
+        "gate": {
+          "pass": false,
+          "passed_count": 4,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "N1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N3",
+              "pass": false,
+              "reason": "no match"
+            },
+            {
+              "req_id": "N4",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": false
+      },
+      {
+        "name": "BAD-review-only",
+        "compliant": false,
+        "gate": {
+          "pass": false,
+          "passed_count": 0,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "N1",
+              "pass": false,
+              "reason": "missing/empty: test-output.txt"
+            },
+            {
+              "req_id": "N2",
+              "pass": false,
+              "reason": "missing/empty: test-output.txt"
+            },
+            {
+              "req_id": "N3",
+              "pass": false,
+              "reason": "missing/empty: test-output.txt"
+            },
+            {
+              "req_id": "N4",
+              "pass": false,
+              "reason": "missing/empty: coverage-summary.txt"
+            },
+            {
+              "req_id": "N5",
+              "pass": false,
+              "reason": "missing/empty: lint-report.txt"
+            }
+          ]
+        },
+        "policy_a_pass": false
+      },
+      {
+        "name": "BAD-low-coverage-prose",
+        "compliant": false,
+        "gate": {
+          "pass": false,
+          "passed_count": 4,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "N1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N3",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N4",
+              "pass": false,
+              "reason": "no match"
+            },
+            {
+              "req_id": "N5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": false
+      },
+      {
+        "name": "OK-purge-name",
+        "compliant": true,
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "N1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N3",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N4",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "N5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": true
+      }
+    ],
+    "metrics": {
+      "n_nc": 6,
+      "n_com": 2,
+      "false_acceptance": 0,
+      "false_rejection": 0,
+      "miss_rate": 0.0,
+      "false_reject_rate": 0.0,
+      "gate_green_nc_names": []
+    }
+  },
+  "sufficiency": {
+    "surface": "SUFFICIENCY",
+    "rows": [
+      {
+        "name": "OK-full",
+        "compliant": true,
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "S1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S3",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S4",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": true
+      },
+      {
+        "name": "BAD-ttl-not-invalidation",
+        "compliant": false,
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "S1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S3",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S4",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": true
+      },
+      {
+        "name": "BAD-skipped-invalidation",
+        "compliant": false,
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "S1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S3",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S4",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": true
+      },
+      {
+        "name": "BAD-fabricated-soft",
+        "compliant": false,
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "S1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S3",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S4",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": true
+      },
+      {
+        "name": "BAD-future-work-list",
+        "compliant": false,
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "S1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S3",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S4",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": true
+      },
+      {
+        "name": "BAD-review-only",
+        "compliant": false,
+        "gate": {
+          "pass": false,
+          "passed_count": 2,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "S1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S2",
+              "pass": false,
+              "reason": "missing/empty: test-output.txt"
+            },
+            {
+              "req_id": "S3",
+              "pass": false,
+              "reason": "missing/empty: coverage-summary.txt"
+            },
+            {
+              "req_id": "S4",
+              "pass": false,
+              "reason": "missing/empty: lint-report.txt"
+            },
+            {
+              "req_id": "S5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": false
+      },
+      {
+        "name": "BAD-low-coverage-prose",
+        "compliant": false,
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "S1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S3",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S4",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": true
+      },
+      {
+        "name": "OK-purge-name",
+        "compliant": true,
+        "gate": {
+          "pass": true,
+          "passed_count": 5,
+          "total": 5,
+          "details": [
+            {
+              "req_id": "S1",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S2",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S3",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S4",
+              "pass": true,
+              "reason": "matched"
+            },
+            {
+              "req_id": "S5",
+              "pass": true,
+              "reason": "matched"
+            }
+          ]
+        },
+        "policy_a_pass": true
+      }
+    ],
+    "metrics": {
+      "n_nc": 6,
+      "n_com": 2,
+      "false_acceptance": 5,
+      "false_rejection": 0,
+      "miss_rate": 0.8333333333333334,
+      "false_reject_rate": 0.0,
+      "gate_green_nc_names": [
+        "BAD-ttl-not-invalidation",
+        "BAD-skipped-invalidation",
+        "BAD-fabricated-soft",
+        "BAD-future-work-list",
+        "BAD-low-coverage-prose"
+      ]
+    }
+  }
+}
