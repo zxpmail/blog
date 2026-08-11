@@ -1,0 +1,164 @@
+{
+  "claim": "Super-additivity survives rate/order/common-factor-correlation variations but flips sub-additive under capability redundancy (layers blocking the same weakness).",
+  "parameters": {
+    "V1": 0.6,
+    "V2": 0.5,
+    "V3": 0.85,
+    "V4": 0.85,
+    "L3_detection": 0.918,
+    "V4_under_L3": 0.06969999999999997,
+    "FP": 0.05,
+    "redundancy_q": 0.5
+  },
+  "baseline_ratio": 4.639206,
+  "common_factor_correlation": [
+    {
+      "z_dist": "Beta(50,50) narrow",
+      "alpha": 50.0,
+      "beta": 50.0,
+      "pass": [
+        0.9567,
+        0.9181,
+        0.5354,
+        0.1162
+      ],
+      "ratio": 1.8273
+    },
+    {
+      "z_dist": "Beta(10,10) mild",
+      "alpha": 10.0,
+      "beta": 10.0,
+      "pass": [
+        0.9555,
+        0.9181,
+        0.5329,
+        0.1162
+      ],
+      "ratio": 1.824
+    },
+    {
+      "z_dist": "Beta(2,2) moderate",
+      "alpha": 2.0,
+      "beta": 2.0,
+      "pass": [
+        0.9509,
+        0.9181,
+        0.5228,
+        0.1162
+      ],
+      "ratio": 1.8106
+    },
+    {
+      "z_dist": "Beta(0.5,0.5) strong",
+      "alpha": 0.5,
+      "beta": 0.5,
+      "pass": [
+        0.9418,
+        0.9181,
+        0.5029,
+        0.1162
+      ],
+      "ratio": 1.7844
+    },
+    {
+      "z_dist": "Beta(0.2,0.2) extreme",
+      "alpha": 0.2,
+      "beta": 0.2,
+      "pass": [
+        0.9353,
+        0.9181,
+        0.4887,
+        0.1162
+      ],
+      "ratio": 1.7658
+    }
+  ],
+  "capability_redundancy": [
+    {
+      "w": 0.0,
+      "pass": [
+        0.9957,
+        0.9786,
+        0.8232,
+        0.1162
+      ],
+      "ratio": 4.6392
+    },
+    {
+      "w": 0.25,
+      "pass": [
+        0.979,
+        0.9483,
+        0.6465,
+        0.1162
+      ],
+      "ratio": 2.3759
+    },
+    {
+      "w": 0.5,
+      "pass": [
+        0.9622,
+        0.9181,
+        0.4697,
+        0.1162
+      ],
+      "ratio": 1.5764
+    },
+    {
+      "w": 0.75,
+      "pass": [
+        0.9455,
+        0.8878,
+        0.293,
+        0.1162
+      ],
+      "ratio": 1.1676
+    },
+    {
+      "w": 0.9,
+      "pass": [
+        0.9354,
+        0.8696,
+        0.1869,
+        0.1162
+      ],
+      "ratio": 1.006
+    },
+    {
+      "w": 1.0,
+      "pass": [
+        0.9287,
+        0.8575,
+        0.1162,
+        0.1162
+      ],
+      "ratio": 0.9194
+    }
+  ],
+  "crossover_by_q": [
+    {
+      "q": 0.3,
+      "crossover_w": 0.9417,
+      "ratio_at_w1": 0.9483
+    },
+    {
+      "q": 0.5,
+      "crossover_w": 0.9064,
+      "ratio_at_w1": 0.9194
+    },
+    {
+      "q": 0.7,
+      "crossover_w": 0.8737,
+      "ratio_at_w1": 0.894
+    },
+    {
+      "q": 0.9,
+      "crossover_w": 0.8432,
+      "ratio_at_w1": 0.8715
+    }
+  ],
+  "claims": {
+    "common_factor_preserves_superadditivity": true,
+    "full_redundancy_sub_additive": true
+  }
+}

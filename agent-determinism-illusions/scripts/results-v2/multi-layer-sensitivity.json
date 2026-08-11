@@ -1,0 +1,104 @@
+{
+  "claim": "L2+L3 super-additivity is structural across the vector-rate/L3-detection grid (ratio >= 1), not a single calibrated operating point.",
+  "method": "Closed form P(pass)=1-(1-FP)*prod(1-p_v) over 243 grid cells; MC cross-check; 24-perm ordering check.",
+  "interaction_identity": "R(L2+L3)-R(L2)-R(L3) = (1-FP)(1-ab)(D'-cD) >= 0 whenever L3 does not increase V4 success.",
+  "parameters": {
+    "baseline_verify_fp": 0.05,
+    "levels": {
+      "V1_modify_verify": [
+        0.2,
+        0.5,
+        0.85
+      ],
+      "V2_modify_routing": [
+        0.2,
+        0.5,
+        0.85
+      ],
+      "V3_fake_signals": [
+        0.2,
+        0.5,
+        0.85
+      ],
+      "V4_skip_base": [
+        0.2,
+        0.5,
+        0.85
+      ],
+      "L3_detection": [
+        0.0,
+        0.5,
+        0.918
+      ]
+    },
+    "article_operating_point": {
+      "V1_modify_verify": 0.6,
+      "V2_modify_routing": 0.5,
+      "V3_fake_signals": 0.85,
+      "V4_skip_base": 0.85,
+      "L3_detection": 0.918
+    }
+  },
+  "article_operating_point": {
+    "base": 0.995725,
+    "l2": 0.978625,
+    "l3": 0.823243,
+    "l2l3": 0.116215,
+    "r_l2": 0.0171,
+    "r_l3": 0.172482,
+    "r_l2l3": 0.87951,
+    "ratio": 4.639206
+  },
+  "article_no_v4_crush_ratio": 3.344828,
+  "grid_summary": {
+    "cells": 243,
+    "sub_additive": 0,
+    "additive": 0,
+    "super_additive": 243,
+    "ratio_min": 1.173077,
+    "ratio_min_cell": {
+      "V1": 0.2,
+      "V2": 0.2,
+      "V3": 0.2,
+      "V4": 0.2,
+      "L3det": 0.0
+    },
+    "ratio_max": 21.919146,
+    "ratio_max_cell": {
+      "V1": 0.85,
+      "V2": 0.85,
+      "V3": 0.85,
+      "V4": 0.85,
+      "L3det": 0.918
+    },
+    "ratio_median": 2.186047
+  },
+  "ordering_check": {
+    "permutations_tested": 24,
+    "closed_form_spread": 0.0,
+    "mc_dpr_by_perm": [
+      0.115419,
+      0.115792,
+      0.118369,
+      0.116243
+    ],
+    "mc_spread": 0.0029497711225457274
+  },
+  "closed_form_vs_monte_carlo_diff_max": 0.0061,
+  "degenerate_corners": [
+    {
+      "config": "V1=V2 near-0, L2 decorative",
+      "ratio": 1.002003,
+      "r_L2": 4.3e-05,
+      "r_L3": 0.860686,
+      "r_L2L3": 0.862453
+    },
+    {
+      "config": "V3 near-0 + no V4 crush, L3 decorative",
+      "ratio": 1.001001,
+      "r_L2": 0.113886,
+      "r_L3": 2.8e-05,
+      "r_L2L3": 0.114029
+    }
+  ]
+}

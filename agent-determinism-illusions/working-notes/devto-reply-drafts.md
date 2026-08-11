@@ -1256,3 +1256,71 @@ Settled. Live vs seeded is the one new axis — seeded is my test scenarios, liv
 「observable beats crowded」是同一性质——Red Line Principle 用不同名字论证过：独立性来自对一个「生产者没写的 referent」做重算。小而可见服务这点；大而模糊不行。lobby room 记下了；要真走一条，会是真 claim，不是 seeded test。
 
 ---
+
+## 回复四十六：@Mads Hansen — receipt 不需要 provenance-aware FS；超加性在参数空间结构上成立
+
+**目标文章：** [Weng's Harness Ladder Has a Blind Step](https://dev.to/zxpmail/wengs-harness-ladder-has-a-blind-step-26f1)（Part 9）评论区
+**主题：** Mads 三点：(1) provenance gap 不需要 provenance-aware filesystem——隔离 runner + content-addressed receipt + 独立 trust root；(2) DGM 负面测试清单（forge 同名同内容 / replay / stale / crash-before-publish / race / key 轮换攻破）；(3) 超加性结果的敏感性分析（grid over vector rates + ordering）。
+
+**回复策略：**
+1. 干净认 §5 措辞过强："requires the file system itself to be provenance-aware" 是错误 framing——真正需要的是两个拓扑事实（runner-owned evidence namespace + receipt-as-reference resolved against a trust root the agent doesn't hold），都不是 FS 属性。namespace 半边文章已有（Constraint 1 + §5 escape clause），receipt 半边是缺口，正好 Mads 补上。
+2. receipt 映射系列词汇：content-addressed receipt = author-independent referent（second author，agent 没写的东西）；input-tree digest = drift 轴关闭（stale receipt = 第一作者枚举老化）；独立 trust root = 信道切换（Theorem 2 escape）。负面测试逐条映射已命名失效模式：replay/stale = drift；crash-before-publish = under-inclusion（absence 无信号，append-only 把沉默变成"没发布"）；key compromise = probe-the-probe 递归底（signer 被攻破 = receipt 退回 self-report，DPI bound 上一层复发）；test 套件本身 = mutation testing（plant 已知坏 receipt 验 gate 活性）。
+3. 敏感性分析：三层——① **rate grid**：243 cells，0 sub-additive，闭式证明（结构性质，非标定巧合）；② **模型结构**：共同因子相关（V1/V2/V3 共享 z）保住 ratio≥1；**能力冗余**（L2/L3 挡同一弱点，即文章自己的 "single readonly boundary" 读法）把 ratio 从 4.6× 拖到 <1——w*≈84–94%（取决于能力普遍度），全冗余 0.92× sub-additive。这是 Mads 问 "where it does not remain super-additive" 的真正答案：不在 rate 空间、不在相关空间，在能力空间；③ **Bayesian posterior**：P(ratio≥1)=1（article-centered 和 wide 两种先验都是 1.000），DPR(L2+L3) 90% CI [10.0%,12.6%]/[6.1%,11.7%]——残余是 tight 的，4.6× 的幅度是宽带里的值。ordering 是 no-op——模型保真度限制，诚实承认。**policy-scope 修正：不是"换政策就失效"，是"相关性不破、冗余击穿"。**
+4. 诚实缺口：forge-verify 没实现 receipt——是 roadmap 不是现状。
+5. 更新 Part 9 Constraint Interaction 加敏感性 Update 子节（grid + 结构 + 闭式，三脚本：multi-layer-sensitivity / multi-layer-structure / multi-layer-bayesian）。
+
+---
+
+You're right on all three, and the first one is a correction to how §5 states the requirement.
+
+**On provenance without a provenance-aware filesystem.** §5 says the typed provenance layer "requires the file system itself to be provenance-aware, which standard file systems are not." That's the wrong framing, and your receipt design is the proof. The namespace half was already there — Constraint 1 puts the verify runner in a readonly section, and §5's escape clause already says the gate only reads evidence from paths the agent can't write. What was missing is the *receipt* half, and that doesn't need a provenance-aware filesystem either. It needs two deployment facts, neither of which is a filesystem property: a runner whose evidence namespace the agent cannot write into, and a receipt the agent holds only as a reference, resolved against a trust root the agent doesn't hold. The filesystem never has to attach a provenance label to anything — the runner attaches it, inside the receipt's content-addressed envelope, and the receipt's trust comes from where the verifier resolves it, not from the disk it sits on. "Standard filesystems can't do typed provenance" was a false requirement; they can, once the topology is right.
+
+Mapped onto the series' vocabulary, the receipt is the operational form of something we've been circling for rounds. Mike's runner-independence (Part 4) says verifiability is a property of the check's independence from the generator. The Red Line principle says independence is re-derivation against a referent the producer didn't author. Your receipt is that referent, made concrete: a second author — the runner — that the agent didn't write, whose output the agent can reference but not forge. Two details in your list do specific work. The **input tree/commit digest** binds the verdict to the exact world it verified, which is the drift axis closed by re-derivation: a receipt replayed against a changed commit is a stale first-author enumeration, and the digest is what lets the reader tell. The **separate trust root / append-only store** is the channel switch — the verifier reads the receipt store, not the agent's namespace, which is Theorem 2's escape in its operational form.
+
+**On the negative tests.** The six you list are the right falsification suite, and they map one-to-one onto failure modes the series has already named. Forge-same-filename-and-content from the agent namespace is the DGM case the evidence gate can't distinguish today — the receipt design is the fix, because the verifier no longer reads the agent's namespace at all. Replay-against-changed-commit and stale-cached-receipt are drift — the digests catch both. Crash-after-execution-before-publication is the under-inclusion blind spot: the work happened but left no observable state change, which is exactly the case my feedback-loop experiments can't see (absence carries no signal); an append-only store turns "no receipt" into a definite "the run never published" instead of an ambiguous silence. Race-parallel-runs is the over-inclusion cousin (spurious state). And rotate-or-compromise-the-runner-key is the honest residual: the receipt moves trust to the runner key and the store, so a compromised key turns the receipt back into self-report from a compromised signer — the DPI bound re-emerges one level up. That's the same bottom as probe-the-probe: the regress terminates at a key/identity that has to live outside the agent's reach, ultimately human. It narrows the gap; it doesn't close it — which is §5's conclusion, now with a concrete mechanism instead of a missing one. (Also worth saying: a planted known-bad receipt that must be rejected is the same mutation-testing move as a canary — it checks the gate's liveness, not just its correctness.)
+
+One honest gap on my side: the current forge-verify implementation doesn't have this. §5 was candid that typed provenance isn't shipped; your design is the roadmap, not the status quo.
+
+**On the sensitivity analysis.** Ran it at three levels — the rate grid, the model form, and a posterior over the assumed rates.
+
+**Rates.** Grid over V1, V2, V3, V4 base, and the L3 detection rate (three levels each, 243 cells), exact closed form cross-checked against the same Monte Carlo core the published numbers came from. Zero of 243 cells are sub-additive; the ratio spans 1.17×–21.9× (median 2.19×), with the article's 4.6× inside. The interaction term is closed-form:
+
+```
+R(L2+L3) − R(L2) − R(L3) = (1−FP)(1−αβ)(δ′ − γδ)
+```
+
+where α, β are the failure rates of the L2-blocked vectors (V1, V2), γ is V3's, and δ / δ′ are V4's failure rate without / with L3. It's non-negative whenever L3 doesn't *increase* V4's success — the one thing L3 is guaranteed not to do — so the specific rates don't drive the interaction, they set its magnitude.
+
+**Model form — the load-bearing part.** Two structural variations. Common-factor correlation (V1/V2/V3 share a latent capability, p_v = b_v·z): the ratio stays ≥ 1 at any correlation strength, provably pointwise in z. So correlation alone doesn't break it. What does is *capability redundancy*: if V1/V2/V3 are one capability and L2 and L3 therefore block the *same* weakness — which is exactly the "single readonly boundary" reading of this article's own L2/L3 — the layers stop complementing and start duplicating. A mixture over that redundancy drags the ratio from 4.6× down through 1.0 (at roughly 84–94% shared capability, depending on how prevalent the capability is) to 0.92× at full redundancy: sub-additive. That's where your "not super-additive" lives — not in rate space, not in correlation space, but in capability space, when the layers target the same weakness.
+
+**Posterior over the assumed rates** — your "intervals on defective pass rate." Beta priors centered on the article rates, 200k draws through the closed form: P(ratio ≥ 1) = 1.000 under both article-centered and near-uniform priors, so the *existence* carries zero prior sensitivity. The magnitude moves: ratio 90% CI [2.5×, 12.3×] (article-centered) and [1.4×, 6.4×] (wide). The residual is the tight thing: DPR(L2+L3) 90% CI [10.0%, 12.6%] / [6.1%, 11.7%]. So "L2+L3 leaves a ~10% residual" is prior-robust; the 4.6× headline is a magnitude inside a wide band, not a pinned number.
+
+One fidelity caveat on the ordering dimension you flagged: it's a no-op in this model. First-success pass probability depends only on the *set* of available vectors — P(pass) = 1 − ∏(1−p_v) — so all 24 preference permutations give identical DPR. That's a limit of the simulation, not a real-world claim: a genuine agent's vector preference would matter through mechanisms the model doesn't carry (detection feedback, budget, conditional success on earlier failures).
+
+I've added an Update subsection to Part 9's Constraint Interaction section with the grid, the structural result, and the closed form. Scripts: `multi-layer-sensitivity-test.py` (grid), `multi-layer-structure-test.py` (model form), `multi-layer-bayesian-sensitivity.py` (posterior) — results in `scripts/results-v2/`.
+
+---
+
+**中文意译（评论区仍发英文；此段供自阅）：**
+
+三点都对，第一条是 §5 措辞的修正。
+
+**receipt 不需要 provenance-aware FS。** §5 说 typed provenance "requires the file system itself to be provenance-aware, which standard file systems are not"——错的 framing，你的 receipt 设计就是反证。namespace 半边文章已有（Constraint 1 + §5 escape clause）；缺的是 receipt 半边，而那也不需要 provenance-aware FS。需要的是两个拓扑事实，都不是 FS 属性：runner 的 evidence namespace agent 写不进；agent 只拿到 receipt 的 reference，verifier 对着一个 agent 不持有的 trust root / append-only store 解析。文件系统从不需要给任何东西贴 provenance 标签——标签是 runner 在 receipt 的内容寻址信封里贴的，信任来自解析位置，不来自磁盘。
+
+映射系列词汇：receipt 是 author-independent referent（second author）的落地形式——一个 agent 没写的第二作者，只能引用不能伪造。input-tree/commit digest = drift 轴关闭（对 changed commit replay 的 receipt 就是老化枚举，digest 让读者能看出来）。独立 trust root = 信道切换，Theorem 2 逃逸的操作形态。
+
+**负面测试清单**逐条映射：forge 同名同内容 = DGM 原案，receipt 修复它因为 verifier 根本不读 agent 的 namespace；replay / stale = drift，digest 抓；crash-before-publish = under-inclusion 盲点（干了活但无状态变化 = 无信号，append-only 把沉默变成确定的"没发布"）；race = over-inclusion 表亲；key 攻破 = 诚实残余——trust 移到 runner key + store，key 被攻破 receipt 就退回 compromised signer 的 self-report，DPI bound 上一层复发。这是 probe-the-probe 的同一个底：递归终止于 agent 够不到的 key/身份，最终是人。收窄不消除，与 §5 一致。另外：种一个已知坏 receipt 要求必拒 = 和 canary 一样的 mutation-testing 动作，查的是 gate 活性不只是正确性。
+
+诚实缺口：forge-verify 现在没实现这个——是 roadmap 不是现状。
+
+**敏感性分析跑了三层。**
+
+**① rate grid**：243 cells（V1/V2/V3/V4 base × L3 detection 各三档），0 sub-additive。ratio 从 1.17× 到 21.9×（中位 2.19×），文章 4.6× 在范围内。闭式：R(L2+L3)−R(L2)−R(L3) = (1−FP)(1−αβ)(δ′−γδ)，αβ 是 L2 挡的向量失败率乘积，γ 是 V3 失败率，δ/δ′ 是 V4 有无 L3 的失败率。只要 L3 不**提高** V4 成功率就非负——rates 控制幅度，不控制存在。
+
+**② 模型结构（承重件）**：共同因子相关（V1/V2/V3 共享潜变量 z）——ratio 在任何相关强度下都 ≥1（逐点可证）。真正击穿的是**能力冗余**：V1/V2/V3 是同一个能力、L2 和 L3 挡同一弱点（即文章自己 "single readonly boundary" 的读法）时，两层从互补变重复。混合 w 把 ratio 从 4.6× 拖到 <1（w*≈84–94%，取决于能力普遍度），全冗余 0.92× sub-additive。**这就是 Mads 问的 "where it does not remain super-additive" 的真正答案：不在 rate 空间、不在相关空间，在能力空间——当两层挡的是同一个弱点。**
+
+**③ Bayesian posterior**（Mads 要的 intervals）：Beta 先验（centered on 文章 rates），20 万采样过闭式。P(ratio≥1)=1.000（article-centered 和 wide 两种先验都是）——存在性零先验敏感性。幅度会动：ratio 90% CI [2.5×,12.3×]（centered）/ [1.4×,6.4×]（wide）。残余是 tight 的：DPR(L2+L3) 90% CI [10.0%,12.6%] / [6.1%,11.7%]——"L2+L3 留 ~10% 残余"是先验鲁棒的，4.6× 只是个宽带里的值，不是钉死的数。
+
+ordering 维度是 no-op：first-success 通过概率只依赖未挡向量的**集合**，24 个偏好排列 DPR 全同。这是模型保真度限制不是现实声明——真 agent 的向量偏好会通过模型没携带的机制（detection feedback、budget、conditional success）起作用。**policy-scope 修正：不是"换政策就失效"，是"相关性不破、冗余击穿"。**
+
+---
