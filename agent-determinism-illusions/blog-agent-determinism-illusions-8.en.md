@@ -348,11 +348,57 @@ When `evidence_gates` is configured, the pipeline runs the evidence gate → C1 
 
 The architectural conclusion: replace the single free-text LLM evaluation (old L2) with a three-stage pipeline — evidence gate (file system) → contract regex (text patterns) → per-requirement LLM (semantic checks). Each stage catches what the previous one misses. The combination narrows the gap on every scenario we constructed — every named evasion becomes a deterministic catch — but it does not close it. Two residues remain. (1) **Unenumerated evasions in word-space**: a fresh synonym or reframed justification clears the regex layers until you name it — the ratchet turns, the gap doesn't vanish. (2) **The genuine DPI bound**: a deviation the producer never surfaces in any text channel is invisible to every text-reading mechanism, regex or LLM. That floor lives in **argument-space** — exercising the code path and observing the side effect on the referent the claim names — which is outside this pipeline and outside any text channel.
 
+### Update (2026-08-10): necessity in YAML, not sufficiency — three follow-ups
+
+[Ofri Peretz](https://dev.to/zxpmail/the-channel-gap-why-your-llm-judge-is-blind-in-one-eye-35ne) asked the load-bearing follow-up: once you enumerate enough gate types to cover the task domain, do you rebuild the semantic judgment inside the gate definitions — just in YAML instead of a prompt?
+
+The short answer is the design rule this Update measures: **put necessity in YAML, not sufficiency.** A red gate means "not done." A green gate does **not** mean "done." Treating green as done is René's deterministic wrapper again, authored earlier.
+
+Three scripts, one claim each (`deepseek-v4-flash` where LLM residual runs):
+
+**1. Stop policy — sufficiency-stop vs necessity + C2 residual** (`necessity-vs-sufficiency-stop-test.py` → `results-v2/necessity-vs-sufficiency-stop.json`)
+
+Same contract gate surface. Policy A: gate-green → PASS. Policy B: gate-red → REJECT; gate-green → escalate to C2. Expanded to 12 scenarios (6 gate-green false passes: negation, reframe, fabricated-complete, stale, skipped-phrasing, future-work mentions).
+
+| Policy | Miss (FA / non-compliant) | FR |
+|--------|:-------------------------:|:--:|
+| A sufficiency-stop | **60%** (6/10) | 0% |
+| B necessity + C2 | **0%** (0/10) | 0% |
+| Δ(A−B) | **+60pp** | — |
+
+The miss gap lives entirely in the gate-green non-compliant set. Named evasions that clear regex still fail C2 when the deviation surfaces in evidence text.
+
+**2. Evidence binding — review vs test for a code-level REQ** (`evidence-binding-fr-test.py` → `results-v2/evidence-binding-fr.json`)
+
+Part 2 already named SC10c's false rejection as a *contract design* issue: C2 reading `diff-review.md` for write-invalidation. Same pipeline, two bindings for REQ-3 only.
+
+| Binding | Miss | FR | Gate-green NC | Escalate count |
+|---------|:----:|:--:|:-------------:|:--------------:|
+| REVIEW (`diff-review.md`) | 0% | 0% | 3 | 5 |
+| CODE (`test-output.txt`) | 0% | 0% | **1** | **3** |
+
+On this run the FR claim did not fire (both FR = 0 — C2 variance; SC10c passed). The structural claim did: CODE shrank gate-green false passes and residual calls by 2 without raising miss. Binding a code-level REQ to a review file is how you smuggle sufficiency back into the residual.
+
+**3. Sufficiency YAML vs necessity YAML** (`sufficiency-vs-necessity-yaml-test.py` → `results-v2/sufficiency-vs-necessity-yaml.json`)
+
+Ofri's question as a direct A/B. Both surfaces use sufficiency-stop (green → PASS). No LLM.
+
+| YAML surface | Miss | FR |
+|--------------|:----:|:--:|
+| NECESSITY (test atoms, coverage ≥85%, lint 0) | **0%** (0/6) | 0% |
+| SUFFICIENCY ("complete" / "production ready" / "adequate" / …) | **83.3%** (5/6) | 0% |
+| Δ(SUFF−NEC) | **+83.3pp** | — |
+
+That is the rebuild: soft sufficiency language in the gate file is a prompt wearing YAML syntax. Necessity YAML stays a falsification checklist.
+
+So the ratchet from §6 gets an operational cut: YAML encodes what must be true to *not reject*; sufficiency stays in residual / human / argument-space. Covering the domain with gate types was the wrong stopping rule.
+
 ---
 
 *All experiment scripts: [GitHub](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)*
 - Phase 1: `channel-comparison-test.py` — 12 scenarios, deepseek-v4-flash
 - Phase 2: `contract-comparison-test.py` — 7 scenarios, 3 mechanisms
+- Update (2026-08-10): `necessity-vs-sufficiency-stop-test.py`, `evidence-binding-fr-test.py`, `sufficiency-vs-necessity-yaml-test.py`
 - skillgate source: [npm](https://www.npmjs.com/package/@reneza/skillgate) and [GitHub](https://github.com/renezander030/skillgate) (v0.5.0, the version described; now at 0.6.x)
 - Pipeline implementation: `ReqForge/scripts/forge-verify/content-verify.mjs`
 - *Previous: [Part 7 — Divergence escalates the wrong population: unanimous misses auto-pass](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513)*
