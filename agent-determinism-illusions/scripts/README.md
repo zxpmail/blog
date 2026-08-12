@@ -114,6 +114,7 @@ python alexey-trigger-yield-test.py
 | Tom Jones — conf_desc shuffle / HaluEval agree-set（Part 15） | `conf-desc-miss-shape-test.py`、`agree-set-halueval-probe.py` | `results-v2/conf-desc-miss-shape.json`、`results-v2/agree-set-halueval.json` |
 | Tom Jones — position-adjacency 服从率（Part 15） | `position-adjacency-obedience-test.py`、`position-adjacency-obedience-v2.py` | `results-v2/position-adjacency-obedience.json`、`results-v2/position-adjacency-obedience-v2.json` |
 | Tom Jones — Vinicius 拆分格 A（deepseek × BANANA） | `position-adjacency-obedience-test.py --model deepseek-v4-flash --out …` | `results-v2/position-adjacency-obedience-v1-deepseek.json` |
+| Tom Jones — 写入方权限轴（instrumentation-rung 子线）| `writer-permission-collapse-test.py` | `results-v2/writer-permission-collapse.json` |
 | Mike — HHI pair-join 经验测量 | `pair-join-empirical-test.py` | `results-v2/pair-join-empirical-{slug}.json` + `pair-join-empirical-cross-model.json` |
 | Mike — unique-catch co-fire / 共现 concentration | `unique-catch-cofire-test.py`、`unique-catch-cooccur-dose-test.py`、`unique-catch-cooccur-labels-test.py`、`defect-class-concentration-histogram.py` | `results-v2/unique-catch-cofire.json`、`results-v2/unique-catch-cooccur-*.json`、`results-v2/defect-class-concentration-histogram.json` |
 | Mike — joint-failure monitor live vs late | `joint-failure-monitor-test.py`、`joint-failure-monitor-duration-test.py` | `results-v2/joint-failure-monitor.json`、`results-v2/joint-failure-monitor-duration.json` |
