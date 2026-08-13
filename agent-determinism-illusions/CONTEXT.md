@@ -1,14 +1,15 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Tom Jones 第二轮回帖草稿 + 写入方权限轴五刀实验已落盘（`working-notes/reply-tom-jones-instrumentation-rung.md` + `scripts/writer-permission-collapse-test.py`，未 commit）；五刀全 PASS，C4 对照承重；英文可贴 DEV.to
+- Tom Jones 第三轮回帖 + watermark bootstrap 三刀 + 告警信道铁律三刀已落盘；英文可贴 DEV.to
+- Tom Jones 第二轮 instrumentation-rung + 写入方权限轴五刀已在 bea2a2a
 - Tae Kim 回帖草稿待 commit（`working-notes/reply-tae-kim-validation-channel-fabrication.md`）；英文可贴 DEV.to
 - Part 9 主线：已发；二轮核查修正（Strategy D 标签 + Weng 引文完整化 + 88.3→88.2% 对齐）已合并
 - Part 8 主线：已发；Ofri 必要性/充分性三刀 + Update + 回帖已合并
 
 ## 上次停在哪个位置
-- 草稿：`working-notes/reply-tom-jones-instrumentation-rung.md`（未 commit）
-- 已 push 回帖：Max Quimby（升级线三刀）、Ofri（YAML 必要/充分）、Tom Jones（rate-card null + runtime collapse）
+- 草稿：`working-notes/reply-tom-jones-stale-snapshot.md`（待 push）
+- 已 push 回帖：Max Quimby（升级线三刀）、Ofri（YAML 必要/充分）、Tom Jones（rate-card null + runtime collapse + instrumentation-rung）
 - Part 9 commit 83a2330 已合并
 
 ## 近期关键决定

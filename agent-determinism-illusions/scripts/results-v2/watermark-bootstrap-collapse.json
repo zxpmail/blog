@@ -1,0 +1,176 @@
+{
+  "claim": "Watermark bootstrap: returning now without persisting it drops between-call alerts and reads healthy; persist isolates the axis; persist-now still silently caps pre-boot alerts on the window count",
+  "clock": {
+    "t_preboot": 50,
+    "t_cold": 100,
+    "t_between": 150,
+    "t_second": 200
+  },
+  "configs": {
+    "C1_unpersisted_now": {
+      "persist": false,
+      "log_ids": [
+        "between-call"
+      ],
+      "first": {
+        "now": 100,
+        "cutoff": 100,
+        "persist": false,
+        "watermark_after": null,
+        "reported_ids": [],
+        "reported_n": 0,
+        "dropped_window_n": 0,
+        "dropped_file_n": 0,
+        "dropped_file_ids": [],
+        "error": null,
+        "silent_healthy": true
+      },
+      "second": {
+        "now": 200,
+        "cutoff": 200,
+        "persist": false,
+        "watermark_after": null,
+        "reported_ids": [],
+        "reported_n": 0,
+        "dropped_window_n": 0,
+        "dropped_file_n": 1,
+        "dropped_file_ids": [
+          "between-call"
+        ],
+        "error": null,
+        "silent_healthy": true
+      },
+      "watermark_final": null,
+      "acked": []
+    },
+    "C2_persisted_now": {
+      "persist": true,
+      "log_ids": [
+        "between-call"
+      ],
+      "first": {
+        "now": 100,
+        "cutoff": 100,
+        "persist": true,
+        "watermark_after": 100,
+        "reported_ids": [],
+        "reported_n": 0,
+        "dropped_window_n": 0,
+        "dropped_file_n": 0,
+        "dropped_file_ids": [],
+        "error": null,
+        "silent_healthy": true
+      },
+      "second": {
+        "now": 200,
+        "cutoff": 100,
+        "persist": true,
+        "watermark_after": 150,
+        "reported_ids": [
+          "between-call"
+        ],
+        "reported_n": 1,
+        "dropped_window_n": 0,
+        "dropped_file_n": 0,
+        "dropped_file_ids": [],
+        "error": null,
+        "silent_healthy": false
+      },
+      "watermark_final": 150,
+      "acked": [
+        "between-call"
+      ]
+    },
+    "C3_persist_now_preboot": {
+      "persist": true,
+      "log_ids": [
+        "pre-boot"
+      ],
+      "first": {
+        "now": 100,
+        "cutoff": 100,
+        "persist": true,
+        "watermark_after": 100,
+        "reported_ids": [],
+        "reported_n": 0,
+        "dropped_window_n": 0,
+        "dropped_file_n": 1,
+        "dropped_file_ids": [
+          "pre-boot"
+        ],
+        "error": null,
+        "silent_healthy": true
+      },
+      "second": {
+        "now": 200,
+        "cutoff": 100,
+        "persist": true,
+        "watermark_after": 100,
+        "reported_ids": [],
+        "reported_n": 0,
+        "dropped_window_n": 0,
+        "dropped_file_n": 1,
+        "dropped_file_ids": [
+          "pre-boot"
+        ],
+        "error": null,
+        "silent_healthy": true
+      },
+      "watermark_final": 100,
+      "acked": []
+    }
+  },
+  "faces": {
+    "C1_second_call": {
+      "now": 200,
+      "cutoff": 200,
+      "persist": false,
+      "watermark_after": null,
+      "reported_ids": [],
+      "reported_n": 0,
+      "dropped_window_n": 0,
+      "dropped_file_n": 1,
+      "dropped_file_ids": [
+        "between-call"
+      ],
+      "error": null,
+      "silent_healthy": true
+    },
+    "C2_second_call": {
+      "now": 200,
+      "cutoff": 100,
+      "persist": true,
+      "watermark_after": 150,
+      "reported_ids": [
+        "between-call"
+      ],
+      "reported_n": 1,
+      "dropped_window_n": 0,
+      "dropped_file_n": 0,
+      "dropped_file_ids": [],
+      "error": null,
+      "silent_healthy": false
+    },
+    "C3_cold_start": {
+      "now": 100,
+      "cutoff": 100,
+      "persist": true,
+      "watermark_after": 100,
+      "reported_ids": [],
+      "reported_n": 0,
+      "dropped_window_n": 0,
+      "dropped_file_n": 1,
+      "dropped_file_ids": [
+        "pre-boot"
+      ],
+      "error": null,
+      "silent_healthy": true
+    }
+  },
+  "claims": {
+    "C1_unpersisted_now_drops_between_and_reads_healthy": true,
+    "C2_persisted_now_reports_between": true,
+    "C3_persist_now_silently_caps_preboot_unless_dropped_over_file": true
+  },
+  "all_pass": true
+}

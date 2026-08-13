@@ -1,0 +1,95 @@
+{
+  "claim": "Iron laws 2/5/1 as stated mint new damage on an alerting channel: time-gap suicides healthy idle; backpressure refuses the fire; panic-any conflates first boot with a lost cursor",
+  "thresholds": {
+    "gap_max": 5,
+    "lag_max": 10
+  },
+  "configs": {
+    "C1_law2_sparse_idle": {
+      "law": "L2_interrecord_gap",
+      "suicide": true,
+      "gap": 100,
+      "at_seq": 2,
+      "seq_complete": true,
+      "n_alerts": 2,
+      "healthy_idle": true
+    },
+    "C2_law5_refuse": {
+      "wrote": false,
+      "alarm": true,
+      "lag": 15,
+      "blocked": true,
+      "log_seqs": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "new_seq_on_disk": false
+    },
+    "C2_law5_yell_and_write": {
+      "wrote": true,
+      "alarm": true,
+      "lag": 15,
+      "blocked": false,
+      "log_seqs": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "new_seq_on_disk": true
+    },
+    "C3_law1_cursor": {
+      "panic_any": {
+        "first_boot": "PANIC",
+        "lost": "PANIC",
+        "valid": "RUN"
+      },
+      "three_state": {
+        "first_boot": "NEED_BOOTSTRAP",
+        "lost": "PANIC",
+        "valid": "RUN"
+      }
+    }
+  },
+  "claims": {
+    "C1_law2_false_kills_healthy_idle": true,
+    "C2_law5_backpressure_drops_the_fire_yell_keeps_it": true,
+    "C3_law1_panic_any_conflates_first_boot_with_lost": true
+  },
+  "all_pass": true
+}
