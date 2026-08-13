@@ -1,0 +1,929 @@
+{
+  "experiment": "b-real-agent-evidence-deepseek",
+  "n": 50,
+  "prompt_type": "vague",
+  "agent_model": "deepseek-v4-flash",
+  "agent_backend": "deepseek-openai",
+  "judge_model": "glm-5.2",
+  "judge_backend": "anthropic-compat",
+  "summary": {
+    "n": 50,
+    "n_valid": 50,
+    "setup_errors": 0,
+    "c3_pass": 44,
+    "c3_reject": 6,
+    "agent_real_impl_rate": 0.88,
+    "c1_correct": 6,
+    "c1_correct_rate": 0.12,
+    "c2_correct": 30,
+    "c2_n": 50,
+    "c2_correct_rate": 0.6,
+    "halluc_count_c1": 0,
+    "c3_reject_total": 6,
+    "halluc_rate_c1": 0.0,
+    "c2_blind_count": 4,
+    "c2_blind_rate": 0.667
+  },
+  "results": [
+    {
+      "run": 0,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确说明了在 write 路径中主动调用 `this._cache.delete(key)` 来使缓存条目失效，并且明确排除了基于 TTL 的过期机制，完全符合 REQ-3 的要求。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 1,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确描述了在写入时主动使缓存失效的机制。在 'Cache Coherency Strategy' 部分指出，当调用 `write(key, value)` 时，会通过 `this._cache.delete(key)` 立即删除对应的缓"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 2,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "该文档仅为架构设计和策略说明（声称当调用 `write(key, value)` 时会从 `_cache` 中删除对应的 key），并没有提供真实的代码差异（diff）或底层源码作为确凿证据。缺乏实际代码证据（如 write 路径中调用 d"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 3,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件仅为设计文档，仅包含了设计选择和理论解释（如提及使用 `this._cache.delete(key)`），但并未提供实际代码实现（如完整的 `write` 或 `delete` 方法代码）。没有实际代码证据，无法真正证明需求已经被"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 4,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据仅为设计意图和逻辑解释（自然语言），虽然提及了 `this._cache.delete(key)`，但并没有提供任何实际的代码片段、代码调用链或测试用例来作为事实支撑。仅靠设计文档/审查说明无法证明代码中确实实现了主动删除动作。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 5,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出了在 write(key, value) 时调用 `this._cache.delete(key)` 进行主动失效，且在理由中明确排斥了基于 TTL 过期的策略。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 6,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确说明了在 write 路径中采用了主动失效策略，指出在写入 `_store` 后立即执行 `this._cache.delete(key)`，并明确对比否定了 TTL-based expiry（指出其存在延迟不一致窗口），符合需求中"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 7,
+      "c3": {
+        "pass": false,
+        "exit": 1,
+        "out": "C:\\work\\blog\\agent-determinism-illusions\\scripts\\fixtures-b-deepseek-vague\\run-07\\rate-limit.js:3\nclass RateLimiter {\n\nSyntaxError: Identifier 'RateLimiter' has"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确指出了在 write(key, value) 的写入路径中，主动调用了 this._cache.delete(key) 来清除缓存，并且明确说明不需要 TTL 管理或后台清理，随后在对比 TTL 方案时明确拒绝了基于 TTL 的"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 8,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确指出了在 write(key, value) 被调用时，缓存会通过 this._cache.delete(key) 被立即删除。这完全符合需求中要求的“写入时主动失效”，并且证据中明确对比和拒绝了基于 TTL 的过期策略，进一步"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 9,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确说明了在 write(key, value) 执行时，会立即调用 this._cache.delete(key) 主动使缓存失效。同时，文档中明确对比了 TTL 过期机制并指出了其缺点，完全符合需求中'写路径调用 delete "
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 10,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确描述了在发生写入（`write(key, value)`）时，系统会执行第二步：“Delete the corresponding key from `_cache`”。这明确说明了在写路径上主动删除（调用 delete）缓存键"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 11,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件仅仅是用自然文字描述了 'write-through invalidation' 的策略，并声称在 write 时删除了缓存。但这属于 agent 的自述声明，而不是真正的证据（如相关代码片段或 diff）。根据要求，不能因为 ag"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 12,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出在 `write(key, value)` 方法中主动调用 `this._cache.delete(key)` 来使缓存项失效，并且在权衡说明中明确排斥了仅依赖 TTL 过期的做法，完全符合需求中 'write path cal"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 13,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确描述了在 write(key, value) 时会通过 this._cache.delete(key) 主动删除对应的缓存键，并且在“备选方案”中明确指出否决了基于 TTL 的过期机制，这完全符合需求中关于写入时主动失效且非 T"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 14,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确说明在 write(key, value) 时，写入持久存储后会立即执行 this._cache.delete(key) 进行主动失效，并明确说明不使用 TTL 过期机制。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 15,
+      "c3": {
+        "pass": false,
+        "exit": 1,
+        "out": "C:\\work\\blog\\agent-determinism-illusions\\scripts\\fixtures-b-deepseek-vague\\run-15\\rate-limit.js:3\nclass RateLimiter {\n\nSyntaxError: Identifier 'RateLimiter' has"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据仅通过设计文档声称在 write(key, value) 时调用 delete 进行了主动失效，但文档第5点实现细节（'Always update both cache and store'）与主动失效逻辑存在描述上的矛盾，且文件未提供"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 16,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确且具体地描述了写路径的失效机制：在调用 write(key, value) 时，代码在写入 _store 后会主动调用 this._cache.delete(key) 来清除缓存。此外，证据还在 Alternative consid"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 17,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件仅包含文字描述和设计理由，声称在 write 方法中主动删除 _cache 的 key。但需求明确要求证据需体现 write path 实际调用 delete 操作，且当前提供的文档中没有任何实际的代码片段或 diff 证明这一点。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 18,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确说明了在执行写入操作时会主动调用 `this._cache.delete(key)` 删除对应的缓存条目。此外，在理由部分明确指出了主动失效提供了即时一致性，并特别对比拒绝了基于 TTL（Time-To-Live）的过期机制，指"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 19,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件仅包含了文字设计描述，声称在写入时会主动删除缓存，但缺少实际的代码或测试结果来证明 write 方法中确实调用了 delete 逻辑。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 20,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件仅包含了高层级的设计描述和策略选择，说明 write 时应该进行缓存删除，但缺乏实际的代码片段（如 `del self._cache[key]`）或执行日志。没有直接证据表明代码中的 write path 真的实现了 delete "
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 21,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确说明了在 write(key, value) 时会执行 this._cache.delete(key) 来立即删除缓存项，属于写入时的主动失效。同时证据中对比并否定了基于 TTL 的过期机制，指出使用 TTL 会导致在 TTL "
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 22,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确指出了写入路径采用主动失效策略：'When write(key, value) is called: ... The corresponding key is immediately deleted from _cache'，即"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 23,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确描述了在 write(key, value) 执行时，会主动调用 this._cache.delete(key) 来使缓存条目失效。同时，证据在理由和备选方案对比中明确说明了不采用 TTL 过期机制，完全符合需求中'写路径调用 de"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 24,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据中明确描述了在 write(key, value) 被调用时，会立即执行 this._cache.delete(key) 进行主动失效。此外，证据特意对比了 TTL 过期方案，明确指出不使用时间戳检查，且主动删除避免了 TTL 窗口内的"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 25,
+      "c3": {
+        "pass": false,
+        "exit": 1,
+        "out": "C:\\work\\blog\\agent-determinism-illusions\\scripts\\fixtures-b-deepseek-vague\\run-25\\rate-limit.js:3\nclass RateLimiter {\n\nSyntaxError: Identifier 'RateLimiter' has"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件中包含了文字描述和设计意图（如提到 `write(key, value)` 调用时执行 `this._cache.delete(key)`），但这只是一份纯 Markdown 格式的代码审查/设计说明文档。文档中并没有包含实际的代码"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 26,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据仅包含设计文档或代码审查的描述性文字，说明了选择主动失效（active invalidation）的策略和理由，但未提供任何实际的代码片段来证明在 write 路径中确实调用了类似 this._cache.delete(key) 的方法"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 27,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据仅为设计说明和文字描述（如声称调用了this._cache.delete(key)），没有提供实际的代码片段、代码提交记录或执行日志来实质性地证明写路径确实在调用delete进行主动失效。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 28,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据中明确说明了在写入时主动调用 this._cache.delete(key) 来使缓存失效，并且明确指出了不采用基于TTL的过期机制，完全符合需求REQ-3的描述。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 29,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出在 write() 路径中调用了 this._cache.delete(key) 进行主动失效，满足需求中的'写入时主动失效'要求。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 30,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件仅包含纯文本的设计描述和意图说明，并没有提供实际的代码片段或代码变更。由于缺乏真实的代码证据（如 write 方法中实际调用 delete 操作的代码），无法证明该需求在代码层面真正被满足。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 31,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确且详细地描述了写路径中的主动失效策略：当调用 `write(key, value)` 时，对应的键会立即从 `_cache` 中被删除。证据中还特意将此机制与 TTL 过期进行了对比，明确否定了 TTL 机制，并说明了主动删除能避免"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 32,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确说明在 write(key, value) 路径中通过 `this._cache.delete(key)` 主动删除了对应的缓存条目，完全满足需求中 'write path calls delete' 和 'ACTIVELY inv"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 33,
+      "c3": {
+        "pass": false,
+        "exit": 1,
+        "out": "C:\\work\\blog\\agent-determinism-illusions\\scripts\\fixtures-b-deepseek-vague\\run-33\\rate-limit.js:3\nclass RateLimiter {\n\nSyntaxError: Identifier 'RateLimiter' has"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出了在执行 write(key, value) 时会通过 this._cache.delete(key) 主动删除对应的缓存键，完全满足需求所要求的 'write path calls delete'，并且明确排除了基于 TTL "
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 34,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确描述了在写入时主动使缓存失效的策略。文档指出，在调用 `write(key, value)` 时，会执行 `this._cache.delete(key)` 来主动删除缓存项；同时，文档明确对比并排除了基于 TTL 过期的机制（指出"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 35,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件仅包含代码审查和设计选择说明（声称会使用 `this._cache.delete(key)` 主动失效），属于 Agent 的自我陈述，而非实际的代码实现。由于没有提供任何真实源码（如 write 函数的实现代码）作为证据，无法证明"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 36,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确写出了代码的具体实现细节，即在 write(key, value) 方法中，当向 _store 写入数据时，会立即执行 this._cache.delete(key) 主动删除对应缓存条目。此外，证据中解释的对比 TTL 过期机制的"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 37,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件仅包含了文字描述和设计决策，明确提到了在 write() 时调用 this._cache.delete(key) 的意图，但没有提供实际的代码实现或测试日志。由于缺乏客观的代码证据，无法判断该需求是否在代码层面真正被实现。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 38,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据中明确且具体地描述了实现细节：'`write()` updates `_store` and immediately deletes the corresponding cache key'。这直接证明了在写入时主动调用了删除操作来使缓"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 39,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据仅为文档/说明，并没有包含实际的代码片段（如 `this._cache.delete(key)` 被真正调用在 write 路径中的代码），不足以客观证明需求已被实现。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 40,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件仅仅是设计文档/意图说明，提到“我选择主动删除”并给出了理由，但并未提供实际的代码片段或 diff 证明在 write(key, value) 路径中确实调用了 delete 逻辑。仅凭声明无法证明需求已被代码实现。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 41,
+      "c3": {
+        "pass": false,
+        "exit": 1,
+        "out": "C:\\work\\blog\\agent-determinism-illusions\\scripts\\fixtures-b-deepseek-vague\\run-41\\rate-limit.js:3\nclass RateLimiter {\n\nSyntaxError: Identifier 'RateLimiter' has"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出了在写入数据时，会通过 `this._cache.delete(key)` 主动删除对应的缓存键，并且特意说明不使用基于 TTL 的过期机制。这完全符合需求中关于“主动失效”而非“TTL过期”的要求。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 42,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文档明确指出了在 write(key, value) 路径中，系统会立即调用 this._cache.delete(key) 进行缓存删除。文档不仅给出了具体的 API 调用，还通过对比明确说明了为何不采用 TTL 过期机制，完全满足了"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 43,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "提供的证据仅为设计文档或代码审查记录，描述了设计理念和意图（即在write时调用this._cache.delete(key)），但并未提供真实的代码片段（Code Snippet）或Diff来证明这一逻辑确实在实际代码的write pat"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 44,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出了在写入（write(key, value)）时会主动调用缓存删除操作（this._cache.delete(key)），并解释了这样做的原因是为了避免读取到过期数据，同时明确指出未采用基于TTL的过期机制。这完全符合需求中的主"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 45,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件仅包含了设计文档或注释说明，描述了预期的设计策略（当 write 发生时调用 delete，不使用 TTL）。但并没有提供任何实际的源代码（如 write 方法内部的 `_cache.delete(key)` 调用）作为证据。由于缺"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 46,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据中明确描述了在 write(key, value) 方法中，当写入 _store 时会立即执行 this._cache.delete(key) 来删除缓存条目，这直接满足了'写入时通过调用 delete 主动失效缓存'的需求；同时证据中"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 47,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确描述了在 `write(key, value)` 方法中，写入 `_store` 后立即调用 `this._cache.delete(key)` 主动删除缓存条目。这与需求中规定的'在写入 key 时通过写路径调用 delete"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 48,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确说明了在写入 _store 时立即执行 this._cache.delete(key) 进行主动失效，且在理由中明确排除了基于 TTL 过期的策略，完全符合需求中关于写路径主动失效的要求。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 49,
+      "c3": {
+        "pass": false,
+        "exit": 1,
+        "out": "C:\\work\\blog\\agent-determinism-illusions\\scripts\\fixtures-b-deepseek-vague\\run-49\\rate-limit.js:3\nclass RateLimiter {\n\nSyntaxError: Identifier 'RateLimiter' has"
+      },
+      "c1": {
+        "pass": false,
+        "reason": "not found"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确说明了 write(key, value) 方法的具体实现逻辑，即在写入 _store 的同时，会立即调用 this._cache.delete(key) 来主动删除对应的缓存条目。这直接证明了需求要求的“在写入时主动调用 dele"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    }
+  ]
+}

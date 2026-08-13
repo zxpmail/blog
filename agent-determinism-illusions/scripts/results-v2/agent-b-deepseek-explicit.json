@@ -1,0 +1,929 @@
+{
+  "experiment": "b-real-agent-evidence-deepseek",
+  "n": 50,
+  "prompt_type": "explicit",
+  "agent_model": "deepseek-v4-flash",
+  "agent_backend": "deepseek-openai",
+  "judge_model": "glm-5.2",
+  "judge_backend": "anthropic-compat",
+  "summary": {
+    "n": 50,
+    "n_valid": 50,
+    "setup_errors": 0,
+    "c3_pass": 50,
+    "c3_reject": 0,
+    "agent_real_impl_rate": 1.0,
+    "c1_correct": 50,
+    "c1_correct_rate": 1.0,
+    "c2_correct": 45,
+    "c2_n": 50,
+    "c2_correct_rate": 0.9,
+    "halluc_count_c1": 0,
+    "c3_reject_total": 0,
+    "halluc_rate_c1": null,
+    "c2_blind_count": 0,
+    "c2_blind_rate": null
+  },
+  "results": [
+    {
+      "run": 0,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确描述了在写入路径中通过 `this._cache.delete(key)` 来主动使缓存失效，并明确指出这是 write-through invalidation pattern（主动失效），而不是 relying on TTL"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 1,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出 write(key, value) 方法在执行写入操作时，会通过 this._cache.delete(key) 主动删除缓存项；并且特别强调这不是基于 TTL 的过期，而是每次写入时的主动失效，完全满足需求。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 2,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件中明确描述了 `write(key, value)` 方法在写入源时会主动调用 `this._cache.delete(key)` 来清除缓存，这完全符合需求中'在写入时主动调用 delete 失效缓存（而非依赖 TTL 过期）'的"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 3,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确指出了 `write(key, value)` 方法在执行写入时，主动调用了 `this._cache.delete(key)` 来使缓存失效，而不是依赖 TTL 过期。这直接满足了需求中关于“在写入时主动删除缓存”的规定。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 4,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确说明了 write(key, value) 方法在写入时会主动从 _cache Map 中删除相应的 key，并且强调这是为了强制下一次 get(key) 重新读取，而不是依赖于基于 TTL 的过期机制。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 5,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文档在 'Write-Invalidation on Cache Writes' 部分明确描述了 write(key, value) 方法在执行数据写入操作后，会通过 this._cache.delete(key) 同步、主动地删除对应"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 6,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确展示了 write(key, value) 方法在写入时会主动调用 this._cache.delete(key) 删除缓存项，并明确指出 'No TTL is used; invalidation is explicit an"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 7,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件中明确描述了在 write(key, value) 方法中写入 _store 后，立即调用 this._cache.delete(key) 主动删除缓存键。同时，文件中的 'No TTL dependency' 注释进一步说明失效机"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 8,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确指出了在写入路径中主动调用 `this._cache.delete(key)` 来使缓存失效，并解释了放弃基于 TTL 的过期机制是为了实现即时一致性。这完全满足了 REQ-3 关于写入时主动失效（write-invalidat"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 9,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确展示了 `write(key, value)` 方法的具体实现逻辑，即在写入持久化存储后，主动调用 `this._cache.delete(key)` 删除对应的缓存项。同时，证据中也明确说明了该操作是主动且无条件的（'never "
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 10,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件的 'Write-Invalidation Mechanism' 部分明确指出了写路径中的主动失效逻辑：1) 写入持久化存储后立即调用 `this._cache.delete(key)` 主动删除缓存项；2) 明确说明这不是基于TT"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 11,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确说明了 write 方法在写入 store 后，主动调用了 this._cache.delete(key) 来使缓存失效。这符合需求中要求的'主动失效(ACTIVELY invalidated)'，并且证据中也明确提到了'witho"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 12,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出 `write(key, value)` 方法在写入持久化存储后，使用 `this._cache.delete(key)` 主动删除了缓存项；同时证据中明确排除了基于 TTL 的过期机制，满足了“主动失效”的要求。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 13,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出了在 write 方法（写路径）中执行了 this._cache.delete(key) 操作来主动删除缓存，并且明确说明这是主动失效机制，而非依赖于 TTL 过期。这完全满足了“缓存写入时主动失效”的需求。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 14,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据仅为基于Markdown文档的静态分析，没有提供任何实际的源代码。虽然文档中声称 `write(key, value)` 方法会主动调用 `this._cache.delete(key)` 来使缓存失效，并排除了TTL机制，但缺乏具体的"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 15,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确描述了在写入路径中主动使缓存失效的逻辑：`write(key, value)` 方法在向持久化存储写入数据后，通过 `this._cache.delete(key)` 主动删除了缓存条目。同时，证据中也明确排除了基于 TTL 过"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 16,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确说明了在写入时调用 `this._cache.delete(key)` 来主动使缓存失效，并强调这不同于基于TTL的过期机制（'Unlike TTL-based expiration, this guarantees immed"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 17,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件中的 'Write-Invalidation' 部分明确说明了 write(key, value) 方法在写入 store 时，会主动调用 this._cache.delete(key) 来删除缓存键。此外，证据明确排除了基于 TT"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 18,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确展示了 write-invalidation 策略的实现：在 write(key, value) 方法中，将数据存入 _store 后，立即调用 this._cache.delete(key) 主动删除缓存键。这完全符合需求中“写入"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 19,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确描述了写路径中的主动失效机制。在“Write-Invalidation”部分指出 write(key, value) 方法会立即调用 this._cache.delete(key) 删除缓存项，并且在 Design Decisi"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 20,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件仅为代码审查文档的文字描述，声称使用了写失效机制并提供了对应的逻辑解释。但文档中没有任何实际的代码片段（如具体的 write 方法代码）证明 write 路径中真实调用了 delete 操作，且缺乏测试执行的输出或具体的测试用例代码"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 21,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出了在写路径中主动调用 delete 方法（this._cache.delete(key)）来使缓存失效，并且明确说明了不使用 TTL 过期机制，完全符合需求 REQ-3 中对 write-invalidation 的定义。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 22,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确展示了写路径的实现：在 `write(key, value)` 方法中，不仅将值写入持久化存储 (`this._store[key] = value`)，还立即调用了缓存删除方法 (`this._cache.delete(key)`"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 23,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确描述了在写入数据的路径中会主动调用 `this._cache.delete(key)` 来清除缓存，并且在“Design Choices”部分明确指出了“No TTL for cache”，完全符合“基于主动写入删除而非 TTL"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 24,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件在“Write-Invalidation”部分明确写出了 write(key, value) 的执行逻辑：先存储到持久化存储 (this._store[key])，随后显式调用 this._cache.delete(key) 来主动"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 25,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确描述了 write(key, value) 方法在执行写入操作时，会主动调用 this._cache.delete(key) 删除对应的缓存项，并且明确指出这是一种主动失效策略，不依赖 TTL 过期，完全符合需求。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 26,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据中明确展示了 write(key, value) 方法的实现代码，该方法在写入数据存储 (this._store[key] = value) 后，主动调用了缓存删除 (this._cache.delete(key))。同时，证据中也明确"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 27,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确描述了写入时的主动失效机制：`write(key, value)` 方法在向底层存储写入数据的同时，立即调用 `this._cache.delete(key)` 删除对应的缓存项，并且明确指出这是一种不依赖 TTL 过期的主动失"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 28,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确指出在 write(key, value) 方法中调用了 this._cache.delete(key) 来同步且无条件地主动删除缓存。同时明确说明了这是 write-invalidate 策略，且没有任何 TTL 被用作替代方"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 29,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件只是一份设计说明或代码审查文档，声称在 write 方法中调用了 this._cache.delete(key)。但文档中并没有包含实际的源代码片段来证明该方法真的被实现。根据规则，不能仅凭 agent 的自述声明就判定为通过。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 30,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件中明确提供了代码片段，显示在 `write(key, value)` 方法中，当写入底层 `_store` 时，主动调用了 `this._cache.delete(key)` 来使缓存失效。同时，证据明确指出了不依赖 TTL 过期，"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 31,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据文件中仅通过文字描述声称 write 方法会调用 this._cache.delete(key) 实现主动失效，且非 TTL 衰减，但并未提供真实的底层源码片段、代码差异(diff)或测试日志来证明该机制在代码逻辑中确实被实现并执行。由"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 32,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确指出在 `write(key, value)` 方法中调用了 `this._cache.delete(key)` 来清除缓存，并说明缓存不会被 TTL 过期机制替代（'TTL is not used as a substitut"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 33,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件中明确描述了 `write` 方法的实现细节，指出在写入操作时会主动调用 `this._cache.delete(key)` 来使缓存失效。这直接满足了需求中关于'写入路径调用 delete 主动使缓存失效，而非依赖 TTL 过期'"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 34,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件中的 'Write-Invalidation Mechanism' 部分明确描述了在写入路径中主动调用 `this._cache.delete(key)` 来使缓存失效，并且明确说明这属于 write-through invalid"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 35,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确且具体地描述了 write(key, value) 方法在写入底层存储后，会立即且主动地调用 this._cache.delete(key) 来使缓存失效，并在设计决策中明确排除了对 TTL 过期机制的依赖。这完全符合需求中“主动调"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 36,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出 write(key, value) 方法在执行写入操作时，会主动调用 this._cache.delete(key) 删除缓存，并且明确声明不使用 TTL 过期机制，完全符合需求中关于写入时主动失效（active invali"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 37,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件在 'Write-Invalidation' 和 'Design Decisions' 部分明确说明了 `write(key, value)` 方法会在更新源数据 `_store` 后立即执行删除缓存 `_cache` 中对应键的操"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 38,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确描述了写入时的主动失效机制：`write(key, value)` 方法在写入 `_store` 后，主动调用 `this._cache.delete(key)` 来删除缓存项。证据还特别排除了基于 TTL 的过期机制，指出这是立即"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 39,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确显示了写操作的实现细节：在写入数据时，代码主动调用了 `this._cache.delete(key)` 来使缓存键失效，而不是依赖于 TTL（生存时间）过期。此外，文档中还特别指出了选择这种主动失效机制的原因（提供即时一致性），这"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 40,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出了 write 路径中的主动失效逻辑：`write(key, value)` 方法在将数据持久化到 `_store` 的同时，主动调用了 `this._cache.delete(key)` 来清除缓存。此外，证据明确排除了 TT"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 41,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确说明了在 write(key, value) 写入路径中，会立即调用 this._cache.delete(key) 来主动删除缓存，并且明确强调了这是 write-invalidation 策略而非依赖 TTL 过期。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 42,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确描述了在写入路径中主动调用缓存失效逻辑。文档指出 write(key, value) 方法在写入持久化存储后，会立即调用 this._cache.delete(key) 来删除缓存键，这完全符合需求中“在写入时主动调用 delete"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 43,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确且详细地描述了满足该需求的行为。在 'Write-Invalidation' 部分指出，write(key, value) 方法在写入权威数据存储 (_store) 时，会主动调用 this._cache.delete(key)"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 44,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": false,
+        "reason": "证据仅为设计文档或代码审查说明，描述了 write() 方法将调用 this._cache.delete(key)。但由于没有提供实际的源代码，无法验证该逻辑是否在代码层面真正被实现。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 45,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确描述了在写入路径中主动调用 `this._cache.delete(key)` 来使缓存失效，并明确说明了不依赖 TTL 过期机制，符合需求中关于“写入时主动失效而非基于 TTL”的规定。"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 46,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据明确指出在 `write(key, value)` 方法中，会显式调用 `this._cache.delete(key)` 来主动删除缓存键，并且文本明确说明这是一种 write-invalidate 策略，不依赖于 TTL 过期或定时"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 47,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件明确且详细地描述了写路径的主动失效机制：在 `write(key, value)` 方法中，当 key 被写入时，数据被存入 `_store`，同时调用 `_cache.delete(key)` 来删除对应的缓存项。此外，证据特别强"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 48,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据中明确展示了 write 方法的代码实现。该方法在写入底层数据存储后，直接主动调用了 this._cache.delete(key) 来清除缓存。此外，文字说明中也明确指出这是主动失效策略，而非基于 TTL 过期，完全符合 REQ-3 "
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    },
+    {
+      "run": 49,
+      "c3": {
+        "pass": true,
+        "exit": 0,
+        "out": "PASS: write(key1) invalidated cache[key1] (side effect observed, method name irrelevant)"
+      },
+      "c1": {
+        "pass": true,
+        "reason": "matched"
+      },
+      "c2": {
+        "pass": true,
+        "reason": "证据文件在 'Write-invalidation on Cache Writes' 部分明确描述了写入路径的实现逻辑：在执行 write(key, value) 时，主动调用 this._cache.delete(key) 删除缓存键。同"
+      },
+      "rate_limit_present": true,
+      "diff_review_present": true
+    }
+  ]
+}
