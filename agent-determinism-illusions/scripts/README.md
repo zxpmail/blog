@@ -110,6 +110,8 @@ python alexey-trigger-yield-test.py
 | Kartik — ratchet 准入（人审后仅 binary 进 KB；encode-all 抬 semantic FP；DPI 永不进）| `ratchet-admission-test.py` | `results-v2/ratchet-admission.json` |
 | AI Explore — 跨信道分歧当人审信号（读 channel-comparison.json）| `cross-channel-disagree-signal-test.py` | `results-v2/cross-channel-disagree-signal.json` |
 | Tom Jones — command 门静默误编译 fail-green；known-wrong canary = 路径执行证物 | `gate-miscompile-canary-test.py` | `results-v2/gate-miscompile-canary.json` |
+| Tom Jones — 复合 generated-stamp 藏住 per-check 观察 spread（71.7s / 600s hang） | `composite-stamp-spread-test.py` | `results-v2/composite-stamp-spread.json` |
+| Tom Jones — 简单疗法：文档章盖在 run 开始 t0 vs 写完（挂起不再装新） | `start-stamp-vs-end-stamp-test.py` | `results-v2/start-stamp-vs-end-stamp.json` |
 | Max Quimby — 升级线：固定抽检 vs 人工 yield 自适应 | `escalate-threshold-calibration-test.py` | `results-v2/escalate-threshold-calibration.json` |
 | Max Quimby — 高风险整类进人 vs 均匀抽检（同预算） | `high-risk-direct-human-test.py` | `results-v2/high-risk-direct-human.json` |
 | Max Quimby — 残差策略 4–6（T2 / Alex / dual-line 硬预算） | `residual-strategy-4to6-test.py` | `results-v2/residual-strategy-4to6.json` |

@@ -1,11 +1,12 @@
 # CONTEXT
 
 ## 当前正在做什么
-- 《调频者的困境》：按「最后1分」三缺口改完——待过目
+- Tom Jones 回帖：复合章 + t0 简单疗法（英文可贴）
 
 ## 上次停在哪个位置
-- QBism 说到「取消」形上重量；走私两例拆开；补为何选观察者
-- 未 commit；外部严评曾给 9，余1分指向这三处
+- 可贴：`working-notes/reply-tom-jones-composite-stamp.md`
+- 4 个 GitHub 链接需 commit/push 后才稳
 
 ## 近期关键决定
-- 目标清醒比较文 8.7–9；不追表演性谦逊
+- 正解 per-check；最小安全修复 = generated@t0
+- 回帖不装已修好

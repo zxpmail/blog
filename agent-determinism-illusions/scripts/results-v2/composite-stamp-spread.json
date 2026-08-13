@@ -1,0 +1,87 @@
+{
+  "claim": "Single generated stamp on a composite snapshot cannot report observation spread; per-check stamps make the slowest check visible",
+  "source": "Tom Jones DEV.to follow-up on Part 9 stale-snapshot thread",
+  "method": "offline sim; 71.7s-shaped run + 600s hang on first check",
+  "verdict": "SUPPORT",
+  "claims": {
+    "c1_published_spread_zero_while_real_span": true,
+    "c2_published_spread_equals_obs_span": true,
+    "c3_hang_hidden_under_doc_stamp": true
+  },
+  "runs": {
+    "C1_document_stamp_only": {
+      "generated": 71.7,
+      "observed_at": [
+        0.0,
+        12.0,
+        28.0,
+        45.0,
+        60.0
+      ],
+      "ages_at_write": [
+        71.7,
+        59.7,
+        43.7,
+        26.700000000000003,
+        11.700000000000003
+      ],
+      "max_age": 71.7,
+      "min_age": 11.700000000000003,
+      "true_spread": 60.0,
+      "published_spread": 0.0
+    },
+    "C2_per_check_stamps": {
+      "generated": 71.7,
+      "observed_at": [
+        0.0,
+        12.0,
+        28.0,
+        45.0,
+        60.0
+      ],
+      "ages_at_write": [
+        71.7,
+        59.7,
+        43.7,
+        26.700000000000003,
+        11.700000000000003
+      ],
+      "max_age": 71.7,
+      "min_age": 11.700000000000003,
+      "true_spread": 60.0,
+      "published_spread": 60.0
+    },
+    "C3_hang_600s": {
+      "true_ages": {
+        "generated": 671.7,
+        "observed_at": [
+          0.0,
+          612.0,
+          628.0,
+          645.0,
+          660.0
+        ],
+        "ages_at_write": [
+          671.7,
+          59.700000000000045,
+          43.700000000000045,
+          26.700000000000045,
+          11.700000000000045
+        ],
+        "max_age": 671.7,
+        "min_age": 11.700000000000045,
+        "true_spread": 660.0
+      },
+      "inherited_ages_under_doc_stamp": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "published_spread": 0.0,
+      "hang_s": 600.0
+    }
+  },
+  "tom_field_note": "71.7s is the small dose; fresh stamp over a drain last run at boot is the same defect with the gap grown to hours"
+}
