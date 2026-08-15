@@ -118,6 +118,7 @@ python alexey-trigger-yield-test.py
 | Peter — 假绿拦截率（合成目录按类 + 两种混合物头条%） | `false-green-interception-rates-test.py` | `results-v2/false-green-interception-rates.json` |
 | P/G — 已知坏样 canary 作废错探针；策略软化检测 ALERT | `pg-canary-governance-test.py` | `results-v2/pg-canary-governance-test.json` |
 | P — 变异投毒：杀掉声称 side effect 后探针必须变红 | `probe-mutation-poison-test.py` | `results-v2/probe-mutation-poison.json` |
+| Tom Jones — 错工具穿 schema 墙；return 后断言假绿；负对照 vs 通过率 | `wrong-tool-negative-control-test.py` | `results-v2/wrong-tool-negative-control.json` |
 | Max Quimby — 升级线：固定抽检 vs 人工 yield 自适应 | `escalate-threshold-calibration-test.py` | `results-v2/escalate-threshold-calibration.json` |
 | Max Quimby — 高风险整类进人 vs 均匀抽检（同预算） | `high-risk-direct-human-test.py` | `results-v2/high-risk-direct-human.json` |
 | Max Quimby — 残差策略 4–6（T2 / Alex / dual-line 硬预算） | `residual-strategy-4to6-test.py` | `results-v2/residual-strategy-4to6.json` |
