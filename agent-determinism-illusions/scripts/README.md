@@ -115,6 +115,7 @@ python alexey-trigger-yield-test.py
 | Peter — 报告权在可信父进程：窄 IPC + 超时/协议 fail-closed + harness digest | `parent-reporting-authority-test.py` | `results-v2/parent-reporting-authority.json` |
 | Peter — 缺口：只信孩子 IPC / 污染夹具 / 同库改 digest → 父进程仍可假绿 | `parent-oracle-hollow-test.py` | `results-v2/parent-oracle-hollow.json` |
 | Peter — 残留假绿：父进程 import 孩子；可写的「外钉」被一起改 | `parent-residual-false-green-test.py` | `results-v2/parent-residual-false-green.json` |
+| Peter — 外钉抗回滚：选型复活假绿裁决；密封 minimum 拦；可写 minimum 再开 | `parent-pin-rollback-test.py` | `results-v2/parent-pin-rollback.json` |
 | Peter — 假绿拦截率（合成目录按类 + 两种混合物头条%） | `false-green-interception-rates-test.py` | `results-v2/false-green-interception-rates.json` |
 | P/G — 已知坏样 canary 作废错探针；策略软化检测 ALERT | `pg-canary-governance-test.py` | `results-v2/pg-canary-governance-test.json` |
 | P — 变异投毒：杀掉声称 side effect 后探针必须变红 | `probe-mutation-poison-test.py` | `results-v2/probe-mutation-poison.json` |

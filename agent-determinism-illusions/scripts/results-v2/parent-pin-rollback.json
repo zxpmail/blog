@@ -1,0 +1,70 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "Digest authenticity admits rollback selection of an older approved false-green harness; sealed monotonic minimum blocks selection; a CI-writable minimum reopens the same channel",
+  "source": "Peter DEV.to follow-up on Part 10 reporting-authority thread (rollback / authorization history)",
+  "observation": {
+    "invalidated": false
+  },
+  "sealed_minimum": 2,
+  "approval_history": [
+    {
+      "label": "v1",
+      "version": 1,
+      "digest": "a9e1d8fc4fb9eedd02fcdd2d3a06b53bd4de7d9281dc2ceaed223a9611d0cf4a",
+      "false_green_channel": true
+    },
+    {
+      "label": "v2",
+      "version": 2,
+      "digest": "feb79ca064002436751f42114f91eee3b6c11090b8905c2e273dbddf103e3bca",
+      "false_green_channel": false
+    }
+  ],
+  "claims": {
+    "A_digest_only_rollback_false_green": true,
+    "B_sealed_minimum_blocks_v1": true,
+    "C_selection_not_rewrite": true,
+    "D_writable_minimum_reopens_rollback": true
+  },
+  "cell_A_digest_only": {
+    "select_v1": {
+      "admit": "PASS",
+      "adjudicate": "PASS",
+      "ci_green": true
+    },
+    "select_v2": {
+      "admit": "PASS",
+      "adjudicate": "REJECT",
+      "ci_green": false
+    }
+  },
+  "cell_B_sealed_minimum": {
+    "select_v1": {
+      "admit": "REJECT",
+      "adjudicate": null,
+      "ci_green": false
+    },
+    "select_v2": {
+      "admit": "PASS",
+      "adjudicate": "REJECT",
+      "ci_green": false
+    }
+  },
+  "cell_C_selection_vs_rewrite": {
+    "rewrite_v1_bytes_admit": "REJECT",
+    "select_unmodified_v1_admit": "PASS"
+  },
+  "cell_D_minimum_writability": {
+    "ci_writable_minimum": 1,
+    "writable_min_select_v1": {
+      "admit": "PASS",
+      "adjudicate": "PASS",
+      "ci_green": true
+    },
+    "sealed_min_select_v1": {
+      "admit": "REJECT",
+      "adjudicate": null,
+      "ci_green": false
+    }
+  }
+}
