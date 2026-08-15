@@ -1,14 +1,14 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Peter Part 10：透明日志半边 — 双视图分叉 + 攻击面族（A–F）+ 回帖
+- 三条腿命题笔记已落；Tom 手写/基率回帖与 Peter 分叉回帖待发
 
 ## 上次停在哪个位置
-- 可贴：`working-notes/reply-peter-equivocation.md`
-- 实验：`parent-pin-equivocation-test.py` → SUPPORT（六格 A–F）
-- 设计：`working-notes/parent-pin-equivocation-design.md`
+- 命题：`working-notes/three-legs-agent-eval.md`
+- Tom 可贴：`working-notes/reply-tom-jones-hand-suite-base-rate.md`（实验 SUPPORT，未 push）
+- Peter 可贴：`working-notes/reply-peter-equivocation.md`（已 push）
 
 ## 近期关键决定
-- 收：密封底 ≠ 跨检查点一致性（两谓词）
-- 锁：D 同尺寸换根在诚实不可写旧头下仍抓；E 改写旧头 / F 私有旧头不对照 → 再开双绿（假设边界，非安全证明）
-- 不测：见证/法定人数；不报发生率
+- 可靠评估三腿：统计基线 / 双向约束 / 版本治理；缺一则另两腿的「绿」可局部幻觉
+- B=working-note 先写；C=总纲索引缓做（README 跟帖表暂代）
+- 不升格正式 Part，除非读者再追问整图
