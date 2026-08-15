@@ -1,0 +1,19 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "Import-into-parent and writable 'external' pins recreate false green after the three hardenings",
+  "sealed_invalidated": false,
+  "claims": {
+    "R1_parent_import_false_green": true,
+    "R2_writable_external_pin_swap": true
+  },
+  "R1": {
+    "parent_import_trusts_child_return": "PASS",
+    "out_of_process_sealed_adjudication": "REJECT"
+  },
+  "R2": {
+    "writable_ci_secret_pin": "PASS",
+    "offline_attestation_pin": "REJECT",
+    "honest_matches_attestation": "PASS",
+    "attestation_pin": "e991015ecc55cd4e1ca52fcc3f680ce38e6125733350cd7b96e9e1bd5a12fe6e"
+  }
+}

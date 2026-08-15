@@ -112,6 +112,12 @@ python alexey-trigger-yield-test.py
 | Tom Jones — command 门静默误编译 fail-green；known-wrong canary = 路径执行证物 | `gate-miscompile-canary-test.py` | `results-v2/gate-miscompile-canary.json` |
 | Tom Jones — 复合 generated-stamp 藏住 per-check 观察 spread（71.7s / 600s hang） | `composite-stamp-spread-test.py` | `results-v2/composite-stamp-spread.json` |
 | Tom Jones — 简单疗法：文档章盖在 run 开始 t0 vs 写完（挂起不再装新） | `start-stamp-vs-end-stamp-test.py` | `results-v2/start-stamp-vs-end-stamp.json` |
+| Peter — 报告权在可信父进程：窄 IPC + 超时/协议 fail-closed + harness digest | `parent-reporting-authority-test.py` | `results-v2/parent-reporting-authority.json` |
+| Peter — 缺口：只信孩子 IPC / 污染夹具 / 同库改 digest → 父进程仍可假绿 | `parent-oracle-hollow-test.py` | `results-v2/parent-oracle-hollow.json` |
+| Peter — 残留假绿：父进程 import 孩子；可写的「外钉」被一起改 | `parent-residual-false-green-test.py` | `results-v2/parent-residual-false-green.json` |
+| Peter — 假绿拦截率（合成目录按类 + 两种混合物头条%） | `false-green-interception-rates-test.py` | `results-v2/false-green-interception-rates.json` |
+| P/G — 已知坏样 canary 作废错探针；策略软化检测 ALERT | `pg-canary-governance-test.py` | `results-v2/pg-canary-governance-test.json` |
+| P — 变异投毒：杀掉声称 side effect 后探针必须变红 | `probe-mutation-poison-test.py` | `results-v2/probe-mutation-poison.json` |
 | Max Quimby — 升级线：固定抽检 vs 人工 yield 自适应 | `escalate-threshold-calibration-test.py` | `results-v2/escalate-threshold-calibration.json` |
 | Max Quimby — 高风险整类进人 vs 均匀抽检（同预算） | `high-risk-direct-human-test.py` | `results-v2/high-risk-direct-human.json` |
 | Max Quimby — 残差策略 4–6（T2 / Alex / dual-line 硬预算） | `residual-strategy-4to6-test.py` | `results-v2/residual-strategy-4to6.json` |

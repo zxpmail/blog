@@ -1,0 +1,46 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "Poisoning the claimed side effect must redden the probe; a probe that stays green is mis-aimed or vacuous",
+  "claims": {
+    "M0_honest_PASS": true,
+    "M1_no_invalidate_REJECTs_correct_probe": true,
+    "M2_wrong_referent_exposes_misaimed_probe": true,
+    "M3_always_green_fails_mutation_test": true
+  },
+  "caches": {
+    "M0": {
+      "seed": 1
+    },
+    "M1": {
+      "seed": 1,
+      "k": "value"
+    },
+    "M2": {
+      "seed": 1,
+      "k": "value"
+    }
+  },
+  "verdicts": {
+    "M0_correct": "PASS",
+    "M1_correct": "REJECT",
+    "M2_correct": "REJECT",
+    "M2_wrong_key_probe": "PASS",
+    "M1_always_pass_probe": "PASS"
+  },
+  "mutation_tests": {
+    "M1_vs_correct": {
+      "passed": true
+    },
+    "M2_vs_correct": {
+      "passed": true
+    },
+    "M2_vs_wrong_key_probe": {
+      "passed": false,
+      "stayed_green": true
+    },
+    "M1_vs_always_pass": {
+      "passed": false,
+      "mutation_test_failed": true
+    }
+  }
+}

@@ -1,12 +1,11 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Tom Jones 回帖：复合章 + t0 简单疗法（英文可贴）
+- P：变异投毒必红小实验 — SUPPORT
 
 ## 上次停在哪个位置
-- 可贴：`working-notes/reply-tom-jones-composite-stamp.md`
-- 4 个 GitHub 链接需 commit/push 后才稳
+- `probe-mutation-poison-test.py` 已跑
+- Peter/P/G 实验链齐；回帖未写
 
 ## 近期关键决定
-- 正解 per-check；最小安全修复 = generated@t0
-- 回帖不装已修好
+- 探针不保证正确；突变后仍绿 = 看错/空探针
