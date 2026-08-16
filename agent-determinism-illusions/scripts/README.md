@@ -107,6 +107,7 @@ python alexey-trigger-yield-test.py
 | Xiao Man — fallback+日志 / 退役信号（主次分歧 × 两种流量）| `declaration-anchor-fallback-logging-test.py` | `results-v2/declaration-anchor-fallback-logging.json` |
 | Xiao Man — 双绿同错→传感静音（P8 mute cell）| `declaration-anchor-agree-wrong-silence-test.py` | `results-v2/declaration-anchor-agree-wrong-silence.json` |
 | Xiao Man — 外部参照探针（P2/P8 恒等定理；tripwire 关闭静音格）| `declaration-anchor-external-reference-test.py` | `results-v2/declaration-anchor-external-reference.json` |
+| Xiao Man — 无信号≠健康：重放门/对账零/accept-only 同构；§9 ESCALATE | `absence-not-health-test.py` | `results-v2/absence-not-health.json` |
 | Kartik — ratchet 准入（人审后仅 binary 进 KB；encode-all 抬 semantic FP；DPI 永不进）| `ratchet-admission-test.py` | `results-v2/ratchet-admission.json` |
 | AI Explore — 跨信道分歧当人审信号（读 channel-comparison.json）| `cross-channel-disagree-signal-test.py` | `results-v2/cross-channel-disagree-signal.json` |
 | Tom Jones — command 门静默误编译 fail-green；known-wrong canary = 路径执行证物 | `gate-miscompile-canary-test.py` | `results-v2/gate-miscompile-canary.json` |

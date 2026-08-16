@@ -1,0 +1,117 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "Quiet-looking aggregates (zero catches, zero downgrades, high pass rate) collide healthy with silent/dead; sabotage-must-score-zero (or an explicit ran/alive bit) is a necessary probe before printing health-from-quiet — shared failure grammar across three cells, not the only fix across all evaluation legs",
+  "source": "Xiao Man DEV.to on Part 10 §9 abstain / failure grammar (replay gate, reconciler, accept-only verifier)",
+  "epistemic_bar": "Synthetic isomorphic catalog. NC is necessary for printing green-from-quiet, not sufficient for system safety, and not the only operational fix (explicit ran/alive, base-rate half, version governance remain other legs). No field prevalence.",
+  "colloquial_internal": "安静≠安全；通过率≠可信度。已知破坏打非零，是否定『传感器还活着』的证据——活性探针，不是安全证明。",
+  "claims": {
+    "R_replay_quiet_collides_until_nc": true,
+    "Q_zero_downgrades_ambiguous_until_ran": true,
+    "A_accept_only_pass_rate_vs_nc": true,
+    "E_no_referent_escalates": true
+  },
+  "cell_R_replay_gate": {
+    "dead_quiet": {
+      "alive": false,
+      "catches": 0,
+      "events_n": 2
+    },
+    "live_clean": {
+      "alive": true,
+      "catches": 0,
+      "events_n": 2
+    },
+    "without_nc": {
+      "dead": {
+        "print_healthy": true,
+        "reason": "catches_eq_zero_only",
+        "nc_ok": null
+      },
+      "live": {
+        "print_healthy": true,
+        "reason": "catches_eq_zero_only",
+        "nc_ok": null
+      }
+    },
+    "with_nc": {
+      "dead": {
+        "print_healthy": false,
+        "reason": "blocked",
+        "nc_ok": false,
+        "nc_catches": 0
+      },
+      "live": {
+        "print_healthy": true,
+        "reason": "zero_catches_and_nc_fired",
+        "nc_ok": true,
+        "nc_catches": 1
+      }
+    }
+  },
+  "cell_Q_reconciler": {
+    "never_ran": {
+      "report": {
+        "ran": false,
+        "downgrades": 0
+      },
+      "gate": {
+        "raw_zero": true,
+        "print_healthy": false,
+        "ambiguous_if_zero_only": true
+      }
+    },
+    "checked_clean": {
+      "report": {
+        "ran": true,
+        "downgrades": 0
+      },
+      "gate": {
+        "raw_zero": true,
+        "print_healthy": true,
+        "ambiguous_if_zero_only": true
+      }
+    },
+    "checked_dirty": {
+      "report": {
+        "ran": true,
+        "downgrades": 2
+      },
+      "gate": {
+        "raw_zero": false,
+        "print_healthy": false,
+        "ambiguous_if_zero_only": false
+      }
+    }
+  },
+  "cell_A_accept_only": {
+    "broken": {
+      "mode": "broken",
+      "pass_rate": 1.0,
+      "reliability": 0.5,
+      "n": 8
+    },
+    "honest": {
+      "mode": "honest",
+      "pass_rate": 0.5,
+      "reliability": 1.0,
+      "n": 8
+    },
+    "print_broken": {
+      "print_pass_rate": false,
+      "sabotage_accepted": 3,
+      "nc_ok": false,
+      "pass_rate_if_allowed": null
+    },
+    "print_honest": {
+      "print_pass_rate": true,
+      "sabotage_accepted": 0,
+      "nc_ok": true,
+      "pass_rate_if_allowed": 0.5
+    }
+  },
+  "cell_E_ternary": {
+    "no_referent": "ESCALATE",
+    "referent_ok": "PASS",
+    "referent_bad": "REJECT"
+  }
+}

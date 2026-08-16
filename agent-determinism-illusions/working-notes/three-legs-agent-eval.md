@@ -28,6 +28,7 @@ Triggers: Tom（手写负对照 / 语料基率）+ Peter（密封底 / 一致性
 
 - `wrong-tool-negative-control-test.py` — 破坏样必须打零；通过率可掩盖可靠度  
 - `supersession-hand-vs-corpus-test.py` — 手写五格三规则全绿；合成语料上 cue+一锚滥报，修好后压下  
+- `absence-not-health-test.py` — 重放门/对账零/accept-only 同构「无信号≠健康」；§9 ESCALATE  
 
 **腿 3**
 
