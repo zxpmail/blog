@@ -1,0 +1,94 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "Spread costs a consumer only when it can cross their decision threshold; healthy ~72s under an hours-scale threshold buys no per-check fix today, but that measurement is an observation not a bound — under END stamping a grown hang can cross while the file still prints ~0; START/t0 makes crossing visible (bound, not hope); live re-read retires stamp authority only for cheap fields",
+  "source": "Tom Jones DEV.to follow-up on Weng harness-ladder stamp thread (threshold / today / t0 bound / live alert count)",
+  "epistemic_bar": "Synthetic schedule (~71.7s / 600s / 4000s). Thresholds are fixtures matching his hours vs hang instrument, not his field telemetry. No claim they shipped the t0 fix.",
+  "thresholds_s": {
+    "T_hours": 3600.0,
+    "T_10m": 600.0
+  },
+  "claims": {
+    "H_healthy_under_hours_threshold_today": true,
+    "X_hang_crosses_10m_END_silent_START_announces": true,
+    "B_healthy_not_bound_hours_cross_possible": true,
+    "L_live_reread_bypasses_lying_stamp": true
+  },
+  "cell_H_healthy_vs_hours": {
+    "schedule": {
+      "observed_at": [
+        0.0,
+        12.0,
+        28.0,
+        45.0,
+        60.0
+      ],
+      "write_time": 71.7,
+      "true_spread": 60.0,
+      "true_oldest_age": 71.7
+    },
+    "ages": {
+      "END_published_age": 0.0,
+      "START_published_age": 71.7,
+      "true_oldest_age": 71.7,
+      "true_spread": 60.0
+    },
+    "crosses_T_hours": {
+      "true_spread": false,
+      "END": false,
+      "START": false
+    }
+  },
+  "cell_X_hang_vs_10m": {
+    "schedule": {
+      "observed_at": [
+        0.0,
+        612.0,
+        628.0,
+        645.0,
+        660.0
+      ],
+      "write_time": 671.7,
+      "true_spread": 660.0,
+      "true_oldest_age": 671.7
+    },
+    "ages": {
+      "END_published_age": 0.0,
+      "START_published_age": 671.7,
+      "true_oldest_age": 671.7,
+      "true_spread": 660.0
+    },
+    "consumer_reread_END": false,
+    "consumer_reread_START": true
+  },
+  "cell_B_observation_not_bound": {
+    "healthy_true_oldest": 71.7,
+    "long_hang": {
+      "schedule": {
+        "observed_at": [
+          0.0,
+          4012.0,
+          4028.0,
+          4045.0,
+          4060.0
+        ],
+        "write_time": 4071.7,
+        "true_spread": 4060.0,
+        "true_oldest_age": 4071.7
+      },
+      "ages": {
+        "END_published_age": 0.0,
+        "START_published_age": 4071.7,
+        "true_oldest_age": 4071.7,
+        "true_spread": 4060.0
+      }
+    },
+    "consumer_reread_END": false,
+    "consumer_reread_START": true
+  },
+  "cell_L_live_reread": {
+    "doc_alert_count": 0,
+    "live_alert_count": 3,
+    "stamp_only_decision": 0,
+    "live_supersede_decision": 3
+  }
+}
