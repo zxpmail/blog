@@ -1,13 +1,13 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Peter 拜占庭回帖已含：实验 SUPPORT + ReqForge forge-smoke 真门（待两仓 commit/push）
+- Tom Part 10：对照/仪器信道错位（第四不变量）实验 + 回帖
 
 ## 上次停在哪个位置
-- 可贴：`working-notes/reply-peter-byzantine-quorum.md`
-- Blog 实验：`parent-pin-byzantine-quorum-test.py`（未 commit）
-- ReqForge 门：`policy-witness-quorum.mjs`（未 commit）
+- 可贴：`working-notes/reply-tom-jones-control-channel.md`
+- 实验：`control-channel-mismatch-test.py` → SUPPORT（M/R）
+- 三条腿笔记已加先验：信号信道对齐
 
 ## 近期关键决定
-- 回帖两刀：交点条件证伪 2/3；CI 缺收据则红 = 真有用
-- DEV HMAC ≠ 生产见证集
+- 收：信道对齐在三腿之下；假 BROKEN 比未证明更贵；注册≠开火
+- 不贬三腿；不复现 Tom 二进制
