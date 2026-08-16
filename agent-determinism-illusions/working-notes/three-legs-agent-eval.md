@@ -35,6 +35,7 @@ Triggers: Tom（手写负对照 / 语料基率）+ Peter（密封底 / 一致性
 - `parent-reporting-authority-test.py` 及后续 hollow / residual — 报告权  
 - `parent-pin-rollback-test.py` — 密封 minimum 关选型回滚  
 - `parent-pin-equivocation-test.py` — 密封底 ≠ 跨检查点一致性；旧头可写 / 私有旧头不对照再开双绿  
+- `parent-pin-witness-freshness-test.py` — 两首次 job 无见证双绿；见证阈值外检分叉；单调进度堵冻结  
 
 ## 认识论尺子
 
