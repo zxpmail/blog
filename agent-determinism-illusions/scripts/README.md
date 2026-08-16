@@ -120,6 +120,7 @@ python alexey-trigger-yield-test.py
 | Peter — 外钉抗回滚：选型复活假绿裁决；密封 minimum 拦；可写 minimum 再开 | `parent-pin-rollback-test.py` | `results-v2/parent-pin-rollback.json` |
 | Peter — 双视图分叉：本地密封底两绿；旧 STH+consistency 抓 fork；D/E/F 假设边界 | `parent-pin-equivocation-test.py` | `results-v2/parent-pin-equivocation.json` |
 | Peter — 见证阈值 gossip + 冻结/单调进度（W0/W1/F0/F1） | `parent-pin-witness-freshness-test.py` | `results-v2/parent-pin-witness-freshness.json` |
+| Peter — 拜占庭双签：2/3 双绿；3/4 挡住；last-head / 可携收据 / 见证集可写残差 | `parent-pin-byzantine-quorum-test.py` | `results-v2/parent-pin-byzantine-quorum.json` |
 | Peter — 假绿拦截率（合成目录按类 + 两种混合物头条%） | `false-green-interception-rates-test.py` | `results-v2/false-green-interception-rates.json` |
 | P/G — 已知坏样 canary 作废错探针；策略软化检测 ALERT | `pg-canary-governance-test.py` | `results-v2/pg-canary-governance-test.json` |
 | P — 变异投毒：杀掉声称 side effect 后探针必须变红 | `probe-mutation-poison-test.py` | `results-v2/probe-mutation-poison.json` |

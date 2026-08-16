@@ -36,6 +36,12 @@ Triggers: Tom（手写负对照 / 语料基率）+ Peter（密封底 / 一致性
 - `parent-pin-rollback-test.py` — 密封 minimum 关选型回滚  
 - `parent-pin-equivocation-test.py` — 密封底 ≠ 跨检查点一致性；旧头可写 / 私有旧头不对照再开双绿  
 - `parent-pin-witness-freshness-test.py` — 两首次 job 无见证双绿；见证阈值外检分叉；单调进度堵冻结  
+- `parent-pin-byzantine-quorum-test.py` — 双签下 2/3 双绿；3/4 交点挡住；见证集可写残差  
+
+**落地挂点（ReqForge，非博客玩具）**
+
+- `ReqForge/scripts/forge-smoke/policy-witness-quorum.mjs` — CI `pnpm forge-smoke`：缺 3/4 收据则挡绿  
+- 政策：`ReqForge/.forge/policy-version.json` + `witness-receipts/`（DEV HMAC，见 `POLICY-WITNESS.md`）
 
 ## 认识论尺子
 

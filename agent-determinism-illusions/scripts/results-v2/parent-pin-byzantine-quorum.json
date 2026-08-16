@@ -1,0 +1,73 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "Under one Byzantine double-signing witness, 2-of-3 lets both conflicting roots reach threshold; 3-of-4 (n=3f+1,q=2f+1,f=1) blocks dual-admit. Retaining last head rejects inconsistent advances; conflicting receipts are portable evidence. CI-writable witness-set membership reopens the 2-of-3 channel — quorum intersection plus governed membership, not a raw threshold fraction; toy keys ≠ BFT proof",
+  "source": "Peter DEV.to follow-up on witness-freshness thread (Byzantine double-sign / quorum intersection)",
+  "epistemic_bar": "Synthetic catalog. Intersection condition illustrated for f=1 only. Not a general BFT proof; membership/rotation governance shown as residual reopen, not a full append-only registry.",
+  "quorum_rule": {
+    "bad": {
+      "n": 3,
+      "q": 2,
+      "f": 1,
+      "note": "q <= (n+f)/2 — unsafe"
+    },
+    "good": {
+      "n": 4,
+      "q": 3,
+      "f": 1,
+      "note": "n=3f+1, q=2f+1"
+    }
+  },
+  "claims": {
+    "B0_two_of_three_dual_admit_under_double_sign": true,
+    "B1_three_of_four_blocks_dual_admit": true,
+    "R_retain_last_rejects_inconsistent": true,
+    "E_portable_conflicting_receipts": true,
+    "G_writable_membership_reopens_two_of_three": true
+  },
+  "cell_B0": {
+    "q": 2,
+    "root_X_met": true,
+    "root_Y_met": true,
+    "signers_X": [
+      "A",
+      "B"
+    ],
+    "signers_Y": [
+      "B",
+      "C"
+    ]
+  },
+  "cell_B1": {
+    "q": 3,
+    "n": 4,
+    "root_X_met": true,
+    "root_Y_met": false,
+    "signers_X": [
+      "A",
+      "B",
+      "C"
+    ],
+    "signers_Y": [
+      "B",
+      "D"
+    ]
+  },
+  "cell_R": {
+    "first_sign_ok": true,
+    "second_inconsistent_rejected": true
+  },
+  "cell_E": {
+    "equivocation": true,
+    "roots": [
+      "rootXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "rootYbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+  },
+  "cell_G": {
+    "after_shrink_to_ABC_q2": {
+      "root_X": true,
+      "root_Y": true
+    },
+    "note": "membership treated as CI-writable → same dual-admit as B0"
+  }
+}
