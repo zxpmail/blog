@@ -4,6 +4,8 @@ Date: 2026-08-16
 Status: working-note（可引用；尚未升格为正式 Part）  
 Triggers: Tom（手写负对照 / 语料基率）+ Peter（密封底 / 一致性 / 报告权）
 
+相关：`measurement-tool-blind-spots.md`（测量工具盲区清单——本页的「焊死」索引）。
+
 ## 命题
 
 构建可靠的智能体评估系统，不能只靠「写用例」和「算准确率」。它需要三条腿同时支撑——并且有一条**先验**：
@@ -43,7 +45,8 @@ Triggers: Tom（手写负对照 / 语料基率）+ Peter（密封底 / 一致性
 **落地挂点（ReqForge，非博客玩具）**
 
 - `ReqForge/scripts/forge-smoke/policy-witness-quorum.mjs` — CI `pnpm forge-smoke`：缺 3/4 收据则挡绿  
-- 政策：`ReqForge/.forge/policy-version.json` + `witness-receipts/`（DEV HMAC，见 `POLICY-WITNESS.md`）
+- 政策：`ReqForge/.forge/policy-version.json` + `witness-receipts/`（DEV HMAC，见 `POLICY-WITNESS.md`）  
+- 残差夹具：`ReqForge/scripts/__tests__/policy-witness-self-authorship.test.ts` — 删门/伪造法定人数/换见证集在同信任域下仍可绿（自签）
 
 ## 认识论尺子
 
