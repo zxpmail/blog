@@ -1,91 +1,28 @@
-# Agent Determinism Illusions — 实验与文章
+# Agent Determinism Illusions — 实验库
 
-用实验数据拆解 AI Agent 工程中流行的"确定性"神话,给出经过实证检验的生产级 Agent 设计原则。
+AI Agent 工程中流行"确定性"神话的可复现实验脚本与结果。配套文章发布在 **[dev.to/zxpmail](https://dev.to/zxpmail)**（Agent Determinism Illusions 系列、Judging vs. Building essay 系列、红线法则等）。
 
-## 快速入口
+文章正文里指向 `github.com/zxpmail/blog` 的实验链接全部落在本仓 `scripts/`。
 
-如果你是第一次来,按这个顺序读:
+## 目录
 
-1. **[红线法则](/agent-determinism-illusions/blog-redline-principle.zh.md)**——独立文章,不依赖系列。3 组核心实验,结论:生产级 Agent 需要客观收敛信号,不是更聪明的循环设计
-2. **Agent Determinism Illusions 系列**(技术主线)——从拆靶子到给替代方案,一条完整弧线
-3. **Judging vs. Building in the AI Era**(程序员视角 essay)——五篇,从"判的疲惫"到"论证怎么辩护"
+- `scripts/` — 实验脚本（每个脚本一个断言，独立可跑）+ `test_cases/` + `results-v2/`（结果 JSON/JSONL）
+- `samples/` — 参考场景副本（供读者查阅；脚本内联自己的场景，不加载这些文件）
+- 实验索引：[scripts/README.md](scripts/README.md)
 
-## 文章索引(按类型)
+## 复跑
 
-### 1. Agent Determinism Illusions 系列(技术主线)
+```bash
+# 零依赖实验（纯 Python）
+python agent-determinism-illusions/scripts/lexical-overlap-test.py
 
-中文(5 篇):
+# 需要 LLM API 的实验
+export ANTHROPIC_BASE_URL=...
+export ANTHROPIC_AUTH_TOKEN=...
+python agent-determinism-illusions/scripts/temp0-determinism-test.py
+```
 
-| 篇 | 标题 | 核心 |
-|----|------|------|
-| 主文 | 我用四组数据拆穿了一篇 7000 行的「生产级」Agent 文章 | 靶子三刀 + embedding 自拆 |
-| 续篇一 | …这次连我自己也拆了 | embedding 自拆展开 |
-| 续篇二 | 0%假阳是个会骗人的指标 | 三档模型权衡曲线 |
-| 续篇三 | 把「架构画了」当「问题解决了」 | 六刀拆自己的 Harness 方案 |
-| 续篇四 | LLM 质量检查的替代方案:确定性路由 + 抽样 | 风险分流框架 + 三刀修正 |
-| [第 14 篇](blog-agent-determinism-illusions-14.zh.md) | Harness 不是编排壳：闸门先于编排——一份工程备忘录 | 运行时闸门 vs 稻草人编排；假接受↓ / 假拒绝有代价 |
-| [第 15 篇](blog-agent-determinism-illusions-15.zh.md) | D+T2 只决定谁进门；预算决定谁被看见 | 流内排序 / 双线；Update：conf_desc 非安全 fallback；agree-set 镜像 |
-
-英文(4 篇 + 后续):
-
-| # | dev.to 标题 | HN 标题 |
-|---|-----------|---------|
-| 1 | I tested the 'deterministic agent loop' claims with four experiments. They all failed — including my own fix. | Lexical overlap, temperature 0, phase gates: tested and failed |
-| 2 | I tested 3 models as AI agent quality inspectors: the stronger the model, the more valid work it rejects | 3 model tiers as agent quality inspectors — the false-positive/false-rejection tradeoff |
-| 3 | I designed a Harness to fix my agent's quality problem — then found 6 flaws in my own design | 6 flaws in a human-in-the-loop agent quality Harness |
-| 4 | An alternative to LLM quality gates: deterministic routing + sampling | Risk-based agent output quality: an alternative to LLM quality gates |
-| [14](blog-agent-determinism-illusions-14.en.md) | Harness Is a Gate, Not an Orchestrator — an engineering memo | Gates before orchestration; strawman ORCH contrast |
-| [15](blog-agent-determinism-illusions-15.en.md) | D+T2 names who enters; budget names who gets seen | Rank-inside-stream / dual-line; Update: conf_desc not safe fallback |
-
-> 第 5–13 篇文件见仓库 `blog-agent-determinism-illusions-{n}.{zh,en}.md`（部分未上架索引表）。第 15 篇已上架索引。
-
-### 2. Judging vs. Building in the AI Era(essay 系列)
-
-| # | 中文 | 英文 | 核心 |
-|---|------|------|------|
-| 1 | [判的疲惫](blog-essay-judging-fatigue.zh.md) | [Judging Fatigue](blog-essay-judging-fatigue.en.md) | 验证系统到底是什么用——解释了一种说不清的疲惫 |
-| 2 | [从 "show me your code" 到 "show me your idea"](blog-essay-show-idea.zh.md) | [From "show me your code" to "show me your idea"](blog-essay-show-idea.en.md) | code 失去裁判功能,idea 没有裁判 |
-| 3 | [镜子照不到思想](blog-essay-mirror-no-thought.zh.md) | [The Mirror Cannot Reflect Thought](blog-essay-mirror-no-thought.en.md) | 工具只能照见惯性,照不到思想 |
-| 4 | [Harness 的边界](blog-essay-harness-border.zh.md) | [The Boundary of the Harness](blog-essay-harness-border.en.md) | 兜底层不能被 prompt 化 |
-| 5 | [一次审稿里被钉了六处](blog-essay-six-defense-lines.zh.md) | [A Reviewer Nailed Me in Six Places](blog-essay-six-defense-lines.en.md) | 零实验立场文：声称与举证责任怎么对齐 |
-
-> **空白期附注（归档用）：** 写作中有过「脸热、脑子却空」的段落，定稿时故意捡回，不另附过程 diff。五篇宜作带体温的认知证词合读，而非擦亮的方法论手册。
-
-### 3. 红线法则(独立方法论)
-
-| 语言 | 标题 | 核心 |
-|------|------|------|
-| 中文 | [红线法则:生产级 Agent 的收敛条件](blog-redline-principle.zh.md) | 同一任务有红线 vs 无红线,收敛率 +78%(N=3 指示性) |
-| 英文 | [The Red Line Principle](blog-redline-principle.en.md) | objective stop signal outperforms LLM self-judgment |
-
-### 4. 附录与勘误
-
-| 文章 | 用途 |
-|------|------|
-| [Fabricated claim apology (中文)](blog-fabricated-claim-apology.zh.md) | 修正声明:系列中一处虚构引用 |
-| [Fabricated claim apology (English)](blog-fabricated-claim-apology.en.md) | Correction notice: a fabricated quote in the series |
-
-## 实验脚本
-
-`scripts/` 目录下 15 个可复跑 Python 脚本:
-
-| 脚本 | 实验 | 依赖 |
-|------|------|------|
-| `lexical-overlap-test.py` | 词汇重叠阈值(30 对样本) | 无 |
-| `temp0-determinism-test.py` | 温度 0 输出一致性 | API |
-| `phasegate-formalism-test.py` | Phase Gate 假阳率 | 无 |
-| `embedding-semantic-test.py` | embedding 同义/反义分离 | Ollama |
-| `harness-verify-test.py` | 三档质检权衡(参数化,三后端) | Ollama/API |
-| `trace-length-test.py` | Agent 轨迹审核时间 | 无 |
-| `spc-behavior-test.py` | SPC 格式异常检测 | 无 |
-| `spc-coldstart-test.py` | SPC 冷启动基线漂移模拟 | 无 |
-| `routing-accuracy-test.py` | 路由分类准确率(40 条任务) | 无 |
-| `redline-v2-experiment.py` | 红线对比实验(支持 `--task-file`) | Ollama/API |
-| `harness-kernel.py` | 可部署闸门进程(NDJSON/HTTP) | 可选 API/cc-switch |
-| `prod-gate-acceptance.py` | 生产路径闸门验收 A/B/C/D | 可选 `--live-llm` |
-| `gate-vs-orch-controlled.py` | 闸门 vs 编排对照+消融+Wilson CI | 可选 `--live-l2` |
-| `handoff-protocol-sim.py` | 人工介入协议仿真 | 无 |
-| `convergence-loop-test.py` | 收敛循环条件 | Ollama/API |
+每个脚本的 docstring 写明：被测断言、方法、依赖、预期结果、如何证伪。
 
 ## 协议
 

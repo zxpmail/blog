@@ -4,13 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-`agent-determinism-illusions/` is a **research blog + reproducible-experiment** repository. It is not an application. Outputs are:
+`agent-determinism-illusions/` is the **reproducible-experiment repository** for the Agent Determinism Illusions series (published on [dev.to/zxpmail](https://dev.to/zxpmail)). It is not an application. It contains:
 
-- **Articles** (`blog-*.md`) — Chinese (`.zh.md`) and English (`.en.md`) variants of the same content. Three groupings: (1) the **Agent Determinism Illusions series** — Part 1 (main article, both locales), Parts 2–4 (English-only, published), Parts 5–9 (both locales, unpublished, post-merge), filenames `blog-agent-determinism-illusions-{part}.{locale}.md`; (2) the **"Judging vs. Building in the AI Era" essay series** — five essays (`blog-essay-judging-fatigue`, `blog-essay-show-idea`, `blog-essay-mirror-no-thought`, `blog-essay-harness-border`, `blog-essay-six-defense-lines`), each with `series:` frontmatter and both locales; (3) **standalones** — `blog-redline-principle` (methodology), `blog-fabricated-claim-apology` (correction appendix).
 - **Experiment scripts** (`scripts/*.py`) — standalone Python files that falsify or validate specific claims. Each script is self-documenting (docstring states the claim under test, sample size, dependencies, env vars, expected result).
-- **Inputs and results** — `samples/*.json` (reference scenario copies for the user — **not loaded by any script**, each script hardcodes its own `SCENARIOS`), `scripts/test_cases/*.py` (hand-written tests for the redline tasks), `scripts/results-v2/` (JSON/JSONL output from the Phase-2 experiments).
+- **Inputs and results** — `samples/*.json` (reference scenario copies for the reader — **not loaded by any script**, each script hardcodes its own `SCENARIOS`), `scripts/test_cases/*.py` (hand-written tests for the redline tasks), `scripts/results-v2/` (JSON/JSONL output from the Phase-2 experiments).
 
-Read `agent-determinism-illusions/README.md` for the article map and `agent-determinism-illusions/scripts/README.md` for the experiment index before editing either area.
+**Articles, reply drafts, and status memos are NOT in this repo** — they live in a private docs repository (`blog/` directory: `articles/`, `working-notes/`, `CONTEXT.md`). Published articles link into this repo's `scripts/` paths, which must stay stable. Experiment numbers cited in articles (`N=3`, `N=5`, …) are load-bearing — rerun the script before changing any result that prose depends on.
+
+Read `agent-determinism-illusions/scripts/README.md` for the experiment index before editing that area.
 
 ## Running things
 
@@ -60,10 +61,11 @@ Common env vars:
 - **Newer experiments write to `scripts/results-v2/`.** Output filenames use model slugs (e.g. `qwen3-0-5b.jsonl`, `deepseek-v4-flash_summary.json`). The directory is created on demand via `Path(__file__).parent / "results-v2"`; no setup needed.
 - **Scenarios are inline.** Every experiment script hardcodes its `SCENARIOS` list at the top. The JSON files in `samples/` are reference copies for the user — they are not loaded by any script. To change scenario inputs, edit the script.
 - **`redline-v2-experiment.py` accepts `--task-file`** — see `scripts/test_cases/README.md` for the JSON format. This is the only script that loads external scenarios.
+- **Generated agent-output directories are not tracked** (`.gitignore`: `scripts/fixtures-b*/`). Tracked fixtures are hand-written (e.g. `scripts/argument-space/fixtures/`, `fixtures-rewrite-attack/`); per-run agent outputs live in the results JSON, not the tree.
 
 ## The conceptual architecture (read before editing experiments)
 
-The articles build a layered verification pipeline iteratively across the series. New experiments usually extend or refute one layer:
+The series builds a layered verification pipeline iteratively across parts. New experiments usually extend or refute one layer:
 
 ```
 L0  evidence gate        — file exists & non-empty   (deterministic, ~0ms, no model)
@@ -72,12 +74,14 @@ L2  per-requirement LLM  — LLM judges each REQ atom   (model, ~1s × N_REQ)
 L3  human                — residual ambiguous cases
 ```
 
-Without a contract, the pipeline degrades to L0 → Channel-A (free-text LLM judge). The Data Processing Inequality (DPI) is the recurring theoretical constraint: a text-channel evaluator cannot detect a compliance gap that is not present in the text. The skillgate design (file-system channel) is the proposed escape — see `working-notes/pipeline-architecture.md` and `working-notes/compliance-gap-test.md`.
+Without a contract, the pipeline degrades to L0 → Channel-A (free-text LLM judge). The Data Processing Inequality (DPI) is the recurring theoretical constraint: a text-channel evaluator cannot detect a compliance gap that is not present in the text. The skillgate design (file-system channel) is the proposed escape.
 
 Two recurring experiment patterns:
 
-1. **Channel comparison** — text-channel LLM (Channel A) vs. file-system gate (Channel B). See `channel-comparison-test.py`, `working-notes/channel-comparison-experiment.md`.
+1. **Channel comparison** — text-channel LLM (Channel A) vs. file-system gate (Channel B). See `channel-comparison-test.py`.
 2. **Directional failure** — paraphrase vs. antonym vs. unrelated pairs, measured across model tiers. See `directional-failure-v2.py`, `embedding-semantic-test.py`.
+
+A third pattern from the argument-space line: **oracle hardening under adversarial producers** — synonym attacks vs. rewrite attacks (special-case-key, stack-detect, cache-intercept, prototype poison, exit-override), split into data-channel (closed by randomized keys × multi-channel probes) and control-channel (needs capability isolation). See `argument-space/rewrite-attack-test.py`.
 
 ### The P-series progression (read before adding a new "P" script)
 
@@ -93,10 +97,3 @@ A sequence of build-on-each-other scripts (P1 → P2 → P3 → P3b → P4 → E
 | `forge-verify-layered-prototype.py` | Can deterministic Layer 0/1 absorb the garbage so the LLM only sees semantic residual? | All of the above as motivation |
 
 When asked to add another experiment in this line, extend the table rather than start a parallel naming scheme. P-series scripts inline their own copy of the 8 Phase Gate scenarios (L1-L4 legitimate, G1-G4 garbage) and share the `ANTHROPIC_*` env-var contract.
-
-## Editing articles
-
-- Article filename formats: `blog-agent-determinism-illusions-{part}.{locale}.md` (main series), `blog-essay-{slug}.{locale}.md` (essays in the "Judging vs. Building in the AI Era" series), `blog-{slug}.{locale}.md` (standalones like `redline-principle`, `fabricated-claim-apology`). Locales are `zh`, `en`. Do not change an existing file's locale suffix — multiple locales are kept in sync by the author, not auto-translated.
-- When updating a claim, check whether the same claim appears in the appendix articles (`blog-fabricated-claim-apology.{en,zh}.md`, `blog-redline-principle.{en,zh}.md`) or across the essay series (`blog-essay-*`) — keeping these consistent matters more than brevity.
-- Experiment numbers in articles (`N=3`, `N=5`, etc.) are load-bearing — they tie the prose to specific script runs. Do not round or change them without re-running the script.
-- The `working-notes/` directory holds experiment design notes, architecture diagrams, and reply drafts — not published posts.
