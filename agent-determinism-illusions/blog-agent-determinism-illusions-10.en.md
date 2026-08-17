@@ -6,7 +6,7 @@
 
 ---
 title: "The Third Predicate: Argument-Space Verification, Tested"
-published: false
+published: true
 description: "Mike Czerwinski argued the scope-matches-claim predicate lives in argument-space, not word-space — the only floor a synonym can't walk through. Five scenarios × three evaluators put it to the test."
 tags: ai, llm, agents, testing
 canonical_url: ""
