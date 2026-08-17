@@ -1,0 +1,98 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "Signature trusts one view; two first-time jobs can dual-admit without witnesses. A witness threshold on exact (root, size) makes conflicting views externally detectable; monotonic progress blocks an old but self-consistent freeze. Upgrade from trusting the authority key alone toward a witness-set threshold — necessary governance step, not full-system safety proof",
+  "source": "Peter DEV.to follow-up on equivocation thread (checkpoint gossip / freeze / three properties)",
+  "epistemic_bar": "Toy HMAC witnesses ≠ deployed quorum. Threshold independence / non-collusion assumed, not proven. Offline fail-closed is a policy choice. Synthetic catalog only.",
+  "three_properties": {
+    "inclusion": "selected version in one presented view",
+    "consistency": "one observed view extends another (see equivocation script)",
+    "witness_agreement": "conflicting views externally detectable via receipts"
+  },
+  "claims": {
+    "W0_first_time_dual_admit_without_witnesses": true,
+    "W1_threshold_blocks_fork_and_log_detects": true,
+    "F0_freeze_passes_consistency_only": true,
+    "F1_monotonic_and_offline_fail_closed": true
+  },
+  "cell_W0": {
+    "job_A": {
+      "admit": "PASS",
+      "reason": "local_inclusion_and_floor"
+    },
+    "job_B": {
+      "admit": "PASS",
+      "reason": "local_inclusion_and_floor"
+    }
+  },
+  "cell_W1": {
+    "job_A": {
+      "admit": "PASS",
+      "reason": "local_plus_witness_threshold",
+      "witness_ok": true,
+      "receipts_n": 2
+    },
+    "job_B": {
+      "admit": "REJECT",
+      "reason": "witness_threshold_unmet",
+      "witness_ok": false,
+      "receipts_n": 1
+    },
+    "receipt_log_roots": {
+      "equivocation": true,
+      "distinct_roots": [
+        "5c7c0d071ec179124767b77ab1d89ef7d8c9aa0a19ec2ac192a7fed582f8d33f",
+        "f4e1b90ce7dae87cf1ad5502095fa61a3ded68b72223aaeb9ceb8a834bd7bb7d"
+      ]
+    },
+    "threshold": 2,
+    "witnesses": [
+      "w1",
+      "w2",
+      "w3"
+    ]
+  },
+  "cell_F0": {
+    "repeat_honest_consistency_only": {
+      "admit": "PASS",
+      "reason": "self_consistent_freeze"
+    }
+  },
+  "cell_F1": {
+    "frozen_at_watermark": {
+      "admit": "REJECT",
+      "reason": "no_monotonic_progress",
+      "watermark": 1,
+      "got": 1
+    },
+    "advanced": {
+      "admit": "PASS",
+      "reason": "strict_progress",
+      "watermark": 1,
+      "got": 2
+    },
+    "offline_fail_closed": {
+      "admit": "REJECT",
+      "reason": "offline_fail_closed"
+    },
+    "repeat_at_watermark_2": {
+      "admit": "REJECT",
+      "reason": "no_monotonic_progress",
+      "watermark": 2,
+      "got": 2
+    }
+  },
+  "heads": {
+    "honest": {
+      "tree_size": 2,
+      "root": "f4e1b90ce7dae87cf1ad5502095fa61a3ded68b72223aaeb9ceb8a834bd7bb7d",
+      "minimum": 2,
+      "signature": "30b23789ee8cfc4006793ce3e606c732f01f8a8d78416484b580e277c03ee0c4"
+    },
+    "fork": {
+      "tree_size": 1,
+      "root": "5c7c0d071ec179124767b77ab1d89ef7d8c9aa0a19ec2ac192a7fed582f8d33f",
+      "minimum": 1,
+      "signature": "35d074f7dbee1002ba0a33b4ab14383726985df14eed1deadc50bdf000281659"
+    }
+  }
+}

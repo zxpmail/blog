@@ -1,0 +1,156 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "A hand-authored supersession suite can score green on an over-firing middle rule; only a corpus base-rate measurement exposes cue+one-anchor swallowing almost all candidates — sabotage-zero and population-not-all-one are different halves",
+  "source": "Tom Jones DEV.to follow-up on Part 10 negative-control thread (hand suite blind spot / supersession corpus)",
+  "epistemic_bar": "Synthetic catalog sized near his report (~400), not a replay of 443/156 transcripts. Shares and percentages are shape claims, not replications of his table.",
+  "claims": {
+    "H_hand_suite_green_on_all_three_rules": true,
+    "C_corpus_R1_overfire_R2_bounded": true,
+    "V_verb_anchors_false_match": true,
+    "discipline_two_halves": true
+  },
+  "hand_suite": {
+    "R0": {
+      "all_match": true,
+      "rows": [
+        {
+          "id": "real_revision",
+          "expect": true,
+          "flagged": true,
+          "match": true
+        },
+        {
+          "id": "explicit_reversal",
+          "expect": true,
+          "flagged": true,
+          "match": true
+        },
+        {
+          "id": "retraction_vocab",
+          "expect": true,
+          "flagged": true,
+          "match": true
+        },
+        {
+          "id": "generic_collision",
+          "expect": false,
+          "flagged": false,
+          "match": true
+        },
+        {
+          "id": "unrelated_pair",
+          "expect": false,
+          "flagged": false,
+          "match": true
+        }
+      ]
+    },
+    "R1": {
+      "all_match": true,
+      "rows": [
+        {
+          "id": "real_revision",
+          "expect": true,
+          "flagged": true,
+          "match": true
+        },
+        {
+          "id": "explicit_reversal",
+          "expect": true,
+          "flagged": true,
+          "match": true
+        },
+        {
+          "id": "retraction_vocab",
+          "expect": true,
+          "flagged": true,
+          "match": true
+        },
+        {
+          "id": "generic_collision",
+          "expect": false,
+          "flagged": false,
+          "match": true
+        },
+        {
+          "id": "unrelated_pair",
+          "expect": false,
+          "flagged": false,
+          "match": true
+        }
+      ]
+    },
+    "R2": {
+      "all_match": true,
+      "rows": [
+        {
+          "id": "real_revision",
+          "expect": true,
+          "flagged": true,
+          "match": true
+        },
+        {
+          "id": "explicit_reversal",
+          "expect": true,
+          "flagged": true,
+          "match": true
+        },
+        {
+          "id": "retraction_vocab",
+          "expect": true,
+          "flagged": true,
+          "match": true
+        },
+        {
+          "id": "generic_collision",
+          "expect": false,
+          "flagged": false,
+          "match": true
+        },
+        {
+          "id": "unrelated_pair",
+          "expect": false,
+          "flagged": false,
+          "match": true
+        }
+      ]
+    }
+  },
+  "corpus": {
+    "n": 400,
+    "kind_counts": {
+      "single_anchor_cue_noise": 342,
+      "planted_revision": 32,
+      "clean_unrelated": 26
+    },
+    "rates": {
+      "R0": {
+        "flagged": 46,
+        "n": 400,
+        "share": 0.115
+      },
+      "R1": {
+        "flagged": 374,
+        "n": 400,
+        "share": 0.935
+      },
+      "R2": {
+        "flagged": 32,
+        "n": 400,
+        "share": 0.08
+      }
+    }
+  },
+  "verb_residual": {
+    "a": "please remove the unused import then select another module",
+    "b": "stop and use remove carefully when you select files to keep",
+    "r1_verb_anchors_flags": true,
+    "r1_noun_anchors_flags": false,
+    "claim": true
+  },
+  "rule_defs": {
+    "R0": "term Jaccard >= 0.18",
+    "R1": "cue in B + >=1 shared noun anchor",
+    "R2": "cue in B + >=2 shared noun anchors + Jaccard >= 0.12"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "verdict": "SUPPORT",
+  "peter_split": {
+    "behavioral_oracle": "randomized/argument-space probes (Part 10 C3)",
+    "reporting_authority": "trusted parent + narrow IPC + digest"
+  },
+  "expected_digest": "417328bc3a360757199bf3eb79881d861172d5b3ba38d75473029e33f359593d",
+  "claims": {
+    "A1_in_process_adversary_converts_reject": true,
+    "A2_parent_ignores_child_exit_and_PASS_banner": true,
+    "A3_hang_fail_closed": true,
+    "A4_malformed_fail_closed": true,
+    "A5_digest_mismatch_reject": true,
+    "A6_honest_pass": true
+  },
+  "runs": {
+    "A1_in_process": {
+      "observation_ok": false,
+      "verdict": "PASS"
+    },
+    "A2": {
+      "mode": "fail_obs_fake_pass",
+      "timed_out": false,
+      "exit_code": 0,
+      "stdout": "{\"obs\": \"fail\"}\nPASS\n",
+      "ipc_line": "{\"obs\": \"fail\"}",
+      "elapsed_s": 0.106,
+      "parent_verdict": "REJECT"
+    },
+    "A3": {
+      "mode": "hang",
+      "timed_out": true,
+      "exit_code": null,
+      "stdout": "",
+      "ipc_line": null,
+      "elapsed_s": 0.821,
+      "parent_verdict": "REJECT"
+    },
+    "A4": {
+      "mode": "malformed",
+      "timed_out": false,
+      "exit_code": 0,
+      "stdout": "{\"obs\": \"ok\", \"extra\": true}\n",
+      "ipc_line": "{\"obs\": \"ok\", \"extra\": true}",
+      "elapsed_s": 0.118,
+      "parent_verdict": "REJECT"
+    },
+    "A5": {
+      "mode": "honest_ok",
+      "timed_out": false,
+      "exit_code": 0,
+      "stdout": "{\"obs\": \"ok\"}\n",
+      "ipc_line": "{\"obs\": \"ok\"}",
+      "elapsed_s": 0.098,
+      "parent_verdict": "REJECT",
+      "digest_ok": false
+    },
+    "A6": {
+      "mode": "honest_ok",
+      "timed_out": false,
+      "exit_code": 0,
+      "stdout": "{\"obs\": \"ok\"}\n",
+      "ipc_line": "{\"obs\": \"ok\"}",
+      "elapsed_s": 0.107,
+      "parent_verdict": "PASS",
+      "digest_ok": true
+    }
+  }
+}

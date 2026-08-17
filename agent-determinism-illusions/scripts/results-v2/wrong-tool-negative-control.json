@@ -1,0 +1,62 @@
+{
+  "verdict": "SUPPORT",
+  "tom": {
+    "wrong_tool_residual": "schema-valid wrong tool walks through",
+    "directional": "accept wrong, never reject right",
+    "negative_control": "sabotage must score zero before real metrics"
+  },
+  "claims": {
+    "A_synonym_blocked_wrong_tool_passes": true,
+    "B_broken_ge5_false_accept_0_false_reject": true,
+    "B_broken_never_rejects_right": true,
+    "B_fixed_clears_sabotage": true,
+    "C_pass_rate_hides_broken": true,
+    "C_negative_control_catches_broken": true,
+    "C_fixed_reliability_1": true
+  },
+  "A": {
+    "synonym_tool": "REJECT",
+    "wrong_tool_schema": "PASS",
+    "wrong_tool_intent_match": false,
+    "right_tool": "PASS"
+  },
+  "B": {
+    "broken_sabotage": {
+      "false_accept": 7,
+      "false_reject": 0,
+      "n": 8
+    },
+    "fixed_sabotage": {
+      "false_accept": 0,
+      "false_reject": 0
+    },
+    "broken_right": {
+      "rows": [
+        {
+          "name": "assert_before_return_true",
+          "verdict": "PASS",
+          "expect": "PASS"
+        },
+        {
+          "name": "assert_only_true",
+          "verdict": "PASS",
+          "expect": "PASS"
+        }
+      ],
+      "false_accept": 0,
+      "false_reject": 0,
+      "n": 2
+    },
+    "fixed_right": {
+      "false_reject": 0
+    }
+  },
+  "C": {
+    "broken_pass_rate_mixed": 1.0,
+    "fixed_pass_rate_mixed": 0.75,
+    "broken_reliability": 0.125,
+    "fixed_reliability": 1.0,
+    "negative_control_false_accepts_broken": 7,
+    "negative_control_false_accepts_fixed": 0
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "Trusted parent + narrow IPC protects reporting authority; without parent-owned observation and externally pinned digest, the parent notarizes false green",
+  "ground_truth_invalidated": false,
+  "claims": {
+    "H1_child_lied_ipc_false_green": true,
+    "H2_fixture_poison_false_green": true,
+    "H3_colocated_digest_placebo": true
+  },
+  "H1": {
+    "child": {
+      "exit_code": 0,
+      "stdout": "{\"obs\": \"ok\"}\n",
+      "ipc_line": "{\"obs\": \"ok\"}"
+    },
+    "parent_trusts_child_ipc": "PASS",
+    "parent_self_observe": "REJECT"
+  },
+  "H2": {
+    "child": {
+      "exit_code": 0,
+      "stdout": "{\"obs\": \"fail\"}\n",
+      "ipc_line": "{\"obs\": \"fail\"}"
+    },
+    "poisoned_file": {
+      "invalidated": true
+    },
+    "parent_reads_poisoned_file": "PASS",
+    "parent_sealed_fixture": "REJECT"
+  },
+  "H3": {
+    "tampered_body": "verify-parent-v1-BACKDOOR|fixtures=sealed|policy=no-net",
+    "colocated_check": "PASS",
+    "external_pin_check": "REJECT",
+    "honest_matches_external_pin": "PASS",
+    "external_pin": "097feeb7587f8ee52ef6c840d1228790fcf4b94d521075d7e024fc7692f96066"
+  }
+}

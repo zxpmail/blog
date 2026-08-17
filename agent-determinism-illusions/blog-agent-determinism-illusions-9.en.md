@@ -244,6 +244,26 @@ This is why the constraints cannot be evaluated in isolation. Constraint 1 (eval
 **Script:** [`multi-layer-constraint-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) · L3 detection source: [`pre-execution-verification-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts)
 **Results:** `scripts/results-v2/multi-layer-constraint.json` · `scripts/results-v2/pre-execution-verification.json`
 
+### Update: The Super-Additivity Is Structural (Sensitivity Grid)
+
+The 4.6× number above rests on the specific vector rates in the setup table. To check whether it is a calibrated operating point or a structural property, I ran a grid over all four vector success rates and the L3 detection rate (three levels each, 243 cells) in `multi-layer-sensitivity-test.py`. Defective pass rate has a closed form in this model — P(pass) = 1 − (1−FP)·∏(1−p_v) over the unblocked vectors — so each cell is computed exactly, cross-checked against the original Monte Carlo core.
+
+**Result: zero of 243 cells are sub-additive.** The ratio R(L2+L3)/(R(L2)+R(L3)) ranges from 1.17× to 21.9× (median 2.19×), with the 4.6× headline inside that range. The interaction term is closed-form:
+
+```
+R(L2+L3) − R(L2) − R(L3) = (1−FP)(1−αβ)(δ′ − γδ)
+```
+
+where α, β are the failure rates of the L2-blocked vectors (V1, V2), γ is V3's, and δ / δ′ are V4's failure rate without / with L3. The expression is non-negative whenever L3 does not *increase* V4's success — the one thing L3 is guaranteed not to do — so the super-additivity is a property of the product structure, not of the specific calibration. The rates control magnitude, not existence: the ratio approaches 1 exactly where one layer is decorative (its blocked vectors never succeed), and is largest where all vectors are strong and L3 also crushes the residual V4.
+
+One model-fidelity caveat: the ordering dimension is a no-op in this model — first-success pass probability depends only on the *set* of unblocked vectors, so all 24 preference permutations give identical pass rates. A real agent's vector preference would matter through mechanisms this model does not carry (detection feedback, budget, conditional success); that refinement is not modeled here.
+
+**Structural (model-form) sensitivity.** Two variations in `multi-layer-structure-test.py`. First, common-factor correlation — V1/V2/V3 share a latent capability z (p_v = b_v·z) — the ratio stays ≥ 1 at any correlation strength, provably pointwise in z. So correlation alone does not break it. What does is *capability redundancy*: if V1/V2/V3 are one capability and L2 and L3 therefore block the *same* weakness — the "single readonly boundary" reading of these constraints — the layers stop complementing and start duplicating. A mixture over that redundancy drags the ratio from 4.6× down through 1.0 (at roughly 84–94% shared capability, depending on how prevalent the capability is) to 0.92× at full redundancy — sub-additive. The super-additivity is therefore a property of the fallback policy *and* of the layers targeting distinct capabilities.
+
+**Posterior over the assumed rates.** The vector rates are assumed, not measured. Treating them as Beta-random (200k draws in `multi-layer-bayesian-sensitivity.py`), the *existence* of super-additivity carries zero prior sensitivity — P(ratio ≥ 1) = 1.000 under both article-centered and near-uniform priors. The magnitude moves: ratio 90% CI [2.5×, 12.3×] (article-centered) and [1.4×, 6.4×] (wide). The residual is the tight quantity: DPR(L2+L3) 90% CI [10.0%, 12.6%] / [6.1%, 11.7%]. So "L2+L3 leaves a ~10% residual" is prior-robust; the 4.6× headline is a magnitude inside a wide band, not a pinned number.
+
+**Scripts:** [`multi-layer-sensitivity-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) (rate grid) · [`multi-layer-structure-test.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) (model form) · [`multi-layer-bayesian-sensitivity.py`](https://github.com/zxpmail/blog/tree/main/agent-determinism-illusions/scripts) (posterior) · **Results:** `scripts/results-v2/multi-layer-sensitivity.json`, `multi-layer-structure.json`, `multi-layer-bayesian.json`
+
 ---
 
 ## 4. What the Implementation Tells Us
@@ -275,6 +295,8 @@ The DGM fake log story applies to every evidence file that forge-verify reads �
 This is not a universal claim. For evidence produced by the verify runner itself (the runner executes tests in the readonly section and captures output), the agent never touches the evidence file, so the DGM mechanism does not apply for that subset. The gap is limited to evidence files the verify script reads from agent-writeable paths — such as error logs the agent generated during execution or coverage reports the agent produced.
 
 This is not a bug in the evidence gate design. It is a design constraint: the evidence gate is zero-cost and pre-receive, but it trusts the file system that the agent writes to. The typed provenance layer that Sergei calls for — runtime-verified vs. self-reported — does not exist in the current forge-verify implementation. It would solve the DGM edge case, but it requires the file system itself to be provenance-aware, which standard file systems are not.
+
+(Mads Hansen's comment on this post corrects that last framing: the requirement is not a filesystem property. It is two deployment facts — a runner whose evidence namespace the agent cannot write, emitting a content-addressed receipt the agent holds only as a reference, resolved against a trust root the agent does not hold. The current implementation still lacks it, but the obstacle is deployment topology, not the filesystem.)
 
 The residual that Theorem 2 says cannot be closed:
 

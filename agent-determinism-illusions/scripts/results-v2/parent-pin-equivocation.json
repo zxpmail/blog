@@ -1,0 +1,247 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "Local sealed-minimum + inclusion and persisted-prior + consistency are different predicates; consistency catches shrink and same-size forks when the prior is honest and unwritable; rewriting that prior or using only per-job private priors without cross-view compare re-opens dual-green equivocation — assumption boundary, not a field security proof",
+  "source": "Peter DEV.to follow-up on Part 10 pin-rollback thread (equivocation / transparency-log consistency + attack family)",
+  "epistemic_bar": "Synthetic catalog only. Toy HMAC ≠ deployed CT. No prevalence. Witness/quorum residual untested. Cells D–F map assumptions, not an exhaustive adversary proof.",
+  "observation": {
+    "invalidated": false
+  },
+  "persisted_sth": {
+    "tree_size": 2,
+    "root": "c99b45c96f6bb801c4980db22aef8bdbdeccfd0bb1f632a8a652c4da53ab1c20",
+    "minimum": 2,
+    "signature": "3279a53a196ad55f85e813a6a4c9a1fc42aa21c53b235e93ba7e3be6a7b7337a"
+  },
+  "views": {
+    "honest": {
+      "tree_size": 2,
+      "root": "c99b45c96f6bb801c4980db22aef8bdbdeccfd0bb1f632a8a652c4da53ab1c20",
+      "minimum": 2,
+      "signature": "3279a53a196ad55f85e813a6a4c9a1fc42aa21c53b235e93ba7e3be6a7b7337a"
+    },
+    "shrink_fork": {
+      "tree_size": 1,
+      "root": "3c187d88489b462404725e27d95ced92202332176e3470b98e2ef02c95847112",
+      "minimum": 1,
+      "signature": "dcc5341c051e718cc7ef1f31422d357b2ebe44614812a232b971a2fc19eb6df2"
+    },
+    "same_size_fork": {
+      "tree_size": 2,
+      "root": "f1ec90ffe5ca72ffdf281cc50cdbc02137e3bed4f8998b0141cd58840666da09",
+      "minimum": 2,
+      "signature": "df04aa98cd4f26445c76a5537385502aecd7d8ebb00ee943497e8254499c8df0"
+    }
+  },
+  "claims": {
+    "A_local_only_both_jobs_green_on_fork": true,
+    "B_consistency_catches_shrink_fork": true,
+    "C_honest_append_passes": true,
+    "D_same_size_fork_caught_with_honest_prior": true,
+    "E_rewritten_prior_reopens_false_green": true,
+    "F_private_priors_no_cross_check_dual_green": true
+  },
+  "cell_A_local_sealed_and_inclusion": {
+    "job_A": {
+      "admit": "PASS",
+      "adjudicate": "REJECT",
+      "ci_green": false,
+      "detail": {
+        "admit": "PASS",
+        "reason": "local_sealed_floor_and_inclusion",
+        "inclusion_ok": true
+      }
+    },
+    "job_B": {
+      "admit": "PASS",
+      "adjudicate": "PASS",
+      "ci_green": true,
+      "detail": {
+        "admit": "PASS",
+        "reason": "local_sealed_floor_and_inclusion",
+        "inclusion_ok": true
+      }
+    }
+  },
+  "cell_B_plus_consistency_to_persisted": {
+    "job_A": {
+      "admit": "PASS",
+      "adjudicate": "REJECT",
+      "ci_green": false,
+      "detail": {
+        "admit": "PASS",
+        "reason": "local_sealed_floor_and_inclusion",
+        "inclusion_ok": true
+      },
+      "consistency": {
+        "consistency": "PASS",
+        "reason": "consistent_append"
+      },
+      "pipeline_admit": true,
+      "pipeline_green": false
+    },
+    "job_B": {
+      "admit": "PASS",
+      "adjudicate": "PASS",
+      "ci_green": true,
+      "detail": {
+        "admit": "PASS",
+        "reason": "local_sealed_floor_and_inclusion",
+        "inclusion_ok": true
+      },
+      "consistency": {
+        "consistency": "REJECT",
+        "reason": "tree_shrank"
+      },
+      "pipeline_admit": false,
+      "pipeline_green": false
+    },
+    "claim_parts": {
+      "A_consistent_honest": true,
+      "B_fork_rejected": true
+    }
+  },
+  "cell_C_honest_append": {
+    "old_sth": {
+      "tree_size": 1,
+      "root": "3c187d88489b462404725e27d95ced92202332176e3470b98e2ef02c95847112",
+      "minimum": 1,
+      "signature": "dcc5341c051e718cc7ef1f31422d357b2ebe44614812a232b971a2fc19eb6df2"
+    },
+    "new_sth": {
+      "tree_size": 2,
+      "root": "c99b45c96f6bb801c4980db22aef8bdbdeccfd0bb1f632a8a652c4da53ab1c20",
+      "minimum": 2,
+      "signature": "3279a53a196ad55f85e813a6a4c9a1fc42aa21c53b235e93ba7e3be6a7b7337a"
+    },
+    "consistency": {
+      "consistency": "PASS",
+      "reason": "consistent_append"
+    },
+    "select_v2": {
+      "admit": "PASS",
+      "adjudicate": "REJECT",
+      "ci_green": false,
+      "detail": {
+        "admit": "PASS",
+        "reason": "local_sealed_floor_and_inclusion",
+        "inclusion_ok": true
+      }
+    }
+  },
+  "cell_D_same_size_root_swap": {
+    "local": {
+      "admit": "PASS",
+      "adjudicate": "PASS",
+      "ci_green": true,
+      "detail": {
+        "admit": "PASS",
+        "reason": "local_sealed_floor_and_inclusion",
+        "inclusion_ok": true
+      }
+    },
+    "consistency": {
+      "consistency": "REJECT",
+      "reason": "equivocating_fork"
+    },
+    "pipeline": {
+      "admit": "PASS",
+      "adjudicate": "PASS",
+      "ci_green": true,
+      "detail": {
+        "admit": "PASS",
+        "reason": "local_sealed_floor_and_inclusion",
+        "inclusion_ok": true
+      },
+      "consistency": {
+        "consistency": "REJECT",
+        "reason": "equivocating_fork"
+      },
+      "pipeline_admit": false,
+      "pipeline_green": false
+    }
+  },
+  "cell_E_rewritten_persisted_prior": {
+    "rewritten_prior": {
+      "tree_size": 1,
+      "root": "3c187d88489b462404725e27d95ced92202332176e3470b98e2ef02c95847112",
+      "minimum": 1,
+      "signature": "dcc5341c051e718cc7ef1f31422d357b2ebe44614812a232b971a2fc19eb6df2"
+    },
+    "local": {
+      "admit": "PASS",
+      "adjudicate": "PASS",
+      "ci_green": true,
+      "detail": {
+        "admit": "PASS",
+        "reason": "local_sealed_floor_and_inclusion",
+        "inclusion_ok": true
+      }
+    },
+    "consistency": {
+      "consistency": "PASS",
+      "reason": "consistent_append"
+    },
+    "pipeline": {
+      "admit": "PASS",
+      "adjudicate": "PASS",
+      "ci_green": true,
+      "detail": {
+        "admit": "PASS",
+        "reason": "local_sealed_floor_and_inclusion",
+        "inclusion_ok": true
+      },
+      "consistency": {
+        "consistency": "PASS",
+        "reason": "consistent_append"
+      },
+      "pipeline_admit": true,
+      "pipeline_green": true
+    }
+  },
+  "cell_F_private_priors_no_cross_check": {
+    "job_A": {
+      "admit": "PASS",
+      "adjudicate": "REJECT",
+      "ci_green": false,
+      "detail": {
+        "admit": "PASS",
+        "reason": "local_sealed_floor_and_inclusion",
+        "inclusion_ok": true
+      },
+      "consistency": {
+        "consistency": "PASS",
+        "reason": "consistent_append"
+      },
+      "pipeline_admit": true,
+      "pipeline_green": false
+    },
+    "job_B": {
+      "admit": "PASS",
+      "adjudicate": "PASS",
+      "ci_green": true,
+      "detail": {
+        "admit": "PASS",
+        "reason": "local_sealed_floor_and_inclusion",
+        "inclusion_ok": true
+      },
+      "consistency": {
+        "consistency": "PASS",
+        "reason": "consistent_append"
+      },
+      "pipeline_admit": true,
+      "pipeline_green": true
+    },
+    "prior_A": {
+      "tree_size": 2,
+      "root": "c99b45c96f6bb801c4980db22aef8bdbdeccfd0bb1f632a8a652c4da53ab1c20",
+      "minimum": 2,
+      "signature": "3279a53a196ad55f85e813a6a4c9a1fc42aa21c53b235e93ba7e3be6a7b7337a"
+    },
+    "prior_B": {
+      "tree_size": 1,
+      "root": "3c187d88489b462404725e27d95ced92202332176e3470b98e2ef02c95847112",
+      "minimum": 1,
+      "signature": "dcc5341c051e718cc7ef1f31422d357b2ebe44614812a232b971a2fc19eb6df2"
+    }
+  }
+}

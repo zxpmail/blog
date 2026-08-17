@@ -225,7 +225,7 @@ Mike 对 τ 表的跟进：通常抬阈值是用检出换误报。这里 τ=0.03
 | 0.03 | ≈9 | **15** | **9** | L=9 → live **25%** / late **65%** / miss 6% |
 | 0.05 | ≈15 | **20** | **15** | L=15 → live **37%** / late **62%** / miss 1% |
 
-**结论：** 停电寿命 ≤ 检测延迟时，监视器常在*活*故障期间沉默，只在窗残渣上事后响——法医有用，拦不住进行中的中断。对 live 捕获，有用下限是 L ≳ delay（要 ≥90% live 还得略高于平均延迟），不是「任何最终能推动 excess 的 L」。上一则监视 Update：[盖章 / 剩余告警](#joint-failure-monitor-mike)。
+**结论：** 停电寿命 ≤ 检测延迟时，监视器常在*活*故障期间沉默，只在窗残渣上事后响——法医有用，拦不住进行中的中断。对 live 捕获，有用下限是 L ≳ delay（要 ≥90% live 还得略高于平均延迟），不是「任何最终能推动 excess 的 L」。上一则监视 Update：[盖章 / 剩余告警](#joint-failure-monitor-mike)。影子晋升 / 默认双列跟进写在 [第 6 篇线程 Update](blog-agent-determinism-illusions-6.zh.md#dual-column-dashboard-mike)（DEV.to 对话所在篇）。
 
 ### Update (2026-07-23)：hold-out 实验——分叉可测
 

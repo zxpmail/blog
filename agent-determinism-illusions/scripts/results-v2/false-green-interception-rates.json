@@ -1,0 +1,321 @@
+{
+  "verdict": "SUPPORT",
+  "caveat": "Rates are fraction of this synthetic catalog / mixture weights — not measured field prevalence of false greens",
+  "catalog_size": 21,
+  "claims": {
+    "L3_catches_all_ROD_none_PG": true,
+    "L4_catches_all_W_none_PG": true,
+    "reporting_heavy_L3_much_higher": true,
+    "L3_overall_not_100": true
+  },
+  "by_class": {
+    "D": {
+      "L1": {
+        "n": 3,
+        "caught": 0,
+        "rate": 0.0
+      },
+      "L2": {
+        "n": 3,
+        "caught": 0,
+        "rate": 0.0
+      },
+      "L3": {
+        "n": 3,
+        "caught": 3,
+        "rate": 1.0
+      },
+      "L4": {
+        "n": 3,
+        "caught": 3,
+        "rate": 1.0
+      }
+    },
+    "G": {
+      "L1": {
+        "n": 3,
+        "caught": 0,
+        "rate": 0.0
+      },
+      "L2": {
+        "n": 3,
+        "caught": 0,
+        "rate": 0.0
+      },
+      "L3": {
+        "n": 3,
+        "caught": 0,
+        "rate": 0.0
+      },
+      "L4": {
+        "n": 3,
+        "caught": 0,
+        "rate": 0.0
+      }
+    },
+    "O": {
+      "L1": {
+        "n": 4,
+        "caught": 0,
+        "rate": 0.0
+      },
+      "L2": {
+        "n": 4,
+        "caught": 3,
+        "rate": 0.75
+      },
+      "L3": {
+        "n": 4,
+        "caught": 4,
+        "rate": 1.0
+      },
+      "L4": {
+        "n": 4,
+        "caught": 4,
+        "rate": 1.0
+      }
+    },
+    "P": {
+      "L1": {
+        "n": 3,
+        "caught": 0,
+        "rate": 0.0
+      },
+      "L2": {
+        "n": 3,
+        "caught": 0,
+        "rate": 0.0
+      },
+      "L3": {
+        "n": 3,
+        "caught": 0,
+        "rate": 0.0
+      },
+      "L4": {
+        "n": 3,
+        "caught": 0,
+        "rate": 0.0
+      }
+    },
+    "R": {
+      "L1": {
+        "n": 4,
+        "caught": 4,
+        "rate": 1.0
+      },
+      "L2": {
+        "n": 4,
+        "caught": 4,
+        "rate": 1.0
+      },
+      "L3": {
+        "n": 4,
+        "caught": 4,
+        "rate": 1.0
+      },
+      "L4": {
+        "n": 4,
+        "caught": 4,
+        "rate": 1.0
+      }
+    },
+    "W": {
+      "L1": {
+        "n": 4,
+        "caught": 0,
+        "rate": 0.0
+      },
+      "L2": {
+        "n": 4,
+        "caught": 0,
+        "rate": 0.0
+      },
+      "L3": {
+        "n": 4,
+        "caught": 0,
+        "rate": 0.0
+      },
+      "L4": {
+        "n": 4,
+        "caught": 4,
+        "rate": 1.0
+      }
+    }
+  },
+  "overall_catalog_unweighted": {
+    "L1": {
+      "n": 21,
+      "caught": 4,
+      "rate": 0.19047619047619047
+    },
+    "L2": {
+      "n": 21,
+      "caught": 7,
+      "rate": 0.3333333333333333
+    },
+    "L3": {
+      "n": 21,
+      "caught": 11,
+      "rate": 0.5238095238095238
+    },
+    "L4": {
+      "n": 21,
+      "caught": 15,
+      "rate": 0.7142857142857143
+    }
+  },
+  "mixture_headlines": {
+    "reporting_heavy": {
+      "weights": {
+        "R": 0.35,
+        "O": 0.25,
+        "D": 0.15,
+        "W": 0.1,
+        "P": 0.05,
+        "G": 0.1
+      },
+      "L3": 0.75,
+      "L4": 0.85
+    },
+    "wordspace_heavy": {
+      "weights": {
+        "R": 0.05,
+        "O": 0.1,
+        "D": 0.05,
+        "W": 0.5,
+        "P": 0.15,
+        "G": 0.15
+      },
+      "L3": 0.2,
+      "L4": 0.7
+    }
+  },
+  "catalog": [
+    {
+      "id": "R1",
+      "class": "R",
+      "name": "child exit 0 + PASS banner",
+      "caught_by": "L1"
+    },
+    {
+      "id": "R2",
+      "class": "R",
+      "name": "in-process adversary returns PASS",
+      "caught_by": "L1"
+    },
+    {
+      "id": "R3",
+      "class": "R",
+      "name": "hang then self-declare PASS",
+      "caught_by": "L1"
+    },
+    {
+      "id": "R4",
+      "class": "R",
+      "name": "malformed IPC as success",
+      "caught_by": "L1"
+    },
+    {
+      "id": "O1",
+      "class": "O",
+      "name": "child lies {obs:ok}",
+      "caught_by": "L2"
+    },
+    {
+      "id": "O2",
+      "class": "O",
+      "name": "poison shared observation file",
+      "caught_by": "L2"
+    },
+    {
+      "id": "O3",
+      "class": "O",
+      "name": "parent import trusts probe_ok()",
+      "caught_by": "L3"
+    },
+    {
+      "id": "O4",
+      "class": "O",
+      "name": "child rewrites runtime cache parent reads",
+      "caught_by": "L2"
+    },
+    {
+      "id": "D1",
+      "class": "D",
+      "name": "colocated expected digest rewritten",
+      "caught_by": "L3"
+    },
+    {
+      "id": "D2",
+      "class": "D",
+      "name": "writable CI secret pin swapped",
+      "caught_by": "L3"
+    },
+    {
+      "id": "D3",
+      "class": "D",
+      "name": "harness body backdoored in-tree",
+      "caught_by": "L3"
+    },
+    {
+      "id": "W1",
+      "class": "W",
+      "name": "fabricated evidence snippet",
+      "caught_by": "L4"
+    },
+    {
+      "id": "W2",
+      "class": "W",
+      "name": "synonym surface fools C2",
+      "caught_by": "L4"
+    },
+    {
+      "id": "W3",
+      "class": "W",
+      "name": "honest thin evidence over-reject≠FG; fabric thick",
+      "caught_by": "L4"
+    },
+    {
+      "id": "W4",
+      "class": "W",
+      "name": "broken impl + compliant prose",
+      "caught_by": "L4"
+    },
+    {
+      "id": "P1",
+      "class": "P",
+      "name": "runner watches wrong key",
+      "caught_by": null
+    },
+    {
+      "id": "P2",
+      "class": "P",
+      "name": "claim names wrong referent",
+      "caught_by": null
+    },
+    {
+      "id": "P3",
+      "class": "P",
+      "name": "unaddressable claim forced into C3",
+      "caught_by": null
+    },
+    {
+      "id": "G1",
+      "class": "G",
+      "name": "timeout downgraded to warn",
+      "caught_by": null
+    },
+    {
+      "id": "G2",
+      "class": "G",
+      "name": "digest mismatch warn-only",
+      "caught_by": null
+    },
+    {
+      "id": "G3",
+      "class": "G",
+      "name": "retry until green on flake",
+      "caught_by": null
+    }
+  ]
+}

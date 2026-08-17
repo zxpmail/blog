@@ -49,6 +49,8 @@
 | 4 | [Harness 的边界](blog-essay-harness-border.zh.md) | [The Boundary of the Harness](blog-essay-harness-border.en.md) | 兜底层不能被 prompt 化 |
 | 5 | [一次审稿里被钉了六处](blog-essay-six-defense-lines.zh.md) | [A Reviewer Nailed Me in Six Places](blog-essay-six-defense-lines.en.md) | 零实验立场文：声称与举证责任怎么对齐 |
 
+> **空白期附注（归档用）：** 写作中有过「脸热、脑子却空」的段落，定稿时故意捡回，不另附过程 diff。五篇宜作带体温的认知证词合读，而非擦亮的方法论手册。
+
 ### 3. 红线法则(独立方法论)
 
 | 语言 | 标题 | 核心 |

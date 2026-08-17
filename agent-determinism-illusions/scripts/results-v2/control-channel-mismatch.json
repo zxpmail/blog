@@ -1,0 +1,71 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "Control and instrument must share a signal channel before base rate, sabotage-zero, or version governance mean anything; a hook that blocks in JSON while the control reads exit/grep-zero yields false BROKEN on a healthy guard; registration validity is not firing — only effect separates them",
+  "source": "Tom Jones DEV.to follow-up on Part 10 three-legs / hand-suite thread (meta-check inverted control; register≠fire)",
+  "epistemic_bar": "Synthetic hook/checker and rule-loader shapes. Not a replay of Tom's binary. Fourth invariant is prior to the three legs, not a replacement for them.",
+  "fourth_invariant": "control and instrument agree on signal channel (exit | stdout | JSON field | side effect) before statistics",
+  "claims": {
+    "M_exit_control_false_BROKEN_on_working_hook": true,
+    "R_register_green_fire_red": true,
+    "false_BROKEN_costs_credibility": true
+  },
+  "cell_M_meta_control": {
+    "hook_on_sabotage": {
+      "exit_code": 0,
+      "payload": {
+        "decision": "block"
+      },
+      "stdout": "{\"decision\": \"block\"}"
+    },
+    "control_exit_on_hook": {
+      "channel": "exit_code",
+      "reads_as_fired": false,
+      "verdict": "BROKEN"
+    },
+    "control_json_on_hook": {
+      "channel": "json.decision",
+      "reads_as_fired": true,
+      "verdict": "OK"
+    },
+    "control_grep_inverted_on_hook": {
+      "channel": "grep_exit_inverted",
+      "grep_found": true,
+      "control_process_exit": 0,
+      "harness_reads_fired": false,
+      "verdict": "BROKEN"
+    },
+    "control_exit_on_checker": {
+      "channel": "exit_code",
+      "reads_as_fired": true,
+      "verdict": "OK"
+    }
+  },
+  "cell_R_register_vs_fire": {
+    "bad_rule": {
+      "name": "block-todo",
+      "act": "PreToolUse",
+      "match": [
+        "TODO",
+        "FIXME"
+      ]
+    },
+    "registration": {
+      "registered": true,
+      "verdict": "PASS",
+      "note": "validity of file shape only"
+    },
+    "effect_on_defect": {
+      "fired": false,
+      "reason": "missing_on_key"
+    },
+    "good_rule_effect": {
+      "fired": true,
+      "matched_term": "TODO",
+      "reason": "term_hit"
+    }
+  },
+  "accusation_vs_unproven": {
+    "false_BROKEN_spends_report_credibility": true,
+    "unproven_guard_spends_report_credibility": false
+  }
+}

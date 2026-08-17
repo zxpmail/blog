@@ -353,6 +353,24 @@ Alexey Spinov 对本篇的跟评拧的是另一颗旋钮：不是高自信区*�
 
 本线程里 Alexey 后续网格（floor volume、arrival vs 精度序）与 Mike 的 reframe（开放问题是 rank-inside-stream）落在第 7 篇进队策略**之后**。**[第 15 篇](https://dev.to/zxpmail/dt2-names-who-enters-budget-names-who-gets-seen-4f9g)**（《D+T2 只决定谁进门；预算决定谁被看见》）承载离线套件：稀释队列验收、特征×时间压力、Trigger∥Rank / Shadow∥Enforce。编号跳到 15，是为了不挪动第 8–14 篇的其他弧；本论证线的发布顺序是 7 → 15。Mike 同线程后续收口：三件套（进队 / 预算 / 可降级排序）比上游争哪条流更干净。
 
+<a id="dual-column-dashboard-mike"></a>
+
+### Update (2026-08-08)：影子晋升 + 默认常驻双列（Mike）
+
+Mike 在本线程 Trigger∥Rank / Shadow∥Enforce 之后的两刀：(1) Forensic-τ 与 Interrupt-τ 是两个主子——不要把 coupled-uniform 仿真上的 live-catch 数直接晋升成中断能力。诚实阶梯：在仿真的 live-catch 列选 τ → 在生产形父分布下只跑影子 → 影子对齐后再晋升。（监视器 duration / live vs any-alert 定义见 [第 7 篇](https://dev.to/zxpmail/divergence-escalates-the-wrong-population-unanimous-misses-auto-pass-1513)。）(2) 比「晋升前先验证」更强：**默认同时带着 any-alert 与 live-catch**，即使多数时候一致——单看法医聚合在结构上就会藏住「告警数还体面、中断能力已塌」的那一格。
+
+软耦合阶梯（[`joint-failure-shadow-promote-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/joint-failure-shadow-promote-test.py) → [`joint-failure-shadow-promote.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/joint-failure-shadow-promote.json)）：停电窗内以概率 ρ 强制双失败（ρ=1 回到仿真父分布）。中断候选 τ=0.05、L=20：
+
+| ρ | live-catch | any-alert | promote_ok（live 缺口 ≤ 0.10） |
+|---|------------|-----------|--------------------------------|
+| 1.0 | **99%** | 100% | YES |
+| 0.8 | **62%** | **98%** | NO |
+| 0.6 | 25% | 56% | NO |
+
+同一落盘上的仪表盘对照（[`dual-column-dashboard-test.py`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/dual-column-dashboard-test.py) → [`dual-column-dashboard.json`](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/results-v2/dual-column-dashboard.json)）：只看法医（any-alert ≥ 90% 就放行）在 ρ=0.8 **SHIP**；双列（仅 live promote_ok 放行）**HOLD**。ρ=1.0 两者都放行——通常一致；不一致的那一行，就是第二列必须事先存在的理由。
+
+**结论：** 一个标量同时答法医与中断，是反复出现的 bug（与本线程 Trigger∥Rank / Shadow∥Enforce 同构）。晋升要影子中间步。仪表要在被烫到之前就挂双列。
+
 ---
 
 ## 五、Manuel Bruña + Alexey Spinov：证据要可验证，不是可叙述

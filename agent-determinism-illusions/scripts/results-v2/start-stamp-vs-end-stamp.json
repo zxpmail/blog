@@ -1,0 +1,78 @@
+{
+  "verdict": "SUPPORT",
+  "claims": {
+    "hang_END_lies_fresh": true,
+    "hang_START_safe": true,
+    "normal_START_not_zero": true,
+    "normal_END_hides_span": true
+  },
+  "normal_71_7s": {
+    "END": {
+      "label": "normal_END",
+      "generated": 71.7,
+      "write_time": 71.7,
+      "observed_at": [
+        0.0,
+        12.0,
+        28.0,
+        45.0,
+        60.0
+      ],
+      "published_age": 0.0,
+      "true_oldest_age": 71.7,
+      "true_newest_age": 11.700000000000003,
+      "looks_fresher_than_oldest": true
+    },
+    "START": {
+      "label": "normal_START",
+      "generated": 0.0,
+      "write_time": 71.7,
+      "observed_at": [
+        0.0,
+        12.0,
+        28.0,
+        45.0,
+        60.0
+      ],
+      "published_age": 71.7,
+      "true_oldest_age": 71.7,
+      "true_newest_age": 11.700000000000003,
+      "looks_fresher_than_oldest": false
+    }
+  },
+  "hang_600s": {
+    "END": {
+      "label": "hang_END",
+      "generated": 671.7,
+      "write_time": 671.7,
+      "observed_at": [
+        0.0,
+        612.0,
+        628.0,
+        645.0,
+        660.0
+      ],
+      "published_age": 0.0,
+      "true_oldest_age": 671.7,
+      "true_newest_age": 11.700000000000045,
+      "looks_fresher_than_oldest": true
+    },
+    "START": {
+      "label": "hang_START",
+      "generated": 0.0,
+      "write_time": 671.7,
+      "observed_at": [
+        0.0,
+        612.0,
+        628.0,
+        645.0,
+        660.0
+      ],
+      "published_age": 671.7,
+      "true_oldest_age": 671.7,
+      "true_newest_age": 11.700000000000045,
+      "looks_fresher_than_oldest": false
+    }
+  },
+  "simple_cure": "generated = t0 (run start), never write_time; error direction: too old, not too new"
+}

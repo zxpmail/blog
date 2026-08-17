@@ -107,6 +107,27 @@ python alexey-trigger-yield-test.py
 | Xiao Man — fallback+日志 / 退役信号（主次分歧 × 两种流量）| `declaration-anchor-fallback-logging-test.py` | `results-v2/declaration-anchor-fallback-logging.json` |
 | Xiao Man — 双绿同错→传感静音（P8 mute cell）| `declaration-anchor-agree-wrong-silence-test.py` | `results-v2/declaration-anchor-agree-wrong-silence.json` |
 | Xiao Man — 外部参照探针（P2/P8 恒等定理；tripwire 关闭静音格）| `declaration-anchor-external-reference-test.py` | `results-v2/declaration-anchor-external-reference.json` |
+| Xiao Man — 无信号≠健康：重放门/对账零/accept-only 同构；§9 ESCALATE | `absence-not-health-test.py` | `results-v2/absence-not-health.json` |
+| Kartik — ratchet 准入（人审后仅 binary 进 KB；encode-all 抬 semantic FP；DPI 永不进）| `ratchet-admission-test.py` | `results-v2/ratchet-admission.json` |
+| AI Explore — 跨信道分歧当人审信号（读 channel-comparison.json）| `cross-channel-disagree-signal-test.py` | `results-v2/cross-channel-disagree-signal.json` |
+| Tom Jones — command 门静默误编译 fail-green；known-wrong canary = 路径执行证物 | `gate-miscompile-canary-test.py` | `results-v2/gate-miscompile-canary.json` |
+| Tom Jones — 复合 generated-stamp 藏住 per-check 观察 spread（71.7s / 600s hang） | `composite-stamp-spread-test.py` | `results-v2/composite-stamp-spread.json` |
+| Tom Jones — 简单疗法：文档章盖在 run 开始 t0 vs 写完（挂起不再装新） | `start-stamp-vs-end-stamp-test.py` | `results-v2/start-stamp-vs-end-stamp.json` |
+| Tom Jones — 阈值×spread：今天不过小时线；挂起跨线 END 静默 / START 公告；现读旁路 | `stamp-spread-vs-threshold-test.py` | `results-v2/stamp-spread-vs-threshold.json` |
+| Tom Jones — 只读 base：章诚实、答案在 oplog；结构门要打印触及的 store | `stamp-partial-store-read-test.py` | `results-v2/stamp-partial-store-read.json` |
+| Peter — 报告权在可信父进程：窄 IPC + 超时/协议 fail-closed + harness digest | `parent-reporting-authority-test.py` | `results-v2/parent-reporting-authority.json` |
+| Peter — 缺口：只信孩子 IPC / 污染夹具 / 同库改 digest → 父进程仍可假绿 | `parent-oracle-hollow-test.py` | `results-v2/parent-oracle-hollow.json` |
+| Peter — 残留假绿：父进程 import 孩子；可写的「外钉」被一起改 | `parent-residual-false-green-test.py` | `results-v2/parent-residual-false-green.json` |
+| Peter — 外钉抗回滚：选型复活假绿裁决；密封 minimum 拦；可写 minimum 再开 | `parent-pin-rollback-test.py` | `results-v2/parent-pin-rollback.json` |
+| Peter — 双视图分叉：本地密封底两绿；旧 STH+consistency 抓 fork；D/E/F 假设边界 | `parent-pin-equivocation-test.py` | `results-v2/parent-pin-equivocation.json` |
+| Peter — 见证阈值 gossip + 冻结/单调进度（W0/W1/F0/F1） | `parent-pin-witness-freshness-test.py` | `results-v2/parent-pin-witness-freshness.json` |
+| Peter — 拜占庭双签：2/3 双绿；3/4 挡住；last-head / 可携收据 / 见证集可写残差 | `parent-pin-byzantine-quorum-test.py` | `results-v2/parent-pin-byzantine-quorum.json` |
+| Peter — 假绿拦截率（合成目录按类 + 两种混合物头条%） | `false-green-interception-rates-test.py` | `results-v2/false-green-interception-rates.json` |
+| P/G — 已知坏样 canary 作废错探针；策略软化检测 ALERT | `pg-canary-governance-test.py` | `results-v2/pg-canary-governance-test.json` |
+| P — 变异投毒：杀掉声称 side effect 后探针必须变红 | `probe-mutation-poison-test.py` | `results-v2/probe-mutation-poison.json` |
+| Tom Jones — 错工具穿 schema 墙；return 后断言假绿；负对照 vs 通过率 | `wrong-tool-negative-control-test.py` | `results-v2/wrong-tool-negative-control.json` |
+| Tom Jones — 手写撤回套件全绿；语料基率拆穿 cue+一锚滥报；动词锚残差 | `supersession-hand-vs-corpus-test.py` | `results-v2/supersession-hand-vs-corpus.json` |
+| Tom Jones — 对照/仪器信道错位假 BROKEN；注册绿≠开火 | `control-channel-mismatch-test.py` | `results-v2/control-channel-mismatch.json` |
 | Max Quimby — 升级线：固定抽检 vs 人工 yield 自适应 | `escalate-threshold-calibration-test.py` | `results-v2/escalate-threshold-calibration.json` |
 | Max Quimby — 高风险整类进人 vs 均匀抽检（同预算） | `high-risk-direct-human-test.py` | `results-v2/high-risk-direct-human.json` |
 | Max Quimby — 残差策略 4–6（T2 / Alex / dual-line 硬预算） | `residual-strategy-4to6-test.py` | `results-v2/residual-strategy-4to6.json` |
@@ -121,6 +142,7 @@ python alexey-trigger-yield-test.py
 | Mike — unique-catch co-fire / 共现 concentration | `unique-catch-cofire-test.py`、`unique-catch-cooccur-dose-test.py`、`unique-catch-cooccur-labels-test.py`、`defect-class-concentration-histogram.py` | `results-v2/unique-catch-cofire.json`、`results-v2/unique-catch-cooccur-*.json`、`results-v2/defect-class-concentration-histogram.json` |
 | Mike — joint-failure monitor live vs late | `joint-failure-monitor-test.py`、`joint-failure-monitor-duration-test.py` | `results-v2/joint-failure-monitor.json`、`results-v2/joint-failure-monitor-duration.json` |
 | Mike — shadow-promote ladder（soft-couple ρ） | `joint-failure-shadow-promote-test.py` | `results-v2/joint-failure-shadow-promote.json` |
+| Mike — 默认双列仪表盘（单 any-alert 假绿 vs dual live） | `dual-column-dashboard-test.py`（读上一 JSON，不重跑 sim） | `results-v2/dual-column-dashboard.json` |
 | Mike — quiet-failure fallback gap (shadow ∈ (0, enforce)) | `partial-stale-shadow-test.py`（纯数学扫描）、`partial-stale-injection-test.py`（df_proxy stress） | `results-v2/partial-stale-shadow.json`、`results-v2/partial-stale-injection.json` |
 | Mike — DS4 上游设计期检查（apology 文）| `ds4-upstream-design-check-test.py`（双向 value-match 验证）| `results-v2/ds4-upstream-design-check.json` |
 | Mike — 第四 size 点 cliff-vs-slope（apology 文）| 复用 `directional-failure-v2.py --model qwen2.5:1.5b` | `results-v2/qwen2-5-1-5b_summary.json` |

@@ -240,7 +240,7 @@ Offline sweep ([`joint-failure-monitor-duration-test.py`](https://github.com/zxp
 | 0.03 | ≈9 | **15** | **9** | L=9 → live **25%** / late **65%** / miss 6% |
 | 0.05 | ≈15 | **20** | **15** | L=15 → live **37%** / late **62%** / miss 1% |
 
-**Takeaway:** when outage lifespan sits at or under the detection delay, the monitor often stays silent *during* the live failure and rings only on window residue afterward — forensics, not interruption. Usefulness floor for a *live* catch is L ≳ delay (a bit above mean delay for ≥90% live), not “any L that eventually moves excess.” Prior monitor Update: [stamp / residual alarm](#joint-failure-monitor-mike).
+**Takeaway:** when outage lifespan sits at or under the detection delay, the monitor often stays silent *during* the live failure and rings only on window residue afterward — forensics, not interruption. Usefulness floor for a *live* catch is L ≳ delay (a bit above mean delay for ≥90% live), not “any L that eventually moves excess.” Prior monitor Update: [stamp / residual alarm](#joint-failure-monitor-mike). Shadow-promote / dual-column dashboard follow-up lives on the [Part 6 thread Update](blog-agent-determinism-illusions-6.en.md#dual-column-dashboard-mike) (DEV.to conversation seat).
 
 ### Update (2026-07-23): hold-out experiment — the fork is measurable
 

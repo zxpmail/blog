@@ -1,0 +1,47 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "P: known-wrong canary invalidates wrong/always-pass probes; G: soften detector ALERTs fail-open policy diffs",
+  "claims": {
+    "P_correct_probe_canary_reject_honest_pass": true,
+    "P_wrong_key_canary_invalidates_gate": true,
+    "P_always_pass_canary_invalidates_gate": true,
+    "G_soften_diff_alerts": true,
+    "G_unchanged_clean": true
+  },
+  "P": {
+    "correct_probe": {
+      "canary": "REJECT",
+      "gate_invalid": false,
+      "honest": "PASS",
+      "final": "PASS"
+    },
+    "wrong_key_probe": {
+      "canary": "PASS",
+      "gate_invalid": true,
+      "honest": null,
+      "final": "GATE_INVALID"
+    },
+    "always_pass_probe": {
+      "canary": "PASS",
+      "gate_invalid": true,
+      "honest": null,
+      "final": "GATE_INVALID"
+    }
+  },
+  "G": {
+    "softened": {
+      "status": "ALERT",
+      "alerts": [
+        "digest_softened",
+        "marker:digest_warn",
+        "marker:warn_only",
+        "retry_until_green_enabled",
+        "timeout_softened"
+      ]
+    },
+    "unchanged": {
+      "status": "CLEAN",
+      "alerts": []
+    }
+  }
+}

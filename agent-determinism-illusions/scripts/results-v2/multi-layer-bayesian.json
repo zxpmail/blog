@@ -1,0 +1,144 @@
+{
+  "claim": "Super-additivity existence is prior-robust (P(ratio>=1)=1 under any [0,1]^4 prior, by closed form); the assumed rates move only the magnitude.",
+  "parameters": {
+    "FP": 0.05,
+    "L3_detection": 0.918,
+    "n_samples": 200000,
+    "article": {
+      "V1": 0.6,
+      "V2": 0.5,
+      "V3": 0.85,
+      "V4": 0.85
+    },
+    "priors": {
+      "article_centered": {
+        "V1": [
+          6.0,
+          4.0
+        ],
+        "V2": [
+          5.0,
+          5.0
+        ],
+        "V3": [
+          8.5,
+          1.5
+        ],
+        "V4": [
+          8.5,
+          1.5
+        ]
+      },
+      "wide": {
+        "V1": [
+          2.0,
+          2.0
+        ],
+        "V2": [
+          2.0,
+          2.0
+        ],
+        "V3": [
+          2.0,
+          2.0
+        ],
+        "V4": [
+          2.0,
+          2.0
+        ]
+      }
+    }
+  },
+  "results": [
+    {
+      "prior": "article_centered",
+      "samples": 200000,
+      "ratio": {
+        "median": 4.9326,
+        "p90_ci": [
+          2.5403,
+          12.2834
+        ],
+        "P_ratio_ge_1": 1.0,
+        "P_ratio_ge_2": 0.9928,
+        "P_ratio_ge_3": 0.8811,
+        "P_ratio_ge_4_6": 0.56
+      },
+      "dpr": {
+        "NONE": {
+          "median": 0.9977,
+          "p90_ci": [
+            0.9849,
+            0.9998
+          ]
+        },
+        "L2": {
+          "median": 0.9867,
+          "p90_ci": [
+            0.93,
+            0.9989
+          ]
+        },
+        "L3": {
+          "median": 0.8363,
+          "p90_ci": [
+            0.6618,
+            0.942
+          ]
+        },
+        "L2+L3": {
+          "median": 0.118,
+          "p90_ci": [
+            0.0998,
+            0.1263
+          ]
+        }
+      }
+    },
+    {
+      "prior": "wide",
+      "samples": 200000,
+      "ratio": {
+        "median": 2.4462,
+        "p90_ci": [
+          1.4445,
+          6.3637
+        ],
+        "P_ratio_ge_1": 1.0,
+        "P_ratio_ge_2": 0.695,
+        "P_ratio_ge_3": 0.3315,
+        "P_ratio_ge_4_6": 0.119
+      },
+      "dpr": {
+        "NONE": {
+          "median": 0.9607,
+          "p90_ci": [
+            0.8154,
+            0.9962
+          ]
+        },
+        "L2": {
+          "median": 0.7914,
+          "p90_ci": [
+            0.4577,
+            0.9637
+          ]
+        },
+        "L3": {
+          "median": 0.8016,
+          "p90_ci": [
+            0.4803,
+            0.9654
+          ]
+        },
+        "L2+L3": {
+          "median": 0.0889,
+          "p90_ci": [
+            0.0606,
+            0.1173
+          ]
+        }
+      }
+    }
+  ]
+}
