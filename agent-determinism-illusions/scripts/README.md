@@ -114,7 +114,8 @@ python alexey-trigger-yield-test.py
 | Tom Jones — 复合 generated-stamp 藏住 per-check 观察 spread（71.7s / 600s hang） | `composite-stamp-spread-test.py` | `results-v2/composite-stamp-spread.json` |
 | Tom Jones — 简单疗法：文档章盖在 run 开始 t0 vs 写完（挂起不再装新） | `start-stamp-vs-end-stamp-test.py` | `results-v2/start-stamp-vs-end-stamp.json` |
 | Tom Jones — 阈值×spread：今天不过小时线；挂起跨线 END 静默 / START 公告；现读旁路 | `stamp-spread-vs-threshold-test.py` | `results-v2/stamp-spread-vs-threshold.json` |
-| Tom Jones — 只读 base：章诚实、答案在 oplog；结构门要打印触及的 store | `stamp-partial-store-read-test.py` | `results-v2/stamp-partial-store-read.json` |
+| Tom Jones — 只读 base：章诚实、答案在 oplog；结构门要打印触及的 store；U/W required 盲区 | `stamp-partial-store-read-test.py` | `results-v2/stamp-partial-store-read.json` |
+| Tom Jones — drill COUNT 诚实、缺 run_kind → 假 critical；provenance 第三谓词 | `stamp-provenance-drill-test.py` | `results-v2/stamp-provenance-drill.json` |
 | Peter — 报告权在可信父进程：窄 IPC + 超时/协议 fail-closed + harness digest | `parent-reporting-authority-test.py` | `results-v2/parent-reporting-authority.json` |
 | Peter — 缺口：只信孩子 IPC / 污染夹具 / 同库改 digest → 父进程仍可假绿 | `parent-oracle-hollow-test.py` | `results-v2/parent-oracle-hollow.json` |
 | Peter — 残留假绿：父进程 import 孩子；可写的「外钉」被一起改 | `parent-residual-false-green-test.py` | `results-v2/parent-residual-false-green.json` |

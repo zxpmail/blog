@@ -1,0 +1,77 @@
+{
+  "verdict": "SUPPORT",
+  "thesis": "Age, coverage, and provenance are three separate predicates; a fresh honest COUNT promoted to VERDICT without run_kind can hold a critical alert open while live reads stay OK — provenance is stores_touched moved from coverage to run type",
+  "source": "Tom Jones DEV.to round-2 — install-verification drill on alert channel (twelve-day false critical)",
+  "epistemic_bar": "Synthetic shape of his drill vs live monitor story; ingest gate is a fixture, not his production board.",
+  "claims": {
+    "P_unlabeled_drill_fires_board": true,
+    "F_labeled_drill_ingest_drops": true,
+    "T_temporal_silent": true,
+    "L_live_monitor_ok": true
+  },
+  "cell_P_unlabeled": {
+    "document": {
+      "metric": "month_to_date_usd",
+      "value": 2.15,
+      "threshold": 0.01,
+      "comparison": ">=",
+      "generated": 1000.0,
+      "stores_touched": [
+        "metrics_db"
+      ]
+    },
+    "reader_verdict": {
+      "verdict": "ALERT",
+      "message": "month_to_date_usd $2.15 >= $0.01",
+      "severity": "critical"
+    },
+    "ingest": {
+      "admit": "PASS_TO_BOARD",
+      "reason": "unlabeled_reaches_board"
+    }
+  },
+  "cell_F_labeled": {
+    "document": {
+      "metric": "month_to_date_usd",
+      "value": 2.15,
+      "threshold": 0.01,
+      "comparison": ">=",
+      "generated": 1000.0,
+      "stores_touched": [
+        "metrics_db"
+      ],
+      "run_kind": "install_verification_drill"
+    },
+    "reader_verdict": {
+      "verdict": "ALERT",
+      "message": "month_to_date_usd $2.15 >= $0.01",
+      "severity": "critical"
+    },
+    "ingest": {
+      "admit": "DROP",
+      "reason": "self_labelled_drill",
+      "run_kind": "install_verification_drill"
+    }
+  },
+  "cell_T_temporal": {
+    "published_age": 5.0,
+    "threshold_s": 3600.0,
+    "age_fires": false
+  },
+  "cell_L_live": {
+    "metric": "month_to_date_usd",
+    "value": 8.5,
+    "limit": 100.0,
+    "generated": 1000.0,
+    "run_kind": "live_scheduled_hourly",
+    "stores_touched": [
+      "metrics_db"
+    ],
+    "verdict": "OK"
+  },
+  "three_predicates": [
+    "age",
+    "coverage",
+    "provenance"
+  ]
+}

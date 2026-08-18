@@ -32,6 +32,13 @@ Offline synthetic catalog (stdlib). Board = base items + oplog answer patches.
   T  temporal controls silent: START/END ages do not distinguish P from healthy
   S  structural gate: require stores_touched == required; base-only fails gate
      unless it labels itself partial
+  U  blind step inside gate: same partial doc, reader declares required=["base"]
+     → gate PASS as complete (caller-supplied required)
+  W  store-derived required: enumerate stores at connection, not from reader
+     → gate REJECT even when reader would declare base-only
+  I  intent arbitration: required frozen from task intent before run
+     → ops_complete REJECT same partial (no false green);
+        archive_base_snapshot PASS same partial (no false red from W)
 
 PASS criteria (falsify if any fails)
 ------------------------------------
@@ -41,9 +48,14 @@ PASS criteria (falsify if any fails)
   3. T: age thresholds do not flag P as stale relative to base mtime
   4. S: unlabeled base-only fails structural gate; labeled base-only passes
      as partial; full join passes as complete
+  5. U: reader-supplied required=["base"] admits unlabeled partial as complete
+  6. W: store-enumerated required=["base","oplog"] rejects same partial doc
+  7. I: frozen intent ops_complete REJECTs partial; archive_base PASSes partial
 
 Expected: SUPPORT — timestamp speaks only for reads that happened; join
-coverage is a separate predicate.
+coverage is a separate predicate; caller-supplied required is a blind step;
+store enumeration alone false-reds legitimate partial reads — Intent frozen
+before run is the arbitration anchor.
 
 Dependencies: stdlib only.
 """
@@ -124,6 +136,52 @@ def age_threshold_fires(published_age: float, threshold: float) -> bool:
     return published_age + 1e-9 >= threshold
 
 
+def enumerate_stores_at_connection() -> list[str]:
+    """连接上实际存在的 store——不来自 reader 声明。"""
+    return ["base", "oplog"]
+
+
+# 运行前冻结的 intent（Dipankar：不是 reader 事后自报，也不是裸物理枚举）
+FROZEN_INTENTS: dict[str, dict] = {
+    "ops_complete_board": {
+        "required_stores": ["base", "oplog"],
+        "description": "publish answered board for ops review",
+    },
+    "archive_base_snapshot": {
+        "required_stores": ["base"],
+        "description": "export base snapshot for archival",
+    },
+}
+
+
+def intent_arbitration_gate(
+    stores_touched: list[str],
+    intent_id: str,
+    *,
+    stores_at_connection: list[str],
+) -> dict:
+    """意图仲裁门：required 来自 frozen intent，仲裁 U 与 W 的假绿/假红。"""
+    intent = FROZEN_INTENTS[intent_id]
+    touched = set(stores_touched)
+    need = set(intent["required_stores"]) & set(stores_at_connection)
+    if touched >= need:
+        return {
+            "admit": "PASS",
+            "as": "satisfies_intent",
+            "intent": intent_id,
+            "required_from_intent": sorted(need),
+            "stores_touched": stores_touched,
+        }
+    return {
+        "admit": "REJECT",
+        "as": "incomplete_for_intent",
+        "intent": intent_id,
+        "required_from_intent": sorted(need),
+        "stores_touched": stores_touched,
+        "missing": sorted(need - touched),
+    }
+
+
 def structural_gate(
     stores_touched: list[str],
     required: list[str],
@@ -197,7 +255,49 @@ def main() -> None:
         and gate_full["as"] == "complete"
     )
 
-    support = claim_p and claim_f and claim_t and claim_s
+    # Tom round-2: required 来自 reader 时，同一文档可过门
+    gate_reader_base_only = structural_gate(
+        partial["stores_touched"], ["base"], label_partial=False
+    )
+    stores_at_conn = enumerate_stores_at_connection()
+    gate_store_derived = structural_gate(
+        partial["stores_touched"], stores_at_conn, label_partial=False
+    )
+    claim_u = (
+        gate_reader_base_only["admit"] == "PASS"
+        and gate_reader_base_only["as"] == "complete"
+    )
+    claim_w = (
+        gate_store_derived["admit"] == "REJECT"
+        and gate_store_derived["as"] == "unlabeled_partial"
+        and set(stores_at_conn) == {"base", "oplog"}
+    )
+
+    gate_intent_ops = intent_arbitration_gate(
+        partial["stores_touched"],
+        "ops_complete_board",
+        stores_at_connection=stores_at_conn,
+    )
+    gate_intent_archive = intent_arbitration_gate(
+        partial["stores_touched"],
+        "archive_base_snapshot",
+        stores_at_connection=stores_at_conn,
+    )
+    # archive 场景：裸 store 枚举会假红
+    gate_store_on_archive_doc = structural_gate(
+        partial["stores_touched"], stores_at_conn, label_partial=False
+    )
+    claim_i = (
+        gate_intent_ops["admit"] == "REJECT"
+        and gate_intent_ops["as"] == "incomplete_for_intent"
+        and gate_intent_archive["admit"] == "PASS"
+        and gate_intent_archive["as"] == "satisfies_intent"
+        and gate_store_on_archive_doc["admit"] == "REJECT"  # W 对 archive 是假红
+    )
+
+    support = (
+        claim_p and claim_f and claim_t and claim_s and claim_u and claim_w and claim_i
+    )
     verdict = "SUPPORT" if support else "FALSIFY"
 
     result = {
@@ -207,7 +307,10 @@ def main() -> None:
             "read of a base+oplog store can be temporally honest yet publish "
             "a complete-looking board with zero answers while answers live in "
             "the oplog — START/END/age thresholds stay silent; structural "
-            "coverage of stores_touched is the missing predicate"
+            "coverage of stores_touched is the missing predicate; "
+            "caller-supplied required is a blind step unless derived "
+            "from store enumeration; store enumeration alone false-reds "
+            "legitimate partial reads — Intent frozen before run arbitrates"
         ),
         "source": (
             "Tom Jones DEV.to follow-up on harness-ladder stamp/threshold "
@@ -223,6 +326,9 @@ def main() -> None:
             "F_join_recovers_answers": claim_f,
             "T_temporal_controls_silent": claim_t,
             "S_structural_store_coverage_gate": claim_s,
+            "U_reader_supplied_required_blind_step": claim_u,
+            "W_store_derived_required_catches": claim_w,
+            "I_intent_arbitrates_false_green_and_false_red": claim_i,
         },
         "truth": {"answered_in_oplog": truth, "base_items": 14},
         "cell_P_base_only": {
@@ -251,6 +357,26 @@ def main() -> None:
             "labeled_partial": gate_labeled,
             "full_join": gate_full,
         },
+        "cell_U_reader_required": {
+            "required": ["base"],
+            "same_doc_as_P": True,
+            "gate": gate_reader_base_only,
+        },
+        "cell_W_store_derived": {
+            "enumerated_at_connection": stores_at_conn,
+            "gate": gate_store_derived,
+            "false_red_on_archive_intent": gate_store_on_archive_doc,
+        },
+        "cell_I_intent_arbitration": {
+            "frozen_before_run": list(FROZEN_INTENTS.keys()),
+            "ops_complete_board": gate_intent_ops,
+            "archive_base_snapshot": gate_intent_archive,
+            "arbitration_note": (
+                "U false-greens ops via reader ignorance; W false-reds "
+                "archive via bare enumeration; Intent is the anchor"
+            ),
+        },
+        "four_predicates": ["age", "coverage", "provenance", "intent"],
         "third_beside_old_new": (
             "too old = bound; too new = hope; partial join with honest stamp "
             "= silent completeness lie"
@@ -272,6 +398,14 @@ def main() -> None:
     print(
         f"S unlabeled={gate_unlabeled['admit']} "
         f"labeled={gate_labeled['as']} full={gate_full['as']}"
+    )
+    print(
+        f"U reader_required=base -> {gate_reader_base_only['admit']} "
+        f"as={gate_reader_base_only['as']}"
+    )
+    print(f"W store_derived -> {gate_store_derived['admit']}")
+    print(
+        f"I ops={gate_intent_ops['admit']} archive={gate_intent_archive['admit']}"
     )
     print(f"wrote {OUT}")
 
