@@ -36,9 +36,6 @@ Offline synthetic catalog (stdlib). Board = base items + oplog answer patches.
      → gate PASS as complete (caller-supplied required)
   W  store-derived required: enumerate stores at connection, not from reader
      → gate REJECT even when reader would declare base-only
-  I  intent arbitration: required frozen from task intent before run
-     → ops_complete REJECT same partial (no false green);
-        archive_base_snapshot PASS same partial (no false red from W)
 
 PASS criteria (falsify if any fails)
 ------------------------------------
@@ -50,12 +47,10 @@ PASS criteria (falsify if any fails)
      as partial; full join passes as complete
   5. U: reader-supplied required=["base"] admits unlabeled partial as complete
   6. W: store-enumerated required=["base","oplog"] rejects same partial doc
-  7. I: frozen intent ops_complete REJECTs partial; archive_base PASSes partial
 
 Expected: SUPPORT — timestamp speaks only for reads that happened; join
-coverage is a separate predicate; caller-supplied required is a blind step;
-store enumeration alone false-reds legitimate partial reads — Intent frozen
-before run is the arbitration anchor.
+coverage is a separate predicate; caller-supplied required is a blind step
+inside the gate unless required is derived from the store.
 
 Dependencies: stdlib only.
 """
@@ -139,47 +134,6 @@ def age_threshold_fires(published_age: float, threshold: float) -> bool:
 def enumerate_stores_at_connection() -> list[str]:
     """连接上实际存在的 store——不来自 reader 声明。"""
     return ["base", "oplog"]
-
-
-# 运行前冻结的 intent（Dipankar：不是 reader 事后自报，也不是裸物理枚举）
-FROZEN_INTENTS: dict[str, dict] = {
-    "ops_complete_board": {
-        "required_stores": ["base", "oplog"],
-        "description": "publish answered board for ops review",
-    },
-    "archive_base_snapshot": {
-        "required_stores": ["base"],
-        "description": "export base snapshot for archival",
-    },
-}
-
-
-def intent_arbitration_gate(
-    stores_touched: list[str],
-    intent_id: str,
-    *,
-    stores_at_connection: list[str],
-) -> dict:
-    """意图仲裁门：required 来自 frozen intent，仲裁 U 与 W 的假绿/假红。"""
-    intent = FROZEN_INTENTS[intent_id]
-    touched = set(stores_touched)
-    need = set(intent["required_stores"]) & set(stores_at_connection)
-    if touched >= need:
-        return {
-            "admit": "PASS",
-            "as": "satisfies_intent",
-            "intent": intent_id,
-            "required_from_intent": sorted(need),
-            "stores_touched": stores_touched,
-        }
-    return {
-        "admit": "REJECT",
-        "as": "incomplete_for_intent",
-        "intent": intent_id,
-        "required_from_intent": sorted(need),
-        "stores_touched": stores_touched,
-        "missing": sorted(need - touched),
-    }
 
 
 def structural_gate(
@@ -273,31 +227,7 @@ def main() -> None:
         and set(stores_at_conn) == {"base", "oplog"}
     )
 
-    gate_intent_ops = intent_arbitration_gate(
-        partial["stores_touched"],
-        "ops_complete_board",
-        stores_at_connection=stores_at_conn,
-    )
-    gate_intent_archive = intent_arbitration_gate(
-        partial["stores_touched"],
-        "archive_base_snapshot",
-        stores_at_connection=stores_at_conn,
-    )
-    # archive 场景：裸 store 枚举会假红
-    gate_store_on_archive_doc = structural_gate(
-        partial["stores_touched"], stores_at_conn, label_partial=False
-    )
-    claim_i = (
-        gate_intent_ops["admit"] == "REJECT"
-        and gate_intent_ops["as"] == "incomplete_for_intent"
-        and gate_intent_archive["admit"] == "PASS"
-        and gate_intent_archive["as"] == "satisfies_intent"
-        and gate_store_on_archive_doc["admit"] == "REJECT"  # W 对 archive 是假红
-    )
-
-    support = (
-        claim_p and claim_f and claim_t and claim_s and claim_u and claim_w and claim_i
-    )
+    support = claim_p and claim_f and claim_t and claim_s and claim_u and claim_w
     verdict = "SUPPORT" if support else "FALSIFY"
 
     result = {
@@ -309,8 +239,7 @@ def main() -> None:
             "the oplog — START/END/age thresholds stay silent; structural "
             "coverage of stores_touched is the missing predicate; "
             "caller-supplied required is a blind step unless derived "
-            "from store enumeration; store enumeration alone false-reds "
-            "legitimate partial reads — Intent frozen before run arbitrates"
+            "from store enumeration"
         ),
         "source": (
             "Tom Jones DEV.to follow-up on harness-ladder stamp/threshold "
@@ -328,7 +257,6 @@ def main() -> None:
             "S_structural_store_coverage_gate": claim_s,
             "U_reader_supplied_required_blind_step": claim_u,
             "W_store_derived_required_catches": claim_w,
-            "I_intent_arbitrates_false_green_and_false_red": claim_i,
         },
         "truth": {"answered_in_oplog": truth, "base_items": 14},
         "cell_P_base_only": {
@@ -365,18 +293,7 @@ def main() -> None:
         "cell_W_store_derived": {
             "enumerated_at_connection": stores_at_conn,
             "gate": gate_store_derived,
-            "false_red_on_archive_intent": gate_store_on_archive_doc,
         },
-        "cell_I_intent_arbitration": {
-            "frozen_before_run": list(FROZEN_INTENTS.keys()),
-            "ops_complete_board": gate_intent_ops,
-            "archive_base_snapshot": gate_intent_archive,
-            "arbitration_note": (
-                "U false-greens ops via reader ignorance; W false-reds "
-                "archive via bare enumeration; Intent is the anchor"
-            ),
-        },
-        "four_predicates": ["age", "coverage", "provenance", "intent"],
         "third_beside_old_new": (
             "too old = bound; too new = hope; partial join with honest stamp "
             "= silent completeness lie"
@@ -404,9 +321,6 @@ def main() -> None:
         f"as={gate_reader_base_only['as']}"
     )
     print(f"W store_derived -> {gate_store_derived['admit']}")
-    print(
-        f"I ops={gate_intent_ops['admit']} archive={gate_intent_archive['admit']}"
-    )
     print(f"wrote {OUT}")
 
 

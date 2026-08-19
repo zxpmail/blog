@@ -1,15 +1,16 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Tom partial-store round-2 回帖待发（U/W/I + provenance）
-- **Intent 一等公民**：门控仲裁锚，否则 U 假绿 / W 假红
+- Tom round-2 修正后续待发：撤 Intent 第四谓词（仲裁锚 overclaim），全收 required 盲区，三谓词并列
+- 总钉：测量工具盲区清单
 
 ## 上次停在哪个位置
-- round-2 草稿：`reply-tom-jones-partial-store-round2.md`（含 Intent 段）
-- 脚本：`stamp-partial-store-read-test.py`（+I 格）；`stamp-provenance-drill-test.py`
-- 四谓词：age / coverage / provenance / **intent**
+- round-2（U/W/I + provenance）已贴 DEV.to（2026-08-19，commit 780e15b）
+- 修订已 commit+push：`stamp-partial-store-read-test.py` 删 I 格（+U/W）；JSON 同步；清单行 7 改「required 从 store 枚举非 reader 自报」
+- 修正后续草稿：`working-notes/reply-tom-jones-partial-store-round2.md`
 
 ## 近期关键决定
-- Intent 运行前冻结（非 reader 事后自报），仲裁 required
-- ops_complete → REJECT partial；archive_base → PASS partial；W 对 archive 是假红
-- SUPPORT 命名谓词，不说生产已焊
+- 撤回 Intent 一等公民：frozen-intent 目录是夹具，synthetic 撑不住仲裁锚主张
+- 全收 Tom：`required` 由 reader 自报是门内盲区；fix = store 枚举
+- 三条谓词并列：age / coverage / provenance（drill = stores_touched 旋到 run_kind）
+- SUPPORT 仅命名谓词，不说生产已焊

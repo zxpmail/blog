@@ -1,6 +1,6 @@
 {
   "verdict": "SUPPORT",
-  "thesis": "A timestamp only speaks for the reads that happened; a base-only read of a base+oplog store can be temporally honest yet publish a complete-looking board with zero answers while answers live in the oplog — START/END/age thresholds stay silent; structural coverage of stores_touched is the missing predicate; caller-supplied required is a blind step unless derived from store enumeration; store enumeration alone false-reds legitimate partial reads — Intent frozen before run arbitrates",
+  "thesis": "A timestamp only speaks for the reads that happened; a base-only read of a base+oplog store can be temporally honest yet publish a complete-looking board with zero answers while answers live in the oplog — START/END/age thresholds stay silent; structural coverage of stores_touched is the missing predicate; caller-supplied required is a blind step unless derived from store enumeration",
   "source": "Tom Jones DEV.to follow-up on harness-ladder stamp/threshold thread (base+oplog partial join)",
   "epistemic_bar": "Synthetic 14-item board / 10 oplog answers (shape of his fourteen / ten / thirty-batches story, not a field replay). Structural gate is a fixture, not his production reader.",
   "claims": {
@@ -9,8 +9,7 @@
     "T_temporal_controls_silent": true,
     "S_structural_store_coverage_gate": true,
     "U_reader_supplied_required_blind_step": true,
-    "W_store_derived_required_catches": true,
-    "I_intent_arbitrates_false_green_and_false_red": true
+    "W_store_derived_required_catches": true
   },
   "truth": {
     "answered_in_oplog": 10,
@@ -92,56 +91,7 @@
       "missing": [
         "oplog"
       ]
-    },
-    "false_red_on_archive_intent": {
-      "admit": "REJECT",
-      "as": "unlabeled_partial",
-      "stores_touched": [
-        "base"
-      ],
-      "missing": [
-        "oplog"
-      ]
     }
   },
-  "cell_I_intent_arbitration": {
-    "frozen_before_run": [
-      "ops_complete_board",
-      "archive_base_snapshot"
-    ],
-    "ops_complete_board": {
-      "admit": "REJECT",
-      "as": "incomplete_for_intent",
-      "intent": "ops_complete_board",
-      "required_from_intent": [
-        "base",
-        "oplog"
-      ],
-      "stores_touched": [
-        "base"
-      ],
-      "missing": [
-        "oplog"
-      ]
-    },
-    "archive_base_snapshot": {
-      "admit": "PASS",
-      "as": "satisfies_intent",
-      "intent": "archive_base_snapshot",
-      "required_from_intent": [
-        "base"
-      ],
-      "stores_touched": [
-        "base"
-      ]
-    },
-    "arbitration_note": "U false-greens ops via reader ignorance; W false-reds archive via bare enumeration; Intent is the anchor"
-  },
-  "four_predicates": [
-    "age",
-    "coverage",
-    "provenance",
-    "intent"
-  ],
   "third_beside_old_new": "too old = bound; too new = hope; partial join with honest stamp = silent completeness lie"
 }

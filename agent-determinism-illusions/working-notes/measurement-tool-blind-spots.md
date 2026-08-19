@@ -20,7 +20,7 @@ Status: working-note（可引用索引；不是正式 Part）
 | 4 | 对照读错信道 | 健康卫士被报 BROKEN | 对照与仪器约定同一信道 | `control-channel-mismatch-test.py` |
 | 5 | 注册 ≠ 开火 | 规则文件静态全绿 | 按效果验 | 同上 R 格 |
 | 6 | 复合章 / 写完盖章 | 装新鲜 | t0 偏旧是界；跨消费者阈值才「值钱」 | `composite-stamp-*` / `start-stamp-*` / `stamp-spread-vs-threshold-test.py` |
-| 7 | 章只说年龄 / 裸枚举扼死合法 partial | 新鲜且齐全；或 archive 被 W 假红 | 打印 stores_touched；**Intent 运行前冻结** 仲裁 required | `stamp-partial-store-read-test.py`（I 格） |
+| 7 | 章只说年龄 | 新鲜且齐全 | 打印触及的 store；联结覆盖；required 从 store 枚举非 reader 自报 | `stamp-partial-store-read-test.py` |
 | 7b | 章不说运行种类 | drill COUNT 诚实、VERDICT 假 critical | 正文自签 `run_kind`；ingest 丢弃 drill | `stamp-provenance-drill-test.py` |
 | 8 | 外钉只证曾批准 | 选型回滚假绿 | 密封 minimum + 独立授权跃迁 | `parent-pin-rollback-test.py` |
 | 9 | 单视图 consistency | 两首次 job 双绿 | 见证 gossip；再要交点条件 | `parent-pin-equivocation-*` / `witness-freshness` / `byzantine-quorum` |
