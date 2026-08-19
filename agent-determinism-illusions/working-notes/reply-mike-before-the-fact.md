@@ -58,8 +58,8 @@ silence 极点是同一测试的另一端。以 catch 数为心跳的重放门�
 ---
 
 ## 检查
-- [ ] 发英文（Part 6 线程，Re: "Locked" 评论）
-- [ ] 链接 main（shadow-promote + absence-not-health 两对，已在 main）
-- [ ] 无新实验；只引既有；不重贴整表
-- [ ] 末尾反问现场数据；不把 SUPPORT 说成生产证明
-- [ ] 定名 a priori validation；不报「杜绝 90%」类百分比
+- [x] 发英文（Part 6 线程，Re: "Locked" 评论，2026-08-20 已贴）
+- [x] 链接 main（shadow-promote + absence-not-health 两对，已在 main）
+- [x] 无新实验；只引既有；不重贴整表
+- [x] 末尾反问现场数据；不把 SUPPORT 说成生产证明
+- [x] 定名 a priori validation；不报「杜绝 90%」类百分比

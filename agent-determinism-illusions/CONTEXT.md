@@ -1,15 +1,15 @@
 # CONTEXT
 
 ## 当前正在做什么
-- Tom round-2 修正后续待发：撤 Intent 第四谓词（仲裁锚 overclaim），全收 required 盲区，三谓词并列
-- Mike Part 6（five-comments）before-the-fact 回复草稿：对抗最坏上报 vs 干净通过可区分性 = ρ-sweep / 负对照已跑形状
+- 待发回帖清零（2026-08-20）：Tom 修正后续 + Mike a priori validation 都已贴 DEV.to
+- 下一步候选：Part 18 zh 版（EN 已发、zh 缺）；Part 19（拜占庭见证，实验 SUPPORT）未写；classifier_disagree 隔离实验排队
 - 总钉：测量工具盲区清单
 
 ## 上次停在哪个位置
 - round-2（U/W/I + provenance）已贴 DEV.to（2026-08-19，commit 780e15b）
 - 修订已 commit+push：`stamp-partial-store-read-test.py` 删 I 格（+U/W）；JSON 同步；清单行 7 改「required 从 store 枚举非 reader 自报」
-- 修正后续草稿：`working-notes/reply-tom-jones-partial-store-round2.md`
-- Mike 回复草稿：`working-notes/reply-mike-before-the-fact.md`（Re: "Locked"；ρ=0.8 forensic 98%≈clean / live 62%≠99%；absence-not-health silence 极点；链接 main）
+- Tom 修正后续已贴（2026-08-20）：`working-notes/reply-tom-jones-partial-store-round2.md`（撤 Intent、三谓词并列；8778579）
+- Mike a priori validation 已贴（2026-08-20）：`working-notes/reply-mike-before-the-fact.md`（ρ=0.8 格 + absence-not-health 极点；7396474）
 
 ## 近期关键决定
 - 撤回 Intent 一等公民：frozen-intent 目录是夹具，synthetic 撑不住仲裁锚主张

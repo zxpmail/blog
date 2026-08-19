@@ -59,7 +59,7 @@ Synthetic SUPPORT on both extensions. Production still owes store enumeration wi
 ---
 
 ## 检查
-- [ ] push 后链接可点
-- [ ] 发英文（修正后续，DEV.to 线程回）
-- [ ] 不把 SUPPORT 说成生产已焊
-- [ ] notes 同步 + 记忆改三谓词
+- [x] push 后链接可点
+- [x] 发英文（修正后续，DEV.to 线程回，2026-08-20 已贴）
+- [x] 不把 SUPPORT 说成生产已焊
+- [x] notes 同步 + 记忆改三谓词
