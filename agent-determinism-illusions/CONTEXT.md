@@ -2,7 +2,8 @@
 
 ## 当前正在做什么
 - 待发回帖清零（2026-08-20）：Tom 修正后续 + Mike a priori validation 都已贴 DEV.to
-- Part 19 EN 草稿已写（2026-08-20，未发布，zh 待补）；下一步候选：classifier_disagree 隔离实验排队
+- Part 19 EN 草稿已写（2026-08-20，未发布，zh 待补）
+- classifier_disagree 隔离实验**已完成**（2026-07-22，Part 6 §4 Update en+zh 已落消融表）：CD 单独 24.9% < P6 28.4%、必要不充分、与 barely_passed 共驱；95.8% 偏 qwen——无排队实验
 - 总钉：测量工具盲区清单
 
 ## 上次停在哪个位置
