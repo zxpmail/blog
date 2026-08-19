@@ -2,7 +2,7 @@
 
 ## 当前正在做什么
 - 待发回帖清零（2026-08-20）：Tom 修正后续 + Mike a priori validation 都已贴 DEV.to
-- 下一步候选：Part 19（拜占庭见证，实验 SUPPORT）未写；classifier_disagree 隔离实验排队
+- Part 19 EN 草稿已写（2026-08-20，未发布，zh 待补）；下一步候选：classifier_disagree 隔离实验排队
 - 总钉：测量工具盲区清单
 
 ## 上次停在哪个位置
