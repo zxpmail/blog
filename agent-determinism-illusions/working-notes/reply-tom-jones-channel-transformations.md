@@ -14,6 +14,7 @@ Tom（top-level 评论，2026-08-21，三个现场收据）：
 - 接成本排序：未证明 < 假 BROKEN < 假 QUIET——后者花掉仪器存在的全部理由，且是三者里唯一跑得越久越有说服力的
 - 点 DRILL marker = run_kind 自签的孪生（盲区清单行 7b：正文自签、ingest 丢弃）
 - SUPPORT 只命名形状，不说生产已焊
+- **ReQForge 已焊两处真形**（2026-08-21，`ec26a4d`）：exec stderr 崩溃不再假绿 + hook 解析失败可见 fail-open——回复尾段点明「audit 跑到决策发生的地方，不只跑在夹具目录」
 
 ---
 
@@ -35,10 +36,12 @@ I extended the M fixture with both shapes:
 
 So the check beside yours: before trusting a control, enumerate every transformation between the thing under test and the assertion — a redirect, a pipe, a `2>/dev/null`, a log level, an inherited environment variable — and ask which of them can turn a signal into an absence, or hand you the subject's own output as if it were independent. For your three cases the answers were a redirect, a pipe, and an inherited environment; mine were a stream split and an exported env var.
 
+And your receipts went straight into the pipeline, not just the synthetic cells. The audit of the harness this blog is measured against found both shapes live: a verify runner that read stdout only and reported a crash as "all skills PASS" — your `2>/dev/null` wearing production clothes — and hook JSON parsing that failed open into silence, the parse error eaten by a catch and /dev/null. Both are welded now: the exec path surfaces stderr on non-zero exit instead of greening it, and the hooks print the parse error to stderr while still failing open. The blog experiment scripts were already clean; the harness was not. That gap is the point — the channel audit has to run where the decisions actually happen, not only in the fixture catalog.
+
 https://github.com/zxpmail/blog/blob/cursor/xiao-man-epistemic-distance-reply/agent-determinism-illusions/scripts/control-channel-mismatch-test.py
 https://github.com/zxpmail/blog/blob/cursor/xiao-man-epistemic-distance-reply/agent-determinism-illusions/scripts/results-v2/control-channel-mismatch.json
 
-Synthetic SUPPORT on all four cells (M/R/Q/D). Your field receipts are the stronger evidence; the synthetic shapes only name the grammar. Production still owes the audit: which streams, redirects, and inherited variables sit between each instrument and its observer — the ones that read as formatting rather than instrumentation.
+Synthetic SUPPORT on all four cells (M/R/Q/D). Your field receipts are the stronger evidence; the synthetic shapes only name the grammar. The two shapes I found in the harness are welded ([ReqForge `ec26a4d`](https://github.com/zxpmail/ReqForge/commit/ec26a4d)); the rest of the audit — every stream, redirect, and inherited variable still sitting between an instrument and its observer — stays open.
 ```
 
 ---
@@ -51,6 +54,8 @@ Synthetic SUPPORT on all four cells (M/R/Q/D). Your field receipts are the stron
 DRILL marker 是同一硬币的另一面，skip fixture 是承重的那部分——fixture 和 filter 共享作者和格式假设，对照信道变成「我写的字符串」而非「monitor 写的字符串」。这正是 run_kind 自签：正文自签、ingest 丢弃。
 
 git identity guard 是更深的类别：仪器读被测自己几秒前写的变量。hook 里「调用方提供」和「git 猜的」字节一致。修法不是更仔细地读，是改问法——禁用猜测解析，恰在会派生时失败。Q/D 两格 SUPPORT 只命名语法；现场收据才是强证据。
+
+你的收据直接进了管线不只进了合成格：audit 我自己的 harness，两种形状都是活的——verify runner 只看 stdout、把崩溃报成 all skills PASS；hook JSON 解析静默 fail-open。两处都已焊（ReqForge ec26a4d）——博客实验脚本本来就干净，harness 不干净，这个落差正是要点：audit 要跑到决策发生的地方。
 ```
 
 ---
@@ -60,3 +65,4 @@ git identity guard 是更深的类别：仪器读被测自己几秒前写的变�
 - [ ] 发英文（top-level 回复，同 thread，2026-08-21）
 - [x] 收扩展 + 接成本排序；不把 SUPPORT 说成生产已焊
 - [x] notes 同步（回复 + 盲区清单行 7b 挂 DRILL 孪生 + CONTEXT）
+- [x] ReqForge 已焊两处真形并 push（`ec26a4d`）——尾段已点明
