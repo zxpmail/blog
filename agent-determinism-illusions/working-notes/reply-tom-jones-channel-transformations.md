@@ -56,7 +56,7 @@ git identity guard 是更深的类别：仪器读被测自己几秒前写的变�
 ---
 
 ## 检查
-- [ ] push 后链接可点（M 脚本已扩 Q/D，JSON 已重跑）
+- [x] 脚本/JSON 已 push 到分支（git cat-file OK）；链接待网络恢复后 curl 验 200（github.com 08-21 间歇断连）
 - [ ] 发英文（top-level 回复，同 thread，2026-08-21）
-- [ ] 收扩展 + 接成本排序；不把 SUPPORT 说成生产已焊
-- [ ] notes 同步 + 盲区清单行 7b 挂 DRILL 孪生
+- [x] 收扩展 + 接成本排序；不把 SUPPORT 说成生产已焊
+- [x] notes 同步（回复 + 盲区清单行 7b 挂 DRILL 孪生 + CONTEXT）
