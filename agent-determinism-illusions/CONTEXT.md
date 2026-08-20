@@ -1,6 +1,7 @@
 # CONTEXT
 
 ## 当前正在做什么
+- Tom 信道变换评论（2026-08-21）回复草稿：Q/D 格已扩 `control-channel-mismatch-test.py` + JSON 重跑 SUPPORT；`reply-tom-jones-channel-transformations.md` 待贴
 - 待发回帖清零（2026-08-20）：Tom 修正后续 + Mike a priori validation 都已贴 DEV.to
 - Part 19 EN + zh 草稿已写（EN 2026-08-20 草稿 + 严苛校对五处数据对齐修正；zh 2026-08-20 版镜像 18.zh 结构、cells A–F/W/B/R/E/G 全对齐；未发布）
 - classifier_disagree 隔离实验**已完成**（2026-07-22，Part 6 §4 Update en+zh 已落消融表）：CD 单独 24.9% < P6 28.4%、必要不充分、与 barely_passed 共驱；95.8% 偏 qwen——无排队实验

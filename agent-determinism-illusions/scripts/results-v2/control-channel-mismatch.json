@@ -1,12 +1,14 @@
 {
   "verdict": "SUPPORT",
-  "thesis": "Control and instrument must share a signal channel before base rate, sabotage-zero, or version governance mean anything; a hook that blocks in JSON while the control reads exit/grep-zero yields false BROKEN on a healthy guard; registration validity is not firing — only effect separates them",
-  "source": "Tom Jones DEV.to follow-up on Part 10 three-legs / hand-suite thread (meta-check inverted control; register≠fire)",
-  "epistemic_bar": "Synthetic hook/checker and rule-loader shapes. Not a replay of Tom's binary. Fourth invariant is prior to the three legs, not a replacement for them.",
-  "fourth_invariant": "control and instrument agree on signal channel (exit | stdout | JSON field | side effect) before statistics",
+  "thesis": "Control and instrument must share a signal channel before base rate, sabotage-zero, or version governance mean anything; a hook that blocks in JSON while the control reads exit/grep-zero yields false BROKEN on a healthy guard; registration validity is not firing — only effect separates them. The invariant extends to which stream the instrument writes vs the observer reads (false QUIET: real error scores as silence — the M cell inverted and the more expensive face), and to whether the observer reads a channel the subject itself wrote (self-authored env: guard cannot fire; resolve-with-guessing-disabled fails exactly when the identity would have been derived). The generalized check: enumerate every transformation between the thing under test and the assertion — which can turn a signal into an absence, or hand you the subject's own output as if it were independent",
+  "source": "Tom Jones DEV.to top-level comment on Part 10 thread (field receipts: DRILL marker, 2>/dev/null stderr-eaten, git identity guard) extending the control-channel invariant",
+  "epistemic_bar": "Synthetic hook/checker and rule-loader shapes. Not a replay of Tom's binaries. Fourth invariant is prior to the three legs, not a replacement for them; Q and D lock the quiet face and the downstream-observer face synthetically, no field prevalence.",
+  "fourth_invariant": "control and instrument agree on signal channel (exit | stdout | stderr | JSON field | side effect) before statistics — and the observer must not read a channel the subject itself wrote",
   "claims": {
     "M_exit_control_false_BROKEN_on_working_hook": true,
     "R_register_green_fire_red": true,
+    "Q_false_QUIET_stdout_reads_silence_on_stderr_error": true,
+    "D_downstream_guard_reads_subject_env_cannot_fire": true,
     "false_BROKEN_costs_credibility": true
   },
   "cell_M_meta_control": {
@@ -62,6 +64,50 @@
       "fired": true,
       "matched_term": "TODO",
       "reason": "term_hit"
+    }
+  },
+  "cell_Q_false_quiet": {
+    "sabotage_stream": {
+      "stdout": "",
+      "stderr": "traceback: invalidate failed\n",
+      "real_status": "FAIL"
+    },
+    "stdout_only_observer": {
+      "channel": "stdout_only",
+      "reads_signal": false,
+      "verdict": "QUIET"
+    },
+    "stderr_aware_observer": {
+      "channel": "stdout_plus_stderr",
+      "reads_signal": true,
+      "verdict": "FAIL",
+      "caught_error": true
+    },
+    "clean_run_stdout_observer": {
+      "channel": "stdout_only",
+      "reads_signal": true,
+      "verdict": "OK"
+    }
+  },
+  "cell_D_downstream_observer": {
+    "guard_with_auto_derived_env": {
+      "verdict": "PASS",
+      "note": "git always exports GIT_AUTHOR_EMAIL with its guess, so the 'env supplies none' half is never true — the guard cannot fire",
+      "env_author_email": "guessed@example.com"
+    },
+    "guard_when_identity_truly_missing": {
+      "verdict": "REJECT",
+      "note": "env truly absent (no guessed export) — guard fires"
+    },
+    "fix_resolve_with_guessing_disabled_would_derive": {
+      "resolved": false,
+      "verdict": "REJECT",
+      "reason": "identity_would_be_derived"
+    },
+    "fix_resolve_when_truly_supplied": {
+      "resolved": true,
+      "verdict": "PASS",
+      "reason": "identity_truly_supplied"
     }
   },
   "accusation_vs_unproven": {
