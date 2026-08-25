@@ -1,0 +1,82 @@
+{
+  "scenario": "S1 (referent mismatch, Part 11)",
+  "base_verify": "check user:123 gone",
+  "intent_verify": "all user:* gone",
+  "surfaces": [
+    {
+      "name": "A — literal S1 impl (targeted delete; user:456 never invalidated)",
+      "write": "s1_write",
+      "base_narrow": "SURVIVE",
+      "base_intent": "killed",
+      "mutants": [
+        "M_noop",
+        "M_wrongkey",
+        "M_broaden",
+        "M_clear"
+      ]
+    },
+    {
+      "name": "B — true-intent impl (invalidate ALL user:*)",
+      "write": "wide_write",
+      "base_narrow": "SURVIVE",
+      "base_intent": "SURVIVE",
+      "mutants": [
+        "M_noop",
+        "M_wrongkey",
+        "M_regress"
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "surface": "A",
+      "mutant": "M_noop",
+      "desc": "invalidation removed entirely",
+      "verify_narrow": "killed",
+      "verify_intent": "killed"
+    },
+    {
+      "surface": "A",
+      "mutant": "M_wrongkey",
+      "desc": "deletes a different key (user:456 only)",
+      "verify_narrow": "killed",
+      "verify_intent": "killed"
+    },
+    {
+      "surface": "A",
+      "mutant": "M_broaden",
+      "desc": "deletes user:123 AND user:456 (over-delivery)",
+      "verify_narrow": "SURVIVE",
+      "verify_intent": "SURVIVE"
+    },
+    {
+      "surface": "A",
+      "mutant": "M_clear",
+      "desc": "clears everything (over-delivery)",
+      "verify_narrow": "SURVIVE",
+      "verify_intent": "SURVIVE"
+    },
+    {
+      "surface": "B",
+      "mutant": "M_noop",
+      "desc": "invalidation removed entirely",
+      "verify_narrow": "killed",
+      "verify_intent": "killed"
+    },
+    {
+      "surface": "B",
+      "mutant": "M_wrongkey",
+      "desc": "deletes a different key (user:456 only)",
+      "verify_narrow": "killed",
+      "verify_intent": "killed"
+    },
+    {
+      "surface": "B",
+      "mutant": "M_regress",
+      "desc": "deletes ONLY user:123 — regression from the wide surface",
+      "verify_narrow": "SURVIVE",
+      "verify_intent": "killed"
+    }
+  ],
+  "verdict": "On the literal S1 impl, mutation does not flag the under-invalidation: survivors are over-delivery mutants, and reading them needs the same contract judgment L3 already owns. Mutation fires cleanly as a regression guard on a correct implementation (surface B): a regression mutant survives the narrow verify and is killed by the intent verify, where the audit is silent. The fix is contract-definition, not mechanical."
+}

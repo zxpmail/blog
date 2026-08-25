@@ -128,6 +128,7 @@ python alexey-trigger-yield-test.py
 | Tom Jones — 错工具穿 schema 墙；return 后断言假绿；负对照 vs 通过率 | `wrong-tool-negative-control-test.py` | `results-v2/wrong-tool-negative-control.json` |
 | Tom Jones — 手写撤回套件全绿；语料基率拆穿 cue+一锚滥报；动词锚残差 | `supersession-hand-vs-corpus-test.py` | `results-v2/supersession-hand-vs-corpus.json` |
 | Tom Jones — 对照/仪器信道错位假 BROKEN；注册绿≠开火 | `control-channel-mismatch-test.py` | `results-v2/control-channel-mismatch.json` |
+| Tom Jones — mutation vs S1 under-invalidation（Part 11）：窄实现存活=过度删除、下失效不可见；真信号=对正确实现的回归守卫 | `mutation-coverage-s1-test.py` | `results-v2/mutation-coverage-s1.json` |
 | Max Quimby — 升级线：固定抽检 vs 人工 yield 自适应 | `escalate-threshold-calibration-test.py` | `results-v2/escalate-threshold-calibration.json` |
 | Max Quimby — 高风险整类进人 vs 均匀抽检（同预算） | `high-risk-direct-human-test.py` | `results-v2/high-risk-direct-human.json` |
 | Max Quimby — 残差策略 4–6（T2 / Alex / dual-line 硬预算） | `residual-strategy-4to6-test.py` | `results-v2/residual-strategy-4to6.json` |
