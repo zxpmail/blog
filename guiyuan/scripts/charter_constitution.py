@@ -11,6 +11,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CHARTER_PATH = os.path.join(HERE, "charter.md")
+V2_PATH = CHARTER_PATH
 RESULTS = os.path.join(HERE, "results")
 os.makedirs(RESULTS, exist_ok=True)
 

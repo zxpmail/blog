@@ -1,0 +1,21 @@
+{"id": "C-OK-1", "pass": true, "expect": [], "got": [], "note": "对人默认：用户段进 system，无黄页无 Ext"}
+{"id": "C-OK-2", "pass": true, "expect": [], "got": [], "note": "编排：说明书 + 手写黄页，已卸用户段"}
+{"id": "C-OK-3", "pass": true, "expect": [], "got": [], "note": "执行体：有说明书，无黄页无用户段无父对话"}
+{"id": "C-OK-4", "pass": true, "expect": [], "got": [], "note": "跨用户房不沿用 1:1"}
+{"id": "C-OK-5", "pass": true, "expect": [], "got": [], "note": "用户段键 userId，副本只拼这次对话"}
+{"id": "C-OK-6", "pass": true, "expect": [], "got": [], "note": "换项目卸项目侧"}
+{"id": "C-OK-7", "pass": true, "expect": [], "got": [], "note": "授权只陈述；编排仍禁动手"}
+{"id": "C-OK-8", "pass": true, "expect": [], "got": [], "note": "召回不进 system、不进子会话"}
+{"id": "C-OK-9", "pass": true, "expect": [], "got": [], "note": "模型不进灵魂、须在名单内"}
+{"id": "C-X1", "pass": true, "expect": ["C-USER-HISTORY"], "got": ["C-USER-HISTORY"], "note": "用户段放历史"}
+{"id": "C-X2", "pass": true, "expect": ["C-USER-AS-MUST"], "got": ["C-USER-AS-MUST"], "note": "用户段写成我必须"}
+{"id": "C-X3", "pass": true, "expect": ["C-SPEC-SYSTEM"], "got": ["C-SPEC-SYSTEM"], "note": "说明书抬进 system"}
+{"id": "C-X4", "pass": true, "expect": ["C-YELLOW-DEFAULT"], "got": ["C-YELLOW-DEFAULT"], "note": "对人默认灌黄页"}
+{"id": "C-X5", "pass": true, "expect": ["C-ORCH-USER"], "got": ["C-ORCH-USER"], "note": "编排仍带着 1:1 用户段"}
+{"id": "C-X6", "pass": true, "expect": ["C-ORCH-NO-SPEC"], "got": ["C-ORCH-NO-SPEC"], "note": "编排只有黄页没有说明书"}
+{"id": "C-X7", "pass": true, "expect": ["C-WORKER-NO-SPEC", "C-WORKER-PARENT"], "got": ["C-WORKER-NO-SPEC", "C-WORKER-PARENT"], "note": "执行体不灌说明书、灌父对话"}
+{"id": "C-X8", "pass": true, "expect": ["C-GROUP-1TO1"], "got": ["C-GROUP-1TO1"], "note": "跨用户房搬进 1:1"}
+{"id": "C-X9", "pass": true, "expect": ["C-USER-CROSS"], "got": ["C-USER-CROSS"], "note": "甲的用户段进乙的对话"}
+{"id": "C-X10", "pass": true, "expect": ["C-USER-KEY-REPLICA", "C-KEY-AGENT"], "got": ["C-KEY-AGENT", "C-USER-KEY-REPLICA"], "note": "用户段按副本当真源；挂在 Agent 上"}
+{"id": "C-X11", "pass": true, "expect": ["C-VERBAL-AUTH", "C-REWRITE-COORD"], "got": ["C-VERBAL-AUTH", "C-REWRITE-COORD"], "note": "口头放开；因此改编排器动手"}
+{"id": "C-X12", "pass": true, "expect": ["C-RECALL-SYSTEM", "C-RECALL-CHILD"], "got": ["C-RECALL-SYSTEM", "C-RECALL-CHILD"], "note": "召回整桶进 system；子会话仍灌 1:1"}

@@ -1,0 +1,28 @@
+{"id": "B-OK-1", "pass": true, "expect": [], "got": [], "note": "编排模式：拆派、转述委派结果、自己不动手"}
+{"id": "B-OK-2", "pass": true, "expect": [], "got": [], "note": "对人默认：无夹克、纯聊、不开执行工具"}
+{"id": "B-OK-3", "pass": true, "expect": [], "got": [], "note": "被委派 Worker：范围内干活，回报委派方"}
+{"id": "B-OK-4", "pass": true, "expect": [], "got": [], "note": "目录无匹配：派兜底，Coord 不动手"}
+{"id": "B-OK-5", "pass": true, "expect": [], "got": [], "note": "btw 无 Worker 夹克"}
+{"id": "B-OK-6", "pass": true, "expect": [], "got": [], "note": "委派明显错：Worker 澄清，不静默偏离"}
+{"id": "B-OK-7", "pass": true, "expect": [], "got": [], "note": "项目 C 明确放开后，对人这张脸可动手（不套 Coord/Worker）"}
+{"id": "B-C1", "pass": true, "expect": ["B-COORD-HANDS"], "got": ["B-COORD-HANDS"], "note": "Coord 因更快自己动手"}
+{"id": "B-C2", "pass": true, "expect": ["B-COORD-INVENT"], "got": ["B-COORD-INVENT"], "note": "臆造执行体名"}
+{"id": "B-C3", "pass": true, "expect": ["B-COORD-EMPTY-END"], "got": ["B-COORD-EMPTY-END"], "note": "无匹配却空结束"}
+{"id": "B-C4", "pass": true, "expect": ["B-COORD-FABRICATE"], "got": ["B-COORD-FABRICATE"], "note": "替执行体补过程"}
+{"id": "B-C5", "pass": true, "expect": ["B-COORD-INSTALL"], "got": ["B-COORD-INSTALL"], "note": "Coord 不走平台入口装执行体"}
+{"id": "B-W1", "pass": true, "expect": ["B-WORKER-SCHEDULE"], "got": ["B-WORKER-SCHEDULE"], "note": "Worker 调度整场"}
+{"id": "B-W2", "pass": true, "expect": ["B-WORKER-PARENT-DIALOG"], "got": ["B-WORKER-PARENT-DIALOG"], "note": "Worker 假设看见父对话"}
+{"id": "B-W3", "pass": true, "expect": ["B-WORKER-SILENT-DIVERGE"], "got": ["B-WORKER-SILENT-DIVERGE"], "note": "委派明显错仍静默大范围偏离"}
+{"id": "B-W4", "pass": true, "expect": ["B-WORKER-PRETEND"], "got": ["B-WORKER-PRETEND"], "note": "没有的能力假装有"}
+{"id": "B-W5", "pass": true, "expect": ["B-WORKER-INSTALL"], "got": ["B-WORKER-INSTALL"], "note": "Worker 未授权却装卸载"}
+{"id": "B-F1", "pass": true, "expect": ["B-FACE-WRONG-JACKET"], "got": ["B-FACE-WRONG-JACKET"], "note": "对人默认误套 Coord"}
+{"id": "B-F2", "pass": true, "expect": ["B-FACE-WRONG-JACKET"], "got": ["B-FACE-WRONG-JACKET"], "note": "对人默认误套 Worker"}
+{"id": "B-U1", "pass": true, "expect": ["B-LOAD-COORD-ON-FACE"], "got": ["B-LOAD-COORD-ON-FACE"], "note": "对人默认卸岗位，却自称套上编排器"}
+{"id": "B-U2", "pass": true, "expect": ["B-LOAD-WORKER-ON-COORD"], "got": ["B-LOAD-WORKER-ON-COORD"], "note": "编排只装 Coord，却再套 Worker"}
+{"id": "B-U3", "pass": true, "expect": ["B-LOAD-COORD-ON-WORKER"], "got": ["B-LOAD-COORD-ON-WORKER"], "note": "被委派只装 Worker，却改当编排器"}
+{"id": "B-U4", "pass": true, "expect": [], "got": [], "note": "对人默认，两件岗位都卸，未自称套岗"}
+{"id": "B-F3", "pass": true, "expect": ["B-BTW-WORKER"], "got": ["B-BTW-WORKER"], "note": "btw 误套 Worker"}
+{"id": "B-F4", "pass": true, "expect": ["B-FACE-HANDS"], "got": ["B-FACE-HANDS"], "note": "对人默认未放开却动手"}
+{"id": "B-F5", "pass": true, "expect": ["B-NO-COMPANION"], "got": ["B-NO-COMPANION"], "note": "灌陪伴 situation（已废）"}
+{"id": "B-X1", "pass": true, "expect": ["B-RESTATE-A"], "got": ["B-RESTATE-A"], "note": "岗位句复读 A 声称/取消"}
+{"id": "B-X2", "pass": true, "expect": ["B-VS-A-UNVERIFIED"], "got": ["B-VS-A-UNVERIFIED"], "note": "地方法要求无依据交付（抵 A）"}

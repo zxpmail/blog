@@ -1,0 +1,22 @@
+{"id": "D-OK-1", "pass": true, "expect": [], "got": [], "note": "对人默认：可空，无 D1 委派百科"}
+{"id": "D-OK-2", "pass": true, "expect": [], "got": [], "note": "编排：D1+D2，搜写在 D，无领域长步骤"}
+{"id": "D-OK-3", "pass": true, "expect": [], "got": [], "note": "被委派：任务单自洽，有回报，无父 D1"}
+{"id": "D-OK-4", "pass": true, "expect": [], "got": [], "note": "同活同写集 continue；触顶不装新交付"}
+{"id": "D-OK-5", "pass": true, "expect": [], "got": [], "note": "许诺后续有句柄"}
+{"id": "D-OK-6", "pass": true, "expect": [], "got": [], "note": "细则盖不住 A；步骤不改岗"}
+{"id": "D-OK-7", "pass": true, "expect": [], "got": [], "note": "旁问不灌 D；跨用户房无 1:1 委派百科"}
+{"id": "D-OK-8", "pass": true, "expect": [], "got": [], "note": "跨用户房不灌 D1"}
+{"id": "D-OK-9", "pass": true, "expect": [], "got": [], "note": "三种拒分开说；分标记在 G"}
+{"id": "D-OK-10", "pass": true, "expect": [], "got": [], "note": "不缩范围；薄 D3 不假装计划闸"}
+{"id": "D-X1", "pass": true, "expect": ["D-DUMP-ALL"], "got": ["D-DUMP-ALL"], "note": "整本灌进这次对话"}
+{"id": "D-X2", "pass": true, "expect": ["D-D1-DEFAULT"], "got": ["D-D1-DEFAULT"], "note": "对人默认灌 D1 委派百科"}
+{"id": "D-X3", "pass": true, "expect": ["D-ORCH-NO-D1", "D-ORCH-NO-D2", "D-ORCH-DOMAIN"], "got": ["D-ORCH-NO-D1", "D-ORCH-NO-D2", "D-ORCH-DOMAIN"], "note": "编排缺 D1+D2，还灌领域长步骤"}
+{"id": "D-X4", "pass": true, "expect": ["D-SEARCH-WRITE-IN-B", "D-LEAD-SELF"], "got": ["D-SEARCH-WRITE-IN-B", "D-LEAD-SELF"], "note": "搜写写进岗；Lead 默认自己干当编排法"}
+{"id": "D-X5", "pass": true, "expect": ["D-TASK-INCOHERENT", "D-DONE-ONLY", "D-PARENT-D1"], "got": ["D-TASK-INCOHERENT", "D-DONE-ONLY", "D-PARENT-D1"], "note": "任务单不自洽；只回 done；灌父 D1"}
+{"id": "D-X6", "pass": true, "expect": ["D-CAP-AS-NEW"], "got": ["D-CAP-AS-NEW"], "note": "触顶假装新交付"}
+{"id": "D-X7", "pass": true, "expect": ["D-PROMISE-EMPTY"], "got": ["D-PROMISE-EMPTY"], "note": "空口稍后处理"}
+{"id": "D-X8", "pass": true, "expect": ["D-OVERRIDE-A", "D-REWRITE-JOB"], "got": ["D-OVERRIDE-A", "D-REWRITE-JOB"], "note": "无物为完成；步骤改成自己上手"}
+{"id": "D-X9", "pass": true, "expect": ["D-BTW"], "got": ["D-BTW"], "note": "旁问灌 D"}
+{"id": "D-X10", "pass": true, "expect": ["D-GROUP-D1"], "got": ["D-GROUP-D1"], "note": "跨用户房灌 1:1 委派百科"}
+{"id": "D-X11", "pass": true, "expect": ["D-REJECT-MIX", "D-REJECT-AS-G"], "got": ["D-REJECT-MIX", "D-REJECT-AS-G"], "note": "三种拒混成一种；用长文代替分标记"}
+{"id": "D-X12", "pass": true, "expect": ["D-WORKER-DENY-RETRY", "D-SHRINK-SCOPE", "D-D3-AS-GATE"], "got": ["D-WORKER-DENY-RETRY", "D-SHRINK-SCOPE", "D-D3-AS-GATE"], "note": "自己重试升权；缩范围当交付；D3 当计划闸"}

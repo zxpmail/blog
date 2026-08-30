@@ -1,0 +1,18 @@
+{"id": "EXT-OK-1", "pass": true, "expect": [], "got": [], "note": "兜底没写 Ext，空着仍套 Worker"}
+{"id": "EXT-OK-2", "pass": true, "expect": [], "got": [], "note": "编排窗只有手写黄页"}
+{"id": "EXT-OK-3", "pass": true, "expect": [], "got": [], "note": "被点到才灌那一篇"}
+{"id": "EXT-OK-4", "pass": true, "expect": [], "got": [], "note": "仓库 AGENTS.md 当 C，不当 Ext"}
+{"id": "EXT-OK-5", "pass": true, "expect": [], "got": [], "note": "默认脸不灌 Ext"}
+{"id": "EXT-OK-6", "pass": true, "expect": [], "got": [], "note": "工具以本轮授权为准"}
+{"id": "EXT-OK-7", "pass": true, "expect": [], "got": [], "note": "卸的是窗，注册表还在"}
+{"id": "EXT-OK-8", "pass": true, "expect": [], "got": [], "note": "同名只灌被派的那一篇"}
+{"id": "EXT-X1", "pass": true, "expect": ["EXT-COORD"], "got": ["EXT-COORD"], "note": "编排窗灌了 Ext"}
+{"id": "EXT-X2", "pass": true, "expect": ["EXT-YELLOW-EXCERPT"], "got": ["EXT-YELLOW-EXCERPT"], "note": "从 Ext 摘长文当黄页"}
+{"id": "EXT-X3", "pass": true, "expect": ["EXT-UNPICKED"], "got": ["EXT-UNPICKED"], "note": "灌了没点到的专家正文"}
+{"id": "EXT-X4", "pass": true, "expect": ["EXT-SOUL"], "got": ["EXT-SOUL"], "note": "干活还灌灵魂"}
+{"id": "EXT-X5", "pass": true, "expect": ["EXT-GRANT"], "got": ["EXT-GRANT"], "note": "Ext 写你有 Write 就算授予"}
+{"id": "EXT-X6", "pass": true, "expect": ["EXT-DEFAULT"], "got": ["EXT-DEFAULT"], "note": "对人默认灌 Ext"}
+{"id": "EXT-X7", "pass": true, "expect": ["EXT-AGENTS-MD"], "got": ["EXT-AGENTS-MD"], "note": "AGENTS.md 当成 Ext"}
+{"id": "EXT-X8", "pass": true, "expect": ["EXT-THIRD-ROLE"], "got": ["EXT-THIRD-ROLE"], "note": "Ext 升成第三岗"}
+{"id": "EXT-X9", "pass": true, "expect": ["EXT-VS-A"], "got": ["EXT-VS-A"], "note": "Ext 改什么叫做完"}
+{"id": "EXT-X10", "pass": true, "expect": ["EXT-REWRITE-JOB"], "got": ["EXT-REWRITE-JOB"], "note": "Ext 改成编排器"}
