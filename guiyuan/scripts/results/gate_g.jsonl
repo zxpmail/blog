@@ -1,0 +1,20 @@
+{"id": "G-OK-1", "pass": true, "expect": [], "got": [], "note": "G 不进 system；不是人格层"}
+{"id": "G-OK-2", "pass": true, "expect": [], "got": [], "note": "无证物不放行；纯聊不套交付门"}
+{"id": "G-OK-3", "pass": true, "expect": [], "got": [], "note": "取消停；触顶不标 completed；假死停"}
+{"id": "G-OK-4", "pass": true, "expect": [], "got": [], "note": "无句柄不当时成功；四种拒分开"}
+{"id": "G-OK-5", "pass": true, "expect": [], "got": [], "note": "子钉死；禁止静默；触顶不空转"}
+{"id": "G-OK-6", "pass": true, "expect": [], "got": [], "note": "注入槽不是 G；Verify 不代替完成门"}
+{"id": "G-OK-7", "pass": true, "expect": [], "got": [], "note": "用户拒不原样重试"}
+{"id": "G-OK-8", "pass": true, "expect": [], "got": [], "note": "迟到丢；自报不当证物；无指称不放行；认错靶不放；门不可改"}
+{"id": "G-X1", "pass": true, "expect": ["G-IN-SYSTEM"], "got": ["G-IN-SYSTEM"], "note": "G 灌进 system"}
+{"id": "G-X2", "pass": true, "expect": ["G-REWRITE-A"], "got": ["G-REWRITE-A"], "note": "门里另造完成标准"}
+{"id": "G-X3", "pass": true, "expect": ["G-NO-EVIDENCE"], "got": ["G-NO-EVIDENCE"], "note": "无证物放行"}
+{"id": "G-X4", "pass": true, "expect": ["G-CHAT-AS-DELIVER"], "got": ["G-CHAT-AS-DELIVER"], "note": "陪聊套交付门"}
+{"id": "G-X5", "pass": true, "expect": ["G-CANCEL-RUN", "G-CAP-AS-DONE"], "got": ["G-CANCEL-RUN", "G-CAP-AS-DONE"], "note": "取消后续跑；触顶标完成"}
+{"id": "G-X6", "pass": true, "expect": ["G-DENY-AS-USER", "G-TIMEOUT-AS-USER", "G-RETRY-DENY"], "got": ["G-DENY-AS-USER", "G-TIMEOUT-AS-USER", "G-RETRY-DENY"], "note": "DENY 当用户拒；超时当用户拒；原样重试"}
+{"id": "G-X7", "pass": true, "expect": ["G-PROMISE-OK"], "got": ["G-PROMISE-OK"], "note": "空口稍后当成功"}
+{"id": "G-X8", "pass": true, "expect": ["G-CHILD-ESCALATE", "G-SILENT", "G-DEGRADE-AFTER-CAP"], "got": ["G-CHILD-ESCALATE", "G-SILENT", "G-DEGRADE-AFTER-CAP"], "note": "子自己升权；静默；触顶后逐渐"}
+{"id": "G-X9", "pass": true, "expect": ["G-PROMPT-AS-GATE", "G-D7-AS-G", "G-VERIFY-AS-DONE"], "got": ["G-PROMPT-AS-GATE", "G-D7-AS-G", "G-VERIFY-AS-DONE"], "note": "prompt 代替门；注入槽当 G；Verify 当完成"}
+{"id": "G-X10", "pass": true, "expect": ["G-LATE-AS-DONE", "G-SELF-REPORT", "G-NO-REFERENT-PASS", "G-WRONG-TARGET", "G-FAIL-OPEN", "G-AGENT-REWRITE-GATE"], "got": ["G-LATE-AS-DONE", "G-AGENT-REWRITE-GATE", "G-SELF-REPORT", "G-NO-REFERENT-PASS", "G-WRONG-TARGET", "G-FAIL-OPEN"], "note": "迟到当成功；自报当证物；无指称放行；认错靶；fail-open；卸闸"}
+{"id": "G-OK-9", "pass": true, "expect": [], "got": [], "note": "假死不逐渐；机器闸≠用户拒；网页不当令；任务通道不是权限"}
+{"id": "G-X11", "pass": true, "expect": ["G-STALL-AS-GRADUAL", "G-MACHINE-AS-USER", "G-WEB-AS-TOKEN", "G-TASK-AS-PERM"], "got": ["G-STALL-AS-GRADUAL", "G-MACHINE-AS-USER", "G-WEB-AS-TOKEN", "G-TASK-AS-PERM"], "note": "假死当逐渐；机器闸当用户拒；网页当令；任务通道当权限"}
