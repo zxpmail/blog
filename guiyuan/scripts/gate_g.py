@@ -46,6 +46,10 @@ MUST = (
     "认错靶",
     "fail-open",
     "验收侧",
+    "取消认定",
+    "脏单开跑",
+    "机器位",
+    "模型自报不当认定",
 )
 BANNED = (
     "默认脸",
@@ -114,6 +118,10 @@ def judge(ledger: dict) -> list[str]:
         v.append("G-WEB-AS-TOKEN")
     if ledger.get("task_channel_as_permission"):
         v.append("G-TASK-AS-PERM")
+    if ledger.get("cancel_by_model"):
+        v.append("G-CANCEL-BY-MODEL")
+    if ledger.get("dirty_task_ran"):
+        v.append("G-DIRTY-TASK-RUN")
     return v
 
 
@@ -306,6 +314,24 @@ FIXTURES = [
             "G-WEB-AS-TOKEN",
             "G-TASK-AS-PERM",
         ],
+    },
+    {
+        "id": "G-OK-10",
+        "note": "取消认定在平台；脏单开跑被拦",
+        "ledger": {
+            "cancel_by_model": False,
+            "dirty_task_ran": False,
+        },
+        "expect": [],
+    },
+    {
+        "id": "G-X12",
+        "note": "模型认定取消；脏单开跑",
+        "ledger": {
+            "cancel_by_model": True,
+            "dirty_task_ran": True,
+        },
+        "expect": ["G-CANCEL-BY-MODEL", "G-DIRTY-TASK-RUN"],
     },
 ]
 
