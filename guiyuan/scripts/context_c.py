@@ -9,7 +9,17 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+CORE = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 SCHEME_PATH = os.path.join(HERE, "context.md")
+EXTRACT_DIR = os.path.join(HERE, "C")
+EXTRACT_FILES = (
+    "C-user.md",
+    "C-default.md",
+    "C-orchestration.md",
+    "C-worker.md",
+    "C-group.md",
+    "C-projection.md",
+)
 RESULTS = os.path.join(HERE, "results")
 os.makedirs(RESULTS, exist_ok=True)
 
@@ -34,6 +44,16 @@ MUST = (
     "也不搬个人召回",
     "仍搬召回，也算搬",
     "由装载器按入口表执行",
+    "任务单走子 user",
+    "写法见 D",
+    "目标提示词",
+    "C-user.md",
+    "C-default.md",
+    "C-orchestration.md",
+    "C-worker.md",
+    "C-group.md",
+    "C-projection.md",
+    "LOADER-DRAFT",
 )
 BANNED = (
     "默认脸",
@@ -249,6 +269,21 @@ def test_scheme() -> list[str]:
     for ban in BANNED:
         if ban in text:
             fails.append(f"方案仍含：{ban}")
+    for name in EXTRACT_FILES:
+        path = os.path.join(EXTRACT_DIR, name)
+        if not os.path.isfile(path):
+            fails.append(f"缺目标提示词：{name}")
+            continue
+        body = load_scheme(path)
+        if "<c_" not in body:
+            fails.append(f"{name} 无 <c_ 块")
+        for ban in BANNED:
+            if ban in body:
+                fails.append(f"{name} 仍含：{ban}")
+        if "G1" in body or "G12" in body:
+            fails.append(f"{name} 含缺口编号")
+        if "<playbook" in body:
+            fails.append(f"{name} 写成了操作手册")
     return fails
 
 

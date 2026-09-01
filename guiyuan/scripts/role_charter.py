@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""只测同目录 role.md 里两段 <role_charter>。不测 A/G/B′，不调模型。"""
+"""只测现行 <role_charter> 两段。不测 A/G/B′，不调模型。"""
 from __future__ import annotations
 
 import json
@@ -9,9 +9,9 @@ import sys
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-ROLE_PATH = os.path.join(HERE, "role.md")
-RESULTS = os.path.join(HERE, "results")
+CORE = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+ROLE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "role.md")
+RESULTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
 os.makedirs(RESULTS, exist_ok=True)
 
 BANNED_ANY = (
@@ -155,6 +155,16 @@ FIXTURES = [
         "ledger": {
             "face": "default", "jacket": "none",
             "hands_on": True, "c_opened_exec": True,
+        },
+        "expect": [],
+    },
+    {
+        "id": "B-OK-8",
+        "note": "越权要求（调度整场）写进任务单：不做并说明，不算偏离",
+        "ledger": {
+            "face": "worker", "jacket": "worker",
+            "scheduled_field": False, "silent_diverge": False,
+            "asked_clarify": True,
         },
         "expect": [],
     },

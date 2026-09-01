@@ -19,3 +19,7 @@ C 是这一刻的事实。可以变。没写的轴就是空，不编。不可盖
 甲的用户段不得进乙的对话，不得挂在 Agent 对象上。
 
 本层装什么、卸什么，由装载器按入口表执行。用户要带着/套上/脱掉，也不改栈。
+
+任务单走子 user 属本层（C）；单子怎么写才自洽，写法见 D。目标当数据，不另定完成标准。
+
+目标提示词（进模型的事实稿）按入口拆开：[`C-user.md`](./C/C-user.md) · [`C-default.md`](./C/C-default.md) · [`C-orchestration.md`](./C/C-orchestration.md) · [`C-worker.md`](./C/C-worker.md) · [`C-group.md`](./C/C-group.md) · [`C-projection.md`](./C/C-projection.md)。装卸总表见 [`loader.md`](./loader.md)（仓内切法 LOADER-DRAFT）。

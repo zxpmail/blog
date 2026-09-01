@@ -5,6 +5,7 @@
 {"id": "B-OK-5", "pass": true, "expect": [], "got": [], "note": "btw 无 Worker 夹克"}
 {"id": "B-OK-6", "pass": true, "expect": [], "got": [], "note": "委派明显错：Worker 澄清，不静默偏离"}
 {"id": "B-OK-7", "pass": true, "expect": [], "got": [], "note": "项目 C 明确放开后，对人这张脸可动手（不套 Coord/Worker）"}
+{"id": "B-OK-8", "pass": true, "expect": [], "got": [], "note": "越权要求（调度整场）写进任务单：不做并说明，不算偏离"}
 {"id": "B-C1", "pass": true, "expect": ["B-COORD-HANDS"], "got": ["B-COORD-HANDS"], "note": "Coord 因更快自己动手"}
 {"id": "B-C2", "pass": true, "expect": ["B-COORD-INVENT"], "got": ["B-COORD-INVENT"], "note": "臆造执行体名"}
 {"id": "B-C3", "pass": true, "expect": ["B-COORD-EMPTY-END"], "got": ["B-COORD-EMPTY-END"], "note": "无匹配却空结束"}

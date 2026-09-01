@@ -1,6 +1,6 @@
 # 归源 · 账本与模型守法
 
-对应私有文稿仓「归源」第 3 篇（宪章）、第 4–6 篇（工种）、第 7 篇（性格）、第 8 篇（扩展）、第 9 篇（现场）、第 10 篇（手册）、第 11 篇（闸门）、第 12 篇（装卸）、第 13 篇（地图）。零外部依赖可跑账本。模型守法要密钥。闸门和装卸不调模型。
+对应私有文稿仓「归源」第 3 篇（宪章）、第 4–6 篇（工种）、第 7 篇（性格）、第 8 篇（扩展）、第 9 篇（现场）、第 10 篇（手册）、第 11 篇（闸门）、第 12 篇（装卸）、第 13 篇（地图）、第 14 篇（投毒）、第 15 篇（混淆）、第 16 篇（对账）。零外部依赖可跑账本。模型守法要密钥。闸门和装卸不调模型。
 
 ```bash
 python -u charter_constitution.py
@@ -11,6 +11,8 @@ python -u context_c.py
 python -u playbook_d.py
 python -u gate_g.py
 python -u loader.py
+# 整体：先八账本，后模型（无密钥自 SKIP）
+python -u charter_ag.py
 # 可选：CHARTER_API_KEY + CHARTER_BASE_URL + CHARTER_MODEL
 python -u charter_model.py
 # 仅性格：CHARTER_SUITE=bp python -u charter_model.py
@@ -30,16 +32,18 @@ python -u charter_model.py
 | `context.md` | C 现场方案 |
 | `operations.md` | D 手册方案 |
 | `D/` | D 目标提示词（按入口） |
-| `gate.md` | G 闸门方案（不进模型） |
+| `C/` | C 目标提示词（按入口，事实稿） |
+| `gate.md` | G 闸门方案（不进模型）。含两刀刀形、注入旗、终态对账、旁路收口 |
 | `loader.md` | 装卸方案（不进模型） |
-| `charter_constitution.py` | A 静态 + 23 条账本 |
-| `role_charter.py` | B 静态 + 28 条账本 |
+| `charter_constitution.py` | A 静态 + 30 条账本 |
+| `role_charter.py` | B 静态 + 29 条账本 |
 | `behavior_prime.py` | B′ 静态 + 20 条账本 |
 | `agent_ext.py` | Ext 静态 + 18 条账本 |
 | `context_c.py` | C 静态 + 21 条账本 |
-| `playbook_d.py` | D 静态 + 22 条账本 |
-| `gate_g.py` | G 静态 + 20 条账本。不调模型 |
-| `loader.py` | 装卸方案静态。不调模型 |
+| `playbook_d.py` | D 静态 + 29 条账本（含终态对账判栈位） |
+| `gate_g.py` | G 静态 + 30 判例 + 93 刀形 + 40 止意语料。不调模型 |
+| `loader.py` | 装卸账本，25 判例。不调模型 |
+| `charter_ag.py` | 整体：先八账本后模型。G 不进 system |
 | `charter_model.py` | 灌颁布稿，模型填 JSON，同一套 judge。无密钥 → SKIP。默认只跑 A/B；`CHARTER_SUITE=bp` / `ext` / `c` / `d` / `all`。`all` 仍是分层薄装，不是整体 |
 | `results/*.jsonl` | 最近一次运行。D 模型结果另存 `charter_model_d.jsonl`，免被 `c`/`ab` 盖掉 |
 

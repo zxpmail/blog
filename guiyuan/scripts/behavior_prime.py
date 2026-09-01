@@ -8,8 +8,8 @@ import sys
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-SCHEME_PATH = os.path.join(HERE, "behavior.md")
+CORE = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+SCHEME_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "behavior.md")
 RESULTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
 os.makedirs(RESULTS, exist_ok=True)
 

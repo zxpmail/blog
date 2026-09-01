@@ -9,6 +9,7 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+CORE = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 SCHEME_PATH = os.path.join(HERE, "ext.md")
 RESULTS = os.path.join(HERE, "results")
 os.makedirs(RESULTS, exist_ok=True)

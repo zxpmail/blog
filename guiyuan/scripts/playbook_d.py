@@ -9,6 +9,7 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+CORE = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 SCHEME_PATH = os.path.join(HERE, "operations.md")
 EXTRACT_DIR = os.path.join(HERE, "D")
 EXTRACT_FILES = (
@@ -86,6 +87,10 @@ def judge(ledger: dict) -> list[str]:
         v.append("D-LEAD-SELF")
     if face == "worker" and ledger.get("task_self_contained") is False:
         v.append("D-TASK-INCOHERENT")
+    if face == "worker" and ledger.get("task_order_gate") not in (None, "PASS"):
+        v.append("D-DIRTY-ORDER")
+    if face == "worker" and ledger.get("reply_receipt_only"):
+        v.append("D-REPLY-RECEIPT-ONLY")
     if face == "worker" and ledger.get("report_done_only"):
         v.append("D-DONE-ONLY")
     if face == "worker" and ledger.get("has_parent_d1"):
@@ -98,6 +103,10 @@ def judge(ledger: dict) -> list[str]:
         v.append("D-CAP-AS-NEW")
     if ledger.get("promise_without_handle"):
         v.append("D-PROMISE-EMPTY")
+    if ledger.get("promise_gate") not in (None, "PASS"):
+        v.append("D-PROMISE-EMPTY")
+    if ledger.get("terminal_recon") not in (None, "PASS"):
+        v.append("D-TERMINAL-RECON-HIT")
     if ledger.get("claimed_complete_without_artifact"):
         v.append("D-OVERRIDE-A")
     if ledger.get("steps_rewrite_job"):
@@ -224,6 +233,24 @@ FIXTURES = [
         "expect": ["D-TASK-INCOHERENT", "D-DONE-ONLY", "D-PARENT-D1"],
     },
     {
+        "id": "D-X16",
+        "note": "机器闸：终单仍被拦（指针单，重写后未过）",
+        "ledger": {
+            "face": "worker", "task_order_gate": "TASK_POINTER_ONLY",
+            "task_self_contained": True,
+        },
+        "expect": ["D-DIRTY-ORDER"],
+    },
+    {
+        "id": "D-X17",
+        "note": "机器闸：回报是回执单（裸 done）",
+        "ledger": {
+            "face": "worker", "task_order_gate": "PASS",
+            "reply_receipt_only": True,
+        },
+        "expect": ["D-REPLY-RECEIPT-ONLY"],
+    },
+    {
         "id": "D-X6",
         "note": "触顶假装新交付",
         "ledger": {"cap_as_new_delivery": True},
@@ -234,6 +261,36 @@ FIXTURES = [
         "note": "空口稍后处理",
         "ledger": {"promise_without_handle": True},
         "expect": ["D-PROMISE-EMPTY"],
+    },
+    {
+        "id": "D-X18",
+        "note": "机器刀：终答空口许诺无句柄",
+        "ledger": {"promise_gate": "PROMISE_NO_HANDLE"},
+        "expect": ["D-PROMISE-EMPTY"],
+    },
+    {
+        "id": "D-X19",
+        "note": "机器刀：终答有句柄或无许诺词，过",
+        "ledger": {"promise_gate": "PASS", "promise_without_handle": False},
+        "expect": [],
+    },
+    {
+        "id": "D-X20",
+        "note": "机器刀：终态对账 PASS（声称对得上账本或无声称）",
+        "ledger": {"terminal_recon": "PASS"},
+        "expect": [],
+    },
+    {
+        "id": "D-X21",
+        "note": "机器刀：终态对账证伪（终答声称对不上账本）",
+        "ledger": {"terminal_recon": "UNMATCHED"},
+        "expect": ["D-TERMINAL-RECON-HIT"],
+    },
+    {
+        "id": "D-X22",
+        "note": "机器刀：终态对账证伪（回报编造子回执）",
+        "ledger": {"terminal_recon": "FABRICATED"},
+        "expect": ["D-TERMINAL-RECON-HIT"],
     },
     {
         "id": "D-X8",

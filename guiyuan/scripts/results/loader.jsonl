@@ -1,0 +1,25 @@
+{"id": "L-OK-1", "pass": true, "expect": [], "got": [], "note": "对人默认：face+B′+用户段，卸岗卸黄页卸 D1"}
+{"id": "L-OK-2", "pass": true, "expect": [], "got": [], "note": "编排：A+Coord+说明书黄页（假 user）+D1 编排+D2；卸 face/B′/Ext/用户段"}
+{"id": "L-OK-3", "pass": true, "expect": [], "got": [], "note": "被委派：A+Worker+被点到 Ext+D1 执行体+D2；不灌父对话/黄页/召回/父 D1"}
+{"id": "L-OK-4", "pass": true, "expect": [], "got": [], "note": "btw：只读快照，不进主队列，不灌岗/D/C"}
+{"id": "L-OK-5", "pass": true, "expect": [], "got": [], "note": "跨用户房：本场皮+本场事实；不搬 1:1 用户段/灵魂/黄页/召回/委派百科"}
+{"id": "L-OK-6", "pass": true, "expect": [], "got": [], "note": "换人：卸甲的用户段与召回，灌乙的；甲的不进乙"}
+{"id": "L-OK-7", "pass": true, "expect": [], "got": [], "note": "换项目：重灌说明书黄页；用户段不卸"}
+{"id": "L-OK-8", "pass": true, "expect": [], "got": [], "note": "回对人默认：卸 Coord/Worker；再灌 face/B′/用户段"}
+{"id": "L-OK-9", "pass": true, "expect": [], "got": [], "note": "脏单进子 user 前被机器挡住，不开跑"}
+{"id": "L-X1", "pass": true, "expect": ["L-DEFAULT-ROLE"], "got": ["L-DEFAULT-ROLE"], "note": "对人默认误套 Coord"}
+{"id": "L-X2", "pass": true, "expect": ["L-DEFAULT-D1"], "got": ["L-DEFAULT-D1"], "note": "对人默认灌 D1 委派百科"}
+{"id": "L-X3", "pass": true, "expect": ["L-ORCH-FACE"], "got": ["L-ORCH-FACE"], "note": "编排灌 face"}
+{"id": "L-X4", "pass": true, "expect": ["L-ORCH-NO-D1", "L-ORCH-NO-D2"], "got": ["L-ORCH-NO-D1", "L-ORCH-NO-D2"], "note": "编排缺 D1+D2（用户说别灌也卸不掉，缺了就是缺）"}
+{"id": "L-X5", "pass": true, "expect": ["L-WORKER-PARENT-DIALOG"], "got": ["L-WORKER-PARENT-DIALOG"], "note": "被委派灌父对话当手册"}
+{"id": "L-X6", "pass": true, "expect": ["L-WORKER-PARENT-D1"], "got": ["L-WORKER-PARENT-D1"], "note": "被委派灌父的 D1 百科"}
+{"id": "L-X7", "pass": true, "expect": ["L-WORKER-COORD"], "got": ["L-WORKER-COORD"], "note": "被委派卸 A（不可卸）且误套编排岗"}
+{"id": "L-X8", "pass": true, "expect": ["L-BTW-QUEUE", "L-BTW-ROLE"], "got": ["L-BTW-QUEUE", "L-BTW-ROLE"], "note": "btw 进主队列还灌岗"}
+{"id": "L-X9", "pass": true, "expect": ["L-GROUP-1TO1-CUSER", "L-GROUP-YELLOW"], "got": ["L-GROUP-1TO1-CUSER", "L-GROUP-YELLOW"], "note": "跨用户房搬 1:1 用户段+黄页"}
+{"id": "L-X10", "pass": true, "expect": ["L-G-IN-SYSTEM"], "got": ["L-G-IN-SYSTEM"], "note": "G 被装进这次对话的 system"}
+{"id": "L-X11", "pass": true, "expect": ["L-VERBAL-STACK"], "got": ["L-VERBAL-STACK"], "note": "用户口头套岗，装卸照办改栈"}
+{"id": "L-X12", "pass": true, "expect": ["L-RELOAD-UNCHANGED"], "got": ["L-RELOAD-UNCHANGED"], "note": "时间没变又灌第二份"}
+{"id": "L-X13", "pass": true, "expect": ["L-SWITCH-USER-LEAK"], "got": ["L-SWITCH-USER-LEAK"], "note": "换人后甲的用户段泄漏给乙"}
+{"id": "L-X14", "pass": true, "expect": ["L-DIRTY-IN-CHILD"], "got": ["L-DIRTY-IN-CHILD"], "note": "脏单进了子 user 开跑"}
+{"id": "L-X15", "pass": true, "expect": ["L-SAME-PROJ-DROPS-MANUAL"], "got": ["L-SAME-PROJ-DROPS-MANUAL"], "note": "同项目换房把说明书卸了"}
+{"id": "L-X16", "pass": true, "expect": ["L-RETURN-KEPT-ROLE", "L-DEFAULT-ROLE"], "got": ["L-DEFAULT-ROLE", "L-RETURN-KEPT-ROLE"], "note": "回对人默认还穿着 Coord"}
