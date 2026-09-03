@@ -1,0 +1,369 @@
+{
+  "test": "gate-vs-orch-controlled",
+  "overall_pass": true,
+  "live_l2": false,
+  "suite": "proxy",
+  "cred": null,
+  "hypotheses": {
+    "H1_gate_fa_lt_orch": true,
+    "H2_gate_late_zero": true,
+    "H3_ablation": true,
+    "H4_l2_false_reject_measurable_lt_50": null,
+    "H1_diff_orch_minus_gate": {
+      "diff": 1.0,
+      "lo": 1.0,
+      "hi": 1.0
+    },
+    "H2_diff_orch_minus_gate": {
+      "diff": 1.0,
+      "lo": 1.0,
+      "hi": 1.0
+    }
+  },
+  "task_set": {
+    "n_total": 40,
+    "n_gold_labeled": 30,
+    "n_edge_excluded": 10,
+    "families": [
+      "P1",
+      "P4",
+      "write-test"
+    ],
+    "note": "proxy workload from P1+P4+write-test; not production traffic"
+  },
+  "verify": {
+    "ORCH": {
+      "condition": "ORCH",
+      "mode": "orch",
+      "n_rows": 30,
+      "false_accept": {
+        "k": 15,
+        "n": 15,
+        "rate": 1.0,
+        "wilson95": [
+          0.7961107336956521,
+          1.0
+        ]
+      },
+      "false_reject": {
+        "k": 0,
+        "n": 15,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.20388926630434784
+        ]
+      },
+      "unclear_should_pass": 0,
+      "unclear_should_reject": 0
+    },
+    "GATE": {
+      "condition": "GATE",
+      "mode": "gate",
+      "n_rows": 30,
+      "false_accept": {
+        "k": 0,
+        "n": 13,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.22810184305529166
+        ]
+      },
+      "false_reject": {
+        "k": 0,
+        "n": 0,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.0
+        ]
+      },
+      "unclear_should_pass": 15,
+      "unclear_should_reject": 2
+    },
+    "ABL_NO_VERIFY": {
+      "condition": "ABL_NO_VERIFY",
+      "mode": "abl_no_verify",
+      "n_rows": 30,
+      "false_accept": {
+        "k": 15,
+        "n": 15,
+        "rate": 1.0,
+        "wilson95": [
+          0.7961107336956521,
+          1.0
+        ]
+      },
+      "false_reject": {
+        "k": 0,
+        "n": 15,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.20388926630434784
+        ]
+      },
+      "unclear_should_pass": 0,
+      "unclear_should_reject": 0
+    },
+    "ABL_NO_TIMEOUT": {
+      "condition": "ABL_NO_TIMEOUT",
+      "mode": "gate",
+      "n_rows": 30,
+      "false_accept": {
+        "k": 0,
+        "n": 13,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.22810184305529166
+        ]
+      },
+      "false_reject": {
+        "k": 0,
+        "n": 0,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.0
+        ]
+      },
+      "unclear_should_pass": 15,
+      "unclear_should_reject": 2
+    }
+  },
+  "slow": {
+    "ORCH": {
+      "condition": "ORCH",
+      "mode": "orch",
+      "n": 20,
+      "late_accept": {
+        "k": 20,
+        "n": 20,
+        "rate": 1.0,
+        "wilson95": [
+          0.8388698745050668,
+          0.9999999999999999
+        ]
+      },
+      "accept": {
+        "k": 20,
+        "n": 20,
+        "rate": 1.0,
+        "wilson95": [
+          0.8388698745050668,
+          0.9999999999999999
+        ]
+      },
+      "actions_preview": [
+        {
+          "i": 0,
+          "decision": "ACCEPT",
+          "action": "ORCH_LATE",
+          "late_accept": true
+        },
+        {
+          "i": 1,
+          "decision": "ACCEPT",
+          "action": "ORCH_LATE",
+          "late_accept": true
+        },
+        {
+          "i": 2,
+          "decision": "ACCEPT",
+          "action": "ORCH_LATE",
+          "late_accept": true
+        },
+        {
+          "i": 3,
+          "decision": "ACCEPT",
+          "action": "ORCH_LATE",
+          "late_accept": true
+        },
+        {
+          "i": 4,
+          "decision": "ACCEPT",
+          "action": "ORCH_LATE",
+          "late_accept": true
+        }
+      ]
+    },
+    "GATE": {
+      "condition": "GATE",
+      "mode": "gate",
+      "n": 20,
+      "late_accept": {
+        "k": 0,
+        "n": 20,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.1611301254949332
+        ]
+      },
+      "accept": {
+        "k": 0,
+        "n": 20,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.1611301254949332
+        ]
+      },
+      "actions_preview": [
+        {
+          "i": 0,
+          "decision": "REJECT",
+          "action": "PHYSICAL_TIMEOUT",
+          "late_accept": false
+        },
+        {
+          "i": 1,
+          "decision": "REJECT",
+          "action": "PHYSICAL_TIMEOUT",
+          "late_accept": false
+        },
+        {
+          "i": 2,
+          "decision": "REJECT",
+          "action": "PHYSICAL_TIMEOUT",
+          "late_accept": false
+        },
+        {
+          "i": 3,
+          "decision": "REJECT",
+          "action": "PHYSICAL_TIMEOUT",
+          "late_accept": false
+        },
+        {
+          "i": 4,
+          "decision": "REJECT",
+          "action": "PHYSICAL_TIMEOUT",
+          "late_accept": false
+        }
+      ]
+    },
+    "ABL_NO_VERIFY": {
+      "condition": "ABL_NO_VERIFY",
+      "mode": "gate",
+      "n": 20,
+      "late_accept": {
+        "k": 0,
+        "n": 20,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.1611301254949332
+        ]
+      },
+      "accept": {
+        "k": 0,
+        "n": 20,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.1611301254949332
+        ]
+      },
+      "actions_preview": [
+        {
+          "i": 0,
+          "decision": "REJECT",
+          "action": "PHYSICAL_TIMEOUT",
+          "late_accept": false
+        },
+        {
+          "i": 1,
+          "decision": "REJECT",
+          "action": "PHYSICAL_TIMEOUT",
+          "late_accept": false
+        },
+        {
+          "i": 2,
+          "decision": "REJECT",
+          "action": "PHYSICAL_TIMEOUT",
+          "late_accept": false
+        },
+        {
+          "i": 3,
+          "decision": "REJECT",
+          "action": "PHYSICAL_TIMEOUT",
+          "late_accept": false
+        },
+        {
+          "i": 4,
+          "decision": "REJECT",
+          "action": "PHYSICAL_TIMEOUT",
+          "late_accept": false
+        }
+      ]
+    },
+    "ABL_NO_TIMEOUT": {
+      "condition": "ABL_NO_TIMEOUT",
+      "mode": "abl_no_timeout",
+      "n": 20,
+      "late_accept": {
+        "k": 20,
+        "n": 20,
+        "rate": 1.0,
+        "wilson95": [
+          0.8388698745050668,
+          0.9999999999999999
+        ]
+      },
+      "accept": {
+        "k": 20,
+        "n": 20,
+        "rate": 1.0,
+        "wilson95": [
+          0.8388698745050668,
+          0.9999999999999999
+        ]
+      },
+      "actions_preview": [
+        {
+          "i": 0,
+          "decision": "ACCEPT",
+          "action": "NO_TIMEOUT_GOT_LATE",
+          "late_accept": true
+        },
+        {
+          "i": 1,
+          "decision": "ACCEPT",
+          "action": "NO_TIMEOUT_GOT_LATE",
+          "late_accept": true
+        },
+        {
+          "i": 2,
+          "decision": "ACCEPT",
+          "action": "NO_TIMEOUT_GOT_LATE",
+          "late_accept": true
+        },
+        {
+          "i": 3,
+          "decision": "ACCEPT",
+          "action": "NO_TIMEOUT_GOT_LATE",
+          "late_accept": true
+        },
+        {
+          "i": 4,
+          "decision": "ACCEPT",
+          "action": "NO_TIMEOUT_GOT_LATE",
+          "late_accept": true
+        }
+      ]
+    }
+  },
+  "evidence_map": {
+    "supports": [
+      "controlled ORCH vs GATE false-accept (H1)",
+      "PHYSICAL_TIMEOUT blocks late accepts (H2)",
+      "ablation no-verify / no-timeout (H3)"
+    ],
+    "does_not_support": [
+      "private production traffic external validity",
+      "multiple-testing-corrected significance"
+    ]
+  }
+}
