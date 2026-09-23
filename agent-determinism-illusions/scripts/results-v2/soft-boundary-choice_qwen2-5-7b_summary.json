@@ -1,0 +1,34 @@
+{
+  "claim": "soft_rate(bare)≈soft_rate(speed) > soft_rate(hard)",
+  "mode": "choice",
+  "model": "qwen2.5:7b",
+  "backend": "ollama",
+  "temp": 0.7,
+  "n_per_cell": 5,
+  "by_condition": {
+    "bare": {
+      "A_soft": 0,
+      "B_hard": 15,
+      "invalid": 0,
+      "valid": 15,
+      "soft_rate": 0.0
+    },
+    "speed": {
+      "A_soft": 5,
+      "B_hard": 10,
+      "invalid": 0,
+      "valid": 15,
+      "soft_rate": 0.333
+    },
+    "hard": {
+      "A_soft": 0,
+      "B_hard": 15,
+      "invalid": 0,
+      "valid": 15,
+      "soft_rate": 0.0
+    }
+  },
+  "soft_rate_drop_bare_minus_hard": 0.0,
+  "speed_minus_bare": 0.333,
+  "verdict": "SUPPORT_SPEED — bare 未必偏软，但催促(speed)抬高软边界，硬规则能压回去（更贴近工程现实）"
+}

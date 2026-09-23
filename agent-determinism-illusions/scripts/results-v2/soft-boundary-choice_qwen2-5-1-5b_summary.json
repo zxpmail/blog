@@ -1,0 +1,34 @@
+{
+  "claim": "soft_rate(bare)≈soft_rate(speed) > soft_rate(hard)",
+  "mode": "choice",
+  "model": "qwen2.5:1.5b",
+  "backend": "ollama",
+  "temp": 0.7,
+  "n_per_cell": 5,
+  "by_condition": {
+    "bare": {
+      "A_soft": 1,
+      "B_hard": 14,
+      "invalid": 0,
+      "valid": 15,
+      "soft_rate": 0.067
+    },
+    "speed": {
+      "A_soft": 1,
+      "B_hard": 14,
+      "invalid": 0,
+      "valid": 15,
+      "soft_rate": 0.067
+    },
+    "hard": {
+      "A_soft": 1,
+      "B_hard": 14,
+      "invalid": 0,
+      "valid": 15,
+      "soft_rate": 0.067
+    }
+  },
+  "soft_rate_drop_bare_minus_hard": 0.0,
+  "speed_minus_bare": 0.0,
+  "verdict": "INCONCLUSIVE — 各条件几乎都不选软边界（模型先验偏硬）"
+}
