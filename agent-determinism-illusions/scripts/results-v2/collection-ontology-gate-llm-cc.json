@@ -1,0 +1,33 @@
+{
+  "model": "glm-5.3-flash",
+  "source": "cc-switch:Zhipu GLM copy copy copy",
+  "temperature": 0,
+  "thinking": "disabled",
+  "n": 1,
+  "ontology_sentence": "回款不是开票金额，不是合同金额，不含预收款。",
+  "receipt": {
+    "customer_name": "华兴",
+    "invoiced": 100000,
+    "collected": 40000
+  },
+  "rows": [
+    {
+      "arm": "both_visible",
+      "status": "MATCH",
+      "detail": "已入账是 40000，开票是 100000",
+      "script": "华兴客户收款单已入账40,000元（开票金额100,000元），该回款为实际到账金额，不含预收款。"
+    },
+    {
+      "arm": "collected_only",
+      "status": "MATCH",
+      "detail": "已回款金额是已入账 40000",
+      "script": "收到华兴客户回款，已回款金额40,000元，已入账。"
+    },
+    {
+      "arm": "field_named",
+      "status": "MATCH",
+      "detail": "已回款金额是已入账 40000",
+      "script": "已回款金额：40000元。"
+    }
+  ]
+}

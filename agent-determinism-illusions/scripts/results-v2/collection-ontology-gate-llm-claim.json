@@ -1,0 +1,34 @@
+{
+  "model": "qwen2.5:7b",
+  "source": "ollama",
+  "temperature": 0,
+  "thinking": null,
+  "n": 1,
+  "equals_sentence": "",
+  "ontology_sentence": "回款不是开票金额，不是合同金额，不含预收款。",
+  "receipt": {
+    "customer_name": "华兴",
+    "invoiced": 100000,
+    "collected": 40000
+  },
+  "rows": [
+    {
+      "arm": "both_visible",
+      "status": "MISMATCH",
+      "detail": "已回款写成 60000，收款单上已入账是 40000",
+      "script": "华兴已回款60000元。"
+    },
+    {
+      "arm": "collected_only",
+      "status": "MATCH",
+      "detail": "已回款金额是已入账 40000",
+      "script": "华兴客户已回款40000元。"
+    },
+    {
+      "arm": "field_named",
+      "status": "MATCH",
+      "detail": "已回款金额是已入账 40000",
+      "script": "您已回款40000元。"
+    }
+  ]
+}

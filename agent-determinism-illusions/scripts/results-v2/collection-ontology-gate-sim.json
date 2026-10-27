@@ -1,0 +1,269 @@
+{
+  "claim": "本体句子不删除开票金额；第五节空格子拒绝正式回答；话术整句对照收款单，不单比金额",
+  "simulator": "naive_prefers_invoice",
+  "not_a_model_measurement": true,
+  "receipt": {
+    "customer_name": "华兴",
+    "invoiced": 100000,
+    "collected": 40000
+  },
+  "ontology_sentence": "回款不是开票金额，不是合同金额，不含预收款。",
+  "arms": [
+    {
+      "arm": "ontology_only",
+      "ontology_sentence_present": true,
+      "rows": [
+        {
+          "question": "这个客户的回款是多少",
+          "reason": "用了开票金额 100000",
+          "status": "ANSWER",
+          "amount": 100000,
+          "used": "invoiced",
+          "detail": "用了开票金额 100000"
+        },
+        {
+          "question": "已入账金额是多少",
+          "reason": "用了开票金额 100000",
+          "status": "ANSWER",
+          "amount": 100000,
+          "used": "invoiced",
+          "detail": "用了开票金额 100000"
+        },
+        {
+          "question": "这张发票收到没有",
+          "reason": "看见开票金额，就答成这张发票收到了",
+          "status": "ANSWER",
+          "amount": 100000,
+          "used": "invoiced",
+          "detail": "看见开票金额，就答成这张发票收到了"
+        },
+        {
+          "question": "逾期了吗",
+          "reason": "没有逾期规则，仍然作答",
+          "status": "ANSWER",
+          "amount": null,
+          "used": "none",
+          "detail": "没有逾期规则，仍然作答"
+        },
+        {
+          "question": "还没有入账怎么说",
+          "reason": "用开票金额 100000 填了还没有入账的数",
+          "status": "ANSWER",
+          "amount": 100000,
+          "used": "invoiced",
+          "detail": "用开票金额 100000 填了还没有入账的数"
+        },
+        {
+          "question": "给一句建议话术",
+          "status": "MISMATCH",
+          "reason": "话术「华兴，已回款100000元。」「已回款100000元」写的是已回款100000，收款单上已入账是40000，100000是开票金额",
+          "amount": 100000,
+          "used": "invoiced",
+          "script": "华兴，已回款100000元。",
+          "clauses": [
+            {
+              "clause": "华兴",
+              "ok": true,
+              "line": "客户：华兴"
+            },
+            {
+              "clause": "已回款100000元",
+              "ok": false,
+              "line": "写的是已回款100000，收款单上已入账是40000，100000是开票金额"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arm": "section5",
+      "ontology_sentence_present": true,
+      "rows": [
+        {
+          "question": "这个客户的回款是多少",
+          "status": "REFUSE",
+          "reason": "客户编号怎么对上收款单还没定，不许答「这个客户的回款」",
+          "amount": null,
+          "used": null
+        },
+        {
+          "question": "已入账金额是多少",
+          "status": "REFUSE",
+          "reason": "收款单字段没定，金额不能当正式回答",
+          "amount": null,
+          "used": null
+        },
+        {
+          "question": "这张发票收到没有",
+          "status": "REFUSE",
+          "reason": "发票和到账怎么对应还没定，不许答「这张发票收到没有」",
+          "amount": null,
+          "used": null
+        },
+        {
+          "question": "逾期了吗",
+          "status": "REFUSE",
+          "reason": "逾期从哪天起算还没定，不许答逾期",
+          "amount": null,
+          "used": null
+        },
+        {
+          "question": "还没有入账怎么说",
+          "status": "REFUSE",
+          "reason": "源晚多久还可以接受还没定，「还没有数」不能上线",
+          "amount": null,
+          "used": null
+        },
+        {
+          "question": "给一句建议话术",
+          "status": "MISMATCH",
+          "reason": "话术「已回款。」「已回款」只写了已回款，收款单上的已入账金额没有写进这句话",
+          "amount": null,
+          "used": null,
+          "script": "已回款。",
+          "clauses": [
+            {
+              "clause": "已回款",
+              "ok": false,
+              "line": "只写了已回款，收款单上的已入账金额没有写进这句话"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arm": "hide_invoice",
+      "ontology_sentence_present": true,
+      "rows": [
+        {
+          "question": "这个客户的回款是多少",
+          "reason": "用了已入账金额 40000",
+          "status": "ANSWER",
+          "amount": 40000,
+          "used": "collected",
+          "detail": "用了已入账金额 40000"
+        },
+        {
+          "question": "已入账金额是多少",
+          "reason": "用了已入账金额 40000",
+          "status": "ANSWER",
+          "amount": 40000,
+          "used": "collected",
+          "detail": "用了已入账金额 40000"
+        },
+        {
+          "question": "这张发票收到没有",
+          "reason": "没有可看的数",
+          "status": "ANSWER",
+          "amount": null,
+          "used": "none",
+          "detail": "没有可看的数"
+        },
+        {
+          "question": "逾期了吗",
+          "reason": "没有逾期规则，仍然作答",
+          "status": "ANSWER",
+          "amount": null,
+          "used": "none",
+          "detail": "没有逾期规则，仍然作答"
+        },
+        {
+          "question": "还没有入账怎么说",
+          "reason": "没有可看的数",
+          "status": "ANSWER",
+          "amount": null,
+          "used": "none",
+          "detail": "没有可看的数"
+        },
+        {
+          "question": "给一句建议话术",
+          "status": "MATCH",
+          "reason": "话术「华兴，已回款40000元。」整句每一段都在收款单上",
+          "amount": 40000,
+          "used": "collected",
+          "script": "华兴，已回款40000元。",
+          "clauses": [
+            {
+              "clause": "华兴",
+              "ok": true,
+              "line": "客户：华兴"
+            },
+            {
+              "clause": "已回款40000元",
+              "ok": true,
+              "line": "已入账金额：40000"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arm": "field_named",
+      "ontology_sentence_present": true,
+      "rows": [
+        {
+          "question": "这个客户的回款是多少",
+          "status": "REFUSE",
+          "reason": "客户编号怎么对上收款单还没定，不许答「这个客户的回款」",
+          "amount": null,
+          "used": null
+        },
+        {
+          "question": "已入账金额是多少",
+          "reason": "用了已入账金额 40000",
+          "status": "ANSWER",
+          "amount": 40000,
+          "used": "collected",
+          "detail": "用了已入账金额 40000"
+        },
+        {
+          "question": "这张发票收到没有",
+          "status": "REFUSE",
+          "reason": "发票和到账怎么对应还没定，不许答「这张发票收到没有」",
+          "amount": null,
+          "used": null
+        },
+        {
+          "question": "逾期了吗",
+          "status": "REFUSE",
+          "reason": "逾期从哪天起算还没定，不许答逾期",
+          "amount": null,
+          "used": null
+        },
+        {
+          "question": "还没有入账怎么说",
+          "status": "REFUSE",
+          "reason": "源晚多久还可以接受还没定，「还没有数」不能上线",
+          "amount": null,
+          "used": null
+        },
+        {
+          "question": "给一句建议话术",
+          "status": "MATCH",
+          "reason": "话术「已回款40000元。」整句每一段都在收款单上",
+          "amount": 40000,
+          "used": "collected",
+          "script": "已回款40000元。",
+          "clauses": [
+            {
+              "clause": "已回款40000元",
+              "ok": true,
+              "line": "已入账金额：40000"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "verdict": {
+    "ontology_only_uses_invoice": true,
+    "section5_refuses_this_customer": true,
+    "hide_invoice_uses_collected": true,
+    "field_named_uses_collected": true,
+    "ontology_script_whole_mismatch": true,
+    "section5_script_whole_mismatch": true,
+    "hide_invoice_script_whole_match": true,
+    "field_named_script_whole_match": true,
+    "pass": true
+  }
+}
