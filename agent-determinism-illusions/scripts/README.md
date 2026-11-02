@@ -153,6 +153,22 @@ python alexey-trigger-yield-test.py
 
 ---
 
+## RSI 选品文延伸（`inherit-vs-reset-test.py`）
+
+**背景：** 《Keep the Gate, Downgrade the Recursion》留下的开放问题（继承经验 vs 每轮重置，源文 §7 自己也列为待跑实验）。
+
+**方法：** 高斯多峰合成地形（D=6，12 包），(μ,λ)-ES 每轮预算 48 次评估 × 6 轮，扫描环境漂移速度 δ∈{0, 0.04, 0.16, 0.48}。三臂配对：inherit（继承上轮分布+档案，档案重评计入预算）/ reset（每轮从初始分布重来）/ longrun（不分轮连搜，参照臂）。100 种子/档，bootstrap 95% 区间。
+
+**运行：**
+```bash
+python inherit-vs-reset-test.py
+```
+零外部依赖，纯本地，秒级出结果。
+
+**结果:** `results-v2/inherit-vs-reset.json`（2026-11-03：优势曲线 +0.346 → +0.336 → +0.220 → −0.014 随 δ 单调回落，高漂移档区间含零；inherit 在 δ=0 与 longrun 打平；docstring 里的「中等漂移下优势最大」预注册预测未出现——峰值在 δ=0，机制类比非业务实验）
+
+---
+
 ## 如何用它打我的脸
 
 文章结尾说"欢迎拿你自己的业务数据打脸"。具体怎么打:
