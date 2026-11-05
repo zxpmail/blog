@@ -1,10 +1,3 @@
----
-title: 先拆账，再记功
-published: false
-description: "说明每轮分数的变化如何拆成环境项和学习项。办法是每轮把上一轮上线的候选在当前评估器下重评一次。100 个配对种子上，错觉率随环境漂移方向和速度变化；慢速随机漂移下为 14%。这些比率属于这个玩具，不能搬到别的场景。"
-tags: ai, machinelearning, experimentation, statistics
----
-
 # 先拆账，再记功
 
 想象一个每轮重新生成方案并上线的系统：选品、参数、排期都算。每轮结束，它拿到一个分数——转化率、点击率，任何业务指标。说这样的系统「在自我改进」，依据通常是：这轮的分数比上轮高。
@@ -15,7 +8,7 @@ tags: ai, machinelearning, experimentation, statistics
 
 结论先说：分数涨跌的符号，本身既不是系统学会了的证据，也不是它失败了的证据。要读的是拆开后的两项。
 
-背景两句。上一篇《[Keep the Gate, Downgrade the Recursion](https://dev.to/zxpmail/keep-the-gate-downgrade-the-recursion-2ml0)》核查过淘宝闪购团队一篇讲店铺装修选品系统的文章，其中有八天 A/B、相对提升 +0.34%（P2）。那个比较是候选和基线在同一段时间里、按用户 50:50 分流对比，环境对两边是同一的，不受本文讨论的混淆影响；本文也不估计那次 A/B 里的环境成分，数字沿用上一篇核对过的结果。那篇的评论区留下了一个问题：在线上怎么把「经验帮了忙」和「环境恰好朝我们这边动」分开。本文补上那个测量。
+背景两句。我此前在 dev.to 发过一篇英文文章《[Keep the Gate, Downgrade the Recursion](https://dev.to/zxpmail/keep-the-gate-downgrade-the-recursion-2ml0)》，核查过淘宝闪购团队一篇讲店铺装修选品系统的文章，其中有一个八天 A/B，相对提升 +0.34%。那个比较是候选和基线在同一段时间里、按用户 50:50 分流对比，环境对两边是同一的，不受本文讨论的混淆影响；本文也不估计那次 A/B 里的环境成分，数字沿用那篇文章核对过的结果。它的评论区留下了一个问题：在线上怎么把「经验帮了忙」和「环境恰好朝我们这边动」分开。本文补上这个测量。
 
 ## 分数变化是两项之和
 
@@ -164,8 +157,6 @@ search(t) = f(T_t, x_t) − f(T_t, x_{t−1})。
 
 ---
 
-完整运行见 [scripts/ratchet-attribution-test.py](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/ratchet-attribution-test.py)。结果 JSON 保存了每个格子的逐种子数组。上文的比率和区间都可以从原始试验再算一遍。
+完整运行见 [ratchet-attribution-test.py](https://github.com/zxpmail/blog/blob/main/agent-determinism-illusions/scripts/ratchet-attribution-test.py)。结果 JSON 保存了每个格子的逐种子数组。上文的比率和区间都可以从原始试验再算一遍。
 
-*来源说明：所讨论的文章为中文，由淘宝技术团队发布；链接页为镜像。本文引用的相对 P2 +0.34% 在上一篇写作时已对照原文核查，见那篇的来源说明。*
-
-*数字与英文稿 `split-the-score-change-then-credit-the-system.md` 来自同一次运行，章节一一对应。*
+*来源说明：文中核查的选品系统文章为中文，由淘宝闪购团队发布；相对提升 +0.34% 在上一篇文章写作时已对照原文核查。*
