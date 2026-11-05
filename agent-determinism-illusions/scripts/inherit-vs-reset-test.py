@@ -20,8 +20,10 @@
   搜索：(μ,λ)-ES，λ=12、μ=4 精英，1/5 规则调 σ。每轮预算 48 次评估，
   共 6 轮。三个臂（同种子同地形同漂移轨迹，第 1 轮完全相同）：
     inherit — 第 k>1 轮从上一轮的最终分布出发；档案 top-6 先在当前
-      地形下重评（源文：历史分数不可原样复用），重评计入本轮预算
-    reset   — 每轮从初始分布出发，不带任何历史反馈
+      地形下重评（源文：历史分数不可原样复用）。预算逐次计费：本轮
+      6 次重评 + 42 次新采样，共 48 次
+    reset   — 每轮从初始分布出发，不带任何历史反馈；本轮 1 次开局
+      评估 + 47 次新采样，共 48 次（开局读数与 inherit 的重评对称）
     longrun — 参照臂：搜索状态不设轮边界，连搜 288 次；漂移照常发生
   每档 δ 跑 100 个种子，配对差做 bootstrap 95% 区间。
   交接非空检查：inherit 第 k>1 轮起点离初始分布的距离（交接必须
@@ -40,6 +42,16 @@
   任一发生都以跑出的曲线为准，更新文章措辞。
 
 依赖：仅 Python 标准库。运行：python inherit-vs-reset-test.py
+
+修正记录（2026-11-05）：
+  首跑版本的重评计费未生效——重评 6 次 < λ=12，代循环按整代溢出，
+  inherit 每轮实际 54 评（6 重评 + 48 新采样）而 reset 49 评，与
+  「重评计入预算」的口径不符（首跑曲线 +0.346/+0.336/+0.220/−0.014
+  是在这个偏差下测的，已如实记录于 README）。本版改为逐次计费
+  （不足一代按实际子代数做选择与 1/5 规则），inherit/reset 各付
+  48 评/轮，重跑全部数字。首跑时对 docstring「预期」的预注册偏差
+  （峰值在 δ=0 而非中等漂移）照旧成立与否以重跑为准；预期本身
+  不重新注册，避免对着数据改预期。
 """
 
 import io
@@ -128,11 +140,12 @@ def clip(x):
     return tuple(max(-BOX, min(BOX, xi)) for xi in x)
 
 
-def es_generation(land, centers, state, rng, results):
-    """一代：λ 个子代 + 1/5 规则调 σ。state 含 m/sigma/f_parent。"""
+def es_generation(land, centers, state, rng, results, max_evals):
+    """一代：最多 max_evals 个子代 + 1/5 规则调 σ（按实际子代数）。
+    state 含 m/sigma/f_parent。预算逐次计费的关键。"""
     m, sigma, f_parent = state["m"], state["sigma"], state["f"]
     children = []
-    for _ in range(LAM):
+    for _ in range(max_evals):
         x = clip(tuple(mi + sigma * gauss(rng) for mi in m))
         children.append((fitness(land, centers, x), x))
     children.sort(key=lambda t: -t[0])
@@ -178,15 +191,17 @@ def run_arm(land, arm, delta, seed):
         if arm == "reset" and rnd > 0:
             state = {"m": m0, "sigma": SIGMA0, "f": fitness(land, centers, m0)}
             archive = []
-        gen = 0
-        while gen * LAM < budget:
+            budget -= 1   # 开局评估计入本轮，与 inherit 的重评对称
+        spent = 0
+        while spent < budget:
+            step = min(LAM, budget - spent)
             results_buf = []
-            es_generation(land, centers, state, rng, results_buf)
+            es_generation(land, centers, state, rng, results_buf, step)
             archive.extend(results_buf)
             archive.sort(key=lambda t: -t[0])
             del archive[ARCHIVE_KEEP:]
             best = max(best, max(f for f, _ in results_buf))
-            gen += 1
+            spent += step
         per_round.append(best)
     return {
         "final_best": best,
@@ -267,6 +282,7 @@ def main():
         "config": {
             "D": D, "K": K, "bump_width": WIDTH, "lam": LAM, "mu": MU,
             "rounds": ROUNDS, "budget_per_round": BUDGET,
+            "budget_accounting": "exact_per_eval",
             "archive_keep": ARCHIVE_KEEP, "archive_reeval": ARCHIVE_REEVAL,
             "sigma0": SIGMA0, "deltas": DELTA_LIST, "seeds": SEEDS,
         },
