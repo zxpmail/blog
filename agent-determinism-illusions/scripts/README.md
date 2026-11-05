@@ -169,6 +169,22 @@ python inherit-vs-reset-test.py
 
 ---
 
+## RSI 选品文延伸二（`ratchet-attribution-test.py`）
+
+**背景：** 《Keep the Gate》评论区公开承诺的下一篇（读者催更 + 作者「下一篇由下一个实验挣出来」）。inherit-vs-reset 的上游问题：怎么把「经验帮了忙」和「环境恰好顺风」拆开——朴素棘轮（轮间仪表读数之差）的归因测量设计。
+
+**方法：** 与 `inherit-vs-reset-test.py` 同族地形/ES（代码自包含复制，无 import；D=6，12 包，(μ,λ)=(4,12)，每轮预算 48 × 6 轮，100 种子）。三臂：search（ES 状态跨轮连续 + 现役晋升，每轮 1 次现役重评 = 仪表 + 47 次新采样）/ reset（每轮 1 次初始评估 + 47 次）/ static（第 1 轮后冻结交付候选，只读数）。预算逐次计费（不足一代按实际子代数选择）。风向轴 favorable/adverse/null（朝 / 背 / 随机，相对交付候选 x_1，第 1 次边界定死，轨迹三臂共享），δ∈{0, 0.04, 0.16, 0.48}。恒等式 naive = env + search 构造成立；预期 P1–P5 预注册于 docstring。
+
+**运行：**
+```bash
+python ratchet-attribution-test.py
+```
+零外部依赖，纯本地，约一分钟。
+
+**结果:** `results-v2/ratchet-attribution.json`（2026-11-05：PASS，全部预注册预期成立。顺风 δ=0.48 冻结候选读数峰值 +0.858 [+0.836,+0.879]——窗口内零搜索；wind_up 率（仪表涨且环境步占比超过搜索步）顺风 50% vs 逆风 4%（逐种子配对差 +0.46 [+0.35,+0.56]）；wind_down 率（仪表跌但搜索贡献为正）逆风 91% / null 95% vs 顺风 20%（配对差 +0.71 [+0.62,+0.80]）——漂移世界里仪表下跌是默认态而非学习证据；δ=0 两类错觉率精确为 0、恒等式残差 ≤1.1e-16；null δ=0.04 随机风向碰巧顺布即产生 14% wind_up。机制类比非业务实验；dev.to 稿 `articles/split-the-score-change-then-credit-the-system.md` 未发）
+
+---
+
 ## 如何用它打我的脸
 
 文章结尾说"欢迎拿你自己的业务数据打脸"。具体怎么打:
