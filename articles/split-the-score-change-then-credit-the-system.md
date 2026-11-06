@@ -1,6 +1,7 @@
 ---
 title: Split the Score Change, Then Credit the System
-published: false
+published: true
+canonical_url: https://dev.to/zxpmail/split-the-score-change-then-credit-the-system-267j
 description: "How the round-over-round score change splits into an environment term and a learning term. The method is one re-scoring of last round's deployed candidate per round. Over 100 paired seeds, the misattribution rates vary with the direction and speed of environment drift; 14% under slow random drift. The rates belong to this toy and do not transfer."
 tags: ai, machinelearning, experimentation, statistics
 ---
