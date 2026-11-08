@@ -185,6 +185,27 @@ python ratchet-attribution-test.py
 
 ---
 
+## 策略锁定 × 费率漂移（`strategy-lock-fee-drift-test.py`）
+
+**靶断言:** 长窗口 Agent 早期锁定交易策略后，对费率上调迟钝（对应 Project EVE 评论的「策略腐化」工程点）。
+
+**方法:** 玩具市场固定毛利 `SPREAD=0.08`；前 5 回合 `fee=0.02`，之后跳到 `0.12`（旧策略负期望）。每回合可 `revise`/`min_edge`。对照臂 `locked`（永不改）与 `adaptive`（fee≥SPREAD 立刻停手）。可选 LLM 臂（提示含「没坏不修」），量 `adapt_lag` 与 `never_adapted` 率。
+
+**运行:**
+```bash
+SKIP_LLM=1 python strategy-lock-fee-drift-test.py          # 只跑确定性对照
+# 配 ANTHROPIC_BASE_URL / ANTHROPIC_AUTH_TOKEN / ANTHROPIC_MODEL 后跑 LLM
+python strategy-lock-fee-drift-test.py                     # 默认 N=5；可用 STRATEGY_LOCK_N 改
+```
+
+**预期:** P1 locked 全程不适应且跳变后亏损；P2 adaptive lag=0 且跳变后不再亏。LLM 臂若 never_rate>0 或 median lag≥2，则支持「迟钝可复现」；否则记为对本模型削弱。
+
+**结果:** `results-v2/strategy-lock-fee-drift_*.json`（折扣：玩具+可见费率+提示含惰性偏好；测行为模式，不测真实收益。）
+
+**已跑（2026-11-07）:** `--cc-switch` → Zhipu GLM `glm-5.3-flash`，N=5：`never_adapted_rate=1.0`（5/5 全程未停手），`post_sum=-0.36` 与 locked 臂相同；P1/P2/P3 均成立。
+
+---
+
 ## 如何用它打我的脸
 
 文章结尾说"欢迎拿你自己的业务数据打脸"。具体怎么打:
