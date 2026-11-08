@@ -185,6 +185,22 @@ python ratchet-attribution-test.py
 
 ---
 
+## 过期记忆复用（`stale-memory-reuse-test.py`）
+
+**靶断言:** 无条件、无过期的经验升成优先信任后，环境一变仍被复用并持续做错（对应记忆文「可信度 / 变质」）。
+
+**方法:** 玩具导航，中心 A→B（`CHANGE_AT=4`）。记忆写死「中心在 A」。对照 `stale_trust` / `revalidate`；LLM 提示含「记忆优先、没坏不改」，观测里真实中心可见。
+
+**运行:**
+```bash
+python stale-memory-reuse-test.py --skip-llm
+python stale-memory-reuse-test.py --cc-switch --n 5
+```
+
+**已跑（2026-11-08）:** `glm-5.3-flash` N=5：`never_adapted_rate=0.4`，`median_lag=3`，跳变后均正确率 `0.125`；P1/P2/P3 成立。折扣：声明条件复现，不外推生产记忆系统。
+
+---
+
 ## 策略锁定 × 费率漂移（`strategy-lock-fee-drift-test.py`）
 
 **靶断言:** 长窗口 Agent 早期锁定交易策略后，对费率上调迟钝（对应 Project EVE 评论的「策略腐化」工程点）。

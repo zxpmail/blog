@@ -1,13 +1,14 @@
 # CONTEXT
 
 ## 当前正在做什么
-Project EVE 评论稿第二轮修正（压第二节、冷语气、收紧配套实验）。
+Agent 记忆「该留该扔」中英定稿 + 过期记忆复用实验。
 
 ## 上次停在哪个位置
-中文稿已澄清涨税时间线；英文稿：`articles/project-eve-agent-sandbox.en.md`（dev.to，`published: false`）。
+已准备提交：中文/英文稿、`stale-memory-reuse-test.py`、结果 JSON、README。
+英文 Dev 稿仍为 `published: false`。
 
-旁线：`articles/look-is-not-draw-ui.md` 待定稿/英文化。
+旁线：EVE 中英已在远程；`look-is-not-draw-ui.md` 仍待定。
 
 ## 近期关键决定
-- 不承担「独立复现 EVE」，只承担「工程上该看什么」
-- 自家玩具实验必须同框写清诱导提示与折扣
+- 记忆文定位：有边界的机制草案；实验只示意惯性
+- n=3 为脚手架占位；信号缺失则自动降级不可用

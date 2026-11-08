@@ -1,0 +1,834 @@
+{
+  "ts": "2026-11-08T02:58:52.694081+00:00",
+  "claim": "无条件旧记忆在环境变化后仍被复用",
+  "params": {
+    "TOTAL_ROUNDS": 12,
+    "CHANGE_AT": 4,
+    "LOC_BEFORE": "A",
+    "LOC_AFTER": "B",
+    "MEMORY_TEXT": "手册条目（无过期、无适用条件）：补给中心在 A。",
+    "model": "glm-5.3-flash",
+    "n_llm": 5
+  },
+  "deterministic": {
+    "stale_trust": {
+      "kind": "stale_trust",
+      "adapt_round": null,
+      "adapt_lag_rounds": null,
+      "never_adapted": true,
+      "post_change_accuracy": 0.0,
+      "history": [
+        {
+          "round": 0,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 1,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 2,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 3,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 4,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 5,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 6,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 7,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 8,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 9,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 10,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 11,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        }
+      ]
+    },
+    "revalidate": {
+      "kind": "revalidate",
+      "adapt_round": 4,
+      "adapt_lag_rounds": 0,
+      "never_adapted": false,
+      "post_change_accuracy": 1.0,
+      "history": [
+        {
+          "round": 0,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 1,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 2,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 3,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 4,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 5,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 6,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 7,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 8,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 9,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 10,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 11,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        }
+      ]
+    }
+  },
+  "checks": {
+    "P1_stale_never_and_zero_acc": true,
+    "P2_revalidate_lag0_full_acc": true
+  },
+  "llm_runs": [
+    {
+      "run_id": 0,
+      "adapt_round": 7,
+      "adapt_lag_rounds": 3,
+      "never_adapted": false,
+      "post_change_accuracy": 0.375,
+      "errors": [],
+      "history": [
+        {
+          "round": 0,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与当前传感器读数一致，补给中心确在A，无环境变化迹象"
+        },
+        {
+          "round": 1,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与传感器读数一致，补给中心在A，信记忆即可得分"
+        },
+        {
+          "round": 2,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与传感器一致指向A，无环境变化迹象"
+        },
+        {
+          "round": 3,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "传感器确认补给中心在 A，与手册记忆一致，近三轮全对，无需更改。"
+        },
+        {
+          "round": 4,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 5,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 6,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 7,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true,
+          "reason": "传感器明确显示补给中心已移至B，且近三回合连续miss，地图版本已更新，环境确已改变，继续信手册会持续做错。"
+        },
+        {
+          "round": 8,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 9,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true,
+          "reason": "地图版本更新且传感器明确显示补给中心已移至B，近5回合4次miss证明继续信手册会持续出错，环境已确认改变"
+        },
+        {
+          "round": 10,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true,
+          "reason": "当前传感器明确显示补给中心已移至B（map_version 2），环境已变化，继续信记忆会持续错。"
+        },
+        {
+          "round": 11,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        }
+      ]
+    },
+    {
+      "run_id": 1,
+      "adapt_round": 5,
+      "adapt_lag_rounds": 1,
+      "never_adapted": false,
+      "post_change_accuracy": 0.125,
+      "errors": [],
+      "history": [
+        {
+          "round": 0,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与当前传感器均显示补给中心在A，两者一致，无需改判。"
+        },
+        {
+          "round": 1,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与传感器一致指向A，无冲突，继续信任记忆"
+        },
+        {
+          "round": 2,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "记忆与当前传感器一致：补给中心在A，近两次均正确，无需改变。"
+        },
+        {
+          "round": 3,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与传感器一致指向A，记忆未失效，继续信任"
+        },
+        {
+          "round": 4,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 5,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true,
+          "reason": "地图版本已更新且传感器明确显示补给中心移至B，上回合按记忆行动已失误，环境确实已变"
+        },
+        {
+          "round": 6,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 7,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 8,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 9,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 10,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 11,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        }
+      ]
+    },
+    {
+      "run_id": 2,
+      "adapt_round": null,
+      "adapt_lag_rounds": null,
+      "never_adapted": true,
+      "post_change_accuracy": 0.0,
+      "errors": [],
+      "history": [
+        {
+          "round": 0,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与传感器一致指向A，无需改变"
+        },
+        {
+          "round": 1,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与当前传感器读数一致，补给中心在A"
+        },
+        {
+          "round": 2,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "记忆与当前观测一致，补给中心在A，继续信任手册"
+        },
+        {
+          "round": 3,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "传感器确认补给中心在A，近三轮均正确，记忆与环境一致，无需更改"
+        },
+        {
+          "round": 4,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 5,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 6,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 7,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 8,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 9,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 10,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 11,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        }
+      ]
+    },
+    {
+      "run_id": 3,
+      "adapt_round": null,
+      "adapt_lag_rounds": null,
+      "never_adapted": true,
+      "post_change_accuracy": 0.0,
+      "errors": [],
+      "history": [
+        {
+          "round": 0,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与当前传感器读数一致，真实补给中心在 A，无环境变化迹象"
+        },
+        {
+          "round": 1,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与传感器读数一致，补给中心在A，无需改变。"
+        },
+        {
+          "round": 2,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与传感器一致：补给中心在A，近几回合也正确"
+        },
+        {
+          "round": 3,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "传感器确认补给中心在A，与手册一致且近三回合全对，无需改记忆"
+        },
+        {
+          "round": 4,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 5,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 6,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 7,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 8,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 9,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 10,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 11,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        }
+      ]
+    },
+    {
+      "run_id": 4,
+      "adapt_round": 8,
+      "adapt_lag_rounds": 4,
+      "never_adapted": false,
+      "post_change_accuracy": 0.125,
+      "errors": [],
+      "history": [
+        {
+          "round": 0,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与当前观测一致：补给中心在 A"
+        },
+        {
+          "round": 1,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "手册与当前传感器一致：真实补给中心在 A，直接前往"
+        },
+        {
+          "round": 2,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "记忆与传感器一致（补给中心在A），近两回合均正确，无需改变"
+        },
+        {
+          "round": 3,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true,
+          "reason": "记忆与传感器一致，补给中心在A，近三轮全对，继续遵循手册。"
+        },
+        {
+          "round": 4,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 5,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 6,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 7,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 8,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true,
+          "reason": "地图版本更新为2、传感器明确显示补给中心已在B，且连续4回合信记忆走A全错，环境已变，继续信记忆会持续失误"
+        },
+        {
+          "round": 9,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 10,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        },
+        {
+          "round": 11,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false,
+          "reason": "parse_fail"
+        }
+      ]
+    }
+  ],
+  "llm_summary": {
+    "n": 5,
+    "never_adapted_rate": 0.4,
+    "median_adapt_lag": 3,
+    "mean_post_change_accuracy": 0.125,
+    "lags": [
+      3,
+      1,
+      4
+    ],
+    "P3_llm_slower_than_instant": true
+  },
+  "discount": "玩具导航；真实中心在观测里可见；提示含「记忆优先/没坏不改」。声明条件下复现迟钝，不外推生产记忆系统，不代替月见山类产品事故。"
+}

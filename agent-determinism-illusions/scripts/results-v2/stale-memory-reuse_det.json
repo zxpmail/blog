@@ -1,0 +1,232 @@
+{
+  "ts": "2026-11-08T02:54:22.708621+00:00",
+  "claim": "无条件旧记忆在环境变化后仍被复用",
+  "params": {
+    "TOTAL_ROUNDS": 12,
+    "CHANGE_AT": 4,
+    "LOC_BEFORE": "A",
+    "LOC_AFTER": "B",
+    "MEMORY_TEXT": "手册条目（无过期、无适用条件）：补给中心在 A。",
+    "model": null,
+    "n_llm": 0
+  },
+  "deterministic": {
+    "stale_trust": {
+      "kind": "stale_trust",
+      "adapt_round": null,
+      "adapt_lag_rounds": null,
+      "never_adapted": true,
+      "post_change_accuracy": 0.0,
+      "history": [
+        {
+          "round": 0,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 1,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 2,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 3,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 4,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 5,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 6,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 7,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 8,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 9,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 10,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        },
+        {
+          "round": 11,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": false
+        }
+      ]
+    },
+    "revalidate": {
+      "kind": "revalidate",
+      "adapt_round": 4,
+      "adapt_lag_rounds": 0,
+      "never_adapted": false,
+      "post_change_accuracy": 1.0,
+      "history": [
+        {
+          "round": 0,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 1,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 2,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 3,
+          "true_center": "A",
+          "map_version": 1,
+          "action": "go_A",
+          "trust_memory": true,
+          "correct": true
+        },
+        {
+          "round": 4,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 5,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 6,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 7,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 8,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 9,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 10,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        },
+        {
+          "round": 11,
+          "true_center": "B",
+          "map_version": 2,
+          "action": "go_B",
+          "trust_memory": false,
+          "correct": true
+        }
+      ]
+    }
+  },
+  "checks": {
+    "P1_stale_never_and_zero_acc": true,
+    "P2_revalidate_lag0_full_acc": true
+  },
+  "llm_runs": [],
+  "llm_summary": {},
+  "discount": "玩具导航；真实中心在观测里可见；提示含「记忆优先/没坏不改」。声明条件下复现迟钝，不外推生产记忆系统，不代替月见山类产品事故。"
+}
