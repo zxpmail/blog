@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DAF 领域应用基座 v2 · 架构总览</title>
+<style>
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#1c2333;--line:#2d3748;--tx:#e6edf3;--tx2:#9aa7b8;
+  --c1:#4f8ff7;--c2:#2dd4bf;--c3:#f59e0b;--c4:#f472b6;--c5:#a78bfa;--c6:#34d399;--c7:#fb7185;--c8:#60a5fa;
+  --lock:#f59e0b;--std:#38bdf8;--add:#34d399;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+header{padding:40px 0 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#101726 0%,var(--bg) 100%)}
+h1{font-size:30px;font-weight:700;letter-spacing:.5px}
+.sub{color:var(--tx2);margin-top:8px;font-size:15px}
+.badges{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+.badge{font-size:12px;padding:3px 12px;border-radius:12px;border:1px solid var(--line);color:var(--tx2)}
+.badge.b1{border-color:var(--c1);color:var(--c1)}.badge.b2{border-color:var(--c2);color:var(--c2)}
+.badge.b3{border-color:var(--c3);color:var(--c3)}.badge.b4{border-color:var(--c4);color:var(--c4)}
+nav{position:sticky;top:0;z-index:50;background:rgba(13,17,23,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:4px;overflow-x:auto}
+nav a{padding:13px 16px;color:var(--tx2);text-decoration:none;font-size:14px;white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer}
+nav a.on{color:var(--c1);border-bottom-color:var(--c1)}
+section{display:none;padding:28px 0 10px}
+section.on{display:block}
+h2{font-size:21px;margin-bottom:6px;font-weight:650}
+h2 .en{color:var(--tx2);font-size:13px;font-weight:400;margin-left:8px}
+.desc{color:var(--tx2);font-size:14px;margin-bottom:18px}
+h3{font-size:16px;margin:22px 0 10px;color:var(--c2)}
+/* 总览 */
+.plane{border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px;background:var(--bg2);position:relative}
+.plane .tag{position:absolute;top:-11px;left:16px;background:var(--bg);padding:0 10px;font-size:13px;font-weight:600}
+.p-assembly{border-color:var(--c4)}.p-assembly .tag{color:var(--c4)}
+.p-artifact{border-color:var(--c5)}.p-artifact .tag{color:var(--c5)}
+.p-runtime{border-color:var(--c1)}.p-runtime .tag{color:var(--c1)}
+.p-agent{border-color:var(--tx2)}
+.plane .body{color:var(--tx2);font-size:13.5px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{background:var(--bg3);border:1px solid var(--line);border-radius:8px;padding:5px 11px;font-size:12.5px;color:var(--tx)}
+.arrow{color:var(--tx2);font-size:16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:22px}
+.kpi{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.kpi .n{font-size:26px;font-weight:700;color:var(--c1)}
+.kpi .l{font-size:12.5px;color:var(--tx2);margin-top:2px}
+/* 模块 */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.fbtn{padding:5px 14px;border-radius:16px;border:1px solid var(--line);background:var(--bg2);color:var(--tx2);font-size:13px;cursor:pointer}
+.fbtn.on{border-color:var(--c1);color:var(--c1);background:#132038}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:12px}
+.mcard{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:.15s}
+.mcard:hover{border-color:var(--c1);transform:translateY(-2px)}
+.mcard .mid{font-family:ui-monospace,Consolas,monospace;font-size:13px;color:var(--c2);word-break:break-all}
+.mcard .mname{font-size:14.5px;font-weight:600;margin-top:3px}
+.mcard .mmeta{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;font-size:11.5px}
+.pill{padding:1px 9px;border-radius:10px;border:1px solid}
+.pl-core{color:var(--lock);border-color:var(--lock)}
+.pl-std{color:var(--std);border-color:var(--std)}
+.pl-add{color:var(--add);border-color:var(--add)}
+.pill.pk{color:var(--tx2);border-color:var(--line)}
+.mcard .mfr{margin-top:8px;font-size:12px;color:var(--tx2)}
+/* drawer */
+#drawer{position:fixed;top:0;right:-560px;width:540px;max-width:94vw;height:100%;background:var(--bg2);border-left:1px solid var(--line);z-index:100;transition:right .25s;overflow-y:auto;padding:26px 28px}
+#drawer.open{right:0}
+#drawer .close{position:absolute;top:14px;right:18px;font-size:22px;color:var(--tx2);cursor:pointer;background:none;border:none}
+#drawer h4{font-size:18px;margin-bottom:2px}
+#drawer .did{font-family:ui-monospace,monospace;color:var(--c2);font-size:13px}
+#drawer .kv{margin-top:14px;font-size:13px}
+#drawer .kv b{color:var(--c3);font-weight:600;margin-right:6px}
+#drawer p{font-size:13.5px;color:var(--tx2);margin-top:12px}
+#drawer .keys{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
+#drawer .keys span{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg3);border:1px solid var(--line);border-radius:6px;padding:2px 8px;color:var(--c8)}
+.mask{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:90}
+.mask.open{display:block}
+/* 四通道 */
+.channels{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:14px 0}
+.chan{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px}
+.chan .cn{font-weight:650;font-size:15px}
+.chan .cd{color:var(--tx2);font-size:13px;margin-top:6px}
+.chan .proto{margin-top:10px;font-family:ui-monospace,monospace;font-size:12px;color:var(--c3)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+th{background:var(--bg3);color:var(--tx2);font-weight:600;text-align:left;padding:8px 12px;border:1px solid var(--line)}
+td{padding:8px 12px;border:1px solid var(--line);color:var(--tx)}
+td.c2{color:var(--tx2)}
+/* 管线 */
+.pipe{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch;margin:16px 0}
+.stage{flex:1;min-width:120px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px;position:relative}
+.stage .sn{font-size:12px;color:var(--c3);font-weight:700}
+.stage .st{font-size:13.5px;font-weight:600;margin-top:2px}
+.stage .sd{font-size:11.5px;color:var(--tx2);margin-top:5px}
+.stage.arrowed::after{content:"→";position:absolute;right:-11px;top:50%;transform:translateY(-50%);color:var(--tx2);z-index:2}
+.stage:last-child::after{content:""}
+.card4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:10px}
+.cseg{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:13px}
+.cseg .t{font-size:13.5px;font-weight:650;color:var(--c2)}
+.cseg .d{font-size:12.5px;color:var(--tx2);margin-top:5px}
+/* 装配包 */
+.packs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:14px 0}
+.pack{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px}
+.pack h5{font-size:15px;margin-bottom:4px}
+.pack .pc{color:var(--tx2);font-size:12.5px;margin-bottom:10px}
+.pack .mods{display:flex;flex-wrap:wrap;gap:6px}
+.pack .mods span{font-size:11.5px;font-family:ui-monospace,monospace;background:var(--bg3);border-radius:6px;padding:2px 8px;color:var(--tx2)}
+/* 路线图 */
+.ds{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.phase{flex:1;min-width:150px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.phase .pn{color:var(--c3);font-weight:700;font-size:12.5px}
+.phase .pt{font-weight:600;font-size:13.5px;margin:2px 0}
+.phase .pw{font-size:12px;color:var(--tx2)}
+.phase .pd{font-size:11.5px;color:var(--tx2);margin-top:6px}
+.gates{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:8px}
+.gate{background:var(--bg2);border:1px solid var(--c3);border-radius:10px;padding:13px}
+.gate .gn{color:var(--c3);font-weight:650;font-size:13.5px}
+.gate .gd{font-size:12.5px;color:var(--tx2);margin-top:5px}
+footer{border-top:1px solid var(--line);margin-top:36px;padding:22px 0;color:var(--tx2);font-size:12.5px}
+@media(max-width:760px){h1{font-size:23px}.pipe{flex-direction:column}.stage.arrowed::after{content:""}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>DAF · 领域应用基座 <span style="color:var(--c1)">v2</span></h1>
+  <div class="sub">独立于 GNEX3 的企业级「业务系统工厂」—— 组件式 · 可拼装 · 企业级 · 与 Agent OS 仅四通道整体协作</div>
+  <div class="badges">
+    <span class="badge b1">C1 完全独立解耦</span><span class="badge b2">C2 仅整体交互·无模块复用</span>
+    <span class="badge b3">C3 可组装分解</span><span class="badge b4">C4 GNEX3 升级无关</span>
+    <span class="badge">42 模块 · 4 宿主 · 3 装配包</span><span class="badge">SDD：42 份模块级 spec</span>
+  </div>
+</div></header>
+<nav><div class="wrap">
+  <a class="on" data-s="s0">总览</a><a data-s="s1">模块体系</a><a data-s="s2">四通道交互</a>
+  <a data-s="s3">智能组装</a><a data-s="s4">装配包与部署</a><a data-s="s5">实施路线</a>
+</div></nav>
+<div class="wrap">
+
+<!-- ============ 总览 ============ -->
+<section id="s0" class="on">
+  <h2>三平面架构<span class="en">Artifact · Runtime · Assembly</span></h2>
+  <div class="desc">一切能力皆模块（P1）· 一切制品皆版本（P2）· 声明优先代码插槽兜底（P3）· 权限编译进执行计划（P4）· 语义卡唯一事实源（P5）· 治理分层内建（P6）· 高危失败关闭（P7）· 协议防腐（P8）</div>
+
+  <div class="plane p-assembly"><span class="tag">组装平面 Assembly Plane</span>
+    <div class="body">
+      <span class="chip">组装工作台（人工）</span><span class="chip">语义注册表（能力 IR）</span><span class="chip">模板库（领域 starter）</span>
+      <span class="arrow">→</span><span class="chip">组装管线 L0-L5</span><span class="arrow">→</span><span class="chip">组装守卫（护栏/veto）</span>
+    </div>
+  </div>
+  <div class="plane p-artifact"><span class="tag">制品平面 Artifact Plane（约束视图：一切皆版本化不可变）</span>
+    <div class="body">
+      <span class="chip">应用蓝图 blueprint</span><span class="chip">语义卡 daf.card.v1</span><span class="chip">实体 schema daf.entity.v1</span>
+      <span class="chip">页面 schema daf.page.v1</span><span class="chip">流程定义</span><span class="chip">集成配置</span>
+    </div>
+  </div>
+  <div class="plane p-runtime"><span class="tag">运行平面 Runtime Plane（4 宿主 + 自持基础设施）</span>
+    <div class="body">
+      <span class="chip">daf-gateway（SCG/APISIX+插件）</span>
+      <span class="chip">daf-core-svc（控制面 24 模块）</span>
+      <span class="chip">daf-data-svc（数据面 7+模块）</span>
+      <span class="chip">daf-web（React SPA）</span>
+      <span class="arrow">|</span>
+      <span class="chip">PG×2（业务+审计独立）</span><span class="chip">Redis</span><span class="chip">RocketMQ</span><span class="chip">S3/WORM</span><span class="chip">OTel 栈</span>
+    </div>
+  </div>
+  <div class="plane p-agent"><span class="tag">GNEX3 企业级 Agent OS（平级独立系统 · 仅四通道整体协作）</span>
+    <div class="body"><span class="chip">①任务通道 A2A-min</span><span class="chip">②工具通道 MCP</span><span class="chip">③事件通道 CloudEvents+HMAC</span><span class="chip">④身份通道 OIDC+RFC 8693</span><span class="arrow">——</span><span class="chip">唯一交互面：daf-agent-bridge（可裁剪 → 无 Agent 模式）</span></div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="n">42</div><div class="l">模块（40 运行时 + Lib + 工程件）</div></div>
+    <div class="kpi"><div class="n">8</div><div class="l">能力域 D1-D8 覆盖需求全部</div></div>
+    <div class="kpi"><div class="n">82</div><div class="l">服务键 SSOT（provide/inject）</div></div>
+    <div class="kpi"><div class="n">4</div><div class="l">GNEX3 交互通道（唯一边界）</div></div>
+    <div class="kpi"><div class="n">3</div><div class="l">装配包 M/S/F（可裁剪组合）</div></div>
+    <div class="kpi"><div class="n">190-248</div><div class="l">人周 · 7-9 人 · 8-11 个月</div></div>
+  </div>
+
+  <h3>六大典型场景（架构验证锚点）</h3>
+  <table><tr><th style="width:60px">#</th><th style="width:190px">场景</th><th>链路要点</th></tr>
+  <tr><td>S1</td><td>人工组装工单系统</td><td class="c2">模板 → 实体定制（迁移预检）→ 页面组装 → 审批流 → L0-L4 → 发布/回滚（标准档即可跑通）</td></tr>
+  <tr><td>S2</td><td>agent 智能组装供应商准入</td><td class="c2">④token → ②能力发现 → 蓝图草拟 → L0 校验回喂自修复 → L1 护栏 → L2 预览 → L3 人工审批 → L4 发布</td></tr>
+  <tr><td>S3</td><td>存量 ERP 接入</td><td class="c2">数据源注册 → 反向工程实体 → 联邦查询 → CDC 同步经实体写路径发事件 → 事件触发 agent</td></tr>
+  <tr><td>S4</td><td>无 Agent 模式</td><td class="c2">GNEX3 停机/bridge 卸载：业务面完整，agent 节点降级人工/挂起，恢复后对账续接</td></tr>
+  <tr><td>S5</td><td>企业级运维</td><td class="c2">租户开通 ≤60s → 应用按租户安装 → 审计链校验 → 灰度升级/回滚 → 等保检查单</td></tr>
+  <tr><td>S6</td><td>agent 参与业务运行</td><td class="c2">流程 agent 节点 → ①任务委派 → ②工具回读写（行级权限+预算）→ ③回调续走</td></tr></table>
+</section>
+
+<!-- ============ 模块 ============ -->
+<section id="s1">
+  <h2>模块体系<span class="en">42 Modules · 点击卡片查看详情</span></h2>
+  <div class="desc">保护级别：🔒core 核心必备 · 🔐standard 标准件 · ➕addon 增值件（可裁剪）；装配包 M/S/F 逐级包含；模块间仅经服务键与事件交互</div>
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="mgrid"></div>
+</section>
+
+<!-- ============ 四通道 ============ -->
+<section id="s2">
+  <h2>四通道交互<span class="en">DAF ⇄ GNEX3 · 唯一边界 = daf-agent-bridge</span></h2>
+  <div class="desc">四项硬约束的交互面落地：开放协议（A2A/MCP/CloudEvents/OIDC）+ 契约由 DAF 倒推定义并版本冻结（N/N-1 双活）+ Adapter SPI 防腐（GNEX3 升级影响半径 ≤ bridge）+ mock 先行开发。全库解耦冻结门：GNEX3 专有标识检索命中 = 0。</div>
+  <div class="channels">
+    <div class="chan"><div class="cn">① 任务通道</div><div class="cd">业务流程委派 agent 任务（含回调/中断恢复/超时策略）；委派深度=1</div><div class="proto">A2A 最小子集 · taskId 幂等 · deadline+onTimeout</div></div>
+    <div class="chan"><div class="cn">② 工具通道</div><div class="cd">agent 以 MCP 工具消费/组装 DAF 能力；15 工具族从语义卡能力 IR 编译；per-agent 裁剪</div><div class="proto">MCP streamable HTTP · OAuth2.1 RS · 幂等键必填 · untrusted framing</div></div>
+    <div class="chan"><div class="cn">③ 事件通道</div><div class="cd">业务事件触发 agent；agent 事件回流业务；载荷最小化（ID+摘要）+ 订阅 ACL</div><div class="proto">CloudEvents 1.0 + HMAC-SHA256 防重放 · 死信重放</div></div>
+    <div class="chan"><div class="cn">④ 身份通道</div><div class="cd">用户/agent 身份联邦；agent=技术委托主体（最小权限+act 链强制+定期复核）</div><div class="proto">OIDC + RFC 8693 token exchange · sub 统一标识</div></div>
+  </div>
+  <h3>降级矩阵（S4 演练验收：业务面零影响）</h3>
+  <table><tr><th style="width:170px">GNEX3 状态</th><th>DAF 行为</th></tr>
+  <tr><td>全停</td><td class="c2">工具端点 503；agent 节点按策略挂起/转人工（任务实例保留）；智能组装→人工工作台；业务 CRUD/查询/审批无损</td></tr>
+  <tr><td>单通道断</td><td class="c2">仅该通道熔断，其余三通道独立运行（NFR-8）</td></tr>
+  <tr><td>恢复</td><td class="c2">健康探测 → 灰度恢复 → 死信重放 → 任务/事件对账（seq+state）</td></tr>
+  <tr><td>bridge 卸载</td><td class="c2">前置检查在途任务→转人工/终止+审计；draft 由 studio 接管；无模块硬依赖 bridge</td></tr></table>
+  <h3>agent 权限与内容安全</h3>
+  <table><tr><th style="width:200px">机制</th><th>设计</th></tr>
+  <tr><td>权限三元组</td><td class="c2">租户绑定 × 语义卡 requiredScopes × 管理员授予矩阵；默认只读；授予矩阵变更走审批+审计</td></tr>
+  <tr><td>反提示注入</td><td class="c2">工具结果 untrusted framing 标注+消毒包装；写类工具对非用户直发调用加确认门</td></tr>
+  <tr><td>反滥用</td><td class="c2">agent 三预算（token/调用/扫描行）+ 超限熔断（DAF-AGT-429）</td></tr>
+  <tr><td>护栏分层</td><td class="c2">一切蓝图进入运行态必经 L0-L4（含 admin 直装与模板重放，无例外）</td></tr></table>
+</section>
+
+<!-- ============ 组装 ============ -->
+<section id="s3">
+  <h2>智能组装<span class="en">人工与 agent 同管线不同入口 · 治理无差别</span></h2>
+  <div class="desc">Terraform 式 plan/apply/state 治理：蓝图=不可变版本化制品（内容寻址+签名）；agent 生成受限于白名单块+页面模板（降自由度），校验错误 JSON Path 结构化回喂自修复（≤3 轮）。</div>
+  <div class="pipe">
+    <div class="stage arrowed"><div class="sn">L0</div><div class="st">静态校验</div><div class="sd">schema/引用完整性/strict 子集/lint（毫秒级自动）</div></div>
+    <div class="stage arrowed"><div class="sn">L1</div><div class="st">护栏</div><div class="sd">风险级/副作用/PII/变更范围/破坏性检测→影响面→veto</div></div>
+    <div class="stage arrowed"><div class="sn">L2</div><div class="st">沙箱预览</div><div class="sd">隔离租户+脱敏抽样快照（TTL 72h）·错误回灌自修复</div></div>
+    <div class="stage arrowed"><div class="sn">L3</div><div class="st">审批门</div><div class="sd">风险分级：low 自动/medium 单人/high 域 owner/destructive 双人</div></div>
+    <div class="stage arrowed"><div class="sn">L4</div><div class="st">发布</div><div class="sd">bundle 签名→安装/升级→语义卡发布（补偿事务）</div></div>
+    <div class="stage"><div class="sn">L5</div><div class="st">运行态+回滚</div><div class="sd">版本链+状态对账；任意历史版本一键回滚</div></div>
+  </div>
+  <h3>语义卡（daf.card.v1 · 四段式 · 唯一事实源 P5）</h3>
+  <div class="card4">
+    <div class="cseg"><div class="t">metadata 元数据段</div><div class="d">id / semver / title / tags / owner / deprecated / sourceModule——制品身份与归属</div></div>
+    <div class="cseg"><div class="t">semantics 语义段（给 LLM）</div><div class="d">summary ≤200 字 / whenToUse / whenNotToUse / examples ≥1——模型选型靠语义文本</div></div>
+    <div class="cseg"><div class="t">spec 结构段（给机器）</div><div class="d">JSON Schema 2020-12 strict 子集 + 字段级业务含义 + IO schema——可校验可生成</div></div>
+    <div class="cseg"><div class="t">governance 治理段（给护栏）</div><div class="d">riskLevel / sideEffects / idempotent / requiresApproval / requiredScopes / compliance / previewable</div></div>
+  </div>
+  <h3>三面消费（协议中立能力 IR）</h3>
+  <table><tr><th style="width:220px">消费面</th><th>生成物</th></tr>
+  <tr><td>MCP 工具目录（bridge 编译）</td><td class="c2">15 工具族：daf_capability_search/get · daf_entity_* · daf_query_federated · daf_blueprint_draft/validate/diff/submit · daf_page_compose_preview · daf_template_instantiate · daf_task_submit</td></tr>
+  <tr><td>门户/工作台目录</td><td class="c2">能力目录检索（关键词/标签）；组装工作台组件面板</td></tr>
+  <tr><td>OpenAPI（非 MCP 客户端）</td><td class="c2">REST 面描述与 MCP 工具面同源生成，双维护消除</td></tr></table>
+</section>
+
+<!-- ============ 装配包 ============ -->
+<section id="s4">
+  <h2>装配包与部署<span class="en">Pack = 模块版本锁定集合 · AR-3 可裁剪</span></h2>
+  <div class="desc">三档包均可独立构建 Helm 制品并通过启动自检；M 包 required 依赖闭包校验为一致性门脚本项；policy-required 模块技术可裁剪、生产合规必须。</div>
+  <div class="packs" id="packs"></div>
+  <h3>部署档位差异化</h3>
+  <table><tr><th style="width:150px">档位</th><th>网关</th><th>消息</th><th>可观测</th><th>部署模式</th></tr>
+  <tr><td>pack-minimal</td><td class="c2">Spring Cloud Gateway（免 etcd）</td><td class="c2">RocketMQ 单 broker</td><td class="c2">collector+Prom+Grafana 三件</td><td class="c2">core+data 可合并单进程</td></tr>
+  <tr><td>pack-standard</td><td class="c2">APISIX（etcd×3，秒级动态路由）</td><td class="c2">namesrv×2+broker×2</td><td class="c2">OTel 全家（Prom/Grafana/Loki/Jaeger）</td><td class="c2">core/data 分离多副本</td></tr>
+  <tr><td>pack-full</td><td class="c2">同 standard</td><td class="c2">同 standard</td><td class="c2">同 standard</td><td class="c2">同 standard + 四通道（GNEX3 协作）</td></tr></table>
+  <h3>多租户与数据安全基线</h3>
+  <table><tr><th style="width:220px">机制</th><th>设计</th></tr>
+  <tr><td>行级隔离（默认）</td><td class="c2">tenant_id 编译进查询计划 + PG RLS 双保险；实体可声明升级 schema-per-tenant</td></tr>
+  <tr><td>列级脱敏</td><td class="c2">maskingPolicy（authz 声明）→ queryCompiler 计划期改写（P4 对齐，聚合语义正确）；核心不可裁剪</td></tr>
+  <tr><td>审计防篡改</td><td class="c2">哈希链+异步批量链化 + checkpoint 锚定对象存储 WORM+KMS 签名时戳 + 独立审计库 + SoD + 导出双人审批</td></tr>
+  <tr><td>token 撤销</td><td class="c2">access ≤15min + 撤销黑名单 ≤5s（daf.iam.token.revoked→网关推送）+ 高危操作回源</td></tr>
+  <tr><td>等保三级</td><td class="c2">12 项控制项↔机制映射表（03 §9.2）为 DS6 出口检查单：锁定/二次确认/导出管控/留存 ≥6 月/运维通道等全落位</td></tr></table>
+</section>
+
+<!-- ============ 路线图 ============ -->
+<section id="s5">
+  <h2>实施路线<span class="en">DS0-DS6 · 190-248 人周 · 7-9 人 · 8-11 个月</span></h2>
+  <div class="desc">关键路径 kernel→metadata→entity-runtime/query→lifecycle→pipeline→DS4→DS5→DS6；前端自 DS2 起对 mock API 并行开发；Calcite/Flowable/Keycloak 三大件 owner 制。</div>
+  <div class="ds">
+    <div class="phase"><div class="pn">DS0</div><div class="pt">契约/schema/spike</div><div class="pw">8-12 pw</div><div class="pd">四通道契约 v1+mock · 三大 schema 门 · Calcite 双 spike Go/No-Go · V1-V14 复核 · 解耦冻结门 CI</div></div>
+    <div class="phase"><div class="pn">DS1</div><div class="pt">内核与身份最小核</div><div class="pw">20-28 pw</div><div class="pd">多租户 ≤60s · Keycloak 联邦 · 行级权限 · 撤销 ≤5s · pack-minimal Helm+合并部署 · data API 契约冻结</div></div>
+    <div class="phase"><div class="pn">DS2</div><div class="pt">数据基座·JDBC 族</div><div class="pw">30-42 pw</div><div class="pd">实体建模/迁移预检 · CRUD+行级谓词+脱敏编译 · 导入导出 · NFR-1 基准（含审计开销）</div></div>
+    <div class="phase"><div class="pn">DS3</div><div class="pt">应用与界面</div><div class="pw">32-46 pw</div><div class="pd">蓝图安装/路由/渲染 · 七审批语义 · ext-slot 沙箱 · 组装器源码模式+预览</div></div>
+    <div class="phase"><div class="pn">DS4</div><div class="pt">组装体系</div><div class="pw">22-30 pw</div><div class="pd">S1 端到端（含回滚）· 管线普适（admin 直装被拒）· 预览脱敏+TTL · 语义卡 IR</div></div>
+    <div class="phase"><div class="pn">DS5</div><div class="pt">智能协作</div><div class="pw">16-22 pw</div><div class="pd">四通道 mock 端到端（S2/S6）· S4 演练（含卸载）· 预算熔断+注入测试</div></div>
+    <div class="phase"><div class="pn">DS6</div><div class="pt">企业化交付</div><div class="pw">20-28 pw</div><div class="pd">REST/ES+联邦 Join · 三档包 · 等保检查单 · 恢复演练 · <b>真实对接=硬出口</b> · runbook</div></div>
+  </div>
+  <h3>三大评审门（CI 常驻）</h3>
+  <div class="gates">
+    <div class="gate"><div class="gn">解耦冻结门 V-C1</div><div class="gd">封闭正则集（gnex3-/gnex-/agentos/agent-service/state-plane/cordis/GNEX3）检索 specs/源码/文档命中=0；白名单=围栏标记对三处；契约 bump 影响分析 ⊆ {bridge}</div></div>
+    <div class="gate"><div class="gn">契约冻结门</div><div class="gd">contracts.daf.agentos v1 三形态+mock 冒烟通过；major/minor 版本化；N/N-1 双活窗口 ≥2 版本</div></div>
+    <div class="gate"><div class="gn">一致性门</div><div class="gd">04 模块表 ↔ 05 服务键 82/事件 ↔ specs 三向对账脚本 + M 包 required 依赖闭包校验</div></div>
+  </div>
+  <h3>评审记录（三轮：方案四维 → spec 四维 → 复验六门）</h3>
+  <table><tr><th style="width:260px">维度</th><th>结论</th><th>闭环</th></tr>
+  <tr><td>RV-A 解耦彻底性</td><td class="c2">有条件通过（P0=0/P1=7/P2=5）</td><td class="c2">S-13 判据可执行化等全部闭环</td></tr>
+  <tr><td>RV-B 需求覆盖与架构</td><td class="c2">FR 全 33/部分 12/缺 0（P0×4）</td><td class="c2">装配包重排/ext-slot/CDC 事件环闭环</td></tr>
+  <tr><td>RV-C 企业级完备性</td><td class="c2">有条件通过（P0×7）</td><td class="c2">脱敏下沉/等保映射/token 撤销/审计锚定/注入防御全闭环</td></tr>
+  <tr><td>RV-D 工程落地性</td><td class="c2">有条件通过（P0×3）</td><td class="c2">工作量重估/Calcite spike/DS2 收敛/DS6 硬出口闭环</td></tr>
+  <tr><td>SRV-1 跨 spec 一致性</td><td class="c2">P0×2/P1×11（round2）</td><td class="c2">M 包闭包修复/84 键对账/DTO 唯一形状/事件互认闭环</td></tr>
+  <tr><td>SRV-2 可开发性</td><td class="c2">P0×3/P1×8（round2）</td><td class="c2">7 组 DTO 冲突合并/onDegrade/PolicyBundle 统一；41/42 可直接开发</td></tr>
+  <tr><td>SRV-3 安全治理落地</td><td class="c2">P0×1/P1×6（round2）</td><td class="c2">撤销链路修复/委派防护/确认门/审计崩溃窗口/SSRF 对齐</td></tr>
+  <tr><td>SRV-4 纪律完整性</td><td class="c2">P0×1/P1×4（round2）</td><td class="c2">结构 42/42/FR 45/45/命名一一对应闭环</td></tr>
+  <tr><td>Round 3 复验</td><td class="c2"><b>六门全过</b></td><td class="c2">V-C1=0 · 84 键对账 · M 闭包 · 事件互认 · 错误码 · 标记清零</td></tr></table>
+</section>
+
+</div>
+<footer><div class="wrap">DAF 领域应用基座 v2 · 交付成果索引见 <b>README.md</b> · 设计文档 00-06 · SDD specs 42 份 · 评审报告 07 · 本页为自包含单文件（无外部依赖），数据与 v1.1.1 文档口径一致（2026-09-05 终态）</div></footer>
+
+<div class="mask" id="mask" onclick="closeDrawer()"></div>
+<div id="drawer"><button class="close" onclick="closeDrawer()">×</button><div id="dbody"></div></div>
+
+<script>
+const DOMAINS={D1:"D1 内核与装配",D2:"D2 身份与租户",D3:"D3 应用与路由",D4:"D4 服务管理",D5:"D5 数据基座",D6:"D6 界面基座",D7:"D7 智能组装",D8:"D8 企业横切"};
+const PACK_LABEL={M:"M",S:"S",F:"F"};
+const M=[
+["daf-kernel","模块系统内核","D1","kernel","daf-core-svc","core","M",["moduleRegistry","serviceRegistry","moduleLifecycle"],"清单/DAG 解析/拓扑启停/依赖反向检查","FR-D1-1/3/6"],
+["daf-contracts","契约库（Lib）","D1","kernel","Lib","core","M",["（编译期契约）"],"Port+DTO+Schema 代码载体；禁 import agentos","FR-D1-1"],
+["daf-config","配置中心","D1","kernel","daf-core-svc","core","M",["configService","secretRef"],"四级配置合并+密钥引用+变更广播","FR-D1-5"],
+["daf-eventbus","事件总线","D1","kernel","daf-core-svc","core","M",["eventBus","outboxWriter"],"进程内事件+outbox at-least-once+CE 信封","FR-D1-4"],
+["daf-scheduler","定时作业","D1","kernel","daf-core-svc","std","S",["scheduler"],"超时升级/对账/同步触发","FR-D4-2"],
+["daf-tenant","租户管理","D2","identity","daf-core-svc","core","M",["tenantService","tenantProvisioner"],"provisioning ≤60s+硬配额+注销 runbook","FR-D2-1"],
+["daf-identity","用户/组织/认证","D2","identity","daf-core-svc","core","M",["identityService","orgService","authnService"],"组织树+锁定+目录同步+CSV 导入","FR-D2-2/4"],
+["daf-authz","RBAC+数据权限","D2","identity","core+data","core","M",["authzPdp","policyAdmin","permissionRegistry","maskingPolicy"],"jCasbin 域模型+行列级+脱敏声明","FR-D2-3"],
+["daf-iam-op","OIDC OP/交换","D2","identity","daf-core-svc","std","M",["tokenIssuer","jwks","tokenExchange"],"Keycloak 内核+撤销黑名单+8693","FR-D2-5"],
+["daf-portal","门户后端","D2","identity","daf-core-svc","std","S",["portalService","notificationHub","i18nService"],"启动器/通知/i18n/时区","FR-D2-6"],
+["daf-app-registry","应用注册","D3","app","daf-core-svc","core","M",["appRegistry"],"应用=蓝图实例+租户启用","FR-D3-1"],
+["daf-app-router","应用路由","D3","app","daf-core-svc","core","M",["routerService","routeTable"],"双模式路由+灰度+双网关兼容","FR-D3-2"],
+["daf-app-lifecycle","应用生命周期","D3","app","daf-core-svc","core","M",["appLifecycle"],"安装/升级/回滚补偿；只收过管线制品","FR-D3-3"],
+["daf-app-bundle","蓝图制品","D3","app","daf-core-svc","core","M",["bundleStore","bundleSigner"],"内容寻址+分离签名+验签","FR-D3-4"],
+["daf-gateway-plugin","网关插件集","D3","app","daf-gateway","std","M",["gwPlugin"],"JWKS/租户注入/限流/审计链","FR-D3-5"],
+["daf-service-catalog","服务目录","D4","service","daf-core-svc","std","S",["serviceCatalog"],"清单/健康/依赖图告警","FR-D4-1"],
+["daf-workflow","工作流引擎","D4","service","daf-core-svc","std","S",["workflowEngine","taskInbox"],"Flowable7+七审批语义+agent 节点降级","FR-D4-2"],
+["daf-integration","集成枢纽","D4","service","daf-core-svc","std","S",["connectorHub","webhookEndpoint","dlqManager"],"连接器 SPI+webhook+死信+SSRF 白名单","FR-D4-3"],
+["daf-ext-slot","后端扩展插槽","D4","service","daf-core-svc","std","S",["extSlotHost"],"受控扩展模块：签名/限额/超时隔离","FR-D5-3"],
+["daf-quota","配额计量","D4","service","daf-core-svc","std","S",["quotaEnforcer","usageMeter"],"高级配额+agent 预算联动（policy-required）","FR-D4-4"],
+["daf-agent-bridge","GNEX3 四通道桥","D4","service","daf-core-svc","add","F",["agentTaskChannel","mcpGateway","toolCatalog","eventChannel","identityFederation","bridgeHealth"],"唯一交互面+MCP 编译+内容安全+降级","FR-D4-5"],
+["daf-datasource","数据源管理","D5","data","daf-data-svc","core","M",["dataSourceRegistry","dataSourcePool"],"7 类源+凭证+池化治理","FR-D5-1"],
+["daf-metadata","元数据引擎","D5","data","daf-data-svc","core","M",["metadataEngine","schemaMigration","reverseEngineering"],"模型版本+迁移预检+反向工程+漂移检测","FR-D5-2"],
+["daf-entity-runtime","实体运行时","D5","data","daf-data-svc","core","M",["entityRuntime","entityEventPublisher","exportImport"],"CRUD+钩子+事件+CDC 写路径+导入导出","FR-D5-3"],
+["daf-query","查询编译与联邦","D5","data","daf-data-svc","core","M",["queryCompiler","federationEngine"],"Calcite+行级谓词/脱敏编译+rows cap","FR-D5-4"],
+["daf-objectstore","对象存储","D5","data","daf-data-svc","std","M",["objectStore","presignService"],"S3 抽象+预签名绑定租户+WORM","FR-D5-7"],
+["daf-data-governance","数据治理","D5","data","daf-data-svc","add","F",["qualityRules","retentionPolicy"],"质量 expectation+高级保留（脱敏已下沉）","FR-D5-5"],
+["daf-datasync","数据同步","D5","data","daf-data-svc","add","F",["syncPipeline"],"CDC embedded+经实体写路径发事件","FR-D5-6"],
+["daf-web-shell","门户外壳","D6","ui","daf-web","core","M",["shell"],"布局/主题/租户切换/启动器","FR-D6-1"],
+["daf-ui-renderer","渲染引擎","D6","ui","daf-web","core","M",["pageRenderer","schemaValidator"],"pageSchema→React+JSON Path 回喂","FR-D6-2"],
+["daf-ui-blocks","标准组件块库","D6","ui","daf-web","core","M",["blockRegistry"],"≥10 块白名单注册+formily 表单内核","FR-D6-3"],
+["daf-page-composer","页面组装器","D6","ui","daf-web","std","S",["pageComposer"],"首版源码模式+实时预览（拖拽迭代二）","FR-D6-4"],
+["daf-ui-slots","前端插槽","D6","ui","daf-web","add","F",["slotHost","moduleFederationHost"],"MF 主轨+wujie 辅轨+签名/CSP","FR-D6-5"],
+["daf-semantic-registry","语义注册表","D7","assembly","daf-core-svc","std","S",["semanticRegistry","capabilitySearch"],"语义卡+能力 IR（协议中立）","FR-D7-1"],
+["daf-assembly-pipeline","组装管线","D7","assembly","daf-core-svc","core","M",["assemblyPipeline","blueprintStore","publishExecutor"],"L0-L5+补偿事务+回滚","FR-D7-4"],
+["daf-assembly-guard","组装守卫","D7","assembly","daf-core-svc","core","M",["assemblyGuard"],"护栏+破坏性检测+影响面+veto","FR-D7-5"],
+["daf-assembly-studio","组装工作台","D7","assembly","daf-core-svc","std","S",["assemblyStudio"],"人工组装会话/diff/接管","FR-D7-2"],
+["daf-template-library","模板库","D7","assembly","daf-core-svc","std","S",["templateLibrary"],"starter≥3+升级重放重过 L0-L3","FR-D7-6"],
+["daf-audit","审计","D8","platform","core+data","core","M",["auditWriter","auditQuery","auditChain"],"哈希链+WORM 锚定+独立库+SoD","FR-D8-1"],
+["daf-security","安全基座","D8","platform","core+data","core","M",["credentialVault","cryptoService","idempotencyGuard"],"信封加密+幂等+CSP+CI 双门","FR-D8-3"],
+["daf-observability","可观测","D8","platform","全部宿主","std","M",["telemetry"],"OTel 三信号+PII 过滤+告警联动","FR-D8-2"],
+["daf-deployment","装配包工程","D8","platform","工程件","std","S",["packAssembler","upgradeOrchestrator"],"Helm 三档+升级编排+恢复 runbook","FR-D8-4"]
+];
+const PL={core:["🔒 core","pl-core"],std:["🔐 standard","pl-std"],add:["➕ addon","pl-add"]};
+const grid=document.getElementById('mgrid'),filters=document.getElementById('filters');
+let cur="ALL";
+function renderFilters(){
+  const fs=[["ALL","全部（42）"]].concat(Object.entries(DOMAINS).map(([k,v])=>[k,v]));
+  filters.innerHTML=fs.map(([k,v])=>`<button class="fbtn ${cur===k?'on':''}" onclick="setF('${k}')">${v}</button>`).join('');
+}
+function setF(k){cur=k;renderFilters();renderGrid();}
+function renderGrid(){
+  const list=M.filter(m=>cur==="ALL"||m[2]===cur);
+  grid.innerHTML=list.map((m,i)=>{
+    const p=PL[m[5]];
+    return `<div class="mcard" onclick="openDrawer('${m[0]}')">
+      <div class="mid">${m[0]}</div><div class="mname">${m[1]}</div>
+      <div class="mmeta"><span class="pill ${p[1]}">${p[0]}</span><span class="pill pk">包 ${m[6]}</span><span class="pill pk">${DOMAINS[m[2]].split(' ')[1]}</span></div>
+      <div class="mfr">${m[8]} · ${m[9]}</div></div>`;}).join('');
+}
+function openDrawer(id){
+  const m=M.find(x=>x[0]===id);const p=PL[m[5]];
+  document.getElementById('dbody').innerHTML=`
+    <h4>${m[1]}</h4><div class="did">${m[0]}</div>
+    <div class="kv"><b>能力域</b>${DOMAINS[m[2]]}</div>
+    <div class="kv"><b>保护级别</b>${p[0]}</div>
+    <div class="kv"><b>装配包</b>${m[6]==='M'?'M（minimal 起）':m[6]==='S'?'S（standard 起）':'F（仅 full）'}</div>
+    <div class="kv"><b>宿主</b>${m[4]}</div>
+    <div class="kv"><b>需求映射</b>${m[9]}</div>
+    <p>${m[8]}。</p>
+    <div class="kv"><b>提供服务键</b></div>
+    <div class="keys">${m[7].map(k=>`<span>${k}</span>`).join('')}</div>`;
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('mask').classList.add('open');
+}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('mask').classList.remove('open');}
+document.querySelectorAll('nav a').forEach(a=>a.onclick=()=>{
+  document.querySelectorAll('nav a').forEach(x=>x.classList.remove('on'));a.classList.add('on');
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('on'));
+  document.getElementById(a.dataset.s).classList.add('on');window.scrollTo({top:0});});
+renderFilters();renderGrid();
+document.getElementById('packs').innerHTML=`
+<div class="pack"><h5>pack-minimal · M（25 运行时）</h5><div class="pc">最小可运行核（AR-3 验收对象）· SCG 网关 · 单 broker · 可合并部署</div>
+<div class="mods">${M.filter(m=>m[6]==='M').map(m=>`<span>${m[0].replace('daf-','')}</span>`).join('')}</div></div>
+<div class="pack"><h5>pack-standard · S（+11 = 36）</h5><div class="pc">企业常规业务系统 · APISIX · 模板库/语义卡目录在内</div>
+<div class="mods">${M.filter(m=>m[6]==='S').map(m=>`<span>${m[0].replace('daf-','')}</span>`).join('')}</div></div>
+<div class="pack"><h5>pack-full · F（+4 = 40）</h5><div class="pc">全量：智能组装与 GNEX3 协作 · 无 Agent 时四件全可裁剪</div>
+<div class="mods">${M.filter(m=>m[6]==='F').map(m=>`<span>${m[0].replace('daf-','')}</span>`).join('')}</div></div>`;
+</script>
+</body>
+</html>
